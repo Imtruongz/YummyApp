@@ -7,11 +7,26 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {useNavigation} from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
+
 export default function SignupPage() {
   const navigation: any = useNavigation();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleSignUp = () => {
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        console.log('User account created', user);
+        navigation.navigate('LoginPage');
+      });
+  };
 
   return (
     <SafeAreaView style={styles.blockContent}>
@@ -24,19 +39,28 @@ export default function SignupPage() {
       </View>
       {/* Content */}
       <View style={styles.blockContent}>
-        <TextInput style={styles.textInputStyle} placeholder="Username" />
-        <TextInput style={styles.textInputStyle} placeholder="Email" />
         <TextInput
+          value={email}
+          keyboardType="email-address"
+          onChangeText={setEmail}
+          style={styles.textInputStyle}
+          placeholder="Email"
+        />
+        <TextInput
+          value={password}
           secureTextEntry
+          onChangeText={setPassword}
           style={styles.textInputStyle}
           placeholder="Password"
         />
         <TextInput
+          value={confirmPassword}
           secureTextEntry
+          onChangeText={setConfirmPassword}
           style={styles.textInputStyle}
           placeholder="Confirm Password"
         />
-        <TouchableOpacity style={styles.touchableStyle}>
+        <TouchableOpacity onPress={handleSignUp} style={styles.touchableStyle}>
           <Text>Sign Up</Text>
         </TouchableOpacity>
       </View>
