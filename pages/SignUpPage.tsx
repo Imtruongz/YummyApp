@@ -8,7 +8,11 @@ import {
   Image,
 } from 'react-native';
 import React from 'react';
-export default function LoginPage() {
+
+import {useNavigation} from '@react-navigation/native';
+export default function SignupPage() {
+  const navigation: any = useNavigation();
+
   return (
     <SafeAreaView style={styles.blockContent}>
       {/* Title */}
@@ -40,7 +44,9 @@ export default function LoginPage() {
       <View style={styles.blockContent}>
         <Text>
           Have an account?
-          <Text style={styles.signUpText}> Login</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
+            <Text style={styles.signUpText}>Login</Text>
+          </TouchableOpacity>
         </Text>
       </View>
     </SafeAreaView>

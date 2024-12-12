@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  ImageBackground,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -52,22 +53,34 @@ const HomePage = () => {
         <View style={styles.popularBlock}>
           <Image
             style={styles.imgBackground}
-            source={require('../assets/rek.png')}
+            source={require('../assets/1.jpg')}
           />
         </View>
         {/* Categories */}
         <View style={styles.categoriesContainer}>
           <View style={styles.categoriesBlock}>
-            <Text>Daily food</Text>
+            <ImageBackground
+              style={styles.imgBackground2}
+              source={require('../assets/healthyfood.jpg')}
+            />
           </View>
           <View style={styles.categoriesBlock}>
-            <Text>Daily food</Text>
+            <ImageBackground
+              style={styles.imgBackground2}
+              source={require('../assets/dailyfood.jpg')}
+            />
           </View>
           <View style={styles.categoriesBlock}>
-            <Text>Gymer</Text>
+            <ImageBackground
+              style={styles.imgBackground2}
+              source={require('../assets/gymfood.jpg')}
+            />
           </View>
           <View style={styles.categoriesBlock}>
-            <Text>Healthy</Text>
+            <ImageBackground
+              style={styles.imgBackground2}
+              source={require('../assets/healthyfood.jpg')}
+            />
           </View>
         </View>
         {/* Flat List */}
@@ -83,6 +96,10 @@ const HomePage = () => {
           )}
           keyExtractor={item => item.id}
         />
+        {/* <Button
+          title="Go to Login"
+          onPress={() => navigation.navigate('LoginPage')}
+        /> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -141,6 +158,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
 
+  imgBackground2: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 25,
+  },
+
   categoriesContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -156,7 +180,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderBlockColor: 'black',
     borderRadius: 10,
-    padding: 12,
   },
   flatListBlockItem: {
     width: 100,
