@@ -24,6 +24,11 @@ export default function SignupPage() {
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
         console.log('User account created', user);
+        user.user?.sendEmailVerification();
+        //Update user profile name
+        // user.user?.updateProfile({
+        //   displayName: 'User',
+        // });
         navigation.navigate('LoginPage');
       });
   };

@@ -8,7 +8,6 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   Image,
-  Button,
 } from 'react-native';
 
 import React, {useState} from 'react';
@@ -27,7 +26,13 @@ export default function LoginPage() {
       .signInWithEmailAndPassword(email, password)
       .then(user => {
         console.log('User account signed in!', user);
-        navigation.navigate('BottomTabs');
+        //Check if user email Verified ?
+        if(user.user?.emailVerified){
+          console.log('Email is verified');
+          navigation.navigate('BottomTabs');
+        }else{
+          console.log('Email is not verified');
+        }
       });
   };
   const handleLoginWithGoogle = () => {
@@ -60,15 +65,19 @@ export default function LoginPage() {
             style={styles.textInputStyle}
             placeholder="Password"
           />
+          {/* Error Message validate form */}
+          <Text style={styles.errorMessage}>Error message</Text>
+
           <TouchableOpacity
             onPress={handleLoginWithEmail}
             style={styles.touchableStyle}>
-            <Text>Login</Text>
+            <Text style={styles.touchableStyleText}>Login</Text>
           </TouchableOpacity>
-          <Button
-            title="Google Sign-In"
-            onPress={() => handleLoginWithGoogle}
-          />
+          <TouchableOpacity
+            onPress={handleLoginWithGoogle}
+            style={styles.touchableStyle}>
+            <Text style={styles.touchableStyleText}>Google Sign-In</Text>
+          </TouchableOpacity>
         </View>
         {/* Footer */}
         <View style={styles.blockContent}>
@@ -107,6 +116,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 1,
     borderRadius: 5,
+    boxShadow: '0.2 0.2 2px black',
+  },
+  touchableStyleText: {
+    fontWeight: 'bold',
   },
   imgStyle: {
     width: 200,
@@ -115,5 +128,10 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: 'orange',
+    fontWeight: 'bold',
+  },
+  errorMessage: {
+    color: 'red',
+    fontWeight: 'bold',
   },
 });
