@@ -1,54 +1,40 @@
 import {
-  StyleSheet,
+  Image,
+  Keyboard,
   SafeAreaView,
+  StyleSheet,
   Text,
-  View,
   TextInput,
   TouchableOpacity,
-  Keyboard,
   TouchableWithoutFeedback,
-  Image,
+  View,
 } from 'react-native';
 
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+import {
+  NativeStackScreenProps
+} from '@react-navigation/native-stack';
+import { RootStackParamList } from '../android/types/StackNavType';
 
-export default function LoginPage() {
-  const navigation: any = useNavigation();
+interface LoginPageProps
+  extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
 
+const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // const handleLoginWithEmail = () => {
-  //   auth()
-  //     .signInWithEmailAndPassword(email, password)
-  //     .then(user => {
-  //       console.log('da dang nhap vao app');
-  //       if (user.user?.emailVerified) {
-  //         console.log('Email is verified, sign in');
-  //         navigation.navigate('BottomTabs');
-  //       } else {
-  //         console.log('Email is not verified');
-  //       }
-  //     });
-  // };
-
   const handleLoginWithEmail = async () => {
     try {
-      const user = await auth().signInWithEmailAndPassword(email, password);
-      if (user.user?.emailVerified) {
-        console.log('Email is verified, sign in');
-        navigation.navigate('BottomTabs');
-      } else {
-        console.log('Email is not verified');
-      }
+      const response = await auth().signInWithEmailAndPassword(email, password);
+      response.user.emailVerified
+        ? navigation.navigate('ProfilePage', {email:  email})
+        : console.log('Email is not verified');
     } catch (error) {
       console.log('Error', error);
     }
   };
-
 
   const handleLoginWithGoogle = () => {
     console.log('Google Sign-In');
@@ -106,7 +92,7 @@ export default function LoginPage() {
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
-}
+};
 const styles = StyleSheet.create({
   blockContent: {
     flex: 2,
@@ -150,3 +136,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default LoginPage;

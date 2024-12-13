@@ -1,20 +1,19 @@
 import {View, Button, Text} from 'react-native';
 import React from 'react';
 import auth from '@react-native-firebase/auth';
-import {useNavigation} from '@react-navigation/native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../android/types/StackNavType';
 
-const ProfilePage = () => {
-  const navigation: any = useNavigation();
+interface ProfilePageProps
+  extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
 
-  const user = auth().currentUser;
-  user?.providerData.forEach(userInfo => {
-    console.log('User info name: ', userInfo.displayName);
-    console.log(user?.emailVerified);
-  });
+const ProfilePage: React.FC<ProfilePageProps> = ({navigation, route}) => {
+
+  const {email} = route.params;
 
   return (
     <View>
-      <Text>{user?.email}</Text>
+      <Text>{email}</Text>
       <Button
         title="Log out"
         onPress={() =>

@@ -11,15 +11,14 @@ import HomePage from './pages/HomePage';
 
 import FoodPage from './pages/FoodPage';
 import ProfilePage from './pages/ProfilePage';
+import {RootStackParamList} from './android/types/StackNavType';
 
-const Tab = createBottomTabNavigator();
-
+const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
   return (
-    <Tab.Navigator
-      >
+    <Tab.Navigator>
       <Tab.Screen
-        name="Home"
+        name="HomePage"
         component={HomePage}
         options={{
           tabBarLabel: 'Home',
@@ -28,7 +27,7 @@ function BottomTab() {
         }}
       />
       <Tab.Screen
-        name="Food"
+        name="FoodPage"
         component={FoodPage}
         options={{
           tabBarLabel: 'Food',
@@ -37,7 +36,7 @@ function BottomTab() {
         }}
       />
       <Tab.Screen
-        name="Profile"
+        name="ProfilePage"
         component={ProfilePage}
         options={{
           tabBarLabel: 'Profile',
@@ -49,7 +48,7 @@ function BottomTab() {
   );
 }
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function StackNavigator() {
   return (
@@ -73,6 +72,16 @@ function StackNavigator() {
         <Stack.Screen
           name="SignUpPage"
           component={SignUpPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProfilePage"
+          component={ProfilePage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="FoodPage"
+          component={FoodPage}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
