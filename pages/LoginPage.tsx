@@ -21,20 +21,35 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLoginWithEmail = () => {
-    auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log('User account signed in!', user);
-        //Check if user email Verified ?
-        if(user.user?.emailVerified){
-          console.log('Email is verified');
-          navigation.navigate('BottomTabs');
-        }else{
-          console.log('Email is not verified');
-        }
-      });
+  // const handleLoginWithEmail = () => {
+  //   auth()
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then(user => {
+  //       console.log('da dang nhap vao app');
+  //       if (user.user?.emailVerified) {
+  //         console.log('Email is verified, sign in');
+  //         navigation.navigate('BottomTabs');
+  //       } else {
+  //         console.log('Email is not verified');
+  //       }
+  //     });
+  // };
+
+  const handleLoginWithEmail = async () => {
+    try {
+      const user = await auth().signInWithEmailAndPassword(email, password);
+      if (user.user?.emailVerified) {
+        console.log('Email is verified, sign in');
+        navigation.navigate('BottomTabs');
+      } else {
+        console.log('Email is not verified');
+      }
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
+
+
   const handleLoginWithGoogle = () => {
     console.log('Google Sign-In');
   };

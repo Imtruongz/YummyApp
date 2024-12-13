@@ -19,18 +19,25 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSignUp = () => {
-    auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log('User account created', user);
-        user.user?.sendEmailVerification();
-        //Update user profile name
-        // user.user?.updateProfile({
-        //   displayName: 'User',
-        // });
-        navigation.navigate('LoginPage');
-      });
+  // const handleSignUp = () => {
+  //   auth()
+  //     .createUserWithEmailAndPassword(email, password)
+  //     .then(user => {
+  //       console.log('User account created', user);
+  //       user.user?.sendEmailVerification();
+  //       //
+  //       navigation.navigate('LoginPage');
+  //     });
+  // };
+
+  const handleSignUp = async () => {
+    try {
+      const user = await auth().createUserWithEmailAndPassword(email, password);
+      console.log('User account created', user);
+      navigation.navigate('LoginPage');
+    } catch (error) {
+      console.log('Error',error);
+    }
   };
 
   return (
