@@ -1,4 +1,5 @@
 import {
+  Button,
   FlatList,
   Image,
   ImageBackground,
@@ -9,27 +10,44 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../android/types/StackNavType';
 
-const HomePage = () => {
-  const DATA = [
+interface HomePageProps
+  extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
+
+const HomePage: React.FC<HomePageProps> = ({navigation}) => {
+  interface Item {
+    id: string;
+    title: string;
+    content: string;
+  }
+
+  const [itemz, setItem] = useState<Item[]>([
     {
       id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
       title: 'First Item',
+      content: 'This is the first item',
     },
     {
       id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
       title: 'Second Item',
+      content: 'This is the second item',
+
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d72',
       title: 'Third Item',
+      content: 'This is the third item',
+
     },
     {
       id: '58694a0f-3da1-471f-bd96-145571e29d79',
-      title: 12,
+      title: 'Fourth Item',
+      content: 'This is the fourth item',
     },
-  ];
+  ]);
 
   return (
     <SafeAreaView>
@@ -85,21 +103,21 @@ const HomePage = () => {
         </View>
         {/* Flat List */}
         <FlatList
-          data={DATA}
+          data={itemz}
           horizontal
+          keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false} // Hide vertical scrollbar
           showsHorizontalScrollIndicator={false} // Hide horizontal scrollbar if any
           renderItem={({item}) => (
             <View style={styles.flatListBlockItem}>
               <Text>{item.title}</Text>
+              <Button
+                title="Detail"
+                onPress={() => navigation.navigate('FoodPage', item)}
+              />
             </View>
           )}
-          keyExtractor={item => item.id}
         />
-        {/* <Button
-          title="Go to Login"
-          onPress={() => navigation.navigate('LoginPage')}
-        /> */}
       </ScrollView>
     </SafeAreaView>
   );

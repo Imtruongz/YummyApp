@@ -29,7 +29,7 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       response.user.emailVerified
-        ? navigation.navigate('ProfilePage', {email:  email})
+        ? navigation.navigate('BottomTabs')
         : console.log('Email is not verified');
     } catch (error) {
       console.log('Error', error);
