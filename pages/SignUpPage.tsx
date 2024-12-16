@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
   Image,
 } from 'react-native';
@@ -11,6 +10,9 @@ import React, {useState} from 'react';
 
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
+// Custom component
+import CustomButton from '../components/customize/Button';
+import CustomInput from '../components/customize/Input';
 
 export default function SignupPage() {
   const navigation: any = useNavigation();
@@ -19,11 +21,52 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const verifyEmail = () => {
+    // Email regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+  const verifyPassword = () => {
+    return password.length > 6;
+  };
+  const verifyConfirmPassword = () => {
+    if (password === confirmPassword) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const handleSignUp = async () => {
+    setIsEmailValid(verifyEmail());
+    setIsPasswordValid(verifyPassword());
+    setIsConfirmPasswordValid(verifyConfirmPassword());
+    if (!verifyEmail() || !verifyPassword() || !verifyConfirmPassword()) {
+      return;
+    }
+
     try {
-      const response = await auth().createUserWithEmailAndPassword(email, password);
+      const response = await auth().createUserWithEmailAndPassword(
+        email,
+        password,
+      );
       console.log('User account created', response);
-      response.user?.sendEmailVerification();
+      response.user.sendEmailVerification();
       navigation.navigate('LoginPage');
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
@@ -47,30 +90,40 @@ export default function SignupPage() {
       </View>
       {/* Content */}
       <View style={styles.blockContent}>
-        <TextInput
+        <CustomInput
           value={email}
-          keyboardType="email-address"
-          onChangeText={setEmail}
-          style={styles.textInputStyle}
           placeholder="Email"
+          onChangeText={setEmail}
         />
-        <TextInput
+        {!isEmailValid ? (
+          <Text style={styles.errorMessage}>Email invalidd</Text>
+        ) : null}
+        <CustomInput
           value={password}
-          secureTextEntry
-          onChangeText={setPassword}
-          style={styles.textInputStyle}
           placeholder="Password"
+          secureTextEntry={!showPassword}
+          onChangeText={setPassword}
+          showIcon={true}
+          onPressIcon={handleShowPassword}
+          iconName={showPassword ? 'eye' : 'eyeo'}
         />
-        <TextInput
+        {isPasswordValid ? null : (
+          <Text style={styles.errorMessage}>Password invalid</Text>
+        )}
+        <CustomInput
           value={confirmPassword}
-          secureTextEntry
-          onChangeText={setConfirmPassword}
-          style={styles.textInputStyle}
           placeholder="Confirm Password"
+          secureTextEntry={!showConfirmPassword}
+          onChangeText={setConfirmPassword}
+          showIcon={true}
+          onPressIcon={handleShowConfirmPassword}
+          iconName={showConfirmPassword ? 'eye' : 'eyeo'}
         />
-        <TouchableOpacity onPress={handleSignUp} style={styles.touchableStyle}>
-          <Text>Sign Up</Text>
-        </TouchableOpacity>
+
+        {isConfirmPasswordValid ? null : (
+          <Text style={styles.errorMessage}>Confirmation password invalid</Text>
+        )}
+        <CustomButton title="Sign Up" onPress={handleSignUp} />
       </View>
       {/* Footer */}
       <View style={styles.blockContent}>
@@ -90,15 +143,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    gap: 14,
+    gap: 8,
+  },
+  inputIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: 'grey',
+    width: '80%',
   },
   textInputStyle: {
-    width: '80%',
+    flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 10,
-    borderRadius: 5,
+    padding: 10,
+  },
+  iconInsideInput: {
+    padding: 10,
   },
   touchableStyle: {
     width: '80%',
@@ -106,7 +166,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'orange',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 1,
     borderRadius: 5,
   },
   imgStyle: {
@@ -116,5 +175,8 @@ const styles = StyleSheet.create({
   },
   signUpText: {
     color: 'orange',
+  },
+  errorMessage: {
+    color: 'red',
   },
 });

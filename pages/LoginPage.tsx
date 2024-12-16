@@ -4,19 +4,20 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 import auth from '@react-native-firebase/auth';
-import {
-  NativeStackScreenProps
-} from '@react-navigation/native-stack';
-import { RootStackParamList } from '../android/types/StackNavType';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../android/types/StackNavType';
+
+//Customm components
+import CustomButton from '../components/customize/Button';
+import CustomInput from '../components/customize/Input';
 
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
@@ -25,7 +26,32 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const verifyEmail = () => {
+    // Email regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const verifyPassword = () => {
+    return password.length > 6;
+  };
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleLoginWithEmail = async () => {
+    setIsEmailValid(verifyEmail());
+    setIsPasswordValid(verifyPassword());
+    if (!verifyEmail() || !verifyPassword()) {
+      return;
+    }
+
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       response.user.emailVerified
@@ -52,33 +78,31 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
         </View>
         {/* Content */}
         <View style={styles.blockContent}>
-          <TextInput
+          <CustomInput
             value={email}
             onChangeText={setEmail}
-            keyboardType="email-address"
-            style={styles.textInputStyle}
-            placeholder="Username"
+            placeholder="Email"
           />
-          <TextInput
+          {!isEmailValid ? (
+            <Text style={styles.errorMessage}>Email invalidd</Text>
+          ) : null}
+          <CustomInput
             value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            style={styles.textInputStyle}
             placeholder="Password"
+            secureTextEntry={!showPassword}
+            onChangeText={setPassword}
+            showIcon={true}
+            onPressIcon={handleShowPassword}
+            iconName={showPassword ? 'eye' : 'eyeo'}
           />
-          {/* Error Message validate form */}
-          <Text style={styles.errorMessage}>Error message</Text>
-
-          <TouchableOpacity
-            onPress={handleLoginWithEmail}
-            style={styles.touchableStyle}>
-            <Text style={styles.touchableStyleText}>Login</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          {isPasswordValid ? null : (
+            <Text style={styles.errorMessage}>Password invalid</Text>
+          )}
+          <CustomButton title="Login" onPress={handleLoginWithEmail} />
+          <CustomButton
+            title="Login with Google"
             onPress={handleLoginWithGoogle}
-            style={styles.touchableStyle}>
-            <Text style={styles.touchableStyleText}>Google Sign-In</Text>
-          </TouchableOpacity>
+          />
         </View>
         {/* Footer */}
         <View style={styles.blockContent}>
