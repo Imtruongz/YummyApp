@@ -153,36 +153,10 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 8,
   },
-  inputIconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: 'grey',
-    width: '80%',
-  },
-  textInputStyle: {
-    flex: 1,
-    height: 40,
-    padding: 10,
-  },
-  iconInsideInput: {
-    padding: 10,
-  },
-  touchableStyle: {
-    width: '80%',
-    height: 40,
-    backgroundColor: 'orange',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
   imgStyle: {
     width: 200,
     height: 100,
     resizeMode: 'contain',
-  },
-  signUpText: {
-    color: 'orange',
   },
   errorMessage: {
     color: 'red',

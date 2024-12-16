@@ -7,6 +7,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import HomePage from './pages/HomePage';
 
 import FoodPage from './pages/FoodPage';
@@ -72,6 +73,11 @@ function StackNavigator() {
         <Stack.Screen
           name="SignUpPage"
           component={SignUpPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ForgotPasswordPage"
+          component={ForgotPasswordPage}
           options={{headerShown: false}}
         />
         <Stack.Screen

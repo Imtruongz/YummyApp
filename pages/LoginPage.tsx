@@ -56,8 +56,14 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
     }
 
     try {
-      await auth().signInWithEmailAndPassword(email, password);
-      navigation.navigate('BottomTabs');
+      const response = await auth().signInWithEmailAndPassword(email, password);
+      if (response.user.emailVerified) {
+        navigation.navigate('BottomTabs');
+      } else {
+        setIsErrorMessage(true);
+        setErrorMessage('Email not verified, please check your email');
+        console.log('Email not verified');
+      }
     } catch (error: any) {
       if (error.code === 'auth/invalid-credential') {
         setIsErrorMessage(true);
@@ -116,9 +122,14 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
         <View style={styles.blockContent}>
           <CustomTextFooter
             content="Don't have an account?"
-            navigateTo="Signup"
+            navigateTo="Sign up"
             navigation={navigation}
             targetScreen="SignUpPage"
+          />
+          <CustomTextFooter
+            navigateTo="Forgot password"
+            navigation={navigation}
+            targetScreen="ForgotPasswordPage"
           />
         </View>
       </SafeAreaView>
@@ -133,45 +144,13 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 14,
   },
-  textInputStyle: {
-    width: '80%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingLeft: 10,
-    borderRadius: 5,
-  },
-  touchableStyle: {
-    width: '80%',
-    height: 40,
-    backgroundColor: 'orange',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 1,
-    borderRadius: 5,
-    boxShadow: '0.2 0.2 2px black',
-  },
-  touchableStyleText: {
-    fontWeight: 'bold',
-  },
   imgStyle: {
     width: 200,
     height: 100,
     resizeMode: 'contain',
   },
-  signUpText: {
-    color: 'orange',
-    fontWeight: 'bold',
-  },
   errorMessage: {
     color: 'red',
-  },
-  blockFooter: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  textFooter: {
-    color: 'black',
   },
 });
 

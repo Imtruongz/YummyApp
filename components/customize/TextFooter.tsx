@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
 interface TextFooterProps {
-  content: string;
+  content?: string;
   navigateTo: string;
   navigation: any;
   targetScreen?: string;
