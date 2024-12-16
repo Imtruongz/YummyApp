@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   Text,
   View,
-  TouchableOpacity,
   Image,
 } from 'react-native';
 import React, {useState} from 'react';
@@ -13,6 +12,7 @@ import auth from '@react-native-firebase/auth';
 // Custom component
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
+import CustomTextFooter from '../components/customize/TextFooter';
 
 export default function SignupPage() {
   const navigation: any = useNavigation();
@@ -27,6 +27,9 @@ export default function SignupPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [isErrorMessage, setIsErrorMessage] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -70,12 +73,11 @@ export default function SignupPage() {
       navigation.navigate('LoginPage');
     } catch (error: any) {
       if (error.code === 'auth/email-already-in-use') {
+        setIsErrorMessage(true);
+        setErrorMessage('That email address is already in use!');
         console.log('That email address is already in use!');
+        return {errorMessage};
       }
-      if (error.code === 'auth/invalid-email') {
-        console.log('That email address is invalid!');
-      }
-      console.log('Error', error);
     }
   };
 
@@ -123,16 +125,22 @@ export default function SignupPage() {
         {isConfirmPasswordValid ? null : (
           <Text style={styles.errorMessage}>Confirmation password invalid</Text>
         )}
+        {
+          // Error message
+          isErrorMessage ? (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : null
+        }
         <CustomButton title="Sign Up" onPress={handleSignUp} />
       </View>
       {/* Footer */}
       <View style={styles.blockContent}>
-        <Text>
-          Have an account?
-          <TouchableOpacity onPress={() => navigation.navigate('LoginPage')}>
-            <Text style={styles.signUpText}>Login</Text>
-          </TouchableOpacity>
-        </Text>
+        <CustomTextFooter
+          content="Already have an account?"
+          navigateTo="Login"
+          navigation={navigation}
+          targetScreen="LoginPage"
+        />
       </View>
     </SafeAreaView>
   );

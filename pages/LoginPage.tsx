@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
@@ -18,6 +17,7 @@ import {RootStackParamList} from '../android/types/StackNavType';
 //Customm components
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
+import CustomTextFooter from '../components/customize/TextFooter';
 
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
@@ -30,6 +30,9 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const [isErrorMessage, setIsErrorMessage] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const verifyEmail = () => {
     // Email regex
@@ -53,12 +56,14 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
     }
 
     try {
-      const response = await auth().signInWithEmailAndPassword(email, password);
-      response.user.emailVerified
-        ? navigation.navigate('BottomTabs')
-        : console.log('Email is not verified');
-    } catch (error) {
-      console.log('Error', error);
+      await auth().signInWithEmailAndPassword(email, password);
+      navigation.navigate('BottomTabs');
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-credential') {
+        setIsErrorMessage(true);
+        setErrorMessage('User not found, please try again');
+        console.log('User not found');
+      }
     }
   };
 
@@ -98,6 +103,9 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
           {isPasswordValid ? null : (
             <Text style={styles.errorMessage}>Password invalid</Text>
           )}
+          {isErrorMessage ? (
+            <Text style={styles.errorMessage}>{errorMessage}</Text>
+          ) : null}
           <CustomButton title="Login" onPress={handleLoginWithEmail} />
           <CustomButton
             title="Login with Google"
@@ -106,12 +114,12 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
         </View>
         {/* Footer */}
         <View style={styles.blockContent}>
-          <Text>
-            Don't have an account?
-            <TouchableOpacity onPress={() => navigation.navigate('SignUpPage')}>
-              <Text style={styles.signUpText}>Sign Up</Text>
-            </TouchableOpacity>
-          </Text>
+          <CustomTextFooter
+            content="Don't have an account?"
+            navigateTo="Signup"
+            navigation={navigation}
+            targetScreen="SignUpPage"
+          />
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -157,7 +165,13 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: 'red',
-    fontWeight: 'bold',
+  },
+  blockFooter: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  textFooter: {
+    color: 'black',
   },
 });
 
