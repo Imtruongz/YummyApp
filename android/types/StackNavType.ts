@@ -8,7 +8,5 @@ export type RootStackParamList = {
   ProfilePage: {
     email: string;
   };
-  FoodPage: {
-    content: string;
-  };
+  FoodPage: undefined;
 };

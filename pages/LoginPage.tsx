@@ -83,10 +83,6 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
     }
   };
 
-  const handleLoginWithGoogle = () => {
-    console.log('Google Sign-In');
-  };
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.blockContent}>
@@ -123,10 +119,6 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
           <CustomButton title="Login" onPress={handleLoginWithEmail} />
-          <CustomButton
-            title="Login with Google"
-            onPress={handleLoginWithGoogle}
-          />
         </View>
         {/* Footer */}
         <View style={styles.blockContent}>

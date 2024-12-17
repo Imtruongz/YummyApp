@@ -1,8 +1,9 @@
 import {
+  ActivityIndicator,
   Button,
   FlatList,
   Image,
-  ImageBackground,
+  Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,44 +11,48 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
+
+import firestore from '@react-native-firebase/firestore';
+
+import CustomButton from '../components/customize/Button';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
-const HomePage: React.FC<HomePageProps> = ({navigation}) => {
-  interface Item {
-    id: string;
-    title: string;
-    content: string;
+const HomePage: React.FC<HomePageProps> = ({}) => {
+  const [loading, setLoading] = useState(true);
+  const [food, setFood] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const subscriber = firestore()
+      .collection('food')
+      .onSnapshot(querySnapshot => {
+        const food = [];
+
+        querySnapshot.forEach(documentSnapshot => {
+          food.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        setFood(food);
+        setLoading(false);
+      });
+
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+  }, []);
+
+  console.log(food);
+
+  if (loading) {
+    return <ActivityIndicator />;
   }
-
-  const [itemz, setItem] = useState<Item[]>([
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-      content: 'This is the first item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-      content: 'This is the second item',
-
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-      content: 'This is the third item',
-
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d79',
-      title: 'Fourth Item',
-      content: 'This is the fourth item',
-    },
-  ]);
 
   return (
     <SafeAreaView>
@@ -75,50 +80,45 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           />
         </View>
         {/* Categories */}
-        <View style={styles.categoriesContainer}>
-          <View style={styles.categoriesBlock}>
-            <ImageBackground
-              style={styles.imgBackground2}
-              source={require('../assets/healthyfood.jpg')}
-            />
-          </View>
-          <View style={styles.categoriesBlock}>
-            <ImageBackground
-              style={styles.imgBackground2}
-              source={require('../assets/dailyfood.jpg')}
-            />
-          </View>
-          <View style={styles.categoriesBlock}>
-            <ImageBackground
-              style={styles.imgBackground2}
-              source={require('../assets/gymfood.jpg')}
-            />
-          </View>
-          <View style={styles.categoriesBlock}>
-            <ImageBackground
-              style={styles.imgBackground2}
-              source={require('../assets/healthyfood.jpg')}
-            />
-          </View>
-        </View>
         {/* Flat List */}
         <FlatList
-          data={itemz}
-          horizontal
-          keyExtractor={item => item.id}
-          showsVerticalScrollIndicator={false} // Hide vertical scrollbar
-          showsHorizontalScrollIndicator={false} // Hide horizontal scrollbar if any
+          data={food}
           renderItem={({item}) => (
             <View style={styles.flatListBlockItem}>
-              <Text>{item.title}</Text>
-              <Button
-                title="Detail"
-                onPress={() => navigation.navigate('FoodPage', item)}
-              />
+              <Text>{item.foodName}</Text>
+              <Image width={100} height={50} source={{uri: item.image}} />
             </View>
           )}
         />
+        <CustomButton onPress={() => setModalVisible(true)} style={styles.openModalStyle} iconName="plus" />
       </ScrollView>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRightColor: 'gray',
+          }}>
+          <View
+            style={{
+              width: 300,
+              height: 200,
+              backgroundColor: 'white',
+              borderRadius: 10,
+              padding: 20,
+            }}>
+            <Button
+              title="Close Modal"
+              onPress={() => setModalVisible(false)}
+            />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -144,6 +144,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderBlockColor: 'orange',
+  },
+  openModalStyle: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'orange',
   },
 
   //Search food
@@ -175,34 +181,10 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderRadius: 10,
   },
-
-  imgBackground2: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    borderRadius: 25,
-  },
-
-  categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    padding: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  categoriesBlock: {
-    width: '46%',
-    height: 104,
-    backgroundColor: 'orange',
-    borderWidth: 1,
-    borderBlockColor: 'black',
-    borderRadius: 10,
-  },
+  //FlatList
   flatListBlockItem: {
     width: 100,
     height: 100,
-    backgroundColor: 'red',
     margin: 10,
     padding: 10,
     borderRadius: 10,
