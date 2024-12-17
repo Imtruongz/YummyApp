@@ -18,6 +18,7 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import firestore from '@react-native-firebase/firestore';
 
 import CustomButton from '../components/customize/Button';
+import CustomModal from '../components/Modal';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -47,8 +48,6 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
-
-  console.log(food);
 
   if (loading) {
     return <ActivityIndicator />;
@@ -97,27 +96,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRightColor: 'gray',
-          }}>
-          <View
-            style={{
-              width: 300,
-              height: 200,
-              backgroundColor: 'white',
-              borderRadius: 10,
-              padding: 20,
-            }}>
-            <Button
-              title="Close Modal"
-              onPress={() => setModalVisible(false)}
-            />
-          </View>
-        </View>
+        <CustomModal />
       </Modal>
     </SafeAreaView>
   );

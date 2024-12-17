@@ -5,11 +5,9 @@ import {RootStackParamList} from '../android/types/StackNavType';
 
 interface FoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'FoodPage'> {}
-const FoodPage: React.FC<FoodPageProps> = ({route}) => {
-  const {content} = route.params;
+const FoodPage: React.FC<FoodPageProps> = ({}) => {
   return (
     <View>
-      <Text>{content}</Text>
       <Text>FoodPage</Text>
     </View>
   );

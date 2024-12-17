@@ -21,7 +21,7 @@ import CustomTextFooter from '../components/customize/TextFooter';
 
 //Redux
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {login} from '../redux/reducer/authSlice';
+import {login} from '../redux/slices/authSlice';
 
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}

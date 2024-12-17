@@ -5,7 +5,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {logout} from '../redux/reducer/authSlice';
+import {logout} from '../redux/slices/authSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import firestore from '@react-native-firebase/firestore';
