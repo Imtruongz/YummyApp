@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -14,11 +13,17 @@ import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
+// Firebase
 import firestore from '@react-native-firebase/firestore';
 
+
+// Custom
 import CustomButton from '../components/customize/Button';
 import CustomModal from '../components/Modal';
+import CustomTitle from '../components/customize/Title';
+import CustomFoodItem from '../components/customize/FoodItem';
 
+// Reudx
 import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
@@ -37,10 +42,10 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
     const subscriber = firestore()
       .collection('food')
       .onSnapshot(querySnapshot => {
-        const food = [];
+        const ListFood = [];
 
         querySnapshot.forEach(documentSnapshot => {
-          food.push({
+          ListFood.push({
             ...documentSnapshot.data(),
             key: documentSnapshot.id,
           });
@@ -61,7 +66,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        {/* Header(avatar + Notification) */}
+        {/* Header */}
         <View style={styles.headerBlock}>
           <Image
             style={styles.imgStyle}
@@ -72,59 +77,51 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             source={require('../assets/avt.png')}
           />
         </View>
-        {/* Input Search */}
         <View style={styles.searchBlock}>
           <TextInput style={styles.textInputStyle} placeholder="Search" />
         </View>
-        {/* Popular food */}
+        {/* Header */}
+
+        {/* Thumnail */}
         <View style={styles.popularBlock}>
           <Image
             style={styles.imgBackground}
             source={require('../assets/1.jpg')}
           />
         </View>
-        {/* Flat List */}
+        {/* Thumnail */}
+
+        {/* Popular food */}
+        <CustomTitle title="Popular food" />
         <FlatList
           data={food}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => (
-            <View style={styles.flatListBlockItem}>
-              <Text>{item.foodName}</Text>
-              <Image width={100} height={50} source={{uri: item.image}} />
-            </View>
+            <CustomFoodItem title={item.foodName} image={item.image} />
           )}
         />
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
-        <Text>Home Page</Text>
+
+        {/* New food update by user */}
+        <CustomTitle title="New food update" />
         <FlatList
           data={foodList}
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => (
-            <View style={styles.flatListBlockItem}>
-              <Text>{item.name}</Text>
-              <Image width={100} height={50} source={{uri: item.image}} />
-            </View>
+            <CustomFoodItem title={item.name} image={item.image} />
           )}
         />
       </ScrollView>
+
+      {/* Button add new Food */}
       <CustomButton
+        title="+"
         onPress={() => setModalVisible(true)}
         style={styles.openModalStyle}
       />
+
+      {/* Modal add new Food */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -163,9 +160,9 @@ const styles = StyleSheet.create({
     borderBlockColor: 'orange',
   },
   openModalStyle: {
-    position: 'absolute', // Tương đương fixed trong React Native
-    bottom: 20, // Cách đáy 20px
-    right: 20, // Cách phải 20px
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -200,13 +197,10 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
-  },
-  //FlatList
-  flatListBlockItem: {
-    width: 100,
-    height: 100,
-    margin: 10,
-    padding: 10,
-    borderRadius: 10,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 15,
   },
 });

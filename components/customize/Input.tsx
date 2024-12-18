@@ -22,12 +22,12 @@ const CustomInput: React.FC<CustomInputProps> = ({
   iconName = 'eye',
 }) => {
   return (
-    <View style={styles.inputIconContainer}>
+    <View style={styles.customInputContainer}>
       <TextInput
         value={value}
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
-        style={styles.textInputStyle}
+        style={styles.input}
         placeholder={placeholder}
       />
       {showIcon && (
@@ -35,7 +35,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           onPress={onPressIcon}
           name={iconName}
           size={24}
-          style={styles.iconInsideInput}
+          style={styles.icon}
         />
       )}
     </View>
@@ -45,19 +45,19 @@ const CustomInput: React.FC<CustomInputProps> = ({
 export default CustomInput;
 
 const styles = StyleSheet.create({
-  inputIconContainer: {
+  customInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: 'grey',
     width: '80%',
   },
-  textInputStyle: {
+  input: {
     flex: 1,
     height: 40,
     padding: 10,
   },
-  iconInsideInput: {
+  icon: {
     padding: 10,
   },
 });

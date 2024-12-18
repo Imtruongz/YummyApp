@@ -1,14 +1,31 @@
-import {View, Button, StyleSheet, Text, Image} from 'react-native';
+import {
+  View,
+  Button,
+  StyleSheet,
+  Image,
+  FlatList,
+  useWindowDimensions,
+  Text,
+} from 'react-native';
 import React from 'react';
-import auth from '@react-native-firebase/auth';
+
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
-
-//import {useAppDispatch, useAppSelector} from '../redux/hooks';
-//import {logout} from '../redux/slices/authSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {TabView, SceneMap} from 'react-native-tab-view';
 
+//Firebase
+import auth from '@react-native-firebase/auth';
 //import firestore from '@react-native-firebase/firestore';
+
+//Custom
+import CustomTitle from '../components/customize/Title';
+import CustomFoodItem from '../components/customize/FoodItem';
+
+// Redux
+import {useAppSelector} from '../redux/hooks';
+import {RootState} from '../redux/store';
+//import {logout} from '../redux/slices/authSlice';
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
@@ -16,6 +33,7 @@ interface ProfilePageProps
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   // const dispatch = useAppDispatch();
   // const {isAuthenticated} = useAppSelector(state => state.auth);
+  const foodList = useAppSelector((state: RootState) => state.food.foods);
 
   const handleSignOut = async () => {
     try {
@@ -41,8 +59,17 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           }}
         />
       </View>
+      {/* Tab View */}
+
+      {/* Tab View */}
       <View style={styles.footer}>
-        <Text> Footer </Text>
+        <CustomTitle title="My food status" />
+        <FlatList
+          data={foodList}
+          renderItem={({item}) => (
+            <CustomFoodItem title={item.name} image={item.image} />
+          )}
+        />
       </View>
       <Button title="Log out" onPress={handleSignOut} />
     </SafeAreaView>

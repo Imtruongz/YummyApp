@@ -1,5 +1,4 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {initialFoodState} from '../../plugins/foodDB';
 
 interface food {
   id: string;
@@ -14,7 +13,7 @@ interface foodState {
 }
 
 const initialState: foodState = {
-  foods: initialFoodState,
+  foods: [],
 };
 
 const foodSlice = createSlice({

@@ -10,7 +10,10 @@ import React, {useState} from 'react';
 
 import CustomInput from './customize/Input';
 import CustomButton from './customize/Button';
-import {launchCamera} from 'react-native-image-picker';
+import CustomTitle from './customize/Title';
+
+
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 
 import {useAppDispatch} from '../redux/hooks';
 
@@ -35,7 +38,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
       name: foodName,
       ingredients: foodIngredient,
       step: foodRecipe,
-      //image: img,
+      image: img,
     };
 
     dispatch(addFood(newFood)); // Gọi action addFood để thêm món ăn vào Redux store
@@ -54,16 +57,19 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Camera permission given');
-        const result: any = await launchCamera({
-          mediaType: 'photo',
-          cameraType: 'front',
-        });
-
-        // const result: any = await launchImageLibrary({
+        // const result: any = await launchCamera({
         //   mediaType: 'photo',
+        //   cameraType: 'back',
         // });
-        setImg(result.assets[0].uri);
+
+        const result: any = await launchImageLibrary({
+          mediaType: 'photo',
+        });
+        if (result.assets && result.assets.length > 0) {
+          setImg(result.assets[0].uri);
+        } else {
+          console.log('No image selected or camera launch failed');
+        }
       } else {
         console.log('Camera permission denied');
       }
@@ -75,7 +81,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
   return (
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
-        <Text>Add recipe food</Text>
+        <CustomTitle title="Add food" />
         <CustomInput
           value={foodName}
           onChangeText={setFoodName}
@@ -102,7 +108,8 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
           <Image source={{uri: img}} style={{width: 100, height: 100}} />
         ) : null}
         <CustomButton title="Add food" onPress={handleAddFood} />
-        <Button title="Close Modal" onPress={onPress} />
+
+        <Button title="X" onPress={onPress} />
       </View>
     </View>
   );
@@ -115,13 +122,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightColor: 'gray',
   },
   modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
     width: 350,
     height: 500,
-    backgroundColor: 'gray',
     borderRadius: 10,
+    backgroundColor: 'rgba(218, 190, 127, 0.9)',
     padding: 20,
   },
 });
