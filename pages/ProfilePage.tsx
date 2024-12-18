@@ -1,54 +1,31 @@
 import {View, Button, StyleSheet, Text, Image} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import auth from '@react-native-firebase/auth';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {logout} from '../redux/slices/authSlice';
+//import {useAppDispatch, useAppSelector} from '../redux/hooks';
+//import {logout} from '../redux/slices/authSlice';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import firestore from '@react-native-firebase/firestore';
+//import firestore from '@react-native-firebase/firestore';
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
 
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
-  const dispatch = useAppDispatch();
-  const {isAuthenticated} = useAppSelector(state => state.auth);
-
-  const [loading, setLoading] = useState(true); // Set loading to true on component mount
-  const [users, setUsers] = useState([]); // Initial empty array of users
-
-  useEffect(() => {
-    const subscriber = firestore()
-      .collection('user')
-      .onSnapshot(querySnapshot => {
-        const users = [];
-
-        querySnapshot.forEach(documentSnapshot => {
-          users.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-        });
-
-        setUsers(users);
-        setLoading(false);
-      });
-
-    // Unsubscribe from events when no longer in use
-    return () => subscriber();
-  }, []);
+  // const dispatch = useAppDispatch();
+  // const {isAuthenticated} = useAppSelector(state => state.auth);
 
   const handleSignOut = async () => {
     try {
       await auth().signOut();
-      dispatch(logout());
-      if (isAuthenticated === false) {
-        console.log('Is Authenticated:', isAuthenticated);
-        navigation.navigate('LoginPage');
-      }
+      navigation.navigate('LoginPage');
+      //dispatch(logout());
+      // if (isAuthenticated === false) {
+      //   console.log('Is Authenticated:', isAuthenticated);
+      //   navigation.navigate('LoginPage');
+      // }
     } catch (error) {
       console.log(error);
     }
@@ -63,10 +40,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
             uri: 'https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg',
           }}
         />
-        <View>
-          <Text > Name: {users.userName} </Text>
-          <Text> Email {users.email}: </Text>
-        </View>
       </View>
       <View style={styles.footer}>
         <Text> Footer </Text>

@@ -1,10 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {initialFoodState} from '../../plugins/foodDB';
 
 interface food {
   id: string;
   name: string;
   ingredients: string;
-  instructions: string;
+  step: string;
+  image?: string;
 }
 
 interface foodState {
@@ -12,12 +14,15 @@ interface foodState {
 }
 
 const initialState: foodState = {
-  foods: [],
+  foods: initialFoodState,
 };
 
 const foodSlice = createSlice({
+  //Action type
   name: 'food',
+  //Inital state
   initialState,
+  //Reducers generate actions
   reducers: {
     addFood(state, action: PayloadAction<food>) {
       state.foods.push(action.payload);
@@ -28,5 +33,9 @@ const foodSlice = createSlice({
   },
 });
 
-export const { addFood , removeFood } = foodSlice.actions;
+//Export actions
+export const {addFood, removeFood} = foodSlice.actions;
+//Export reducer
 export default foodSlice.reducer;
+//Export state
+export type {food};

@@ -1,6 +1,5 @@
 import {
   ActivityIndicator,
-  Button,
   FlatList,
   Image,
   Modal,
@@ -20,6 +19,9 @@ import firestore from '@react-native-firebase/firestore';
 import CustomButton from '../components/customize/Button';
 import CustomModal from '../components/Modal';
 
+import {useAppSelector} from '../redux/hooks';
+import {RootState} from '../redux/store';
+
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
@@ -27,6 +29,9 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
   const [loading, setLoading] = useState(true);
   const [food, setFood] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const foodList = useAppSelector((state: RootState) => state.food.foods);
+
+  //console.log('foodList', foodList);
 
   useEffect(() => {
     const subscriber = firestore()
@@ -47,14 +52,14 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
-  }, []);
+  });
 
   if (loading) {
     return <ActivityIndicator />;
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <ScrollView>
         {/* Header(avatar + Notification) */}
         <View style={styles.headerBlock}>
@@ -78,10 +83,11 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             source={require('../assets/1.jpg')}
           />
         </View>
-        {/* Categories */}
         {/* Flat List */}
         <FlatList
           data={food}
+          horizontal
+          showsHorizontalScrollIndicator={false}
           renderItem={({item}) => (
             <View style={styles.flatListBlockItem}>
               <Text>{item.foodName}</Text>
@@ -89,14 +95,42 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             </View>
           )}
         />
-        <CustomButton onPress={() => setModalVisible(true)} style={styles.openModalStyle} iconName="plus" />
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <Text>Home Page</Text>
+        <FlatList
+          data={foodList}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item}) => (
+            <View style={styles.flatListBlockItem}>
+              <Text>{item.name}</Text>
+              <Image width={100} height={50} source={{uri: item.image}} />
+            </View>
+          )}
+        />
       </ScrollView>
+      <CustomButton
+        onPress={() => setModalVisible(true)}
+        style={styles.openModalStyle}
+      />
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <CustomModal />
+        <CustomModal onPress={() => setModalVisible(false)} />
       </Modal>
     </SafeAreaView>
   );
@@ -105,6 +139,10 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 export default HomePage;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   // Header css
   headerBlock: {
     flexDirection: 'row',
@@ -125,6 +163,9 @@ const styles = StyleSheet.create({
     borderBlockColor: 'orange',
   },
   openModalStyle: {
+    position: 'absolute', // Tương đương fixed trong React Native
+    bottom: 20, // Cách đáy 20px
+    right: 20, // Cách phải 20px
     width: 50,
     height: 50,
     borderRadius: 25,

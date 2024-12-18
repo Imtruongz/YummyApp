@@ -20,8 +20,8 @@ import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 
 //Redux
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {login} from '../redux/slices/authSlice';
+//import {useAppDispatch, useAppSelector} from '../redux/hooks';
+//import {login} from '../redux/slices/authSlice';
 
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
@@ -38,8 +38,8 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const dispatch = useAppDispatch();
-  const {isAuthenticated} = useAppSelector(state => state.auth);
+  //const dispatch = useAppDispatch();
+  //const {isAuthenticated} = useAppSelector(state => state.auth);
 
   const verifyEmail = () => {
     // Email regex
@@ -64,11 +64,12 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
     try {
       const response = await auth().signInWithEmailAndPassword(email, password);
       if (response.user.emailVerified) {
-        dispatch(login());
-        if (isAuthenticated === true) {
-          console.log('Is Authenticated:', isAuthenticated);
-          navigation.navigate('BottomTabs');
-        }
+        navigation.navigate('BottomTabs');
+        //dispatch(login());
+        // if (isAuthenticated === true) {
+        //   console.log('Is Authenticated:', isAuthenticated);
+        //   navigation.navigate('BottomTabs');
+        // }
       } else {
         setIsErrorMessage(true);
         setErrorMessage('Email not verified, please check your email');

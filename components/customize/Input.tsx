@@ -3,10 +3,10 @@ import React from 'react';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 interface CustomInputProps {
-  value: string;
-  placeholder: string;
+  value?: string;
+  placeholder?: string;
   secureTextEntry?: boolean;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   showIcon?: boolean;
   onPressIcon?: () => void;
   iconName?: string;
