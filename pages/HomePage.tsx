@@ -1,10 +1,12 @@
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -25,8 +27,11 @@ import CustomFoodItem from '../components/customize/FoodItem';
 import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
+//Redux RTK query
+import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
+
 // Services
-import getCategories from '../services/Categories';
+import getCategories from '../services/categoriesService';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -51,6 +56,16 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
     fetchCategories();
   }, []);
+
+  const {data, error, isLoading} = useGetCategoriesQuery();
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>Error loading categories</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +103,10 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idCategory}
           renderItem={({item}) => (
-            <CustomFoodItem title={item.strCategory} image={item.strCategoryThumb} />
+            <CustomFoodItem
+              title={item.strCategory}
+              image={item.strCategoryThumb}
+            />
           )}
         />
         {/* New food update by user */}
@@ -99,6 +117,18 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => (
             <CustomFoodItem title={item.name} image={item.image} />
+          )}
+        />
+        <CustomTitle title="New food update" />
+        <FlatList
+          data={data}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.idCategory}
+          renderItem={({item}) => (
+            <View>
+              <Text>{item.strCategory}</Text>
+            </View>
           )}
         />
       </ScrollView>

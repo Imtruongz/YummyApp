@@ -1,4 +1,4 @@
-import {food} from '../redux/slices/foodSlice';
+import {food} from '../redux/slices/food/foodSlice';
 
 export const initialFoodState: food[] = [
   {

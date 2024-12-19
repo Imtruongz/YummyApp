@@ -3,8 +3,8 @@ import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 interface food {
   id: string;
   name: string;
-  ingredients: string;
-  step: string;
+  ingredients?: string;
+  step?: string;
   image?: string;
 }
 
