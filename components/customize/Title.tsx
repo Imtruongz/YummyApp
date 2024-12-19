@@ -8,7 +8,7 @@ interface CustomTitleProps {
 const CustomTitle: React.FC<CustomTitleProps> = ({title}) => {
   return (
     <>
-      <Text style={styles.titleCustom}>{title}</Text>
+      <Text style={styles.text}>{title}</Text>
     </>
   );
 };
@@ -16,7 +16,7 @@ const CustomTitle: React.FC<CustomTitleProps> = ({title}) => {
 export default CustomTitle;
 
 const styles = StyleSheet.create({
-  titleCustom: {
+  text: {
     fontSize: 20,
     fontWeight: 'bold',
   },

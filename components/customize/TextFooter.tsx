@@ -10,10 +10,10 @@ interface TextFooterProps {
 
 const TextFooter: React.FC<TextFooterProps> = ({content, navigation, navigateTo, targetScreen}) => {
   return (
-    <View style={styles.blockFooter}>
-      <Text style={styles.textFooter}>{content}</Text>
+    <View style={styles.container}>
+      <Text style={styles.text}>{content}</Text>
       <TouchableOpacity onPress={() => navigation.navigate(targetScreen)}>
-        <Text style={styles.signUpText}>{navigateTo}</Text>
+        <Text style={styles.textNavigate}>{navigateTo}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -22,15 +22,15 @@ const TextFooter: React.FC<TextFooterProps> = ({content, navigation, navigateTo,
 export default TextFooter;
 
 const styles = StyleSheet.create({
-  signUpText: {
-    color: 'orange',
-    fontWeight: 'bold',
-  },
-  blockFooter: {
+  container: {
     flexDirection: 'row',
     gap: 8,
   },
-  textFooter: {
+  textNavigate: {
+    color: 'orange',
+    fontWeight: 'bold',
+  },
+  text: {
     color: 'black',
   },
 });

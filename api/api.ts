@@ -6,5 +6,3 @@ const api = axios.create({
 });
 
 export default api;
-
-///json/v1/1/categories.php;

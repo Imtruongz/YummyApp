@@ -1,12 +1,10 @@
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -28,9 +26,11 @@ import {RootState} from '../redux/store';
 
 //Redux RTK query
 import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
+//import {useGetRandomFoodQuery} from '../redux/slices/food/randomFoodService';
+
+import handleGetRandomFood from '../services/getRandomFoodService';
 
 // Services
-import getCategories from '../services/categoriesService';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -39,33 +39,24 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
-  const [categories, setCategories] = useState<
-    {idCategory: string; strCategory: string; strCategoryThumb: string}[]
-  >([]);
+  const {data: categoriesData} = useGetCategoriesQuery();
+
+  //const { data: randomFoodData, error: randomFoodError, isFetching: isFetchingRandomFood } = useGetRandomFoodQuery();
+
+  const [randomFood, setRandomFood] = useState<any>(null);
+
+  const getRandomFood = async () => {
+    try {
+      const response = await handleGetRandomFood();
+      setRandomFood(response.meals[0]);
+    } catch (error) {
+      console.error('Failed to fetch categories', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const fetchedCategories = await getCategories();
-        setCategories(fetchedCategories.categories);
-      } catch (error) 
-      {
-        console.error('Failed to fetch categories', error);
-      }
-    };
-
-    fetchCategories();
+    getRandomFood();
   }, []);
-
-  const {data, error, isLoading} = useGetCategoriesQuery();
-
-  if (isLoading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-
-  if (error) {
-    return <Text>Error loading categories</Text>;
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -90,27 +81,12 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
         <View style={styles.popularBlock}>
           <Image
             style={styles.imgBackground}
-            source={require('../assets/1.jpg')}
+            source={{uri: randomFood?.strMealThumb}}
           />
         </View>
         {/* Thumnail */}
 
-        {/* Popular food */}
-        <CustomTitle title="Categories" />
-        <FlatList
-          data={categories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.idCategory}
-          renderItem={({item}) => (
-            <CustomFoodItem
-              title={item.strCategory}
-              image={item.strCategoryThumb}
-            />
-          )}
-        />
-        {/* New food update by user */}
-        <CustomTitle title="New food update" />
+        <CustomTitle title="New food" />
         <FlatList
           data={foodList}
           horizontal
@@ -119,15 +95,18 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             <CustomFoodItem title={item.name} image={item.image} />
           )}
         />
-        <CustomTitle title="New food update" />
+        <CustomTitle title="Categories" />
         <FlatList
-          data={data}
+          data={categoriesData?.categories}
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idCategory}
           renderItem={({item}) => (
             <View>
-              <Text>{item.strCategory}</Text>
+              <CustomFoodItem
+                title={item.strCategory}
+                image={item.strCategoryThumb}
+              />
             </View>
           )}
         />

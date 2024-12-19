@@ -22,7 +22,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   iconName = 'eye',
 }) => {
   return (
-    <View style={styles.customInputContainer}>
+    <View style={styles.container}>
       <TextInput
         value={value}
         secureTextEntry={secureTextEntry}
@@ -45,7 +45,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
 export default CustomInput;
 
 const styles = StyleSheet.create({
-  customInputContainer: {
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,

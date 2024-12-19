@@ -13,14 +13,14 @@ const customButton: React.FC<CustomButtonProps> = ({
   style,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.customBtnStyle, style]}>
-      <Text style={styles.customBtnTextStyle}>{title}</Text>
+    <TouchableOpacity onPress={onPress} style={[styles.btn, style]}>
+      <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  customBtnStyle: {
+  btn: {
     width: '80%',
     height: 40,
     backgroundColor: 'orange',
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
   },
-  customBtnTextStyle: {
+  text: {
     color: 'black',
     fontWeight: 'bold',
   },

@@ -56,11 +56,6 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
         PermissionsAndroid.PERMISSIONS.CAMERA,
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // const result: any = await launchCamera({
-        //   mediaType: 'photo',
-        //   cameraType: 'back',
-        // });
-
         const result: any = await launchImageLibrary({
           mediaType: 'photo',
         });
@@ -78,8 +73,8 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
   };
 
   return (
-    <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
+    <View style={styles.container}>
+      <View style={styles.modal}>
         <CustomTitle title="Add food" />
         <CustomInput
           value={foodName}
@@ -104,7 +99,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
           onPress={() => requestCameraPermission()}
         />
         {img ? (
-          <Image source={{uri: img}} style={styles.demoImg} />
+          <Image source={{uri: img}} style={styles.previewImg} />
         ) : null}
         <CustomButton title="Add food" onPress={handleAddFood} />
 
@@ -117,12 +112,12 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
 export default CustomModal;
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContent: {
+  modal: {
     justifyContent: 'center',
     alignItems: 'center',
     width: 350,
@@ -131,7 +126,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(218, 190, 127, 0.9)',
     padding: 20,
   },
-  demoImg: {
+  previewImg: {
     width: 100,
     height: 100,
   },
