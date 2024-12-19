@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   View,
 } from 'react-native';
@@ -19,6 +20,7 @@ import CustomButton from '../components/customize/Button';
 import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
+import CustomAvatar from '../components/customize/Avatar';
 
 // Reudx
 import {useAppSelector} from '../redux/hooks';
@@ -41,7 +43,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
   const {data: categoriesData} = useGetCategoriesQuery();
 
-  //const { data: randomFoodData, error: randomFoodError, isFetching: isFetchingRandomFood } = useGetRandomFoodQuery();
+  //const { data: randomFoodData } = useGetRandomFoodQuery();
 
   const [randomFood, setRandomFood] = useState<any>(null);
 
@@ -67,10 +69,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             style={styles.imgStyle}
             source={require('../assets/Logo.webp')}
           />
-          <Image
-            style={styles.imgAvatar}
-            source={require('../assets/avt.png')}
-          />
+          <CustomAvatar img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg" />
         </View>
         <View style={styles.searchBlock}>
           <TextInput style={styles.textInputStyle} placeholder="Search" />
@@ -79,6 +78,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
         {/* Thumnail */}
         <View style={styles.popularBlock}>
+        <Text style={styles.textTItle}>{randomFood?.strMeal}</Text>
           <Image
             style={styles.imgBackground}
             source={{uri: randomFood?.strMealThumb}}
@@ -151,11 +151,17 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   imgAvatar: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 20,
     borderWidth: 1,
     borderBlockColor: 'orange',
+  },
+  textTItle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    position: 'absolute',
   },
   openModalStyle: {
     position: 'absolute',

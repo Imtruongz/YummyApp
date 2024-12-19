@@ -9,7 +9,7 @@ interface CustomFoodItemProps {
 const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image}) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{title}</Text>
+      <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
       <Image style={styles.img} source={{uri: image}} />
     </View>
   );
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingHorizontal: 6,
     paddingVertical: 12,
-    width: '100%',
+    textAlign: 'center',
   },
   img: {
     width: 100,

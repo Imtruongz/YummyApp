@@ -2,7 +2,6 @@ import {
   View,
   Button,
   StyleSheet,
-  Image,
   FlatList,
   Text,
   Dimensions,
@@ -13,13 +12,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {TabView, SceneMap} from 'react-native-tab-view';
-import { LinearGradient } from 'react-native-linear-gradient'
+import {LinearGradient} from 'react-native-linear-gradient';
 
 //Firebase
 import auth from '@react-native-firebase/auth';
 
 //Custom
 import CustomFoodItem from '../components/customize/FoodItem';
+import CustomAvatar from '../components/customize/Avatar';
 
 // Redux
 import {useAppSelector} from '../redux/hooks';
@@ -71,14 +71,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   };
 
   return (
-    <LinearGradient style={styles.contentContainer} colors={['#8B8B8B', '#000000']}>
-      <SafeAreaView style={styles.contentContainer} >
+    <LinearGradient
+      style={styles.contentContainer}
+      colors={['#8B8B8B', '#000000']}>
+      <SafeAreaView style={styles.contentContainer}>
         <View style={styles.header}>
-          <Image
-            style={styles.headerImage}
-            source={{
-              uri: 'https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg',
-            }}
+          <CustomAvatar
+            style={styles.avatar}
+            img="https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg"
           />
           <Button title="Log out" onPress={handleSignOut} />
         </View>
@@ -89,7 +89,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           initialLayout={initialLayout}
         />
       </SafeAreaView>
-      </LinearGradient>
+    </LinearGradient>
   );
 };
 
@@ -102,11 +102,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 14,
+    padding: 14,
   },
-  headerImage: {
-    width: 100,
-    height: 100,
+  avatar: {
+    width: 80,
+    height: 80,
     borderRadius: 100,
+    borderWidth: 1,
+    borderColor: 'orange',
   },
   scene: {
     flex: 1,

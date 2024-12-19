@@ -1,12 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-interface food {
-  id: string;
-  name: string;
-  ingredients?: string;
-  step?: string;
-  image?: string;
-}
+import { food } from './types';
 
 interface foodState {
   foods: food[];
@@ -26,14 +20,11 @@ const foodSlice = createSlice({
     addFood(state, action: PayloadAction<food>) {
       state.foods.push(action.payload);
     },
-    removeFood(state, action: PayloadAction<string>) {
-      state.foods = state.foods.filter(food => food.id !== action.payload);
-    },
   },
 });
 
 //Export actions
-export const {addFood, removeFood} = foodSlice.actions;
+export const {addFood} = foodSlice.actions;
 //Export reducer
 export default foodSlice.reducer;
 //Export state
