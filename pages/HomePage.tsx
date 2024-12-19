@@ -31,6 +31,7 @@ import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService'
 //import {useGetRandomFoodQuery} from '../redux/slices/food/randomFoodService';
 
 import handleGetRandomFood from '../services/getRandomFoodService';
+import color from '../utils/color';
 
 // Services
 
@@ -136,7 +137,7 @@ export default HomePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: color.light,
   },
   // Header css
   headerBlock: {
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 20,
     borderWidth: 1,
-    borderBlockColor: 'orange',
+    borderBlockColor: color.primary,
   },
   textTItle: {
     fontSize: 20,
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: 'orange',
+    backgroundColor: color.primary,
   },
 
   //Search food
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
   textInputStyle: {
     width: '92%',
     height: 40,
-    borderColor: 'gray',
+    borderColor: color.primary,
     borderWidth: 1,
     paddingLeft: 10,
     borderRadius: 25,
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
-    shadowColor: 'black',
+    shadowColor: color.dark,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 10,

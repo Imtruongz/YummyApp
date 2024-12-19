@@ -1,5 +1,6 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
+import colors from '../../utils/color';
 
 interface TextFooterProps {
   content?: string;
@@ -27,10 +28,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   textNavigate: {
-    color: 'orange',
+    color: colors.primary,
     fontWeight: 'bold',
   },
   text: {
-    color: 'black',
+    color: colors.dark,
   },
 });

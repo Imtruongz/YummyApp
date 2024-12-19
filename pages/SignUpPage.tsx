@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  SafeAreaView,
-  Text,
-  View,
-  Image,
-} from 'react-native';
+import {StyleSheet, SafeAreaView, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 
 import {useNavigation} from '@react-navigation/native';
@@ -13,6 +7,14 @@ import auth from '@react-native-firebase/auth';
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
+
+//utils
+import color from '../utils/color';
+import {
+  verifyEmail,
+  verifyPassword,
+  verifyConfirmPassword,
+} from '../utils/validate';
 
 export default function SignupPage() {
   const navigation: any = useNavigation();
@@ -39,27 +41,19 @@ export default function SignupPage() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const verifyEmail = () => {
-    // Email regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-  const verifyPassword = () => {
-    return password.length > 6;
-  };
-  const verifyConfirmPassword = () => {
-    if (password === confirmPassword) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
   const handleSignUp = async () => {
-    setIsEmailValid(verifyEmail());
-    setIsPasswordValid(verifyPassword());
-    setIsConfirmPasswordValid(verifyConfirmPassword());
-    if (!verifyEmail() || !verifyPassword() || !verifyConfirmPassword()) {
+    const isValidEmail = verifyEmail(email);
+    const isValidPassword = verifyPassword(password);
+    const isValidConfirmPassword = verifyConfirmPassword(
+      password,
+      confirmPassword,
+    );
+
+    setIsEmailValid(isValidEmail);
+    setIsPasswordValid(isValidPassword);
+    setIsConfirmPasswordValid(isValidConfirmPassword);
+
+    if (!isValidEmail || !isValidPassword || !isValidConfirmPassword) {
       return;
     }
 
@@ -159,6 +153,6 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   errorMessage: {
-    color: 'red',
+    color: color.danger,
   },
 });

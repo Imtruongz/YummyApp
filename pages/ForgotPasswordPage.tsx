@@ -9,6 +9,9 @@ import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
 import CustomTextFooter from '../components/customize/TextFooter';
 
+//utils
+import color from '../utils/color';
+
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}
 
@@ -83,10 +86,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   errorMessage: {
-    color: 'red',
+    color: color.danger,
   },
   sentEmailMessage: {
-    color: 'green',
+    color: color.success,
   },
 });
 

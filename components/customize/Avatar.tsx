@@ -1,5 +1,6 @@
 import {Image, StyleSheet} from 'react-native';
 import React from 'react';
+import colors from '../../utils/color';
 
 interface CustomAvatarProps {
   img: string;
@@ -22,6 +23,6 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 1,
-    borderColor: 'orange',
+    borderColor: colors.primary,
   },
 });

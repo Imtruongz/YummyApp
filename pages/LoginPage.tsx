@@ -19,6 +19,10 @@ import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 
+//Utils
+import color from '../utils/color';
+import {verifyEmail, verifyPassword} from '../utils/validate';
+
 //Redux
 
 interface LoginPageProps
@@ -36,24 +40,18 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const verifyEmail = () => {
-    // Email regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const verifyPassword = () => {
-    return password.length > 6;
-  };
-
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
   const handleLoginWithEmail = async () => {
-    setIsEmailValid(verifyEmail());
-    setIsPasswordValid(verifyPassword());
-    if (!verifyEmail() || !verifyPassword()) {
+    const isValidEmail = verifyEmail(email);
+    const isValidPassword = verifyPassword(password);
+
+    setIsEmailValid(isValidEmail);
+    setIsPasswordValid(isValidPassword);
+
+    if (!isValidEmail || !isValidPassword) {
       return;
     }
     try {
@@ -143,7 +141,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   errorMessage: {
-    color: 'red',
+    color: color.danger,
   },
 });
 

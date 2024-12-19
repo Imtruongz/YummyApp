@@ -1,5 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import color from '../../utils/color';
 
 interface CustomFoodItemProps {
   title?: string;
@@ -23,8 +24,8 @@ const styles = StyleSheet.create({
     height: 100,
     margin: 10,
     borderRadius: 10,
-    backgroundColor: 'white',
-    shadowColor: 'black',
+    backgroundColor: color.light,
+    shadowColor: color.dark,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 10,
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: 'black',
+    color: color.dark,
     paddingHorizontal: 6,
     paddingVertical: 12,
     textAlign: 'center',

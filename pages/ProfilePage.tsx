@@ -24,6 +24,7 @@ import CustomAvatar from '../components/customize/Avatar';
 // Redux
 import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
+import color from '../utils/color';
 
 const FirstRoute = () => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: 'orange',
+    borderColor: color.primary,
   },
   scene: {
     flex: 1,
