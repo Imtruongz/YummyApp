@@ -17,7 +17,6 @@ import { LinearGradient } from 'react-native-linear-gradient'
 
 //Firebase
 import auth from '@react-native-firebase/auth';
-//import firestore from '@react-native-firebase/firestore';
 
 //Custom
 import CustomFoodItem from '../components/customize/FoodItem';
@@ -25,7 +24,6 @@ import CustomFoodItem from '../components/customize/FoodItem';
 // Redux
 import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
-//import {logout} from '../redux/slices/authSlice';
 
 const FirstRoute = () => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
@@ -67,11 +65,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     try {
       await auth().signOut();
       navigation.navigate('LoginPage');
-      //dispatch(logout());
-      // if (isAuthenticated === false) {
-      //   console.log('Is Authenticated:', isAuthenticated);
-      //   navigation.navigate('LoginPage');
-      // }
     } catch (error) {
       console.log(error);
     }

@@ -15,7 +15,6 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 // Firebase
-//import firestore from '@react-native-firebase/firestore';
 
 // Custom
 import CustomButton from '../components/customize/Button';
@@ -49,7 +48,8 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
       try {
         const fetchedCategories = await getCategories();
         setCategories(fetchedCategories.categories);
-      } catch (error) {
+      } catch (error) 
+      {
         console.error('Failed to fetch categories', error);
       }
     };

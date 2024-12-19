@@ -104,7 +104,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
           onPress={() => requestCameraPermission()}
         />
         {img ? (
-          <Image source={{uri: img}} style={{width: 100, height: 100}} />
+          <Image source={{uri: img}} style={styles.demoImg} />
         ) : null}
         <CustomButton title="Add food" onPress={handleAddFood} />
 
@@ -130,5 +130,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'rgba(218, 190, 127, 0.9)',
     padding: 20,
+  },
+  demoImg: {
+    width: 100,
+    height: 100,
   },
 });
