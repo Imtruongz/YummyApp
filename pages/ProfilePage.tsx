@@ -4,22 +4,22 @@ import {
   StyleSheet,
   Image,
   FlatList,
-  useWindowDimensions,
   Text,
+  Dimensions,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {TabView, SceneMap} from 'react-native-tab-view';
+import { LinearGradient } from 'react-native-linear-gradient'
 
 //Firebase
 import auth from '@react-native-firebase/auth';
 //import firestore from '@react-native-firebase/firestore';
 
 //Custom
-import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 
 // Redux
@@ -27,13 +27,41 @@ import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 //import {logout} from '../redux/slices/authSlice';
 
+const FirstRoute = () => {
+  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  return (
+    <View style={[styles.scene]}>
+      <FlatList
+        data={foodList}
+        renderItem={({item}) => (
+          <CustomFoodItem title={item.name} image={item.image} />
+        )}
+      />
+    </View>
+  );
+};
+
+const SecondRoute = () => (
+  <View style={[styles.scene]}>
+    <Text>Second Tab</Text>
+  </View>
+);
+
+const initialLayout = {width: Dimensions.get('window').width};
+
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
-
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
-  // const dispatch = useAppDispatch();
-  // const {isAuthenticated} = useAppSelector(state => state.auth);
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {key: 'first', title: 'Your Posts'},
+    {key: 'second', title: 'Your favorites'},
+  ]);
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+  });
 
   const handleSignOut = async () => {
     try {
@@ -50,61 +78,49 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.contentContainer}>
-      <View style={styles.header}>
-        <Image
-          style={styles.headerImage}
-          source={{
-            uri: 'https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg',
-          }}
+    <LinearGradient style={styles.contentContainer} colors={['#8B8B8B', '#000000']}>
+      <SafeAreaView style={styles.contentContainer} >
+        <View style={styles.header}>
+          <Image
+            style={styles.headerImage}
+            source={{
+              uri: 'https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg',
+            }}
+          />
+          <Button title="Log out" onPress={handleSignOut} />
+        </View>
+        <TabView
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={initialLayout}
         />
-      </View>
-      {/* Tab View */}
-
-      {/* Tab View */}
-      <View style={styles.footer}>
-        <CustomTitle title="My food status" />
-        <FlatList
-          data={foodList}
-          renderItem={({item}) => (
-            <CustomFoodItem title={item.name} image={item.image} />
-          )}
-        />
-      </View>
-      <Button title="Log out" onPress={handleSignOut} />
-    </SafeAreaView>
+      </SafeAreaView>
+      </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    backgroundColor: 'gray',
   },
   header: {
-    flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    width: '100%',
     gap: 14,
-    backgroundColor: 'yellow',
-  },
-  footer: {
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    gap: 14,
-    backgroundColor: 'blue',
   },
   headerImage: {
     width: 100,
     height: 100,
     borderRadius: 100,
+  },
+  scene: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    gap: 14,
   },
 });
 

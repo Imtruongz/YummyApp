@@ -12,8 +12,7 @@ import CustomInput from './customize/Input';
 import CustomButton from './customize/Button';
 import CustomTitle from './customize/Title';
 
-
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary} from 'react-native-image-picker';
 
 import {useAppDispatch} from '../redux/hooks';
 

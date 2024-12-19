@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   FlatList,
   Image,
   Modal,
@@ -14,8 +13,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 // Firebase
-import firestore from '@react-native-firebase/firestore';
-
+//import firestore from '@react-native-firebase/firestore';
 
 // Custom
 import CustomButton from '../components/customize/Button';
@@ -27,41 +25,32 @@ import CustomFoodItem from '../components/customize/FoodItem';
 import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
+// Services
+import getCategories from '../services/Categories';
+
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({}) => {
-  const [loading, setLoading] = useState(true);
-  const [food, setFood] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
-  //console.log('foodList', foodList);
+  const [categories, setCategories] = useState<
+    {idCategory: string; strCategory: string; strCategoryThumb: string}[]
+  >([]);
 
   useEffect(() => {
-    const subscriber = firestore()
-      .collection('food')
-      .onSnapshot(querySnapshot => {
-        const ListFood = [];
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await getCategories();
+        setCategories(fetchedCategories.categories);
+      } catch (error) {
+        console.error('Failed to fetch categories', error);
+      }
+    };
 
-        querySnapshot.forEach(documentSnapshot => {
-          ListFood.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
-          });
-        });
-
-        setFood(food);
-        setLoading(false);
-      });
-
-    // Unsubscribe from events when no longer in use
-    return () => subscriber();
-  });
-
-  if (loading) {
-    return <ActivityIndicator />;
-  }
+    fetchCategories();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,16 +81,16 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
         {/* Thumnail */}
 
         {/* Popular food */}
-        <CustomTitle title="Popular food" />
+        <CustomTitle title="Categories" />
         <FlatList
-          data={food}
+          data={categories}
           horizontal
           showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.idCategory}
           renderItem={({item}) => (
-            <CustomFoodItem title={item.foodName} image={item.image} />
+            <CustomFoodItem title={item.strCategory} image={item.strCategoryThumb} />
           )}
         />
-
         {/* New food update by user */}
         <CustomTitle title="New food update" />
         <FlatList
