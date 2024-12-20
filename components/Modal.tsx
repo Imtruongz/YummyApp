@@ -16,7 +16,7 @@ import {launchImageLibrary} from 'react-native-image-picker';
 
 import {useAppDispatch} from '../redux/hooks';
 
-import {food} from '../redux/slices/food/foodSlice';
+import {food} from '../redux/slices/food/types';
 import {addFood} from '../redux/slices/food/foodSlice';
 
 interface customModalProps {

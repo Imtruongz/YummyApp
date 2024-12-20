@@ -4,6 +4,8 @@ import {setupListeners} from '@reduxjs/toolkit/query';
 import foodSlice from './slices/food/foodSlice';
 
 import categoriesSlice from './slices/category/categoriesSlice';
+import recipesSlice from './slices/recipe/recipesSlice';
+
 import {categoriesAPI} from './slices/category/categoriesService';
 import {recipesAPI} from './slices/recipe/recipesService';
 import { randomFoodAPI } from './slices/food/randomFoodService';
@@ -12,6 +14,8 @@ export const store = configureStore({
   reducer: {
     food: foodSlice,
     categories: categoriesSlice,
+    recipes: recipesSlice,
+
 
     //RTK Query
     [categoriesAPI.reducerPath]: categoriesAPI.reducer,

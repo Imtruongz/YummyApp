@@ -1,4 +1,4 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 import {recipes} from '../recipe/types';
 
@@ -13,9 +13,14 @@ const initialState: recipesState = {
 const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
-  reducers: {},
+  reducers: {
+    //Add recipes to the state
+    addRecipes: (state, action: PayloadAction<recipes>) => {
+      state.recipes.push(action.payload);
+    },
+  },
 });
 
-export const {} = recipesSlice.actions;
+export const {addRecipes} = recipesSlice.actions;
 
 export default recipesSlice.reducer;

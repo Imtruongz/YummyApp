@@ -22,13 +22,14 @@ import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 
 // Reudx
-import {useAppSelector} from '../redux/hooks';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
 //Redux RTK query
 import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
 import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
-//import {useGetRandomFoodQuery} from '../redux/slices/food/randomFoodService';
+import {recipes} from '../redux/slices/recipe/types';
+import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
 import handleGetRandomFood from '../services/getRandomFoodService';
 import color from '../utils/color';
@@ -56,6 +57,13 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
     } catch (error) {
       console.error('Failed to fetch categories', error);
     }
+  };
+
+  const dispatch = useAppDispatch();
+
+  const handleAddRecipe = (recipe: recipes) => {
+    dispatch(addRecipes(recipe));
+    console.log('Add recipe', recipe);
   };
 
   useEffect(() => {
@@ -115,14 +123,18 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           )}
         />
 
-        <CustomTitle title="Popular Food" />
+        <CustomTitle title="Popular Recipe" />
         <FlatList
           data={recipesData?.meals}
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
-            <CustomFoodItem title={item.strMeal} image={item.strMealThumb} />
+            <CustomFoodItem
+              title={item.strMeal}
+              image={item.strMealThumb}
+              onPress={() => handleAddRecipe(item)}
+            />
           )}
         />
 

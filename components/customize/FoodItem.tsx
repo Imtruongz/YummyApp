@@ -1,4 +1,4 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Button, Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import color from '../../utils/color';
 
@@ -6,13 +6,15 @@ interface CustomFoodItemProps {
   title?: string;
   image?: string;
   style?: object;
+  onPress?: () => void;
 }
 
-const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style}) => {
+const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style, onPress}) => {
   return (
     <View style={[styles.container, style]}>
       <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
       <Image style={styles.img} source={{uri: image}} />
+      <Button title="add" onPress={onPress} />
     </View>
   );
 };

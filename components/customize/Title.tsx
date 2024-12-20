@@ -2,7 +2,7 @@ import {StyleSheet, Text} from 'react-native';
 import React from 'react';
 
 interface CustomTitleProps {
-  title: string;
+  title?: string;
 }
 
 const CustomTitle: React.FC<CustomTitleProps> = ({title}) => {
