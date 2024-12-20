@@ -5,11 +5,12 @@ import color from '../../utils/color';
 interface CustomFoodItemProps {
   title?: string;
   image?: string;
+  style?: object;
 }
 
-const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image}) => {
+const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
       <Image style={styles.img} source={{uri: image}} />
     </View>

@@ -1,11 +1,4 @@
-import {
-  View,
-  Button,
-  StyleSheet,
-  FlatList,
-  Text,
-  Dimensions,
-} from 'react-native';
+import {View, Button, StyleSheet, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -18,33 +11,10 @@ import {LinearGradient} from 'react-native-linear-gradient';
 import auth from '@react-native-firebase/auth';
 
 //Custom
-import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
-
-// Redux
-import {useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store';
 import color from '../utils/color';
-
-const FirstRoute = () => {
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
-  return (
-    <View style={[styles.scene]}>
-      <FlatList
-        data={foodList}
-        renderItem={({item}) => (
-          <CustomFoodItem title={item.name} image={item.image} />
-        )}
-      />
-    </View>
-  );
-};
-
-const SecondRoute = () => (
-  <View style={[styles.scene]}>
-    <Text>Second Tab</Text>
-  </View>
-);
+import FirstRoute from '../components/FirstRoute';
+import SecondRoute from '../components/SecondRoute';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -111,13 +81,6 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1,
     borderColor: color.primary,
-  },
-  scene: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    gap: 14,
   },
 });
 

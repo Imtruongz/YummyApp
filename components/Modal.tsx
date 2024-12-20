@@ -37,6 +37,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
       id: Date.now().toString(), // Tạo ID duy nhất cho món ăn
       name: foodName,
       ingredients: foodIngredient,
+      description: foodDescription,
       step: foodRecipe,
       image: img,
     };
