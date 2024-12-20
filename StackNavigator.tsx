@@ -15,6 +15,7 @@ import ProfilePage from './pages/ProfilePage';
 import {RootStackParamList} from './android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import colors from './utils/color';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -24,7 +25,7 @@ function BottomTab() {
         name="HomePage"
         component={HomePage}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: '',
           headerShown: false,
           tabBarLabelStyle: {color: 'black', marginBottom: 3},
           tabBarIcon: ({ color, size }) => (
@@ -45,9 +46,9 @@ function BottomTab() {
         name="ProfilePage"
         component={ProfilePage}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: '',
           headerShown: false,
-          tabBarLabelStyle: {color: 'black', marginBottom: 3},
+          tabBarLabelStyle: {color: colors.dark, marginBottom: 3},
           tabBarIcon: ({ color, size }) => (
             <AntDesignIcon name="user" color={color} size={size} />
           ),

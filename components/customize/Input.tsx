@@ -10,6 +10,10 @@ interface CustomInputProps {
   showIcon?: boolean;
   onPressIcon?: () => void;
   iconName?: string;
+  iconOnLeft?: boolean; // Thêm prop mới tùy chỉnh vị trí icon
+  multiline?: boolean; // Thêm thuộc tính multiline
+  numberOfLines?: number; // Thêm thuộc tính numberOfLines
+  style?: object;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -20,17 +24,31 @@ const CustomInput: React.FC<CustomInputProps> = ({
   showIcon = false,
   onPressIcon,
   iconName = 'eye',
+  iconOnLeft = false, // Giá trị mặc định là false: icon ở bên phải
+  multiline = false,
+  numberOfLines = 1,
+  style,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
+      {iconOnLeft && showIcon && (
+        <AntDesignIcon
+          onPress={onPressIcon}
+          name={iconName}
+          size={24}
+          style={styles.icon}
+        />
+      )}
       <TextInput
         value={value}
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
         style={styles.input}
         placeholder={placeholder}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
       />
-      {showIcon && (
+      {!iconOnLeft && showIcon && (
         <AntDesignIcon
           onPress={onPressIcon}
           name={iconName}
@@ -50,11 +68,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderColor: 'grey',
-    width: '80%',
+    width: '90%',
   },
   input: {
     flex: 1,
-    height: 40,
     padding: 10,
   },
   icon: {

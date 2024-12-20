@@ -1,18 +1,17 @@
 import {
   FlatList,
   Image,
+  ImageBackground,
   Modal,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
-
 // Firebase
 
 // Custom
@@ -32,6 +31,8 @@ import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService'
 
 import handleGetRandomFood from '../services/getRandomFoodService';
 import color from '../utils/color';
+import LinearGradient from 'react-native-linear-gradient';
+import CustomInput from '../components/customize/Input';
 
 // Services
 
@@ -72,30 +73,32 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           />
           <CustomAvatar img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg" />
         </View>
-        <View style={styles.searchBlock}>
-          <TextInput style={styles.textInputStyle} placeholder="Search" />
+        {/* Search Input */}
+        <View style={styles.inputContainter}>
+          <CustomInput
+            placeholder="Search"
+            showIcon
+            iconName="search1"
+            iconOnLeft={true}
+          />
         </View>
         {/* Header */}
 
         {/* Thumnail */}
         <View style={styles.popularBlock}>
-        <Text style={styles.textTItle}>{randomFood?.strMeal}</Text>
-          <Image
+          <ImageBackground
             style={styles.imgBackground}
-            source={{uri: randomFood?.strMealThumb}}
-          />
+            source={{uri: randomFood?.strMealThumb}}>
+            <LinearGradient
+              colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
+              style={styles.linearGradient}>
+              <Text style={styles.textTitle}>{randomFood?.strMeal} </Text>
+            </LinearGradient>
+          </ImageBackground>
         </View>
+
         {/* Thumnail */}
 
-        <CustomTitle title="New food" />
-        <FlatList
-          data={foodList}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => (
-            <CustomFoodItem title={item.name} image={item.image} />
-          )}
-        />
         <CustomTitle title="Categories" />
         <FlatList
           data={categoriesData?.categories}
@@ -111,11 +114,24 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
             </View>
           )}
         />
+
+        <CustomTitle title="Daily Food" />
+        <FlatList
+          data={foodList}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item}) => (
+            <CustomFoodItem title={item.name} image={item.image} />
+          )}
+        />
       </ScrollView>
 
       {/* Button add new Food */}
       <CustomButton
-        title="+"
+        isText={false}
+        isIcon={true}
+        icon="plus"
+        iconSize={24}
         onPress={() => setModalVisible(true)}
         style={styles.openModalStyle}
       />
@@ -158,12 +174,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderBlockColor: color.primary,
   },
-  textTItle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    position: 'absolute',
-  },
+
   openModalStyle: {
     position: 'absolute',
     bottom: 20,
@@ -180,6 +191,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  inputContainter: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   textInputStyle: {
     width: '92%',
     height: 40,
@@ -192,20 +210,24 @@ const styles = StyleSheet.create({
   popularBlock: {
     width: '100%',
     height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 
   imgBackground: {
-    padding: 26,
-    width: '90%',
+    margin: 10,
+    resizeMode: 'center',
+  },
+
+  linearGradient: {
+    width: '100%',
     height: '100%',
-    resizeMode: 'cover',
-    borderRadius: 10,
-    shadowColor: color.dark,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 15,
+  },
+
+  textTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    color: color.light,
   },
 });

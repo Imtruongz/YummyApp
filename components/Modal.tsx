@@ -1,7 +1,7 @@
 import {
-  Button,
   Image,
   PermissionsAndroid,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -12,7 +12,7 @@ import CustomInput from './customize/Input';
 import CustomButton from './customize/Button';
 import CustomTitle from './customize/Title';
 
-import { launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 import {useAppDispatch} from '../redux/hooks';
 
@@ -25,6 +25,7 @@ interface customModalProps {
 
 const CustomModal: React.FC<customModalProps> = ({onPress}) => {
   const [foodName, setFoodName] = useState('');
+  const [foodDescription, setFoodDescription] = useState('');
   const [foodIngredient, setFoodIngredient] = useState('');
   const [foodRecipe, setFoodRecipe] = useState('');
   const [img, setImg] = useState('');
@@ -46,6 +47,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
     // Reset các input
     setFoodName('');
     setFoodIngredient('');
+    setFoodDescription('');
     setFoodRecipe('');
     setImg('');
   };
@@ -72,38 +74,65 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
     }
   };
 
+  const handleInputChange = (text: any) => {
+    if (text.length <= 1500) {
+      // Chỉ cho phép nhập nếu độ dài văn bản <= 1500 ký tự
+      setFoodDescription(text);
+    }
+  };
+
+  // Lấy độ dài của chuỗi hiện tại
+  const charCount = foodDescription.length;
+
   return (
     <View style={styles.container}>
       <View style={styles.modal}>
-        <CustomTitle title="Add food" />
-        <CustomInput
-          value={foodName}
-          onChangeText={setFoodName}
-          placeholder="Enter food name"
-        />
-        <CustomInput
-          value={foodIngredient}
-          onChangeText={setFoodIngredient}
-          placeholder="Enter food ingredient"
-        />
-        <CustomInput
-          value={foodRecipe}
-          onChangeText={setFoodRecipe}
-          placeholder="Enter food recipe food step"
-        />
-        <Text>Choose food category</Text>
-        <Text>Choose food image</Text>
+        <ScrollView style={styles.modalScroll}>
+          <View style={styles.content}>
+            <CustomTitle title="Add food" />
+            <CustomInput
+              value={foodName}
+              onChangeText={setFoodName}
+              placeholder="Food name"
+            />
+            <CustomInput
+              value={foodDescription}
+              onChangeText={handleInputChange}
+              placeholder="Food description"
+              style={styles.description}
+              multiline={true}
+              numberOfLines={4}
+            />
+            <Text style={{textAlign: 'right'}}>{charCount}/1500</Text>
+            <CustomInput
+              value={foodIngredient}
+              onChangeText={setFoodIngredient}
+              placeholder="Enter food ingredient"
+            />
+            <CustomInput
+              value={foodRecipe}
+              onChangeText={setFoodRecipe}
+              placeholder="Enter food recipe food step"
+            />
 
-        <CustomButton
-          title="Choose food image"
-          onPress={() => requestCameraPermission()}
-        />
-        {img ? (
-          <Image source={{uri: img}} style={styles.previewImg} />
-        ) : null}
-        <CustomButton title="Add food" onPress={handleAddFood} />
-
-        <Button title="X" onPress={onPress} />
+            <CustomButton
+              title="Choose food image"
+              onPress={() => requestCameraPermission()}
+            />
+            {img ? (
+              <Image source={{uri: img}} style={styles.previewImg} />
+            ) : null}
+            <CustomButton title="Add food" onPress={handleAddFood} />
+            <CustomButton
+              isText={false}
+              isIcon={true}
+              iconSize={24}
+              icon="close"
+              style={styles.close}
+              onPress={onPress}
+            />
+          </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -114,20 +143,37 @@ export default CustomModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    marginTop: 14,
   },
   modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
     width: 350,
-    height: 500,
+    height: 550,
     borderRadius: 10,
     backgroundColor: 'rgba(218, 190, 127, 0.9)',
+  },
+  modalScroll: {
+    width: '100%',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
   previewImg: {
     width: 100,
     height: 100,
+  },
+  description: {
+    maxHeight: 100,
+  },
+  close: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 'auto',
   },
 });
