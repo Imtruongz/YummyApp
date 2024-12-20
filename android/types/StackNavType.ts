@@ -9,4 +9,5 @@ export type RootStackParamList = {
     email: string;
   };
   FoodPage: undefined;
+  RecipeDetailPage: undefined;
 };

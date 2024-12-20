@@ -27,6 +27,7 @@ import {RootState} from '../redux/store';
 
 //Redux RTK query
 import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
+import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
 //import {useGetRandomFoodQuery} from '../redux/slices/food/randomFoodService';
 
 import handleGetRandomFood from '../services/getRandomFoodService';
@@ -44,8 +45,7 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
   const {data: categoriesData} = useGetCategoriesQuery();
-
-  //const { data: randomFoodData } = useGetRandomFoodQuery();
+  const {data: recipesData} = useGetRecipesQuery();
 
   const [randomFood, setRandomFood] = useState<any>(null);
 
@@ -115,6 +115,17 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           )}
         />
 
+        <CustomTitle title="Popular Food" />
+        <FlatList
+          data={recipesData?.meals}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.idMeal}
+          renderItem={({item}) => (
+            <CustomFoodItem title={item.strMeal} image={item.strMealThumb} />
+          )}
+        />
+
         <CustomTitle title="Daily Food" />
         <FlatList
           data={foodList}
@@ -167,13 +178,6 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain',
   },
-  imgAvatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderBlockColor: color.primary,
-  },
 
   openModalStyle: {
     position: 'absolute',
@@ -185,26 +189,10 @@ const styles = StyleSheet.create({
     backgroundColor: color.primary,
   },
 
-  //Search food
-  searchBlock: {
-    padding: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
   inputContainter: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-
-  textInputStyle: {
-    width: '92%',
-    height: 40,
-    borderColor: color.primary,
-    borderWidth: 1,
-    paddingLeft: 10,
-    borderRadius: 25,
   },
   //Popular food
   popularBlock: {

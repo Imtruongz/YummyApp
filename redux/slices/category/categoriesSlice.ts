@@ -1,8 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {Categories} from '../category/types';
+import {categories} from '../category/types';
 
 interface categoryState {
-  categories: Categories[];
+  categories: categories[];
 }
 
 const initialState: categoryState = {

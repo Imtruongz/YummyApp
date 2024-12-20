@@ -7,7 +7,7 @@ export const randomFoodAPI = createApi({
   baseQuery: fetchBaseQuery({baseUrl: 'https://www.themealdb.com/api'}),
   endpoints: build => ({
     getRandomFood: build.query<randomFood, void>({
-      query: () => 'json/v1/1/random.php',
+      query: () => 'json/v1/1/search.php?f=a',
     }),
   }),
 });

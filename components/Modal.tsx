@@ -41,9 +41,11 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
       step: foodRecipe,
       image: img,
     };
-
-    dispatch(addFood(newFood)); // Gọi action addFood để thêm món ăn vào Redux store
+    //Add new food to redux store
+    dispatch(addFood(newFood));
     console.log('Add food success', newFood);
+    //Close modal when food is added
+    onPress && onPress();
 
     // Reset các input
     setFoodName('');

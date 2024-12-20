@@ -27,5 +27,3 @@ const foodSlice = createSlice({
 export const {addFood} = foodSlice.actions;
 //Export reducer
 export default foodSlice.reducer;
-//Export state
-export type {food};
