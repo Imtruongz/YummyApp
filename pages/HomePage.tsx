@@ -11,7 +11,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -24,6 +24,7 @@ import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
+import Thumnail from '../components/customize/Thumnail';
 
 // Reudx
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -35,9 +36,7 @@ import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
 import {recipes} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
-import handleGetRandomFood from '../services/getRandomFoodService';
 import color from '../utils/color';
-import LinearGradient from 'react-native-linear-gradient';
 import CustomInput from '../components/customize/Input';
 
 // Services
@@ -45,26 +44,14 @@ import CustomInput from '../components/customize/Input';
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
-const HomePage: React.FC<HomePageProps> = ({}) => {
+const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
   const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
 
-  const [randomFood, setRandomFood] = useState<any>(null);
-
-  const getRandomFood = async () => {
-    try {
-      const response = await handleGetRandomFood();
-      setRandomFood(response.meals[0]);
-    } catch (error) {
-      console.error('Failed to fetch categories', error);
-    }
-  };
-
   const dispatch = useAppDispatch();
-
 
   const [isPressHeart, setIsPressHeart] = useState(false);
   const handleAddRecipe = (recipe: recipes) => {
@@ -73,10 +60,6 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
     Alert.alert('Add recipe', 'Add recipe successfully');
     console.log('Add recipe', recipe);
   };
-
-  useEffect(() => {
-    getRandomFood();
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -102,17 +85,8 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
         {/* Thumnail */}
         <View style={styles.popularBlock}>
-          <ImageBackground
-            style={styles.imgBackground}
-            source={{uri: randomFood?.strMealThumb}}>
-            <LinearGradient
-              colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
-              style={styles.linearGradient}>
-              <Text style={styles.textTitle}>{randomFood?.strMeal} </Text>
-            </LinearGradient>
-          </ImageBackground>
+          <Thumnail />
         </View>
-
         {/* Thumnail */}
 
         <CustomTitle title="Categories" />
@@ -138,7 +112,9 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
-            <Pressable style={styles.item2}>
+            <Pressable
+              onPress={() => navigation.navigate('RecipeDetailPage', item)}
+              style={styles.item2}>
               {/* Left content */}
               <View style={styles.titleItemLeft2}>
                 <CustomTitle title={item.strMeal} />
@@ -240,20 +216,6 @@ const styles = StyleSheet.create({
   imgBackground: {
     margin: 10,
     resizeMode: 'center',
-  },
-
-  linearGradient: {
-    width: '100%',
-    height: '100%',
-  },
-
-  textTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    color: color.light,
   },
 
   item2: {
