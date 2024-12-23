@@ -16,7 +16,6 @@ export const store = configureStore({
     categories: categoriesSlice,
     recipes: recipesSlice,
 
-
     //RTK Query
     [categoriesAPI.reducerPath]: categoriesAPI.reducer,
     [randomFoodAPI.reducerPath]: randomFoodAPI.reducer,
@@ -24,7 +23,9 @@ export const store = configureStore({
   },
   //middleware
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware().concat(categoriesAPI.middleware, randomFoodAPI.middleware, recipesAPI.middleware),
+    getDefaultMiddleware()
+  .concat(categoriesAPI.middleware, randomFoodAPI
+    .middleware, recipesAPI.middleware),
 });
 
 setupListeners(store.dispatch);

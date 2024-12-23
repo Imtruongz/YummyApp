@@ -34,20 +34,17 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
 
   const handleAddFood = () => {
     const newFood: food = {
-      id: Date.now().toString(), // Tạo ID duy nhất cho món ăn
+      id: Date.now().toString(),
       name: foodName,
       ingredients: foodIngredient,
       description: foodDescription,
       step: foodRecipe,
       image: img,
     };
-    //Add new food to redux store
     dispatch(addFood(newFood));
     console.log('Add food success', newFood);
-    //Close modal when food is added
     onPress && onPress();
 
-    // Reset các input
     setFoodName('');
     setFoodIngredient('');
     setFoodDescription('');
@@ -79,12 +76,9 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
 
   const handleInputChange = (text: any) => {
     if (text.length <= 1500) {
-      // Chỉ cho phép nhập nếu độ dài văn bản <= 1500 ký tự
       setFoodDescription(text);
     }
   };
-
-  // Lấy độ dài của chuỗi hiện tại
   const charCount = foodDescription.length;
 
   return (

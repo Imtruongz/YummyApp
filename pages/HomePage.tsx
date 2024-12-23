@@ -46,8 +46,10 @@ interface HomePageProps
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
+  // Sử dụng hooks useGetCategoriesQuery để lấy dữ liệu từ API
   const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
 

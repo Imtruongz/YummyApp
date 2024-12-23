@@ -49,12 +49,12 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({route}) => {
                 <Text style={styles.readMore}>Read more</Text>
               </TouchableOpacity>
             )}
-            <YoutubePlayer
+            {/* <YoutubePlayer
               width={300}
               height={200}
               play={true}
               videoId={strYouTube}
-            />
+            /> */}
           </View>
         </ScrollView>
       </SafeAreaView>
