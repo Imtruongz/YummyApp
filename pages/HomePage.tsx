@@ -1,8 +1,10 @@
 import {
+  Alert,
   FlatList,
   Image,
   ImageBackground,
   Modal,
+  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -12,6 +14,8 @@ import {
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+
 // Firebase
 
 // Custom
@@ -61,8 +65,12 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
 
   const dispatch = useAppDispatch();
 
+
+  const [isPressHeart, setIsPressHeart] = useState(false);
   const handleAddRecipe = (recipe: recipes) => {
     dispatch(addRecipes(recipe));
+    setIsPressHeart(true);
+    Alert.alert('Add recipe', 'Add recipe successfully');
     console.log('Add recipe', recipe);
   };
 
@@ -130,11 +138,29 @@ const HomePage: React.FC<HomePageProps> = ({}) => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
-            <CustomFoodItem
-              title={item.strMeal}
-              image={item.strMealThumb}
-              onPress={() => handleAddRecipe(item)}
-            />
+            <Pressable style={styles.item2}>
+              {/* Left content */}
+              <View style={styles.titleItemLeft2}>
+                <CustomTitle title={item.strMeal} />
+                <Text numberOfLines={5} ellipsizeMode="tail">
+                  {item.strInstructions}
+                </Text>
+              </View>
+              {/* Right img */}
+              <View style={styles.titleItemRight2}>
+                <ImageBackground
+                  style={styles.img2}
+                  source={{uri: item.strMealThumb}}>
+                  <AntDesignIcon
+                    onPress={() => handleAddRecipe(item)}
+                    name={isPressHeart ? 'heart' : 'hearto'}
+                    size={24}
+                    color={color.light}
+                    style={styles.heartIcon}
+                  />
+                </ImageBackground>
+              </View>
+            </Pressable>
           )}
         />
 
@@ -200,7 +226,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     backgroundColor: color.primary,
   },
-
   inputContainter: {
     width: '100%',
     justifyContent: 'center',
@@ -229,5 +254,42 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 10,
     color: color.light,
+  },
+
+  item2: {
+    flex: 1,
+    width: 300,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 20,
+    backgroundColor: color.light,
+    margin: 20,
+    shadowColor: color.dark,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  heartIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  titleItemLeft2: {
+    padding: 14,
+    justifyContent: 'flex-start',
+    gap: 14,
+    width: '60%',
+    height: '100%',
+  },
+  titleItemRight2: {
+    width: '40%',
+  },
+  img2: {
+    width: 140,
+    height: 180,
+    borderRadius: 20,
+    resizeMode: 'cover',
   },
 });

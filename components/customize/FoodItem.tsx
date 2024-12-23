@@ -7,14 +7,15 @@ interface CustomFoodItemProps {
   image?: string;
   style?: object;
   onPress?: () => void;
+  isOnPressOpen?: boolean;
 }
 
-const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style, onPress}) => {
+const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style, onPress, isOnPressOpen}) => {
   return (
     <View style={[styles.container, style]}>
       <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
       <Image style={styles.img} source={{uri: image}} />
-      <Button title="add" onPress={onPress} />
+      {isOnPressOpen && <Button title="Open" onPress={onPress} />}
     </View>
   );
 };

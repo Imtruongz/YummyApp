@@ -8,7 +8,7 @@ interface CustomTitleProps {
 const CustomTitle: React.FC<CustomTitleProps> = ({title}) => {
   return (
     <>
-      <Text style={styles.text}>{title}</Text>
+      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.text}>{title}</Text>
     </>
   );
 };

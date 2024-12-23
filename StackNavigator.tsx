@@ -21,36 +21,37 @@ import RecipeDetailPage from './pages/RecipeDetailPage';
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+    
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.dark,
+        tabBarStyle: {
+          backgroundColor: colors.light,
+          borderTopWidth: 0,
+          elevation: 0,
+        },
+      }}>
       <Tab.Screen
         name="HomePage"
         component={HomePage}
         options={{
           tabBarLabel: '',
           headerShown: false,
-          tabBarLabelStyle: {color: 'black', marginBottom: 3},
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabelStyle: {color: 'black', marginBottom: 1},
+          tabBarIcon: ({color, size}) => (
             <AntDesignIcon name="home" color={color} size={size} />
           ),
         }}
       />
-      {/* <Tab.Screen
-        name="FoodPage"
-        component={FoodPage}
-        options={{
-          tabBarLabel: 'Food',
-          headerShown: false,
-          tabBarLabelStyle: {color: 'black', marginBottom: 3},
-        }}
-      /> */}
       <Tab.Screen
         name="ProfilePage"
         component={ProfilePage}
         options={{
           tabBarLabel: '',
           headerShown: false,
-          tabBarLabelStyle: {color: colors.dark, marginBottom: 3},
-          tabBarIcon: ({ color, size }) => (
+          tabBarLabelStyle: {color: colors.dark, marginBottom: 1},
+          tabBarIcon: ({color, size}) => (
             <AntDesignIcon name="user" color={color} size={size} />
           ),
         }}
@@ -105,7 +106,6 @@ function StackNavigator() {
           component={RecipeDetailPage}
           options={{headerShown: false}}
         />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
