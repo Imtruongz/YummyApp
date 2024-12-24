@@ -2,19 +2,20 @@ import {configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 
 import foodSlice from './slices/food/foodSlice';
-
 import categoriesSlice from './slices/category/categoriesSlice';
 import recipesSlice from './slices/recipe/recipesSlice';
+import accountSlice from './slices/account/accountSlice';
 
 import {categoriesAPI} from './slices/category/categoriesService';
 import {recipesAPI} from './slices/recipe/recipesService';
-import { randomFoodAPI } from './slices/food/randomFoodService';
+import {randomFoodAPI} from './slices/food/randomFoodService';
 
 export const store = configureStore({
   reducer: {
     food: foodSlice,
     categories: categoriesSlice,
     recipes: recipesSlice,
+    account: accountSlice,
 
     //RTK Query
     [categoriesAPI.reducerPath]: categoriesAPI.reducer,
@@ -23,9 +24,11 @@ export const store = configureStore({
   },
   //middleware
   middleware: getDefaultMiddleware =>
-    getDefaultMiddleware()
-  .concat(categoriesAPI.middleware, randomFoodAPI
-    .middleware, recipesAPI.middleware),
+    getDefaultMiddleware().concat(
+      categoriesAPI.middleware,
+      randomFoodAPI.middleware,
+      recipesAPI.middleware,
+    ),
 });
 
 setupListeners(store.dispatch);

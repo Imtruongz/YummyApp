@@ -7,21 +7,26 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {LinearGradient} from 'react-native-linear-gradient';
 
-//Custom
 import CustomAvatar from '../components/customize/Avatar';
+import CustomTitle from '../components/customize/Title';
+
 import color from '../utils/color';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
-
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import auth from '@react-native-firebase/auth';
-import CustomTitle from '../components/customize/Title';
+
+import {useAppSelector} from '../redux/hooks';
+import {RootState} from '../redux/store';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
+
+  const [username, setUsername] = useState<string>('');
+  const [photoURL, setPhotoURL] = useState<string>('');
+  const accountProfile = useAppSelector((state: RootState) => state.account);
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'first', title: 'Your Posts'},
@@ -33,14 +38,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     second: SecondRoute,
   });
 
-  const user = auth().currentUser;
-  const [username, setUsername] = useState<string>('');
-  const [photoURL, setPhotoURL] = useState<string>('');
-
   useEffect(() => {
-    setUsername(user?.displayName ?? '');
-    setPhotoURL(user?.photoURL ?? '');
-  }, [user]);
+    setUsername(accountProfile.username);
+    setPhotoURL(accountProfile.photoURL);
+  }, [accountProfile]);
 
   return (
     <LinearGradient style={styles.container} colors={['#8B8B8B', '#000000']}>

@@ -3,14 +3,13 @@ import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
-import auth from '@react-native-firebase/auth';
 
 import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
 import CustomTextFooter from '../components/customize/TextFooter';
 
-//utils
 import color from '../utils/color';
+import auth from '@react-native-firebase/auth';
 
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}

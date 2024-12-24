@@ -18,7 +18,8 @@ import { food } from '../redux/slices/food/types';
 
 
 const FirstRoute = () => {
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const foodList = useAppSelector((state: RootState) => state.food);
+  console.log('FoodList', foodList.foods);
 
   const dispatch = useAppDispatch();
 
@@ -45,7 +46,7 @@ const FirstRoute = () => {
   return (
     <View style={[styles.container]}>
       <FlatList
-        data={foodList}
+        data={foodList.foods}
         keyExtractor={(item: food) => item.id}
         renderItem={({item}) => (
           <TouchableOpacity onLongPress={() => showDialog(item)}style={styles.item}>

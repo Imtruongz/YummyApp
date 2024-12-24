@@ -14,11 +14,12 @@ import {
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
+
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import color from '../utils/color';
+import auth from '@react-native-firebase/auth';
 
-// Firebase
-
-// Custom
+import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
 import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
@@ -26,53 +27,41 @@ import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Thumnail from '../components/customize/Thumnail';
 
-// Reudx
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
-//Redux RTK query
 import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
 import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
 import {recipes} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
-import color from '../utils/color';
-import CustomInput from '../components/customize/Input';
-
-import auth from '@react-native-firebase/auth';
-
-// Services
-
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
-
+  const dispatch = useAppDispatch();
   const user = auth().currentUser;
   const [username, setUsername] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isPressHeart, setIsPressHeart] = useState(false);
 
-  useEffect(() => {
-    setUsername(user?.displayName ?? '');
-    setPhotoURL(user?.photoURL ?? '');
-  }, [user]);
-
-  // Sử dụng hooks useGetCategoriesQuery để lấy dữ liệu từ API
+  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  //RTK Query
   const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
 
-  const dispatch = useAppDispatch();
-
-  const [isPressHeart, setIsPressHeart] = useState(false);
   const handleAddRecipe = (recipe: recipes) => {
     dispatch(addRecipes(recipe));
     setIsPressHeart(true);
     Alert.alert('Add recipe', 'Add recipe successfully');
     console.log('Add recipe', recipe);
   };
+
+  useEffect(() => {
+    setUsername(user?.displayName ?? '');
+    setPhotoURL(user?.photoURL ?? '');
+  }, [user]);
 
   return (
     <SafeAreaView style={styles.container}>

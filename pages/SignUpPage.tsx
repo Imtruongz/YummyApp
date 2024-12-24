@@ -1,37 +1,32 @@
 import {StyleSheet, SafeAreaView, Text, View, Image} from 'react-native';
 import React, {useState} from 'react';
 
-import {useNavigation} from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-// Custom component
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 
+import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
-
-//utils
 import color from '../utils/color';
 import {
   verifyEmail,
   verifyPassword,
   verifyConfirmPassword,
 } from '../utils/validate';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../android/types/StackNavType';
 
-export default function SignupPage() {
-  const navigation: any = useNavigation();
-
+interface SignUpPageProps
+  extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
+const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -145,7 +140,7 @@ export default function SignupPage() {
       </View>
     </SafeAreaView>
   );
-}
+};
 const styles = StyleSheet.create({
   blockContent: {
     flex: 2,
@@ -163,3 +158,5 @@ const styles = StyleSheet.create({
     color: color.danger,
   },
 });
+
+export default SignupPage;

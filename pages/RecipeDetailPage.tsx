@@ -10,10 +10,10 @@ import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import LinearGradient from 'react-native-linear-gradient';
+
 import color from '../utils/color';
 import CustomTitle from '../components/customize/Title';
-import YoutubePlayer from 'react-native-youtube-iframe';
-import LinearGradient from 'react-native-linear-gradient';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 interface RecipeDetailPageProps
@@ -23,8 +23,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   route,
   navigation,
 }) => {
-  const {strMeal, strInstructions, strMealThumb, strYouTube} = route.params;
-
+  const {strMeal, strInstructions, strMealThumb} = route.params;
   const [showstrInstructions, setShowstrInstructions] = useState(false);
 
   return (

@@ -8,25 +8,27 @@ import {
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
+import {launchImageLibrary} from 'react-native-image-picker';
+
 import CustomTitle from '../components/customize/Title';
 import CustomButton from '../components/customize/Button';
+import CustomInput from '../components/customize/Input';
+
 import color from '../utils/color';
 import auth from '@react-native-firebase/auth';
-import CustomInput from '../components/customize/Input';
-import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
+
+import {useAppDispatch} from '../redux/hooks';
+import {updateProfile} from '../redux/slices/account/accountSlice';
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
+
+  const dispatch = useAppDispatch();
   const user = auth().currentUser;
   const [username, setUsername] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
-
-  useEffect(() => {
-    setUsername(user?.displayName ?? '');
-    setPhotoURL(user?.photoURL ?? '');
-  }, [user]);
 
   const handleUpdateAccount = async () => {
     try {
@@ -34,18 +36,18 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         displayName: username,
         photoURL: photoURL,
       });
-      console.log('Update success', username, photoURL);
+      dispatch(updateProfile({username, photoURL}));
       Toast.show({
         type: 'success',
         text1: 'Update success',
-        text2: 'Your account has been updateddddddd',
+        text2: 'Your account has been updatedddd',
       });
     } catch (error) {
-      console.log(error);
+      console.log('Update process failed', error);
       Toast.show({
         type: 'error',
         text1: 'Update failed',
-        text2: 'Please try again',
+        text2: 'Please try again latttter',
       });
     }
   };
@@ -81,6 +83,11 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
     }
   };
 
+  useEffect(() => {
+    setUsername(user?.displayName ?? '');
+    setPhotoURL(user?.photoURL ?? '');
+  }, [user]);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -106,7 +113,6 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
 
         <CustomButton title="Update" onPress={handleUpdateAccount} />
         <CustomButton title="Log Out" onPress={handleSignOut} />
-        
       </View>
     </View>
   );

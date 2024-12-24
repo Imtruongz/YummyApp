@@ -7,10 +7,8 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-
 import React, {useState} from 'react';
 
-import auth from '@react-native-firebase/auth';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
@@ -19,7 +17,7 @@ import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 
-//Utils
+import auth from '@react-native-firebase/auth';
 import color from '../utils/color';
 import {verifyEmail, verifyPassword} from '../utils/validate';
 
@@ -29,12 +27,9 @@ interface LoginPageProps
 const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
-
   const [showPassword, setShowPassword] = useState(false);
-
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
