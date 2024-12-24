@@ -49,7 +49,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         <View style={styles.header}>
           <CustomAvatar
             style={styles.avatar}
-            img="https://live.staticflickr.com/65535/53280456787_5b57ceca8e_s.jpg"
+            img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg"
           />
           <Button title="Log out" onPress={handleSignOut} />
         </View>

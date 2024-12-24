@@ -1,34 +1,69 @@
 // Redux
-import {useAppSelector} from '../redux/hooks';
+import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
+import {deleteFood} from '../redux/slices/food/foodSlice';
 
 import color from '../utils/color';
 import CustomTitle from './customize/Title';
 
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useState} from 'react';
+import Dialog from 'react-native-dialog';
 
 const FirstRoute = () => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const dispatch = useAppDispatch();
+
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = () => {
+    setVisible(true);
+  };
+
+  const handleCancel = () => {
+    setVisible(false);
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteFood());
+    setVisible(false);
+  };
 
   return (
     <View style={[styles.container]}>
       <FlatList
         data={foodList}
         renderItem={({item}) => (
-          <View style={styles.item}>
+          <TouchableOpacity onLongPress={showDialog} style={styles.item}>
             {/* Left content */}
             <View style={styles.titleItemLeft}>
               <CustomTitle title={item.name} />
-              <Text numberOfLines={5} ellipsizeMode="tail" >{item.description}</Text>
+              <Text numberOfLines={5} ellipsizeMode="tail">
+                {item.description}
+              </Text>
             </View>
             {/* Right img */}
             <View style={styles.titleItemRight}>
               <Image style={styles.img} source={{uri: item.image}} />
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
+      <Dialog.Container visible={visible}>
+        <Dialog.Title>Delete</Dialog.Title>
+        <Dialog.Description>
+          Do you want to delete? You cannot undo this action.
+        </Dialog.Description>
+        <Dialog.Button label="Cancel" onPress={handleCancel} />
+        <Dialog.Button label="Delete" onPress={handleDelete} />
+      </Dialog.Container>
     </View>
   );
 };

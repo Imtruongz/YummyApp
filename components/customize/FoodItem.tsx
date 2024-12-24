@@ -10,10 +10,18 @@ interface CustomFoodItemProps {
   isOnPressOpen?: boolean;
 }
 
-const CustomFoodItem: React.FC<CustomFoodItemProps> = ({title, image, style, onPress, isOnPressOpen}) => {
+const CustomFoodItem: React.FC<CustomFoodItemProps> = ({
+  title,
+  image,
+  style,
+  onPress,
+  isOnPressOpen,
+}) => {
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+      <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
+        {title}
+      </Text>
       <Image style={styles.img} source={{uri: image}} />
       {isOnPressOpen && <Button title="Open" onPress={onPress} />}
     </View>
@@ -47,6 +55,5 @@ const styles = StyleSheet.create({
     width: 100,
     height: 50,
     resizeMode: 'contain',
-
   },
 });
