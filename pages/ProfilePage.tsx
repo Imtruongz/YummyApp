@@ -1,5 +1,5 @@
 import {View, StyleSheet, Dimensions} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
@@ -14,6 +14,8 @@ import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import auth from '@react-native-firebase/auth';
+import CustomTitle from '../components/customize/Title';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -31,14 +33,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     second: SecondRoute,
   });
 
+  const user = auth().currentUser;
+  const [username, setUsername] = useState<string>('');
+  const [photoURL, setPhotoURL] = useState<string>('');
+
+  useEffect(() => {
+    setUsername(user?.displayName ?? '');
+    setPhotoURL(user?.photoURL ?? '');
+  }, [user]);
+
   return (
     <LinearGradient style={styles.container} colors={['#8B8B8B', '#000000']}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <CustomAvatar
             style={styles.avatar}
-            img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg"
+            img={photoURL}
           />
+          <CustomTitle title={username} />
           <AntDesignIcon
             onPress={() => {
               navigation.navigate('SettingPage');
@@ -48,7 +60,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
             size={30}
             color={color.light}
           />
-
         </View>
         <TabView
           navigationState={{index, routes}}

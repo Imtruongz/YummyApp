@@ -8,6 +8,8 @@ import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 
+import Toast from 'react-native-toast-message';
+
 //utils
 import color from '../utils/color';
 import {
@@ -63,6 +65,11 @@ export default function SignupPage() {
         password,
       );
       console.log('User account created', response);
+      Toast.show({
+        type: 'success',
+        text1: 'Sign up successfully',
+        text2: 'Please check your email to verify your account',
+      });
       response.user.sendEmailVerification();
       navigation.navigate('LoginPage');
     } catch (error: any) {

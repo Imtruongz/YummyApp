@@ -23,8 +23,6 @@ import CustomTextFooter from '../components/customize/TextFooter';
 import color from '../utils/color';
 import {verifyEmail, verifyPassword} from '../utils/validate';
 
-//Redux
-
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
 
@@ -58,6 +56,7 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
       const response = await auth().signInWithEmailAndPassword(email, password);
       if (response.user.emailVerified) {
         navigation.navigate('BottomTabs');
+        console.log('Email verified', response.user);
       } else {
         setIsErrorMessage(true);
         setErrorMessage('Email not verified, please check your email');

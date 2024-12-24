@@ -1,6 +1,7 @@
 import {
   Image,
   PermissionsAndroid,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -112,13 +113,12 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
               placeholder="Enter food recipe food step"
             />
 
-            <CustomButton
-              title="Choose food image"
-              onPress={() => requestCameraPermission()}
-            />
-            {img ? (
-              <Image source={{uri: img}} style={styles.previewImg} />
-            ) : null}
+            <Pressable onPress={() => requestCameraPermission()}>
+              <Image
+                source={{uri: img || 'https://i.pinimg.com/originals/33/6e/8d/336e8ddb981a8187414e92da98c6156a.png'}}
+                style={styles.previewImg}
+              />
+            </Pressable>
             <CustomButton title="Add food" onPress={handleAddFood} />
             <CustomButton
               isText={false}

@@ -11,7 +11,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -39,6 +39,8 @@ import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 import color from '../utils/color';
 import CustomInput from '../components/customize/Input';
 
+import auth from '@react-native-firebase/auth';
+
 // Services
 
 interface HomePageProps
@@ -48,6 +50,15 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const foodList = useAppSelector((state: RootState) => state.food.foods);
+
+  const user = auth().currentUser;
+  const [username, setUsername] = useState<string>('');
+  const [photoURL, setPhotoURL] = useState<string>('');
+
+  useEffect(() => {
+    setUsername(user?.displayName ?? '');
+    setPhotoURL(user?.photoURL ?? '');
+  }, [user]);
 
   // Sử dụng hooks useGetCategoriesQuery để lấy dữ liệu từ API
   const {data: categoriesData} = useGetCategoriesQuery();
@@ -72,13 +83,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             style={styles.imgStyle}
             source={require('../assets/Logo.webp')}
           />
-          <CustomAvatar img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg" />
+          <CustomAvatar img={photoURL} />
         </View>
 
-        <CustomTitle
-          style={styles.headerTitle}
-          title="What would you like to cook today?"
-        />
         {/* Search Input */}
         <View style={styles.inputContainter}>
           <CustomInput
@@ -192,6 +199,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.light,
   },
   headerBlock: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -203,7 +211,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   headerTitle: {
-    width: '100%',
+    width: '60%',
   },
   inputContainter: {
     width: '100%',
