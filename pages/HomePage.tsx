@@ -46,7 +46,7 @@ interface HomePageProps
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const foodList = useAppSelector((state: RootState) => state.food.foods);
 
   // Sử dụng hooks useGetCategoriesQuery để lấy dữ liệu từ API
@@ -74,6 +74,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           />
           <CustomAvatar img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg" />
         </View>
+
+        <CustomTitle
+          style={styles.headerTitle}
+          title="What would you like to cook today?"
+        />
         {/* Search Input */}
         <View style={styles.inputContainter}>
           <CustomInput
@@ -119,7 +124,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               style={styles.item2}>
               {/* Left content */}
               <View style={styles.titleItemLeft2}>
-                <CustomTitle title={item.strMeal} />
+                <CustomTitle
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  title={item.strMeal}
+                />
                 <Text numberOfLines={5} ellipsizeMode="tail">
                   {item.strInstructions}
                 </Text>
@@ -182,7 +191,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.light,
   },
-  // Header css
   headerBlock: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -194,22 +202,14 @@ const styles = StyleSheet.create({
     height: 40,
     resizeMode: 'contain',
   },
-
-  openModalStyle: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: color.primary,
+  headerTitle: {
+    width: '100%',
   },
   inputContainter: {
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  //Popular food
   popularBlock: {
     width: '100%',
     height: 200,
@@ -255,5 +255,14 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 20,
     resizeMode: 'cover',
+  },
+  openModalStyle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: color.primary,
   },
 });

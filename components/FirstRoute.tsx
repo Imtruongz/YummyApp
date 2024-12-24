@@ -1,8 +1,3 @@
-// Redux
-import {useAppSelector, useAppDispatch} from '../redux/hooks';
-import {RootState} from '../redux/store';
-import {deleteFood} from '../redux/slices/food/foodSlice';
-
 import color from '../utils/color';
 import CustomTitle from './customize/Title';
 
@@ -16,32 +11,44 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Dialog from 'react-native-dialog';
+import {deleteFood} from '../redux/slices/food/foodSlice';
+import {useAppSelector, useAppDispatch} from '../redux/hooks';
+import {RootState} from '../redux/store';
+import { food } from '../redux/slices/food/types';
+
 
 const FirstRoute = () => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
+
   const dispatch = useAppDispatch();
 
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [currentItem, setCurrentItem] = useState<food | null>(null);
 
-  const showDialog = () => {
+  const showDialog = (item: food) => {
+    setCurrentItem(item);
     setVisible(true);
   };
-
   const handleCancel = () => {
     setVisible(false);
   };
 
   const handleDelete = () => {
-    dispatch(deleteFood());
+    if (currentItem) {
+      dispatch(deleteFood(currentItem.id));
+      console.log('Deleted', currentItem.id);
+    }
     setVisible(false);
+    setCurrentItem(null);
   };
 
   return (
     <View style={[styles.container]}>
       <FlatList
         data={foodList}
+        keyExtractor={(item: food) => item.id}
         renderItem={({item}) => (
-          <TouchableOpacity onLongPress={showDialog} style={styles.item}>
+          <TouchableOpacity onLongPress={() => showDialog(item)}style={styles.item}>
             {/* Left content */}
             <View style={styles.titleItemLeft}>
               <CustomTitle title={item.name} />
@@ -77,7 +84,6 @@ const styles = StyleSheet.create({
     gap: 14,
     padding: 10,
   },
-
   item: {
     flex: 1,
     width: '100%',

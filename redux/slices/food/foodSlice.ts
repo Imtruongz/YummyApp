@@ -13,11 +13,15 @@ const foodSlice = createSlice({
     addFood(state, action: PayloadAction<food>) {
       state.foods.push(action.payload);
     },
-    deleteFood(state, action: PayloadAction<food>) {
-      state.foods = state.foods.filter((food) => food.id !== action.payload.id);
+    deleteFood(state, action: PayloadAction<string>) {
+      const foodId = action.payload;
+      const foundFoodIndex = state.foods.findIndex(food => food.id === foodId);
+      if(foundFoodIndex !== -1) {
+        state.foods.splice(foundFoodIndex, 1);
+      }
     },
   },
 
 });
-export const {addFood} = foodSlice.actions;
+export const {addFood, deleteFood} = foodSlice.actions;
 export default foodSlice.reducer;

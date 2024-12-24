@@ -17,6 +17,7 @@ import {RootStackParamList} from './android/types/StackNavType';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import colors from './utils/color';
 import RecipeDetailPage from './pages/RecipeDetailPage';
+import SettingPage from './pages/SettingPage';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -104,6 +105,11 @@ function StackNavigator() {
         <Stack.Screen
           name="RecipeDetailPage"
           component={RecipeDetailPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SettingPage"
+          component={SettingPage}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

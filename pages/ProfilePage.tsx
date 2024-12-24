@@ -1,4 +1,4 @@
-import {View, Button, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -7,14 +7,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import {LinearGradient} from 'react-native-linear-gradient';
 
-//Firebase
-import auth from '@react-native-firebase/auth';
-
 //Custom
 import CustomAvatar from '../components/customize/Avatar';
 import color from '../utils/color';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
+
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -32,26 +31,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     second: SecondRoute,
   });
 
-  const handleSignOut = async () => {
-    try {
-      await auth().signOut();
-      navigation.navigate('LoginPage');
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
-    <LinearGradient
-      style={styles.contentContainer}
-      colors={['#8B8B8B', '#000000']}>
-      <SafeAreaView style={styles.contentContainer}>
+    <LinearGradient style={styles.container} colors={['#8B8B8B', '#000000']}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <CustomAvatar
             style={styles.avatar}
             img="https://live.staticflickr.com/65535/53459716820_a6c3ce93a8_w.jpg"
           />
-          <Button title="Log out" onPress={handleSignOut} />
+          <AntDesignIcon
+            onPress={() => {
+              navigation.navigate('SettingPage');
+            }}
+            style={styles.settingIcon}
+            name="setting"
+            size={30}
+            color={color.light}
+          />
+
         </View>
         <TabView
           navigationState={{index, routes}}
@@ -65,7 +62,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  contentContainer: {
+  container: {
     flex: 1,
   },
   header: {
@@ -81,6 +78,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 1,
     borderColor: color.primary,
+  },
+  settingIcon: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
   },
 });
 

@@ -100,7 +100,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
               multiline={true}
               numberOfLines={4}
             />
-            <Text style={{textAlign: 'right'}}>{charCount}/1500</Text>
+            <Text>{charCount}/1500</Text>
             <CustomInput
               value={foodIngredient}
               onChangeText={setFoodIngredient}
@@ -159,18 +159,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
+  description: {
+    maxHeight: 100,
+  },
   previewImg: {
     width: 100,
     height: 100,
   },
-  description: {
-    maxHeight: 100,
-  },
   close: {
     backgroundColor: 'transparent',
     position: 'absolute',
-    top: 0,
-    right: 0,
+    top: 10,
+    right: 10,
     width: 'auto',
   },
 });

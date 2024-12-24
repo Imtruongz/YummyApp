@@ -14,11 +14,15 @@ import color from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import LinearGradient from 'react-native-linear-gradient';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> {}
 
-const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({route}) => {
+const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
+  route,
+  navigation,
+}) => {
   const {strMeal, strInstructions, strMealThumb, strYouTube} = route.params;
 
   const [showstrInstructions, setShowstrInstructions] = useState(false);
@@ -26,6 +30,15 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({route}) => {
   return (
     <>
       <SafeAreaView style={styles.container}>
+        <AntDesignIcon
+          name="arrowleft"
+          size={24}
+          style={styles.arrowLeftIcon}
+          color={color.light}
+          onPress={() => {
+            navigation.navigate('BottomTabs');
+          }}
+        />
         <ScrollView>
           <ImageBackground
             style={styles.imgHeader}
@@ -104,5 +117,12 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 10,
     color: color.light,
+  },
+
+  arrowLeftIcon: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 1,
   },
 });
