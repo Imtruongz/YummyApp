@@ -17,7 +17,6 @@ import {RootStackParamList} from '../android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
-import auth from '@react-native-firebase/auth';
 
 import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
@@ -38,15 +37,17 @@ import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
+import database from '@react-native-firebase/database';
+
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  const user = auth().currentUser;
-  const [username, setUsername] = useState<string>('');
+  //const [username, setUsername] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
   const [modalVisible, setModalVisible] = useState(false);
   const [isPressHeart, setIsPressHeart] = useState(false);
 
   const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const accountProfile = useAppSelector((state: RootState) => state.account);
   //RTK Query
   const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
@@ -59,9 +60,16 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   };
 
   useEffect(() => {
-    setUsername(user?.displayName ?? '');
-    setPhotoURL(user?.photoURL ?? '');
-  }, [user]);
+    //setUsername(accountProfile.username);
+    setPhotoURL(accountProfile.photoURL);
+  }, [accountProfile]);
+
+  database()
+    .ref('/publicFood')
+    .once('value')
+    .then(snapshot => {
+      console.log('User data: ', snapshot.val());
+    });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -99,12 +107,12 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           showsHorizontalScrollIndicator={false}
           keyExtractor={item => item.idCategory}
           renderItem={({item}) => (
-            <View>
+            <Pressable>
               <CustomFoodItem
                 title={item.strCategory}
                 image={item.strCategoryThumb}
               />
-            </View>
+            </Pressable>
           )}
         />
 
@@ -153,7 +161,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => (
-            <CustomFoodItem title={item.name} image={item.image} />
+            <Pressable>
+              <CustomFoodItem title={item.name} image={item.image} />
+            </Pressable>
           )}
         />
       </ScrollView>

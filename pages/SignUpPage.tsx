@@ -16,6 +16,8 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
+import database from '@react-native-firebase/database';
+
 interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
 const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
@@ -60,19 +62,32 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         password,
       );
       console.log('User account created', response);
+
+      database()
+        .ref('/users/' + response.user.uid)
+        .set({
+          uid: response.user.uid || '',
+          displayName: response.user.displayName || '',
+          email: response.user.email || '',
+          phoneNumber: response.user.phoneNumber || '',
+          photoURL: response.user.photoURL || '',
+        })
+        .then(() => console.log('Data set.'));
+
       Toast.show({
         type: 'success',
         text1: 'Sign up successfully',
         text2: 'Please check your email to verify your account',
       });
+
       response.user.sendEmailVerification();
       navigation.navigate('LoginPage');
     } catch (error: any) {
+      console.error(error);
       if (error.code === 'auth/email-already-in-use') {
         setIsErrorMessage(true);
         setErrorMessage('That email address is already in use!');
         console.log('That email address is already in use!');
-        return {errorMessage};
       }
     }
   };
