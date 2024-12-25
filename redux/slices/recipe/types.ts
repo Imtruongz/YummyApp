@@ -1,4 +1,4 @@
-export interface recipes {
+export interface meal {
   idMeal: string;
   strMeal?: string;
   strMealThumb?: string;

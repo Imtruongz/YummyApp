@@ -54,19 +54,15 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
             {showstrInstructions ? (
               <Text>{strInstructions}</Text>
             ) : (
-              <Text>{strInstructions.substring(0, 200)}...</Text>
+              <Text>
+                {strInstructions ? strInstructions.substring(0, 200) : ''}...
+              </Text>
             )}
             {!showstrInstructions && (
               <TouchableOpacity onPress={() => setShowstrInstructions(true)}>
                 <Text style={styles.readMore}>Read more</Text>
               </TouchableOpacity>
             )}
-            {/* <YoutubePlayer
-              width={300}
-              height={200}
-              play={true}
-              videoId={strYouTube}
-            /> */}
           </View>
         </ScrollView>
       </SafeAreaView>

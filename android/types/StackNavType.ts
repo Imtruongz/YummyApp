@@ -10,13 +10,13 @@ export type RootStackParamList = {
   };
   FoodPage: undefined;
   RecipeDetailPage: {
-    idMeal: string;
-    strMeal: string;
-    strIngredient1: string;
-    strInstructions: string;
-    strMealThumb: string;
-    strCategory: string;
-    strYouTube: string;
+    idMeal?: string;
+    strMeal?: string;
+    strIngredient1?: string;
+    strInstructions?: string;
+    strMealThumb?: string;
+    strCategory?: string;
+    strYouTube?: string;
   };
   SettingPage: undefined;
 };

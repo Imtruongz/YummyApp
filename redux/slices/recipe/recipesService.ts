@@ -1,9 +1,9 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
-import {recipes} from './types';
+import {meal} from './types';
 
 interface ListRecipes {
-  recipes: recipes[];
+  meals: meal[];
 }
 
 export const recipesAPI = createApi({

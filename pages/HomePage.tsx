@@ -31,13 +31,13 @@ import {RootState} from '../redux/store';
 
 import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
 import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
-import {recipes} from '../redux/slices/recipe/types';
+import {meal} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
-import database from '@react-native-firebase/database';
+//import database from '@react-native-firebase/database';
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
@@ -52,42 +52,42 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
 
-  const handleAddRecipe = (recipe: recipes) => {
+  const handleAddRecipe = (recipe: meal) => {
     dispatch(addRecipes(recipe));
     setIsPressHeart(true);
     Alert.alert('Add recipe', 'Add recipe successfully');
     console.log('Add recipe', recipe);
   };
 
-  interface publicFood {
-    id: string;
-    name: string;
-    description: string;
-    photoURL: string;
-  }
+  // interface publicFood {
+  //   id: string;
+  //   name: string;
+  //   description: string;
+  //   photoURL: string;
+  // }
 
-  const [publicFood, setPublicFood] = useState([]);
+  //const [publicFood, setPublicFood] = useState([]);
 
-  const handleGetPublicFood = async () => {
-    try {
-      const response = await database().ref('/publicFood/').once('value');
-      if (response.exists()) {
-        setPublicFood(Object.values(response.val()));
-        console.log('Public food', typeof response.val());
-      }
-    } catch (error) {
-      console.log('Error get public food', error);
-    }
-  };
+  // const handleGetPublicFood = async () => {
+  //   try {
+  //     const response = await database().ref('/publicFood/').once('value');
+  //     if (response.exists()) {
+  //       setPublicFood(Object.values(response.val()));
+  //       console.log('Public food', typeof response.val());
+  //     }
+  //   } catch (error) {
+  //     console.log('Error get public food', error);
+  //   }
+  // };
 
-  const handleAddfavoriteFood = (food: publicFood) => {
-    console.log('Add favorite food', food);
-  };
+  // const handleAddfavoriteFood = (food: publicFood) => {
+  //   console.log('Add favorite food', food);
+  // };
 
   useEffect(() => {
     //setUsername(accountProfile.username);
+    //handleGetPublicFood();
     setPhotoURL(accountProfile.photoURL);
-    handleGetPublicFood();
   }, [accountProfile]);
 
   return (
@@ -143,7 +143,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
             <Pressable
-              onPress={() => navigation.navigate('RecipeDetailPage', item)}
+              onPress={() => navigation.navigate('RecipeDetailPage', item )}
               style={styles.item2}>
               {/* Left content */}
               <View style={styles.titleItemLeft2}>
@@ -187,7 +187,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         />
 
         <CustomTitle title="Public Food" />
-        <FlatList
+        {/* <FlatList
           data={publicFood}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -195,13 +195,13 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           renderItem={({item}) => (
             <Pressable>
               <CustomFoodItem
-                onPress={handleAddfavoriteFood}
+                onPress={()=>handleAddfavoriteFood}
                 title={item.name}
                 image={item.photoURL}
               />
             </Pressable>
           )}
-        />
+        /> */}
       </ScrollView>
 
       {/* Button add new Food */}
