@@ -21,22 +21,28 @@ import Toast from 'react-native-toast-message';
 import {useAppDispatch} from '../redux/hooks';
 import {updateProfile} from '../redux/slices/account/accountSlice';
 
+import database from '@react-native-firebase/database';
+
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
 
   const dispatch = useAppDispatch();
   const user = auth().currentUser;
-  const [username, setUsername] = useState<string>('');
+  const [displayName, setdisplayName] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
 
   const handleUpdateAccount = async () => {
     try {
       await user?.updateProfile({
-        displayName: username,
+        displayName: displayName,
         photoURL: photoURL,
       });
-      dispatch(updateProfile({username, photoURL}));
+      dispatch(updateProfile({displayName, photoURL}));
+
+      const userRef = database().ref(`/users/${user?.uid}`);
+      await userRef.update({displayName, photoURL});
+      console.log('Update process success', user);
       Toast.show({
         type: 'success',
         text1: 'Update success',
@@ -84,7 +90,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   };
 
   useEffect(() => {
-    setUsername(user?.displayName ?? '');
+    setdisplayName(user?.displayName ?? '');
     setPhotoURL(user?.photoURL ?? '');
   }, [user]);
 
@@ -96,9 +102,9 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
       <View style={styles.body}>
         <CustomTitle title="Edit my account" />
         <CustomInput
-          placeholder="username"
-          value={username}
-          onChangeText={setUsername}
+          placeholder="displayName"
+          value={displayName}
+          onChangeText={setdisplayName}
         />
         <Pressable onPress={() => requestCameraPermission()}>
           <Image

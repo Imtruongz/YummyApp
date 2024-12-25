@@ -1,12 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface AccountState {
-  username: string;
+  displayName: string;
   photoURL: string;
 }
 
 const initialState: AccountState = {
-  username: '',
+  displayName: '',
   photoURL: '',
 };
 
@@ -16,9 +16,9 @@ export const accountSlice = createSlice({
   reducers: {
     updateProfile: (
       state,
-      action: PayloadAction<{username: string; photoURL: string}>,
+      action: PayloadAction<{displayName: string; photoURL: string}>,
     ) => {
-      state.username = action.payload.username;
+      state.displayName = action.payload.displayName;
       state.photoURL = action.payload.photoURL;
     },
   },
