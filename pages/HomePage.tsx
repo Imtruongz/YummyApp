@@ -59,17 +59,36 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     console.log('Add recipe', recipe);
   };
 
+  interface publicFood {
+    id: string;
+    name: string;
+    description: string;
+    photoURL: string;
+  }
+
+  const [publicFood, setPublicFood] = useState([]);
+
+  const handleGetPublicFood = async () => {
+    try {
+      const response = await database().ref('/publicFood/').once('value');
+      if (response.exists()) {
+        setPublicFood(Object.values(response.val()));
+        console.log('Public food', typeof response.val());
+      }
+    } catch (error) {
+      console.log('Error get public food', error);
+    }
+  };
+
+  const handleAddfavoriteFood = (food: publicFood) => {
+    console.log('Add favorite food', food);
+  };
+
   useEffect(() => {
     //setUsername(accountProfile.username);
     setPhotoURL(accountProfile.photoURL);
+    handleGetPublicFood();
   }, [accountProfile]);
-
-  database()
-    .ref('/publicFood')
-    .once('value')
-    .then(snapshot => {
-      console.log('User data: ', snapshot.val());
-    });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -163,6 +182,23 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           renderItem={({item}) => (
             <Pressable>
               <CustomFoodItem title={item.name} image={item.image} />
+            </Pressable>
+          )}
+        />
+
+        <CustomTitle title="Public Food" />
+        <FlatList
+          data={publicFood}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <Pressable>
+              <CustomFoodItem
+                onPress={handleAddfavoriteFood}
+                title={item.name}
+                image={item.photoURL}
+              />
             </Pressable>
           )}
         />

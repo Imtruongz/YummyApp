@@ -63,7 +63,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
       );
       console.log('User account created', response);
 
-      database()
+      await database()
         .ref('/users/' + response.user.uid)
         .set({
           uid: response.user.uid || '',
@@ -71,8 +71,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
           email: response.user.email || '',
           phoneNumber: response.user.phoneNumber || '',
           photoURL: response.user.photoURL || '',
-        })
-        .then(() => console.log('Data set.'));
+        });
 
       Toast.show({
         type: 'success',
