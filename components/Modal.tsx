@@ -20,6 +20,8 @@ import {useAppDispatch} from '../redux/hooks';
 import {food} from '../redux/slices/food/types';
 import {addFood} from '../redux/slices/food/foodSlice';
 
+import imgURL from '../utils/urlImg'
+
 interface customModalProps {
   onPress?: () => void;
 }
@@ -115,7 +117,7 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
 
             <Pressable onPress={() => requestCameraPermission()}>
               <Image
-                source={{uri: img || 'https://i.pinimg.com/originals/33/6e/8d/336e8ddb981a8187414e92da98c6156a.png'}}
+                source={{uri: img || imgURL.UndefineImg}}
                 style={styles.previewImg}
               />
             </Pressable>

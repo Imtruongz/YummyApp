@@ -5,6 +5,7 @@ import foodSlice from './slices/food/foodSlice';
 import categoriesSlice from './slices/category/categoriesSlice';
 import recipesSlice from './slices/recipe/recipesSlice';
 import accountSlice from './slices/account/accountSlice';
+import publicFoodSlice from './slices/publicFood/publicFoodSlice';
 
 import {categoriesAPI} from './slices/category/categoriesService';
 import {recipesAPI} from './slices/recipe/recipesService';
@@ -16,6 +17,7 @@ export const store = configureStore({
     categories: categoriesSlice,
     recipes: recipesSlice,
     account: accountSlice,
+    publicFood: publicFoodSlice,
 
     //RTK Query
     [categoriesAPI.reducerPath]: categoriesAPI.reducer,

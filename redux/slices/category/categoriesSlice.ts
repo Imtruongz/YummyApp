@@ -5,13 +5,13 @@ import api from '../../../api/api';
 interface categoryState {
   categories: categories[];
   loading?: boolean;
-  error: string | null;
+  error?: boolean;
 }
 
 const initialState: categoryState = {
   categories: [],
   loading: false,
-  error: null,
+  error: false,
 };
 
 export const categoriesAPI = createAsyncThunk(
@@ -29,16 +29,16 @@ const categoriesSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(categoriesAPI.pending, state => {
       state.loading = true;
-      state.error = null;
+      state.error = false;
     });
     builder.addCase(categoriesAPI.fulfilled, (state, action) => {
       state.categories = action.payload;
       state.loading = false;
-      state.error = null;
+      state.error = false;
     });
-    builder.addCase(categoriesAPI.rejected, (state, action) => {
+    builder.addCase(categoriesAPI.rejected, (state) => {
       state.loading = false;
-      state.error = action.error.message ? action.error.message : 'Error';
+      state.error = true;
     });
   },
 });

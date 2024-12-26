@@ -1,7 +1,6 @@
 import {
   Alert,
   FlatList,
-  Image,
   ImageBackground,
   Modal,
   Pressable,
@@ -17,6 +16,7 @@ import {RootStackParamList} from '../android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
+import img from '../utils/urlImg';
 
 import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
@@ -25,6 +25,7 @@ import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Thumnail from '../components/customize/Thumnail';
+import CustomAuthHeader from '../components/customize/authHeader';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
@@ -35,6 +36,7 @@ import {meal} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
 import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
+import { publicFoodAPI } from '../redux/slices/publicFood/publicFoodSlice';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -86,22 +88,47 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   //   console.log('Add favorite food', food);
   // };
 
-  const categoriesData = useAppSelector((state: RootState) => state.categories.categories);
-  const isLoading = useAppSelector((state: RootState) => state.categories.loading);
-  const error = useAppSelector((state: RootState) => state.categories.error);
+  const categoriesData = useAppSelector(
+    (state: RootState) => state.categories.categories,
+  );
+  const isLoadingcategoriesData = useAppSelector(
+    (state: RootState) => state.categories.loading,
+  );
+  const isErrorcategoriesData = useAppSelector((state: RootState) => state.categories.error);
 
- 
+  const publicFood = useAppSelector(
+    (state: RootState) => state.publicFood.ListPublicFood,
+  );
 
+  const isLoadingPublicFoodData = useAppSelector(
+    (state: RootState) => state.publicFood.loading,
+  )
+
+  const isErrorPublicFoodData = useAppSelector(
+    (state: RootState) => state.publicFood.error
+  )
 
   useEffect(() => {
     //setUsername(accountProfile.username);
     //handleGetPublicFood();
     dispatch(categoriesAPI());
+    dispatch(publicFoodAPI());
     setPhotoURL(accountProfile.photoURL);
   }, [dispatch, accountProfile]);
 
-  if (isLoading === true ) {
+  if (isLoadingcategoriesData) {
     return <Text>Loading...</Text>;
+  }
+  if (isErrorcategoriesData) {
+    return <Text>Error..</Text>;
+  }
+
+  if (isLoadingPublicFoodData) {
+    return <Text>Loading publicFoood data</Text>;
+  }
+
+  if (isErrorPublicFoodData) {
+    return <Text>Error public food data true</Text>;
   }
 
   return (
@@ -109,10 +136,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
       <ScrollView>
         {/* Header */}
         <View style={styles.headerBlock}>
-          <Image
-            style={styles.imgStyle}
-            source={require('../assets/Logo.webp')}
-          />
+          <CustomAuthHeader style={styles.imgStyle} img={img.Yummy} />
           <CustomAvatar img={photoURL} />
         </View>
 
@@ -157,7 +181,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
             <Pressable
-              onPress={() => navigation.navigate('RecipeDetailPage', item )}
+              onPress={() => navigation.navigate('RecipeDetailPage', item)}
               style={styles.item2}>
               {/* Left content */}
               <View style={styles.titleItemLeft2}>
@@ -201,21 +225,19 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         />
 
         <CustomTitle title="Public Food" />
-        {/* <FlatList
+        <FlatList
           data={publicFood}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.id}
           renderItem={({item}) => (
             <Pressable>
               <CustomFoodItem
-                onPress={()=>handleAddfavoriteFood}
                 title={item.name}
                 image={item.photoURL}
               />
             </Pressable>
           )}
-        /> */}
+        />
       </ScrollView>
 
       {/* Button add new Food */}
@@ -255,6 +277,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   imgStyle: {
+    maxWidth: 100,
     width: 100,
     height: 40,
     resizeMode: 'contain',

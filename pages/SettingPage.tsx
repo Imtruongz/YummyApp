@@ -15,6 +15,7 @@ import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 
 import color from '../utils/color';
+import img from '../utils/urlImg.ts';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 
@@ -26,7 +27,6 @@ import database from '@react-native-firebase/database';
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
-
   const dispatch = useAppDispatch();
   const user = auth().currentUser;
   const [displayName, setdisplayName] = useState<string>('');
@@ -109,9 +109,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         <Pressable onPress={() => requestCameraPermission()}>
           <Image
             source={{
-              uri:
-                photoURL ||
-                'https://i.pinimg.com/originals/33/6e/8d/336e8ddb981a8187414e92da98c6156a.png',
+              uri: photoURL || img.UndefineImg,
             }}
             style={styles.imagePreview}
           />

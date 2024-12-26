@@ -9,7 +9,7 @@ interface CustomAuthHeaderProps {
 const CustomAuthHeader: React.FC<CustomAuthHeaderProps> = ({img, style}) => {
   return (
     <View style={[styles.header, style]}>
-      <Image style={styles.imgStyle} source={{uri: img}} />
+      <Image style={[styles.imgStyle, style]} source={{uri: img}} />
     </View>
   );
 };
