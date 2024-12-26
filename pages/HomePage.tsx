@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -16,7 +17,8 @@ import {RootStackParamList} from '../android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
-import img from '../utils/urlImg';
+import imgURL from '../utils/urlImg';
+import auth from '@react-native-firebase/auth';
 
 import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
@@ -30,31 +32,35 @@ import CustomAuthHeader from '../components/customize/authHeader';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
-//import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
 import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
 import {meal} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
 
+//asyncThunk
 import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
-import { publicFoodAPI } from '../redux/slices/publicFood/publicFoodSlice';
+import {publicFoodAPI} from '../redux/slices/publicFood/publicFoodSlice';
+import {accountAPI} from '../redux/slices/account/accountSlice';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
-//import database from '@react-native-firebase/database';
-
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  //const [username, setUsername] = useState<string>('');
-  const [photoURL, setPhotoURL] = useState<string>('');
+  const user = auth().currentUser;
+
   const [modalVisible, setModalVisible] = useState(false);
   const [isPressHeart, setIsPressHeart] = useState(false);
 
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
-  const accountProfile = useAppSelector((state: RootState) => state.account);
-  //RTK Query
-  //const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
+
+  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const {ListCategories, isloadingCategories, isErrorCategories} =
+    useAppSelector((state: RootState) => state.categories);
+  const {ListPublicFood, isloadingPublicFood, isErrorPublicFood} =
+    useAppSelector((state: RootState) => state.publicFood);
+  const {MyAccount, isloadingAccount, isErrorAccount} = useAppSelector(
+    (state: RootState) => state.account,
+  );
 
   const handleAddRecipe = (recipe: meal) => {
     dispatch(addRecipes(recipe));
@@ -63,81 +69,28 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     console.log('Add recipe', recipe);
   };
 
-  // interface publicFood {
-  //   id: string;
-  //   name: string;
-  //   description: string;
-  //   photoURL: string;
-  // }
-
-  //const [publicFood, setPublicFood] = useState([]);
-
-  // const handleGetPublicFood = async () => {
-  //   try {
-  //     const response = await database().ref('/publicFood/').once('value');
-  //     if (response.exists()) {
-  //       setPublicFood(Object.values(response.val()));
-  //       console.log('Public food', typeof response.val());
-  //     }
-  //   } catch (error) {
-  //     console.log('Error get public food', error);
-  //   }
-  // };
-
-  // const handleAddfavoriteFood = (food: publicFood) => {
-  //   console.log('Add favorite food', food);
-  // };
-
-  const categoriesData = useAppSelector(
-    (state: RootState) => state.categories.categories,
-  );
-  const isLoadingcategoriesData = useAppSelector(
-    (state: RootState) => state.categories.loading,
-  );
-  const isErrorcategoriesData = useAppSelector((state: RootState) => state.categories.error);
-
-  const publicFood = useAppSelector(
-    (state: RootState) => state.publicFood.ListPublicFood,
-  );
-
-  const isLoadingPublicFoodData = useAppSelector(
-    (state: RootState) => state.publicFood.loading,
-  )
-
-  const isErrorPublicFoodData = useAppSelector(
-    (state: RootState) => state.publicFood.error
-  )
-
   useEffect(() => {
-    //setUsername(accountProfile.username);
-    //handleGetPublicFood();
     dispatch(categoriesAPI());
     dispatch(publicFoodAPI());
-    setPhotoURL(accountProfile.photoURL);
-  }, [dispatch, accountProfile]);
-
-  if (isLoadingcategoriesData) {
-    return <Text>Loading...</Text>;
-  }
-  if (isErrorcategoriesData) {
-    return <Text>Error..</Text>;
-  }
-
-  if (isLoadingPublicFoodData) {
-    return <Text>Loading publicFoood data</Text>;
-  }
-
-  if (isErrorPublicFoodData) {
-    return <Text>Error public food data true</Text>;
-  }
+    dispatch(accountAPI(user?.uid ?? ''));
+  }, [dispatch, user]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {/* Header */}
         <View style={styles.headerBlock}>
-          <CustomAuthHeader style={styles.imgStyle} img={img.Yummy} />
-          <CustomAvatar img={photoURL} />
+          <CustomAuthHeader style={styles.imgStyle} img={imgURL.Yummy} />
+          {isloadingAccount ? (
+            <ActivityIndicator size="large" color={color.primary} />
+          ) : isErrorAccount ? (
+            <Text>Something went wronggg</Text>
+          ) : (
+            <View>
+              <CustomAvatar image={MyAccount?.photoURL || imgURL.UndefineImg} />
+              <Text>{MyAccount?.displayName}</Text>
+            </View>
+          )}
         </View>
 
         {/* Search Input */}
@@ -158,22 +111,28 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         {/* Thumnail */}
 
         <CustomTitle title="Categories" />
-        <FlatList
-          data={categoriesData?.categories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.idCategory}
-          renderItem={({item}) => (
-            <Pressable>
-              <CustomFoodItem
-                title={item.strCategory}
-                image={item.strCategoryThumb}
-              />
-            </Pressable>
-          )}
-        />
+        {isloadingCategories ? (
+          <ActivityIndicator size="large" color={color.primary} />
+        ) : isErrorCategories ? (
+          <Text>Something went wrong</Text>
+        ) : (
+          <FlatList
+            data={ListCategories?.categories}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.idCategory}
+            renderItem={({item}) => (
+              <Pressable>
+                <CustomFoodItem
+                  title={item.strCategory}
+                  image={item.strCategoryThumb}
+                />
+              </Pressable>
+            )}
+          />
+        )}
 
-        <CustomTitle title="Popular Recipe" />
+        <CustomTitle title="Popular Recipee" />
         <FlatList
           data={recipesData?.meals}
           horizontal
@@ -225,19 +184,22 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         />
 
         <CustomTitle title="Public Food" />
-        <FlatList
-          data={publicFood}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => (
-            <Pressable>
-              <CustomFoodItem
-                title={item.name}
-                image={item.photoURL}
-              />
-            </Pressable>
-          )}
-        />
+        {isloadingPublicFood ? (
+          <ActivityIndicator size="large" color={color.primary} />
+        ) : isErrorPublicFood ? (
+          <Text>Something went wrong</Text>
+        ) : (
+          <FlatList
+            data={ListPublicFood}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            renderItem={({item}) => (
+              <Pressable>
+                <CustomFoodItem title={item.name} image={item.photoURL} />
+              </Pressable>
+            )}
+          />
+        )}
       </ScrollView>
 
       {/* Button add new Food */}

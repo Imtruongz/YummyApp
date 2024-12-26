@@ -3,14 +3,14 @@ import React from 'react';
 import colors from '../../utils/color';
 
 interface CustomAvatarProps {
-  img: string;
+  image: string;
   style?: object;
 }
 
-const CustomAvatar: React.FC<CustomAvatarProps> = ({img, style}) => {
+const CustomAvatar: React.FC<CustomAvatarProps> = ({image, style}) => {
   return (
     <>
-      <Image style={[styles.imgAvatar, style]} source={{uri: img}} />
+      <Image style={[styles.imgAvatar, style]} source={{uri: image}} />
     </>
   );
 };

@@ -3,15 +3,15 @@ import {categories} from '../category/types';
 import api from '../../../api/api';
 
 interface categoryState {
-  categories: categories[];
-  loading?: boolean;
-  error?: boolean;
+  ListCategories: categories[];
+  isloadingCategories?: boolean;
+  isErrorCategories?: boolean;
 }
 
 const initialState: categoryState = {
-  categories: [],
-  loading: false,
-  error: false,
+  ListCategories: [],
+  isloadingCategories: false,
+  isErrorCategories: false,
 };
 
 export const categoriesAPI = createAsyncThunk(
@@ -28,17 +28,17 @@ const categoriesSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(categoriesAPI.pending, state => {
-      state.loading = true;
-      state.error = false;
+      state.isloadingCategories = true;
+      state.isErrorCategories = false;
     });
     builder.addCase(categoriesAPI.fulfilled, (state, action) => {
-      state.categories = action.payload;
-      state.loading = false;
-      state.error = false;
+      state.ListCategories = action.payload;
+      state.isloadingCategories = false;
+      state.isErrorCategories = false;
     });
     builder.addCase(categoriesAPI.rejected, (state) => {
-      state.loading = false;
-      state.error = true;
+      state.isloadingCategories = false;
+      state.isErrorCategories = true;
     });
   },
 });

@@ -4,6 +4,8 @@ import {
   Image,
   PermissionsAndroid,
   Pressable,
+  ActivityIndicator,
+  Text,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -19,10 +21,13 @@ import img from '../utils/urlImg.ts';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 
-import {useAppDispatch} from '../redux/hooks';
-import {updateProfile} from '../redux/slices/account/accountSlice';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+//import {updateProfile} from '../redux/slices/account/accountSlice';
 
 import database from '@react-native-firebase/database';
+import {RootState} from '../redux/store.ts';
+
+import {accountAPI} from '../redux/slices/account/accountSlice.ts';
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
@@ -32,13 +37,17 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   const [displayName, setdisplayName] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
 
+  const {MyAccount, isErrorAccount, isloadingAccount} = useAppSelector(
+    (state: RootState) => state.account,
+  );
+
   const handleUpdateAccount = async () => {
     try {
       await user?.updateProfile({
         displayName: displayName,
         photoURL: photoURL,
       });
-      dispatch(updateProfile({displayName, photoURL}));
+      //dispatch(updateProfile({displayName, photoURL}));
 
       const userRef = database().ref(`/users/${user?.uid}`);
       await userRef.update({displayName, photoURL});
@@ -92,7 +101,8 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   useEffect(() => {
     setdisplayName(user?.displayName ?? '');
     setPhotoURL(user?.photoURL ?? '');
-  }, [user]);
+    dispatch(accountAPI(user?.uid ?? ''));
+  }, [user, dispatch]);
 
   return (
     <View style={styles.container}>
@@ -103,16 +113,22 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         <CustomTitle title="Edit my account" />
         <CustomInput
           placeholder="displayName"
-          value={displayName}
+          value={MyAccount?.displayName}
           onChangeText={setdisplayName}
         />
         <Pressable onPress={() => requestCameraPermission()}>
-          <Image
-            source={{
-              uri: photoURL || img.UndefineImg,
-            }}
-            style={styles.imagePreview}
-          />
+          {isloadingAccount ? (
+            <ActivityIndicator size="large" color={color.primary} />
+          ) : isErrorAccount ? (
+            <Text>Something went wronggg</Text>
+          ) : (
+            <Image
+              source={{
+                uri: MyAccount?.photoURL || img.UndefineImg,
+              }}
+              style={styles.imagePreview}
+            />
+          )}
         </Pressable>
 
         <CustomButton title="Update" onPress={handleUpdateAccount} />

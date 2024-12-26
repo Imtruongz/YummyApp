@@ -10,14 +10,14 @@ interface food {
 
 interface publicFoodState {
   ListPublicFood: food[];
-  loading?: boolean;
-  error?: boolean;
+  isloadingPublicFood?: boolean;
+  isErrorPublicFood?: boolean;
 }
 
 const initialState: publicFoodState = {
   ListPublicFood: [],
-  loading: false,
-  error: false,
+  isloadingPublicFood: false,
+  isErrorPublicFood: false,
 };
 
 export const publicFoodAPI = createAsyncThunk<food[], void>(
@@ -30,9 +30,9 @@ export const publicFoodAPI = createAsyncThunk<food[], void>(
         return Object.values(rawData) as food[]; // Chuyển object sang array với kiểu food[]
       }
       return []; // Không có dữ liệu thì trả về mảng rỗng
-    } catch (error) {
-      console.log('Error getting public food', error);
-      throw error; // Ném lỗi nếu xảy ra vấn đề
+    } catch (isErrorPublicFood) {
+      console.log('isErrorPublicFood getting public food', isErrorPublicFood);
+      throw isErrorPublicFood; // Ném lỗi nếu xảy ra vấn đề
     }
   },
 );
@@ -43,17 +43,17 @@ const publicFoodSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     builder.addCase(publicFoodAPI.pending, state => {
-      state.loading = true;
-      state.error = false;
+      state.isloadingPublicFood = true;
+      state.isErrorPublicFood = false;
     });
     builder.addCase(publicFoodAPI.fulfilled, (state, action) => {
       state.ListPublicFood = action.payload;
-      state.loading = false;
-      state.error = false;
+      state.isloadingPublicFood = false;
+      state.isErrorPublicFood = false;
     });
     builder.addCase(publicFoodAPI.rejected, state => {
-      state.loading = false;
-      state.error = true;
+      state.isloadingPublicFood = false;
+      state.isErrorPublicFood = true;
     });
   },
 });
