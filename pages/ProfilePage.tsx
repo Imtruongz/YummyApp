@@ -63,12 +63,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           ) : isErrorAccount ? (
             <Text>Something went wrong</Text>
           ) : (
-            <View>
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
               <CustomAvatar
                 style={styles.avatar}
                 image={MyAccount?.photoURL || imgUrl.UndefineImg}
               />
-              <CustomTitle title={MyAccount?.displayName} />
+              <CustomTitle numberOfLines={1} ellipsizeMode="head" style={{maxWidth: 160}} title={MyAccount?.displayName} />
             </View>
           )}
 

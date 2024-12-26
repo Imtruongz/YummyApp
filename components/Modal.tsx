@@ -19,8 +19,9 @@ import {useAppDispatch} from '../redux/hooks';
 
 import {food} from '../redux/slices/food/types';
 import {addFood} from '../redux/slices/food/foodSlice';
+import Toast from 'react-native-toast-message';
 
-import imgURL from '../utils/urlImg'
+import imgURL from '../utils/urlImg';
 
 interface customModalProps {
   onPress?: () => void;
@@ -46,6 +47,13 @@ const CustomModal: React.FC<customModalProps> = ({onPress}) => {
     };
     dispatch(addFood(newFood));
     console.log('Add food success', newFood);
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: 'Add Recipe',
+      text2: 'Add Recipe to your favorite',
+      visibilityTime: 2000,
+    });
     onPress && onPress();
 
     setFoodName('');

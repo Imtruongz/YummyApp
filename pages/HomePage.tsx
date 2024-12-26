@@ -1,5 +1,4 @@
 import {
-  Alert,
   FlatList,
   ImageBackground,
   Modal,
@@ -19,6 +18,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
 import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-toast-message';
 
 import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
@@ -65,8 +65,13 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const handleAddRecipe = (recipe: meal) => {
     dispatch(addRecipes(recipe));
     setIsPressHeart(true);
-    Alert.alert('Add recipe', 'Add recipe successfully');
-    console.log('Add recipe', recipe);
+    Toast.show({
+      type: 'success',
+      position: 'top',
+      text1: 'Add Recipe',
+      text2: 'Add Recipe to your favorite',
+      visibilityTime: 2000,
+    });
   };
 
   useEffect(() => {
@@ -86,9 +91,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           ) : isErrorAccount ? (
             <Text>Something went wronggg</Text>
           ) : (
-            <View>
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <CustomAvatar image={MyAccount?.photoURL || imgURL.UndefineImg} />
-              <Text>{MyAccount?.displayName}</Text>
+              <Text numberOfLines={1} ellipsizeMode="tail" style={{maxWidth: 100}}>{MyAccount?.displayName}</Text>
             </View>
           )}
         </View>
@@ -194,7 +199,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({item}) => (
-              <Pressable>
+              <Pressable onPress={() => navigation.navigate('RecipeDetailPage', item)}>
                 <CustomFoodItem title={item.name} image={item.photoURL} />
               </Pressable>
             )}

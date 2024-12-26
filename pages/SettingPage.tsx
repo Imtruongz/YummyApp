@@ -22,12 +22,10 @@ import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
-//import {updateProfile} from '../redux/slices/account/accountSlice';
 
-import database from '@react-native-firebase/database';
 import {RootState} from '../redux/store.ts';
-
 import {accountAPI} from '../redux/slices/account/accountSlice.ts';
+import {updateAccountAPI} from '../redux/slices/account/accountSlice.ts';
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
@@ -43,19 +41,17 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
 
   const handleUpdateAccount = async () => {
     try {
-      await user?.updateProfile({
-        displayName: displayName,
-        photoURL: photoURL,
-      });
-      //dispatch(updateProfile({displayName, photoURL}));
-
-      const userRef = database().ref(`/users/${user?.uid}`);
-      await userRef.update({displayName, photoURL});
-      console.log('Update process success', user);
+      dispatch(
+        updateAccountAPI({
+          uid: user?.uid ?? '',
+          displayName: displayName,
+          photoURL: photoURL,
+        }),
+      );
       Toast.show({
         type: 'success',
         text1: 'Update success',
-        text2: 'Your account has been updatedddd',
+        text2: 'Your account has been updated',
       });
     } catch (error) {
       console.log('Update process failed', error);
@@ -99,10 +95,9 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   };
 
   useEffect(() => {
-    setdisplayName(user?.displayName ?? '');
-    setPhotoURL(user?.photoURL ?? '');
     dispatch(accountAPI(user?.uid ?? ''));
-  }, [user, dispatch]);
+    console.log('re-render');
+  }, [dispatch, user]);
 
   return (
     <View style={styles.container}>

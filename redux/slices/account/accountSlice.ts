@@ -1,4 +1,4 @@
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 
 import database from '@react-native-firebase/database';
 
@@ -11,7 +11,7 @@ interface account {
 }
 
 interface accountState {
-  MyAccount: account | null;
+  MyAccount?: account | null;
   isloadingAccount?: boolean;
   isErrorAccount?: boolean;
 }
@@ -39,19 +39,37 @@ export const accountAPI = createAsyncThunk(
   },
 );
 
+export const updateAccountAPI = createAsyncThunk(
+  'account/updateAccountAPI',
+  async (data: {uid: string; displayName: string; photoURL: string}) => {
+    try {
+      const userRef = database().ref(`/users/${data.uid}`);
+      await userRef.update({
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+      });
+      return {displayName: data.displayName, photoURL: data.photoURL};
+    } catch (error) {
+      console.log('Error updating account', error);
+      throw error;
+    }
+  },
+);
+
 const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
-    // updateAccount: (
+    // updateProfile: (
     //   state,
     //   action: PayloadAction<{displayName: string; photoURL: string}>,
     // ) => {
-    //   state.MyAccount?.displayName = action.payload.displayName;
-    //   state.MyAccount?.photoURL = action.payload.photoURL;
+    //   state.MyAccount.displayName = action.payload.displayName;
+    //   state.MyAccount.photoURL = action.payload.photoURL;
     // },
   },
   extraReducers: builder => {
+    // Get Account API
     builder.addCase(accountAPI.pending, state => {
       state.isloadingAccount = true;
       state.isErrorAccount = false;
@@ -62,6 +80,25 @@ const accountSlice = createSlice({
       state.isErrorAccount = false;
     });
     builder.addCase(accountAPI.rejected, state => {
+      state.isloadingAccount = false;
+      state.isErrorAccount = true;
+    });
+    // Update Account API
+    builder.addCase(updateAccountAPI.pending, state => {
+      state.isloadingAccount = true;
+      state.isErrorAccount = false;
+    });
+    builder.addCase(updateAccountAPI.fulfilled, (state, action) => {
+      if (state.MyAccount) {
+        state.MyAccount.displayName = action.payload.displayName;
+        state.MyAccount.photoURL = action.payload.photoURL;
+      } else {
+        console.log('Loi~');
+      }
+      state.isloadingAccount = false;
+      state.isErrorAccount = false;
+    });
+    builder.addCase(updateAccountAPI.rejected, state => {
       state.isloadingAccount = false;
       state.isErrorAccount = true;
     });
