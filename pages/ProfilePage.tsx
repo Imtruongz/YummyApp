@@ -24,7 +24,7 @@ interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
 
-  const [username, setUsername] = useState<string>('');
+  const [displayName, setdisplayName] = useState<string>('');
   const [photoURL, setPhotoURL] = useState<string>('');
   const accountProfile = useAppSelector((state: RootState) => state.account);
   const [index, setIndex] = useState(0);
@@ -39,7 +39,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   });
 
   useEffect(() => {
-    setUsername(accountProfile.username);
+    setdisplayName(accountProfile.displayName);
     setPhotoURL(accountProfile.photoURL);
   }, [accountProfile]);
 
@@ -51,7 +51,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
             style={styles.avatar}
             img={photoURL}
           />
-          <CustomTitle title={username} />
+          <CustomTitle title={displayName} />
           <AntDesignIcon
             onPress={() => {
               navigation.navigate('SettingPage');

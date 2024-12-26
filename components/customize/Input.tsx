@@ -10,9 +10,9 @@ interface CustomInputProps {
   showIcon?: boolean;
   onPressIcon?: () => void;
   iconName?: string;
-  iconOnLeft?: boolean; // Thêm prop mới tùy chỉnh vị trí icon
-  multiline?: boolean; // Thêm thuộc tính multiline
-  numberOfLines?: number; // Thêm thuộc tính numberOfLines
+  iconOnLeft?: boolean;
+  multiline?: boolean;
+  numberOfLines?: number;
   style?: object;
 }
 
@@ -24,7 +24,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   showIcon = false,
   onPressIcon,
   iconName = 'eye',
-  iconOnLeft = false, // Giá trị mặc định là false: icon ở bên phải
+  iconOnLeft = false,
   multiline = false,
   numberOfLines = 1,
   style,

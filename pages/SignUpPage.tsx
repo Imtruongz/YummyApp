@@ -1,4 +1,11 @@
-import {StyleSheet, SafeAreaView, Text, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  View,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import React, {useState} from 'react';
 
 import CustomButton from '../components/customize/Button';
@@ -17,6 +24,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 import database from '@react-native-firebase/database';
+import CustomAuthHeader from '../components/customize/authHeader';
+import img from '../utils/urlImg';
 
 interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
@@ -92,81 +101,86 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.blockContent}>
-      {/* Title */}
-      <View style={styles.blockContent}>
-        <Image
-          style={styles.imgStyle}
-          source={require('../assets/Logo.webp')}
-        />
-      </View>
-      {/* Content */}
-      <View style={styles.blockContent}>
-        <CustomInput
-          value={email}
-          placeholder="Email"
-          onChangeText={setEmail}
-        />
-        {!isEmailValid ? (
-          <Text style={styles.errorMessage}>Email invalidd</Text>
-        ) : null}
-        <CustomInput
-          value={password}
-          placeholder="Password"
-          secureTextEntry={!showPassword}
-          onChangeText={setPassword}
-          showIcon={true}
-          onPressIcon={handleShowPassword}
-          iconName={showPassword ? 'eye' : 'eyeo'}
-        />
-        {isPasswordValid ? null : (
-          <Text style={styles.errorMessage}>Password invalid</Text>
-        )}
-        <CustomInput
-          value={confirmPassword}
-          placeholder="Confirm Password"
-          secureTextEntry={!showConfirmPassword}
-          onChangeText={setConfirmPassword}
-          showIcon={true}
-          onPressIcon={handleShowConfirmPassword}
-          iconName={showConfirmPassword ? 'eye' : 'eyeo'}
-        />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        {/* Title */}
+        <CustomAuthHeader img={img.Yummy} />
+        {/* Content */}
+        <View style={styles.body}>
+          <CustomInput
+            value={email}
+            placeholder="Email"
+            onChangeText={setEmail}
+          />
+          {!isEmailValid ? (
+            <Text style={styles.errorMessage}>Email invalidd</Text>
+          ) : null}
+          <CustomInput
+            value={password}
+            placeholder="Password"
+            secureTextEntry={!showPassword}
+            onChangeText={setPassword}
+            showIcon={true}
+            onPressIcon={handleShowPassword}
+            iconName={showPassword ? 'eye' : 'eyeo'}
+          />
+          {isPasswordValid ? null : (
+            <Text style={styles.errorMessage}>Password invalid</Text>
+          )}
+          <CustomInput
+            value={confirmPassword}
+            placeholder="Confirm Password"
+            secureTextEntry={!showConfirmPassword}
+            onChangeText={setConfirmPassword}
+            showIcon={true}
+            onPressIcon={handleShowConfirmPassword}
+            iconName={showConfirmPassword ? 'eye' : 'eyeo'}
+          />
 
-        {isConfirmPasswordValid ? null : (
-          <Text style={styles.errorMessage}>Confirmation password invalid</Text>
-        )}
-        {
-          // Error message
-          isErrorMessage ? (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null
-        }
-        <CustomButton title="Sign Up" onPress={handleSignUp} />
-      </View>
-      {/* Footer */}
-      <View style={styles.blockContent}>
-        <CustomTextFooter
-          content="Already have an account?"
-          navigateTo="Login"
-          navigation={navigation}
-          targetScreen="LoginPage"
-        />
-      </View>
-    </SafeAreaView>
+          {isConfirmPasswordValid ? null : (
+            <Text style={styles.errorMessage}>
+              Confirmation password invalid
+            </Text>
+          )}
+          {
+            // Error message
+            isErrorMessage ? (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null
+          }
+          <CustomButton title="Sign Up" onPress={handleSignUp} />
+        </View>
+        {/* Footer */}
+        <View style={styles.footer}>
+          <CustomTextFooter
+            content="Already have an account?"
+            navigateTo="Login"
+            navigation={navigation}
+            targetScreen="LoginPage"
+          />
+        </View>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({
-  blockContent: {
-    flex: 2,
+  container: {
+    flex: 1,
+    backgroundColor: color.light,
+  },
+  body: {
+    flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     gap: 8,
   },
-  imgStyle: {
-    width: 200,
-    height: 100,
-    resizeMode: 'contain',
+  footer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    gap: 8,
   },
   errorMessage: {
     color: color.danger,

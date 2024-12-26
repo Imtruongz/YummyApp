@@ -1,5 +1,4 @@
 import {
-  Image,
   Keyboard,
   SafeAreaView,
   StyleSheet,
@@ -16,9 +15,11 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
+import CustomAuthHeader from '../components/customize/authHeader';
 
 import auth from '@react-native-firebase/auth';
 import color from '../utils/color';
+import img from '../utils/urlImg';
 import {verifyEmail, verifyPassword} from '../utils/validate';
 
 interface LoginPageProps
@@ -68,16 +69,11 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.blockContent}>
+      <SafeAreaView style={styles.container}>
         {/* Title */}
-        <View style={styles.blockContent}>
-          <Image
-            style={styles.imgStyle}
-            source={require('../assets/Logo.webp')}
-          />
-        </View>
+        <CustomAuthHeader img={img.Yummy} />
         {/* Content */}
-        <View style={styles.blockContent}>
+        <View style={styles.body}>
           <CustomInput
             value={email}
             onChangeText={setEmail}
@@ -104,7 +100,7 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
           <CustomButton title="Login" onPress={handleLoginWithEmail} />
         </View>
         {/* Footer */}
-        <View style={styles.blockContent}>
+        <View style={styles.footer}>
           <CustomTextFooter
             content="Don't have an account?"
             navigateTo="Sign up"
@@ -122,12 +118,21 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  blockContent: {
-    flex: 2,
+  container: {
+    flex: 1,
+    backgroundColor: color.light,
+  },
+  body: {
+    flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     gap: 14,
+  },
+  footer: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   imgStyle: {
     width: 200,

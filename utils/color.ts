@@ -15,7 +15,7 @@ const colors: Colors = {
   secondary: '#f0ad4e',
   success: '#5cb85c',
   danger: '#d9534f',
-  light: '#f7f7f7',
+  light: '#ffffff',
   dark: '#333',
 };
 

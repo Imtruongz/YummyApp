@@ -29,10 +29,12 @@ import Thumnail from '../components/customize/Thumnail';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
-import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
+//import {useGetCategoriesQuery} from '../redux/slices/category/categoriesService';
 import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
 import {meal} from '../redux/slices/recipe/types';
 import {addRecipes} from '../redux/slices/recipe/recipesSlice';
+
+import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -49,7 +51,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const foodList = useAppSelector((state: RootState) => state.food.foods);
   const accountProfile = useAppSelector((state: RootState) => state.account);
   //RTK Query
-  const {data: categoriesData} = useGetCategoriesQuery();
+  //const {data: categoriesData} = useGetCategoriesQuery();
   const {data: recipesData} = useGetRecipesQuery();
 
   const handleAddRecipe = (recipe: meal) => {
@@ -84,11 +86,23 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   //   console.log('Add favorite food', food);
   // };
 
+  const categoriesData = useAppSelector((state: RootState) => state.categories.categories);
+  const isLoading = useAppSelector((state: RootState) => state.categories.loading);
+  const error = useAppSelector((state: RootState) => state.categories.error);
+
+ 
+
+
   useEffect(() => {
     //setUsername(accountProfile.username);
     //handleGetPublicFood();
+    dispatch(categoriesAPI());
     setPhotoURL(accountProfile.photoURL);
-  }, [accountProfile]);
+  }, [dispatch, accountProfile]);
+
+  if (isLoading === true ) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
