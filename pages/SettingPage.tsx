@@ -95,9 +95,13 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   };
 
   useEffect(() => {
+    if(MyAccount?.displayName && MyAccount.photoURL){
+      setdisplayName(MyAccount.displayName);
+      setPhotoURL(MyAccount.photoURL);
+    }
     dispatch(accountAPI(user?.uid ?? ''));
     console.log('re-render');
-  }, [dispatch, user]);
+  }, [dispatch, user, MyAccount?.displayName, MyAccount?.photoURL]);
 
   return (
     <View style={styles.container}>
@@ -108,7 +112,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         <CustomTitle title="Edit my account" />
         <CustomInput
           placeholder="displayName"
-          value={MyAccount?.displayName}
+          value={displayName}
           onChangeText={setdisplayName}
         />
         <Pressable onPress={() => requestCameraPermission()}>
@@ -119,7 +123,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
           ) : (
             <Image
               source={{
-                uri: MyAccount?.photoURL || img.UndefineImg,
+                uri: photoURL || img.UndefineImg,
               }}
               style={styles.imagePreview}
             />
