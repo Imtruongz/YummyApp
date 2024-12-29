@@ -20,14 +20,12 @@ import imgURL from '../utils/urlImg';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 
-import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
 import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Thumnail from '../components/customize/Thumnail';
-import CustomAuthHeader from '../components/customize/authHeader';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
@@ -85,29 +83,16 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
       <ScrollView>
         {/* Header */}
         <View style={styles.headerBlock}>
-          <CustomAuthHeader style={styles.imgStyle} img={imgURL.Yummy} />
           {isloadingAccount ? (
             <ActivityIndicator size="large" color={color.primary} />
           ) : isErrorAccount ? (
             <Text>Something went wronggg</Text>
           ) : (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{alignItems: 'center', justifyContent: 'center' }}>
               <CustomAvatar image={MyAccount?.photoURL || imgURL.UndefineImg} />
-              <Text numberOfLines={1} ellipsizeMode="tail" style={{maxWidth: 100}}>{MyAccount?.displayName}</Text>
             </View>
           )}
         </View>
-
-        {/* Search Input */}
-        <View style={styles.inputContainter}>
-          <CustomInput
-            placeholder="Search"
-            showIcon
-            iconName="search1"
-            iconOnLeft={true}
-          />
-        </View>
-        {/* Header */}
 
         {/* Thumnail */}
         <View style={styles.popularBlock}>
@@ -124,7 +109,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           <FlatList
             data={ListCategories?.categories}
             horizontal
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={true}
             keyExtractor={item => item.idCategory}
             renderItem={({item}) => (
               <Pressable>
@@ -141,7 +126,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         <FlatList
           data={recipesData?.meals}
           horizontal
-          showsHorizontalScrollIndicator={false}
+          showsHorizontalScrollIndicator={true}
           keyExtractor={item => item.idMeal}
           renderItem={({item}) => (
             <Pressable
@@ -167,7 +152,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                     onPress={() => handleAddRecipe(item)}
                     name={isPressHeart ? 'heart' : 'hearto'}
                     size={24}
-                    color={color.light}
+                    color={isPressHeart ? color.danger : color.light}
                     style={styles.heartIcon}
                   />
                 </ImageBackground>
@@ -180,7 +165,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         <FlatList
           data={foodList}
           horizontal
-          showsHorizontalScrollIndicator={false}
+          showsHorizontalScrollIndicator={true}
           renderItem={({item}) => (
             <Pressable>
               <CustomFoodItem title={item.name} image={item.image} />
@@ -197,9 +182,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           <FlatList
             data={ListPublicFood}
             horizontal
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={true}
             renderItem={({item}) => (
-              <Pressable onPress={() => navigation.navigate('RecipeDetailPage', item)}>
+              <Pressable>
                 <CustomFoodItem title={item.name} image={item.photoURL} />
               </Pressable>
             )}
@@ -213,7 +198,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         isIcon={true}
         icon="plus"
         iconSize={24}
-        onPress={() => setModalVisible(true)}
+        onPress={() => navigation.navigate('AddFoodPage') }
         style={styles.openModalStyle}
       />
 
@@ -244,9 +229,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   imgStyle: {
-    maxWidth: 100,
-    width: 100,
-    height: 40,
+    maxWidth: 60,
+    width: 50,
+    height: 20,
     resizeMode: 'contain',
   },
   headerTitle: {

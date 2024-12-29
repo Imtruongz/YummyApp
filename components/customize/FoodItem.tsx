@@ -32,8 +32,8 @@ export default CustomFoodItem;
 
 const styles = StyleSheet.create({
   container: {
-    width: 100,
-    height: 100,
+    minWidth: 100,
+    minHeight: 100,
     margin: 10,
     borderRadius: 10,
     backgroundColor: color.light,

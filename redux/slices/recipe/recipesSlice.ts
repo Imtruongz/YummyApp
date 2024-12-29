@@ -1,9 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {recipes} from '../recipe/types';
+import {meal} from '../recipe/types';
 
 interface recipesState {
-  recipes: recipes[];
+  recipes: meal[];
 }
 
 const initialState: recipesState = {
@@ -15,7 +15,7 @@ const recipesSlice = createSlice({
   initialState,
   reducers: {
     //Add recipes to the state
-    addRecipes: (state, action: PayloadAction<recipes>) => {
+    addRecipes: (state, action: PayloadAction<meal>) => {
       state.recipes.push(action.payload);
     },
   },

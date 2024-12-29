@@ -19,4 +19,5 @@ export type RootStackParamList = {
     strYouTube?: string;
   };
   SettingPage: undefined;
+  AddFoodPage: undefined;
 };

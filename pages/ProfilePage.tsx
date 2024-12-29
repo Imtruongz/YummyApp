@@ -26,6 +26,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {accountAPI} from '../redux/slices/account/accountSlice.ts';
+import colors from '../utils/color';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -87,6 +88,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           renderScene={renderScene}
           onIndexChange={setIndex}
           initialLayout={initialLayout}
+          style={styles.tabVIewContainer}
         />
       </SafeAreaView>
     </LinearGradient>
@@ -115,6 +117,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 15,
     right: 15,
+  },
+  tabVIewContainer:{
+    flex: 1,
   },
 });
 

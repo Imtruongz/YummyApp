@@ -9,9 +9,9 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 
-import CustomInput from './customize/Input';
-import CustomButton from './customize/Button';
-import CustomTitle from './customize/Title';
+import CustomInput from '../components/customize/Input';
+import CustomButton from '../components//customize/Button';
+import CustomTitle from '../components//customize/Title';
 
 import {launchImageLibrary} from 'react-native-image-picker';
 
@@ -23,9 +23,7 @@ import Toast from 'react-native-toast-message';
 
 import imgURL from '../utils/urlImg';
 
-
-
-const CustomModal = ({}) => {
+const AddFoodPage = ({}) => {
   const [foodName, setFoodName] = useState('');
   const [foodDescription, setFoodDescription] = useState('');
   const [foodIngredient, setFoodIngredient] = useState('');
@@ -141,7 +139,7 @@ const CustomModal = ({}) => {
   );
 };
 
-export default CustomModal;
+export default AddFoodPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -154,7 +152,6 @@ const styles = StyleSheet.create({
     width: 350,
     height: 550,
     borderRadius: 10,
-    backgroundColor: 'rgba(218, 190, 127, 0.9)',
   },
   modalScroll: {
     width: '100%',
@@ -173,7 +170,6 @@ const styles = StyleSheet.create({
     height: 100,
   },
   close: {
-    backgroundColor: 'transparent',
     position: 'absolute',
     top: 10,
     right: 10,
