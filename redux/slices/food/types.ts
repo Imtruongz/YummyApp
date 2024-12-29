@@ -1,14 +1,19 @@
-export interface randomFood {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
+interface food {
+  foodId: string,
+  foodName: string,
+  categoryId: string,
+  userId: string
+  foodDescription: string,
+  foodIngredient: string,
+  foodThumbnail: string,
+  created_at: Date
+  updated_at: Date
 }
 
-export interface food {
-  id: string;
-  name: string;
-  description?: string;
-  ingredients?: string;
-  step?: string;
-  image?: string;
+interface foodState {
+  foodList: food[] | null;
+  isLoadingFood: boolean;
+  isErrorFood: boolean;
 }
+
+export type {food, foodState};

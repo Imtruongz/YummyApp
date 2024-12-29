@@ -39,6 +39,8 @@ import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
 import {publicFoodAPI} from '../redux/slices/publicFood/publicFoodSlice';
 import {accountAPI} from '../redux/slices/account/accountSlice';
 
+import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
+
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
@@ -51,7 +53,10 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
 
   const {data: recipesData} = useGetRecipesQuery();
 
-  const foodList = useAppSelector((state: RootState) => state.food.foods);
+  const {foodList, isLoadingFood, isErrorFood} = useAppSelector(
+    state => state.food,
+  );
+
   const {ListCategories, isloadingCategories, isErrorCategories} =
     useAppSelector((state: RootState) => state.categories);
   const {ListPublicFood, isloadingPublicFood, isErrorPublicFood} =
@@ -75,6 +80,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   useEffect(() => {
     dispatch(categoriesAPI());
     dispatch(publicFoodAPI());
+    dispatch(getAllFoodAPI());
     dispatch(accountAPI(user?.uid ?? ''));
   }, [dispatch, user]);
 
@@ -88,7 +94,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           ) : isErrorAccount ? (
             <Text>Something went wronggg</Text>
           ) : (
-            <View style={{alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{alignItems: 'center', justifyContent: 'center'}}>
               <CustomAvatar image={MyAccount?.photoURL || imgURL.UndefineImg} />
             </View>
           )}
@@ -162,16 +168,25 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         />
 
         <CustomTitle title="Daily Food" />
-        <FlatList
-          data={foodList}
-          horizontal
-          showsHorizontalScrollIndicator={true}
-          renderItem={({item}) => (
-            <Pressable>
-              <CustomFoodItem title={item.name} image={item.image} />
-            </Pressable>
-          )}
-        />
+        {isLoadingFood ? (
+          <ActivityIndicator size="large" color={color.primary} />
+        ) : isErrorFood ? (
+          <Text>Something went wrong</Text>
+        ) : (
+          <FlatList
+            data={foodList}
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            renderItem={({item}) => (
+              <Pressable>
+                <CustomFoodItem
+                  title={item.foodName}
+                  image={item.foodThumbnail}
+                />
+              </Pressable>
+            )}
+          />
+        )}
 
         <CustomTitle title="Public Food" />
         {isloadingPublicFood ? (
@@ -198,7 +213,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         isIcon={true}
         icon="plus"
         iconSize={24}
-        onPress={() => navigation.navigate('AddFoodPage') }
+        onPress={() => navigation.navigate('AddFoodPage')}
         style={styles.openModalStyle}
       />
 

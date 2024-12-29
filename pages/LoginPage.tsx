@@ -17,15 +17,17 @@ import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
 import CustomAuthHeader from '../components/customize/authHeader';
 
-import auth from '@react-native-firebase/auth';
 import color from '../utils/color';
 import img from '../utils/urlImg';
 import {verifyEmail, verifyPassword} from '../utils/validate';
+import {useAppDispatch} from '../redux/hooks';
+import {userLoginAPI} from '../redux/slices/auth/authThunk';
 
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
 
 const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
+  const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -49,21 +51,28 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
       return;
     }
     try {
-      const response = await auth().signInWithEmailAndPassword(email, password);
-      if (response.user.emailVerified) {
-        navigation.navigate('BottomTabs');
-        console.log('Email verified', response.user);
-      } else {
+      console.log('Dispatching userLoginAPI');
+      const resultAction = await dispatch(userLoginAPI({email, password}));
+      if (userLoginAPI.fulfilled.match(resultAction)) {
+        const user = resultAction.payload;
+        if (user) {
+          navigation.navigate('BottomTabs');
+          console.log('Loggin success', user);
+        } else {
+          setIsErrorMessage(true);
+          setErrorMessage('Email not verified, please check your email');
+          console.log('Email not verified', user);
+        }
+      } else
+       {
         setIsErrorMessage(true);
-        setErrorMessage('Email not verified, please check your email');
-        console.log('Email not verified');
+        setErrorMessage('Login failed, please try again');
+        console.log('Login failed');
       }
-    } catch (error: any) {
-      if (error.code === 'auth/invalid-credential') {
-        setIsErrorMessage(true);
-        setErrorMessage('User not found, please try again');
-        console.log('User not found');
-      }
+    } catch (error) {
+      setIsErrorMessage(true);
+      setErrorMessage('An error occurred, please try again');
+      console.log('An error occurred', error);
     }
   };
 
