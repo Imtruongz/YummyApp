@@ -19,6 +19,7 @@ import colors from './utils/color';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 import SettingPage from './pages/SettingPage';
 import AddFoodPage from './pages/AddFoodPage';
+import SettingProfilePage from './pages/SettingProfilePage';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -116,6 +117,11 @@ function StackNavigator() {
         <Stack.Screen
           name="AddFoodPage"
           component={AddFoodPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="SettingProfilePage"
+          component={SettingProfilePage}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

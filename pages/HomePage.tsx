@@ -17,7 +17,6 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
-import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 
 import CustomButton from '../components/customize/Button';
@@ -25,85 +24,82 @@ import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
-import Thumnail from '../components/customize/Thumnail';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
-import {useGetRecipesQuery} from '../redux/slices/recipe/recipesService';
-import {meal} from '../redux/slices/recipe/types';
-import {addRecipes} from '../redux/slices/recipe/recipesSlice';
-
 //asyncThunk
 import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
-import {publicFoodAPI} from '../redux/slices/publicFood/publicFoodSlice';
-import {accountAPI} from '../redux/slices/account/accountSlice';
 
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
+import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  const user = auth().currentUser;
+  //Get userId from AsyncStorage
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [isPressHeart, setIsPressHeart] = useState(false);
-
-  const {data: recipesData} = useGetRecipesQuery();
+  // const [isPressHeart, setIsPressHeart] = useState(false);
 
   const {foodList, isLoadingFood, isErrorFood} = useAppSelector(
     state => state.food,
   );
 
-  const {ListCategories, isloadingCategories, isErrorCategories} =
-    useAppSelector((state: RootState) => state.categories);
-  const {ListPublicFood, isloadingPublicFood, isErrorPublicFood} =
-    useAppSelector((state: RootState) => state.publicFood);
-  const {MyAccount, isloadingAccount, isErrorAccount} = useAppSelector(
-    (state: RootState) => state.account,
+  const {user, isLoadingUser, isErrorUser} = useAppSelector(
+    (state: RootState) => state.auth,
   );
 
-  const handleAddRecipe = (recipe: meal) => {
-    dispatch(addRecipes(recipe));
-    setIsPressHeart(true);
-    Toast.show({
-      type: 'success',
-      position: 'top',
-      text1: 'Add Recipe',
-      text2: 'Add Recipe to your favorite',
-      visibilityTime: 2000,
-    });
+  const {ListCategories, isloadingCategories, isErrorCategories} =
+    useAppSelector((state: RootState) => state.categories);
+
+  // const handleAddRecipe = () => {
+  //   setIsPressHeart(true);
+  //   Toast.show({
+  //     type: 'success',
+  //     position: 'top',
+  //     text1: 'Add Recipe',
+  //     text2: 'Add Recipe to your favorite',
+  //     visibilityTime: 2000,
+  //   });
+  // };
+
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (userId) {
+        dispatch(getUserByIdAPI(userId));
+      }
+
+      dispatch(categoriesAPI());
+      dispatch(getAllFoodAPI());
+    } catch (error) {
+      console.error('Error fetching data from AsyncStorage', error);
+    }
   };
 
   useEffect(() => {
-    dispatch(categoriesAPI());
-    dispatch(publicFoodAPI());
-    dispatch(getAllFoodAPI());
-    dispatch(accountAPI(user?.uid ?? ''));
-  }, [dispatch, user]);
+    fetchData();
+  }, []);
+
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {/* Header */}
         <View style={styles.headerBlock}>
-          {isloadingAccount ? (
-            <ActivityIndicator size="large" color={color.primary} />
-          ) : isErrorAccount ? (
-            <Text>Something went wronggg</Text>
-          ) : (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <CustomAvatar image={MyAccount?.photoURL || imgURL.UndefineImg} />
-            </View>
-          )}
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <CustomAvatar image={user?.avatar || imgURL.UndefineImg} />
+            <Text>{user?.username}</Text>
+          </View>
         </View>
 
         {/* Thumnail */}
-        <View style={styles.popularBlock}>
-          <Thumnail />
-        </View>
+        <View style={styles.popularBlock}></View>
         {/* Thumnail */}
 
         <CustomTitle title="Categories" />
@@ -129,8 +125,8 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         )}
 
         <CustomTitle title="Popular Recipee" />
-        <FlatList
-          data={recipesData?.meals}
+        {/* <FlatList
+          data={}
           horizontal
           showsHorizontalScrollIndicator={true}
           keyExtractor={item => item.idMeal}
@@ -138,7 +134,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             <Pressable
               onPress={() => navigation.navigate('RecipeDetailPage', item)}
               style={styles.item2}>
-              {/* Left content */}
               <View style={styles.titleItemLeft2}>
                 <CustomTitle
                   numberOfLines={1}
@@ -149,7 +144,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                   {item.strInstructions}
                 </Text>
               </View>
-              {/* Right img */}
               <View style={styles.titleItemRight2}>
                 <ImageBackground
                   style={styles.img2}
@@ -165,7 +159,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               </View>
             </Pressable>
           )}
-        />
+        /> */}
 
         <CustomTitle title="Daily Food" />
         {isLoadingFood ? (
@@ -189,22 +183,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         )}
 
         <CustomTitle title="Public Food" />
-        {isloadingPublicFood ? (
-          <ActivityIndicator size="large" color={color.primary} />
-        ) : isErrorPublicFood ? (
-          <Text>Something went wrong</Text>
-        ) : (
-          <FlatList
-            data={ListPublicFood}
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            renderItem={({item}) => (
-              <Pressable>
-                <CustomFoodItem title={item.name} image={item.photoURL} />
-              </Pressable>
-            )}
-          />
-        )}
       </ScrollView>
 
       {/* Button add new Food */}
@@ -223,7 +201,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <CustomModal onPress={() => setModalVisible(false)} />
+        <CustomModal />
       </Modal>
     </SafeAreaView>
   );

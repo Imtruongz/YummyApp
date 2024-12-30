@@ -51,20 +51,17 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
       return;
     }
     try {
-      console.log('Dispatching userLoginAPI');
       const resultAction = await dispatch(userLoginAPI({email, password}));
       if (userLoginAPI.fulfilled.match(resultAction)) {
         const user = resultAction.payload;
         if (user) {
           navigation.navigate('BottomTabs');
-          console.log('Loggin success', user);
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');
           console.log('Email not verified', user);
         }
-      } else
-       {
+      } else {
         setIsErrorMessage(true);
         setErrorMessage('Login failed, please try again');
         console.log('Login failed');

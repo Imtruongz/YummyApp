@@ -32,8 +32,12 @@ interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
 const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
+
+  const [username, setUsername] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
@@ -68,7 +72,9 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
     }
 
     try {
-      const resultAction = await dispatch(userRegisterAPI({email, password}));
+      const resultAction = await dispatch(
+        userRegisterAPI({email, password, username, phoneNumber}),
+      );
       if (userRegisterAPI.fulfilled.match(resultAction)) {
         Toast.show({
           type: 'success',
@@ -94,6 +100,16 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         <CustomAuthHeader img={img.Yummy} />
         {/* Content */}
         <View style={styles.body}>
+          <CustomInput
+            value={username}
+            placeholder="Username"
+            onChangeText={setUsername}
+          />
+          <CustomInput
+            value={phoneNumber}
+            placeholder="Phone Number"
+            onChangeText={setPhoneNumber}
+          />
           <CustomInput
             value={email}
             placeholder="Email"

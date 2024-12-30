@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Dialog from 'react-native-dialog';
-import {deleteFood} from '../redux/slices/food/foodSlice';
 import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import { food } from '../redux/slices/food/types';

@@ -11,11 +11,7 @@ export const store = configureStore({
   reducer: {
     food: foodSlice,
     categories: categoriesSlice,
-
-    //Auth Slice
     auth: authSlice,
-
-    //RTK Query
     [categoriesAPI.reducerPath]: categoriesAPI.reducer,
   },
 });

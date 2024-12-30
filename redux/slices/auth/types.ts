@@ -12,9 +12,18 @@ interface RegisterPayload {
   avatar?: string;
 }
 
+interface UpdatePayload {
+  userId?: string;
+  username?: string;
+  password?: string;
+  email?: string;
+  phoneNumber?: string;
+  avatar?: string;
+}
+
 interface User {
-  userId: string;
-  username: string;
+  userId?: string;
+  username?: string;
   email: string;
   password: string;
   phoneNumber?: string;
@@ -27,4 +36,4 @@ interface AuthState {
   isErrorUser: boolean;
 }
 
-export type {LoginPayload, RegisterPayload, User, AuthState};
+export type {LoginPayload, RegisterPayload, UpdatePayload, User, AuthState};

@@ -8,25 +8,9 @@ import CustomTitle from './customize/Title';
 import color from '../utils/color';
 
 const SecondRoute = () => {
-  const recipes = useAppSelector((state: RootState) => state.recipes.recipes);
   return (
     <View style={[styles.container]}>
-      <FlatList
-        data={recipes}
-        renderItem={({item}) => (
-          <View style={styles.item}>
-            {/* Left content */}
-            <View style={styles.titleItemLeft}>
-              <CustomTitle title={item.strMeal} />
-              {/* <Text numberOfLines={5} ellipsizeMode="tail" >{item.description}</Text> */}
-            </View>
-            {/* Right img */}
-            <View style={styles.titleItemRight}>
-              <Image style={styles.img} source={{uri: item.strMealThumb}} />
-            </View>
-          </View>
-        )}
-      />
+     
     </View>
   );
 };

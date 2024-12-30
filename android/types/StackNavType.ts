@@ -20,4 +20,5 @@ export type RootStackParamList = {
   };
   SettingPage: undefined;
   AddFoodPage: undefined;
+  SettingProfilePage: undefined;
 };

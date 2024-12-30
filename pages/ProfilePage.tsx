@@ -11,12 +11,10 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {TabView, SceneMap} from 'react-native-tab-view';
-import {LinearGradient} from 'react-native-linear-gradient';
 
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
 
-import auth from '@react-native-firebase/auth';
 import color from '../utils/color';
 import imgUrl from '../utils/urlImg.ts';
 import FirstRoute from '../components/FirstRoute';
@@ -25,15 +23,16 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
-import {accountAPI} from '../redux/slices/account/accountSlice.ts';
 import colors from '../utils/color';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
-  const user = auth().currentUser;
   const dispatch = useAppDispatch();
 
   const [index, setIndex] = useState(0);
@@ -47,51 +46,76 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     second: SecondRoute,
   });
 
-  const {MyAccount, isErrorAccount, isloadingAccount} = useAppSelector(
-    (state: RootState) => state.account,
+  const {user, isLoadingUser, isErrorUser} = useAppSelector(
+    (state: RootState) => state.auth,
   );
 
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (userId) {
+        dispatch(getUserByIdAPI(userId));
+      }
+    } catch (error) {
+      console.error('Error fetching data from AsyncStorage', error);
+    }
+  };
+
   useEffect(() => {
-    dispatch(accountAPI(user?.uid ?? ''));
-  }, [dispatch, user]);
+    fetchData();
+  }, []);
 
   return (
-    <LinearGradient style={styles.container} colors={['#8B8B8B', '#000000']}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          {isloadingAccount ? (
-            <ActivityIndicator size="large" color={color.primary} />
-          ) : isErrorAccount ? (
-            <Text>Something went wrong</Text>
-          ) : (
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-              <CustomAvatar
-                style={styles.avatar}
-                image={MyAccount?.photoURL || imgUrl.UndefineImg}
-              />
-              <CustomTitle numberOfLines={1} ellipsizeMode="head" style={{maxWidth: 160}} title={MyAccount?.displayName} />
-            </View>
-          )}
-
-          <AntDesignIcon
-            onPress={() => {
-              navigation.navigate('SettingPage');
-            }}
-            style={styles.settingIcon}
-            name="setting"
-            size={30}
-            color={color.light}
-          />
-        </View>
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-          style={styles.tabVIewContainer}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <CustomTitle style={styles.title} title="My profile" />
+        <AntDesignIcon
+          onPress={() => {
+            navigation.navigate('SettingPage');
+          }}
+          name="setting"
+          size={30}
+          color={color.dark}
         />
-      </SafeAreaView>
-    </LinearGradient>
+      </View>
+      <View style={styles.infoContainer}>
+        {isLoadingUser ? (
+          <ActivityIndicator size="large" color={color.primary} />
+        ) : isErrorUser ? (
+          <Text>Something went wrong</Text>
+        ) : (
+          <View style={styles.myInfo}>
+            <CustomAvatar
+              style={styles.avatar}
+              image={user?.avatar || imgUrl.UndefineImg}
+            />
+            <View style={styles.myInfo2}>
+              <CustomTitle title={user?.username} />
+              <Text>Description</Text>
+            </View>
+          </View>
+        )}
+      </View>
+      {/* <View style={styles.statsContainer}>
+        <View style={styles.stats}>
+          <Text>Posts</Text>
+          <Text>0</Text>
+        </View>
+        <View style={styles.stats}>
+          <Text>Favorite</Text>
+          <Text>0</Text>
+        </View>
+      </View> */}
+
+      <TabView
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={initialLayout}
+        style={styles.tabVIewContainer}
+      />
+    </SafeAreaView>
   );
 };
 
@@ -99,12 +123,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
+  infoContainer: {
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
     gap: 14,
     padding: 14,
+  },
+  myInfo: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 14,
+  },
+  myInfo2: {
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    flexDirection: 'column',
+    gap: 14,
+  },
+  header: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 14,
+    padding: 8,
+  },
+  title: {
+    fontSize: 24,
   },
   avatar: {
     width: 80,
@@ -113,12 +159,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: color.primary,
   },
-  settingIcon: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
+  statsContainer: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: 8,
   },
-  tabVIewContainer:{
+  stats: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 14,
+  },
+  tabVIewContainer: {
     flex: 1,
   },
 });
