@@ -20,12 +20,12 @@ import RecipeDetailPage from './pages/RecipeDetailPage';
 import SettingPage from './pages/SettingPage';
 import AddFoodPage from './pages/AddFoodPage';
 import SettingProfilePage from './pages/SettingProfilePage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
   return (
     <Tab.Navigator
-    
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.dark,
@@ -122,6 +122,11 @@ function StackNavigator() {
         <Stack.Screen
           name="SettingProfilePage"
           component={SettingProfilePage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="changePasswordPage"
+          component={ChangePasswordPage}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

@@ -1,48 +1,35 @@
-import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {categories} from '../category/types';
-import api from '../../../api/api';
-
-interface categoryState {
-  ListCategories: categories[];
-  isloadingCategories?: boolean;
-  isErrorCategories?: boolean;
-}
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {getAllCategoriesAPI} from './categoryThunk';
+import {categoryState, category} from './types';
 
 const initialState: categoryState = {
-  ListCategories: [],
-  isloadingCategories: false,
-  isErrorCategories: false,
+  categoryList: [],
+  isLoadingCategory: false,
+  isErrorCategory: false,
 };
-
-export const categoriesAPI = createAsyncThunk(
-  'categories/categoriesAPI',
-  async () => {
-    const response = await api.get('/json/v1/1/categories.php');
-    return response.data;
-  },
-);
 
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(categoriesAPI.pending, state => {
-      state.isloadingCategories = true;
-      state.isErrorCategories = false;
+    builder.addCase(getAllCategoriesAPI.pending, state => {
+      state.isLoadingCategory = true;
+      state.isErrorCategory = false;
     });
-    builder.addCase(categoriesAPI.fulfilled, (state, action) => {
-      state.ListCategories = action.payload;
-      state.isloadingCategories = false;
-      state.isErrorCategories = false;
-    });
-    builder.addCase(categoriesAPI.rejected, (state) => {
-      state.isloadingCategories = false;
-      state.isErrorCategories = true;
+    builder.addCase(
+      getAllCategoriesAPI.fulfilled,
+      (state, action: PayloadAction<category[]>) => {
+        state.categoryList = action.payload;
+        state.isLoadingCategory = false;
+        state.isErrorCategory = false;
+      },
+    );
+    builder.addCase(getAllCategoriesAPI.rejected, state => {
+      state.isLoadingCategory = false;
+      state.isErrorCategory = true;
     });
   },
 });
-
-export const {} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

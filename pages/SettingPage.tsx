@@ -1,18 +1,16 @@
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import CustomTitle from '../components/customize/Title';
 import color from '../utils/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import SettingButton from '../components/customize/SettingButton';
+import colors from '../utils/color';
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
-  const handleSignOut = () => {
-    navigation.navigate('LoginPage');
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -20,38 +18,35 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
           name="arrowleft"
           size={24}
           color={color.dark}
+          style={styles.icon}
           onPress={() => {
             navigation.goBack();
           }}
         />
+        <CustomTitle style={styles.title1} title="Settings" />
       </View>
       <View style={styles.body}>
-        <CustomTitle style={styles.title1} title="Settings" />
         <View style={styles.accountContainer}>
           <CustomTitle style={styles.title} title="Account" />
-          <TouchableOpacity
-            style={styles.accountSetting}
-            onPress={() => navigation.navigate('SettingProfilePage')}>
-            <Text>Profile Settings</Text>
-            <AntDesignIcon name="right" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.accountSetting}
-            onPress={() => navigation.navigate('SettingProfilePage')}>
-            <Text>Password Setting</Text>
-            <AntDesignIcon name="right" />
-          </TouchableOpacity>
+          <SettingButton
+            title="Profile Setting"
+            navigation={navigation}
+            targetScreen="SettingProfilePage"
+          />
+          <SettingButton
+            title="Password Setting"
+            navigation={navigation}
+            targetScreen="changePasswordPage"
+          />
         </View>
         <View style={styles.SystemContainer}>
           <CustomTitle style={styles.title} title="System" />
-          <TouchableOpacity
-            style={styles.accountSetting}
-            onPress={handleSignOut}>
-            <Text style={{color: color.danger, fontWeight: 'bold'}}>
-              Log Out
-            </Text>
-            <AntDesignIcon name="right" />
-          </TouchableOpacity>
+          <SettingButton
+            style={{color: colors.danger}}
+            title="Log Out"
+            navigation={navigation}
+            targetScreen="LoginPage"
+          />
         </View>
       </View>
     </View>
@@ -68,8 +63,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     backgroundColor: color.secondary,
-    padding: 12,
   },
   title1: {
     color: color.dark,
@@ -112,5 +107,10 @@ const styles = StyleSheet.create({
   },
   SystemContainer: {
     marginBottom: 10,
+  },
+  icon: {
+    padding: 12,
+    paddingHorizontal: 14,
+    marginRight: 84,
   },
 });

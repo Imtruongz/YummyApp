@@ -1,18 +1,16 @@
 import {configureStore} from '@reduxjs/toolkit';
 import {setupListeners} from '@reduxjs/toolkit/query';
 
-import categoriesSlice from './slices/category/categoriesSlice';
-import {categoriesAPI} from './slices/category/categoriesService';
 
 import authSlice from './slices/auth/authSlice';
 import foodSlice from './slices/food/foodSlice';
+import categoriesSlice from './slices/category/categoriesSlice';
 
 export const store = configureStore({
   reducer: {
     food: foodSlice,
-    categories: categoriesSlice,
     auth: authSlice,
-    [categoriesAPI.reducerPath]: categoriesAPI.reducer,
+    categories: categoriesSlice,
   },
 });
 

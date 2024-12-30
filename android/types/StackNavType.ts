@@ -10,15 +10,18 @@ export type RootStackParamList = {
   };
   FoodPage: undefined;
   RecipeDetailPage: {
-    idMeal?: string;
-    strMeal?: string;
-    strIngredient1?: string;
-    strInstructions?: string;
-    strMealThumb?: string;
-    strCategory?: string;
-    strYouTube?: string;
+    foodId: string;
+    foodName?: string;
+    categoryId: string;
+    userId: string;
+    foodDescription: string;
+    foodIngredient: string;
+    foodThumbnail: string;
+    created_at: Date;
+    updated_at: Date;
   };
   SettingPage: undefined;
   AddFoodPage: undefined;
   SettingProfilePage: undefined;
+  changePasswordPage: undefined;
 };

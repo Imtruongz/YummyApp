@@ -15,6 +15,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import color from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import CustomAvatar from '../components/customize/Avatar';
+import img from '../utils/urlImg';
 
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> {}
@@ -23,8 +26,22 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   route,
   navigation,
 }) => {
-  const {strMeal, strInstructions, strMealThumb} = route.params;
+  const {
+    foodId,
+    foodName,
+    categoryId,
+    userId,
+    foodDescription,
+    foodIngredient,
+    foodThumbnail,
+    created_at,
+    updated_at,
+  } = route.params;
   const [showstrInstructions, setShowstrInstructions] = useState(false);
+
+  const handleAddFavoriteFood = () => {
+    console.log('Add favorite food');
+  };
 
   return (
     <>
@@ -33,29 +50,44 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           name="arrowleft"
           size={24}
           style={styles.arrowLeftIcon}
-          color={color.light}
+          color={color.dark}
           onPress={() => {
-            navigation.navigate('BottomTabs');
+            navigation.goBack();
           }}
+        />
+        <MaterialIcons
+          name="favorite-border"
+          size={24}
+          color={color.dark}
+          style={styles.favoriteIcon}
+          onPress={handleAddFavoriteFood}
         />
         <ScrollView>
           <ImageBackground
             style={styles.imgHeader}
-            source={{uri: strMealThumb}}>
+            source={{uri: foodThumbnail}}>
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
               style={styles.linearGradient}>
-              <Text style={styles.textTitle}>{strMeal} </Text>
+              <Text style={styles.textTitle}>{foodName}</Text>
             </LinearGradient>
           </ImageBackground>
 
           <View style={styles.body}>
+            <View style={styles.headerBlock2}>
+              <CustomAvatar image={img.UndefineImg} />
+              <View style={styles.headerBlock3}>
+                <CustomTitle title="UserName" />
+                <Text>email</Text>
+              </View>
+            </View>
+
             <CustomTitle title="Description" />
             {showstrInstructions ? (
-              <Text>{strInstructions}</Text>
+              <Text>{foodDescription}</Text>
             ) : (
               <Text>
-                {strInstructions ? strInstructions.substring(0, 200) : ''}...
+                {foodDescription ? foodDescription.substring(0, 200) : ''}...
               </Text>
             )}
             {!showstrInstructions && (
@@ -63,6 +95,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 <Text style={styles.readMore}>Read more</Text>
               </TouchableOpacity>
             )}
+            <CustomTitle title="Ingredient" />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -88,16 +121,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    padding: 20,
+    gap: 10,
+    padding: 18,
   },
   readMore: {
     color: '#0056b3',
-    marginTop: 10,
-  },
-
-  imgBackground: {
-    margin: 10,
-    resizeMode: 'center',
   },
 
   linearGradient: {
@@ -119,5 +147,26 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
     zIndex: 1,
+    backgroundColor: color.light,
+    padding: 10,
+    borderRadius: 50,
+  },
+
+  favoriteIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+    backgroundColor: color.light,
+    padding: 10,
+    borderRadius: 50,
+  },
+  headerBlock2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  headerBlock3: {
+    marginHorizontal: 10,
   },
 });

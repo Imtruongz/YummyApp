@@ -77,6 +77,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           name="setting"
           size={30}
           color={color.dark}
+          style={styles.icon}
         />
       </View>
       <View style={styles.infoContainer}>
@@ -85,29 +86,32 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         ) : isErrorUser ? (
           <Text>Something went wrong</Text>
         ) : (
-          <View style={styles.myInfo}>
-            <CustomAvatar
-              style={styles.avatar}
-              image={user?.avatar || imgUrl.UndefineImg}
-            />
+          <View style={styles.myInfoContainer}>
             <View style={styles.myInfo2}>
-              <CustomTitle title={user?.username} />
-              <Text>Description</Text>
+              <CustomAvatar
+                style={styles.avatar}
+                image={user?.avatar || imgUrl.UndefineImg}
+              />
+              <View style={styles.myInfo3}>
+                <View style={styles.infoItem}>
+                  <Text>Posts</Text>
+                  <Text>0</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text>Follower</Text>
+                  <Text>0</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text>Following</Text>
+                  <Text>0</Text>
+                </View>
+              </View>
             </View>
+            <CustomTitle title={user?.username} />
+            <Text>Description</Text>
           </View>
         )}
       </View>
-      {/* <View style={styles.statsContainer}>
-        <View style={styles.stats}>
-          <Text>Posts</Text>
-          <Text>0</Text>
-        </View>
-        <View style={styles.stats}>
-          <Text>Favorite</Text>
-          <Text>0</Text>
-        </View>
-      </View> */}
-
       <TabView
         navigationState={{index, routes}}
         renderScene={renderScene}
@@ -128,30 +132,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 14,
-    padding: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
   },
-  myInfo: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: 14,
+  myInfoContainer: {
+    flexDirection: 'column',
+    width: '100%',
+    gap: 8,
   },
   myInfo2: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 24,
+  },
+  myInfo3: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 24,
+  },
+  infoItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'column',
-    gap: 14,
+    gap: 8,
   },
   header: {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 14,
-    padding: 8,
   },
-  title: {
-    fontSize: 24,
-  },
+
   avatar: {
     width: 80,
     height: 80,
@@ -173,6 +185,13 @@ const styles = StyleSheet.create({
   },
   tabVIewContainer: {
     flex: 1,
+  },
+  icon: {
+    padding: 12,
+  },
+  title: {
+    fontSize: 24,
+    padding: 12,
   },
 });
 

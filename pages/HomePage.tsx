@@ -1,71 +1,47 @@
 import {
   FlatList,
-  ImageBackground,
-  Modal,
   Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
+  Image,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
-import Toast from 'react-native-toast-message';
-
 import CustomButton from '../components/customize/Button';
-import CustomModal from '../components/Modal';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
-
 //asyncThunk
-import {categoriesAPI} from '../redux/slices/category/categoriesSlice';
+import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Thumnail from '../components/customize/Thumnail';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  //Get userId from AsyncStorage
+  const {foodList} = useAppSelector(state => state.food);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  // const [isPressHeart, setIsPressHeart] = useState(false);
-
-  const {foodList, isLoadingFood, isErrorFood} = useAppSelector(
-    state => state.food,
-  );
-
-  const {user, isLoadingUser, isErrorUser} = useAppSelector(
-    (state: RootState) => state.auth,
-  );
-
-  const {ListCategories, isloadingCategories, isErrorCategories} =
-    useAppSelector((state: RootState) => state.categories);
-
-  // const handleAddRecipe = () => {
-  //   setIsPressHeart(true);
-  //   Toast.show({
-  //     type: 'success',
-  //     position: 'top',
-  //     text1: 'Add Recipe',
-  //     text2: 'Add Recipe to your favorite',
-  //     visibilityTime: 2000,
-  //   });
-  // };
+  const {user} = useAppSelector((state: RootState) => state.auth);
+  const {categoryList} = useAppSelector((state: RootState) => state.categories);
 
   const fetchData = async () => {
     try {
@@ -75,7 +51,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         dispatch(getUserByIdAPI(userId));
       }
 
-      dispatch(categoriesAPI());
+      dispatch(getAllCategoriesAPI());
       dispatch(getAllFoodAPI());
     } catch (error) {
       console.error('Error fetching data from AsyncStorage', error);
@@ -86,103 +62,100 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     fetchData();
   }, []);
 
+  const greetingMessage = () => {
+    const currentTime = new Date().getHours();
+    if (currentTime < 12) {
+      return 'Good Morning';
+    } else if (currentTime < 18) {
+      return 'Good Afternoon';
+    } else {
+      return 'Good Evening';
+    }
+  };
+  const message = greetingMessage();
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         {/* Header */}
         <View style={styles.headerBlock}>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <View style={styles.headerBlock2}>
             <CustomAvatar image={user?.avatar || imgURL.UndefineImg} />
-            <Text>{user?.username}</Text>
+            <View style={styles.headerBlock3}>
+              <Text>{message}</Text>
+              <CustomTitle title={user?.username} />
+            </View>
           </View>
+          <FeatherIcon name="bell" size={24} color={color.dark} />
         </View>
 
+        <View style={styles.titleContainer}>
+          <CustomTitle title="Trending now " />
+        </View>
         {/* Thumnail */}
-        <View style={styles.popularBlock}></View>
+        <View style={styles.popularBlock}>
+          <Thumnail />
+        </View>
         {/* Thumnail */}
 
-        <CustomTitle title="Categories" />
-        {isloadingCategories ? (
-          <ActivityIndicator size="large" color={color.primary} />
-        ) : isErrorCategories ? (
-          <Text>Something went wrong</Text>
-        ) : (
-          <FlatList
-            data={ListCategories?.categories}
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            keyExtractor={item => item.idCategory}
-            renderItem={({item}) => (
-              <Pressable>
-                <CustomFoodItem
-                  title={item.strCategory}
-                  image={item.strCategoryThumb}
-                />
-              </Pressable>
-            )}
-          />
-        )}
-
-        <CustomTitle title="Popular Recipee" />
-        {/* <FlatList
-          data={}
+        <View style={styles.titleContainer}>
+          <CustomTitle title="Popular Category" />
+          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
+        </View>
+        <FlatList
+          data={categoryList}
           horizontal
           showsHorizontalScrollIndicator={true}
-          keyExtractor={item => item.idMeal}
+          keyExtractor={item => item.categoryId}
           renderItem={({item}) => (
-            <Pressable
-              onPress={() => navigation.navigate('RecipeDetailPage', item)}
-              style={styles.item2}>
-              <View style={styles.titleItemLeft2}>
-                <CustomTitle
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  title={item.strMeal}
-                />
-                <Text numberOfLines={5} ellipsizeMode="tail">
-                  {item.strInstructions}
-                </Text>
-              </View>
-              <View style={styles.titleItemRight2}>
-                <ImageBackground
-                  style={styles.img2}
-                  source={{uri: item.strMealThumb}}>
-                  <AntDesignIcon
-                    onPress={() => handleAddRecipe(item)}
-                    name={isPressHeart ? 'heart' : 'hearto'}
-                    size={24}
-                    color={isPressHeart ? color.danger : color.light}
-                    style={styles.heartIcon}
-                  />
-                </ImageBackground>
-              </View>
+            <Pressable>
+              <CustomFoodItem
+                title={item.categoryName}
+                image={item.categoryThumbnail}
+              />
             </Pressable>
           )}
-        /> */}
+        />
 
-        <CustomTitle title="Daily Food" />
-        {isLoadingFood ? (
-          <ActivityIndicator size="large" color={color.primary} />
-        ) : isErrorFood ? (
-          <Text>Something went wrong</Text>
-        ) : (
-          <FlatList
-            data={foodList}
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            renderItem={({item}) => (
-              <Pressable>
-                <CustomFoodItem
-                  title={item.foodName}
-                  image={item.foodThumbnail}
-                />
-              </Pressable>
-            )}
-          />
-        )}
-
-        <CustomTitle title="Public Food" />
+        <View style={styles.titleContainer}>
+          <CustomTitle title="Daily Food " />
+          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
+        </View>
+        <FlatList
+          data={foodList}
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          keyExtractor={item => item.foodId}
+          renderItem={({item}) => (
+            <Pressable
+              style={styles.itemContainer}
+              onPress={() =>
+                navigation.navigate('RecipeDetailPage', {
+                  foodName: item.foodName,
+                  foodId: item.foodId,
+                  categoryId: item.categoryId,
+                  userId: item.userId,
+                  foodDescription: item.foodDescription,
+                  foodIngredient: item.foodIngredient,
+                  foodThumbnail: item.foodThumbnail,
+                  created_at: item.created_at,
+                  updated_at: item.updated_at,
+                })
+              }>
+              <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
+              <View style={styles.titleItemLeft2}>
+                <CustomTitle title={item.foodName} />
+              </View>
+              <MaterialIcons
+                name="favorite-border"
+                size={24}
+                color={color.dark}
+                style={styles.favoriteIcon}
+              />
+            </Pressable>
+          )}
+        />
+        <View style={{height: 100}} />
       </ScrollView>
 
       {/* Button add new Food */}
@@ -194,15 +167,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         onPress={() => navigation.navigate('AddFoodPage')}
         style={styles.openModalStyle}
       />
-
-      {/* Modal add new Food */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <CustomModal />
-      </Modal>
     </SafeAreaView>
   );
 };
@@ -219,7 +183,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 14,
+  },
+  headerBlock2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerBlock3: {
+    marginHorizontal: 10,
   },
   imgStyle: {
     maxWidth: 60,
@@ -244,10 +215,16 @@ const styles = StyleSheet.create({
     margin: 10,
     resizeMode: 'center',
   },
-
+  titleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
   item2: {
     flex: 1,
     width: 300,
+    height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -260,10 +237,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
-  heartIcon: {
+  favoriteIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    bottom: 14,
+    right: 14,
   },
   titleItemLeft2: {
     padding: 14,
@@ -277,8 +254,10 @@ const styles = StyleSheet.create({
   },
   img2: {
     width: 140,
-    height: 180,
-    borderRadius: 20,
+    height: 200,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+
     resizeMode: 'cover',
   },
   openModalStyle: {
@@ -289,5 +268,18 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     backgroundColor: color.primary,
+  },
+  itemContainer: {
+    width: 300,
+    height: 200,
+    margin: 10,
+    borderRadius: 20,
+    backgroundColor: color.light,
+    shadowColor: color.dark,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+    flexDirection: 'row',
   },
 });

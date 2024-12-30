@@ -97,13 +97,14 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
           name="arrowleft"
           size={24}
           color={color.dark}
+          style={styles.icon}
           onPress={() => {
             navigation.goBack();
           }}
         />
+        <CustomTitle style={styles.title1} title="Edit Profile" />
       </View>
       <View style={styles.body}>
-        <CustomTitle style={styles.title1} title="Edit Profile" />
         {isLoadingUser ? (
           <ActivityIndicator size="large" color={color.primary} />
         ) : isErrorUser ? (
@@ -136,8 +137,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     backgroundColor: color.secondary,
-    padding: 12,
   },
   title1: {
     color: color.dark,
@@ -190,5 +191,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     flexDirection: 'row',
+  },
+  icon: {
+    padding: 12,
+    paddingHorizontal: 14,
+    marginRight: 64,
   },
 });
