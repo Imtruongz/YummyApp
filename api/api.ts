@@ -4,7 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const Yummy_API: string = 'http://192.168.0.105:4040/api';
+const Yummy_API: string = 'http://10.100.13.24:4040/api';
 
 const api = axios.create({
   baseURL: Yummy_API,

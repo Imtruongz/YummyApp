@@ -55,7 +55,14 @@ const foodSlice = createSlice({
     builder.addCase(
       deleteFoodAPI.fulfilled,
       (state, action: PayloadAction<food[]>) => {
-        state.foodList = action.payload; // Cập nhật toàn bộ danh sách thực phẩm sau khi xóa
+        state.foodList = action.payload; // This is not correct
+        //Find the food index that we want to delete
+        const deleteFoodIndex = state.foodList.findIndex(
+          food => food.foodId === action.payload[0].foodId,
+        );
+        if(deleteFoodIndex !== -1) {
+          state.foodList.splice(deleteFoodIndex, 1);
+        }
         state.isLoadingFood = false;
         state.isErrorFood = false;
       },

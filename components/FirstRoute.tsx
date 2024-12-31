@@ -2,22 +2,21 @@ import color from '../utils/color';
 import CustomTitle from './customize/Title';
 
 import {
-  FlatList,
   Image,
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Dialog from 'react-native-dialog';
 import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
-import { food } from '../redux/slices/food/types';
+import {food} from '../redux/slices/food/types';
 
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import colors from '../utils/color';
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
@@ -59,26 +58,23 @@ const FirstRoute = () => {
   }, []);
 
   return (
-    <View style={[styles.container]}>
-      <FlatList
-        data={foodList}
-        keyExtractor={(item) => item.foodId}
-        renderItem={({item}) => (
-          <TouchableOpacity onLongPress={() => showDialog(item)}style={styles.item}>
-            {/* Left content */}
+    <>
+      <ScrollView contentContainerStyle={styles.container}>
+        {foodList?.map(item => (
+          <TouchableOpacity
+            key={item.foodId}
+            onLongPress={() => showDialog(item)}
+            style={styles.itemContainer}>
+            {/* Top img */}
+            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+            {/* Bottom info */}
             <View style={styles.titleItemLeft}>
-              <CustomTitle title={item.foodName} />
-              <Text numberOfLines={5} ellipsizeMode="tail">
-                {item.foodDescription}
-              </Text>
-            </View>
-            {/* Right img */}
-            <View style={styles.titleItemRight}>
-              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+              <CustomTitle style={styles.title} title={item.foodName} />
             </View>
           </TouchableOpacity>
-        )}
-      />
+        ))}
+
+      </ScrollView>
       <Dialog.Container visible={visible}>
         <Dialog.Title>Delete</Dialog.Title>
         <Dialog.Description>
@@ -87,7 +83,7 @@ const FirstRoute = () => {
         <Dialog.Button label="Cancel" onPress={handleCancel} />
         <Dialog.Button label="Delete" onPress={handleDelete} />
       </Dialog.Container>
-    </View>
+    </>
   );
 };
 
@@ -95,36 +91,38 @@ export default FirstRoute;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%',
-    gap: 14,
-    padding: 10,
-  },
-  item: {
-    flex: 1,
     width: '100%',
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    borderRadius: 20,
-    backgroundColor: color.light,
-    marginBottom: 10,
+    gap: 14,
+    padding: 12,
+  },
+  itemContainer: {
+    width: '47%',
+    height: 180,
+    backgroundColor: colors.light,
+    borderRadius: 15,
+    gap: 8,
+    shadowColor: color.dark,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
   titleItemLeft: {
-    padding: 14,
-    justifyContent: 'flex-start',
-    gap: 14,
-    width: '60%',
-    height: '100%',
-  },
-  titleItemRight: {
-    width: '40%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   img: {
-    width: 140,
-    height: 180,
-    borderBottomRightRadius: 20,
-    borderTopRightRadius: 20,
+    width: 'auto',
+    height: 100,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     resizeMode: 'cover',
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

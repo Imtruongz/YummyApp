@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
   },
   tabVIewContainer: {
     flex: 1,
+    backgroundColor: colors.light,
   },
   icon: {
     padding: 12,

@@ -2,7 +2,6 @@ import {ImageBackground, StyleSheet, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import color from '../../utils/color';
-import handleGetRandomFood from '../../services/getRandomFoodService';
 
 const Thumnail = () => {
   const [randomFood, setRandomFood] = useState<any>(null);
