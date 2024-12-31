@@ -69,7 +69,6 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
         text1: 'Update success',
         text2: 'Your account has been updated',
       });
-      setavatar('');
     } catch (error) {
       console.log('Update process failed', error);
       Toast.show({
