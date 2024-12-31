@@ -9,18 +9,19 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Dialog from 'react-native-dialog';
 import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import { food } from '../redux/slices/food/types';
 
+import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const FirstRoute = () => {
-  const foodList = useAppSelector((state: RootState) => state.food);
-  console.log('FoodList', foodList.foods);
-
   const dispatch = useAppDispatch();
+  const {foodList} = useAppSelector((state: RootState) => state.food);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -35,30 +36,45 @@ const FirstRoute = () => {
 
   const handleDelete = () => {
     if (currentItem) {
-      dispatch(deleteFood(currentItem.id));
-      console.log('Deleted', currentItem.id);
+      dispatch(deleteFoodAPI(currentItem.foodId));
     }
     setVisible(false);
     setCurrentItem(null);
   };
 
+  const fetchData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+
+      if (userId) {
+        dispatch(getFoodByIdAPI(userId));
+      }
+    } catch (error) {
+      console.error('Error fetching data from AsyncStorage', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <View style={[styles.container]}>
       <FlatList
-        data={foodList.foods}
-        keyExtractor={(item: food) => item.id}
+        data={foodList}
+        keyExtractor={(item) => item.foodId}
         renderItem={({item}) => (
           <TouchableOpacity onLongPress={() => showDialog(item)}style={styles.item}>
             {/* Left content */}
             <View style={styles.titleItemLeft}>
-              <CustomTitle title={item.name} />
+              <CustomTitle title={item.foodName} />
               <Text numberOfLines={5} ellipsizeMode="tail">
-                {item.description}
+                {item.foodDescription}
               </Text>
             </View>
             {/* Right img */}
             <View style={styles.titleItemRight}>
-              <Image style={styles.img} source={{uri: item.image}} />
+              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
             </View>
           </TouchableOpacity>
         )}

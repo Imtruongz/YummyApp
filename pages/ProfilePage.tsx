@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {
   View,
   StyleSheet,
@@ -10,12 +11,18 @@ import React, {useState, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {TabView, SceneMap} from 'react-native-tab-view';
+import {
+  TabView,
+  SceneMap,
+  TabBar,
+  SceneRendererProps,
+  NavigationState,
+  Route,
+} from 'react-native-tab-view';
 
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
 
-import color from '../utils/color';
 import imgUrl from '../utils/urlImg.ts';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
@@ -29,6 +36,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 
 const initialLayout = {width: Dimensions.get('window').width};
+
+interface InfoItemProps {
+  number: number | string;
+  label: string;
+}
+
+const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
+  <View style={styles.infoItem}>
+    <Text>{number}</Text>
+    <Text>{label}</Text>
+  </View>
+);
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
@@ -49,6 +68,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   const {user, isLoadingUser, isErrorUser} = useAppSelector(
     (state: RootState) => state.auth,
   );
+  const {foodList} = useAppSelector((state: RootState) => state.food);
 
   const fetchData = async () => {
     try {
@@ -61,6 +81,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
       console.error('Error fetching data from AsyncStorage', error);
     }
   };
+
+  const renderTabBar = (
+    props: SceneRendererProps & {navigationState: NavigationState<Route>},
+  ) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{backgroundColor: colors.primaryHover}}
+      style={{backgroundColor: colors.light}}
+      activeColor={colors.primaryHover}
+      inactiveColor={colors.dark}
+    />
+  );
+
 
   useEffect(() => {
     fetchData();
@@ -76,13 +109,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           }}
           name="setting"
           size={30}
-          color={color.dark}
+          color={colors.dark}
           style={styles.icon}
         />
       </View>
       <View style={styles.infoContainer}>
         {isLoadingUser ? (
-          <ActivityIndicator size="large" color={color.primary} />
+          <ActivityIndicator size="large" color={colors.primary} />
         ) : isErrorUser ? (
           <Text>Something went wrong</Text>
         ) : (
@@ -93,18 +126,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                 image={user?.avatar || imgUrl.UndefineImg}
               />
               <View style={styles.myInfo3}>
-                <View style={styles.infoItem}>
-                  <Text>Posts</Text>
-                  <Text>0</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text>Follower</Text>
-                  <Text>0</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text>Following</Text>
-                  <Text>0</Text>
-                </View>
+                <InfoItem number={foodList?.length ?? 0} label="Posts" />
+                <InfoItem number= "0" label="Follower" />
+                <InfoItem number="0" label="Following" />
               </View>
             </View>
             <CustomTitle title={user?.username} />
@@ -118,6 +142,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         onIndexChange={setIndex}
         initialLayout={initialLayout}
         style={styles.tabVIewContainer}
+        renderTabBar={renderTabBar}
       />
     </SafeAreaView>
   );
@@ -142,7 +167,7 @@ const styles = StyleSheet.create({
   },
   myInfo2: {
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexDirection: 'row',
     gap: 24,
   },
@@ -156,7 +181,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    gap: 8,
+    gap: 4,
   },
   header: {
     justifyContent: 'space-between',
@@ -169,7 +194,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 100,
     borderWidth: 1,
-    borderColor: color.primary,
+    borderColor: colors.primary,
   },
   statsContainer: {
     justifyContent: 'space-around',
@@ -190,7 +215,6 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   title: {
-    fontSize: 24,
     padding: 12,
   },
 });

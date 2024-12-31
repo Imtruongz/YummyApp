@@ -19,7 +19,7 @@ const SettingButton: React.FC<SettingButtonProps> = ({
       <TouchableOpacity
         style={styles.accountSetting}
         onPress={() => navigation.navigate(targetScreen)}>
-        <Text style={[style]}>{title}</Text>
+        <Text style={[styles.text, style]}>{title}</Text>
         <AntDesignIcon name="right" />
       </TouchableOpacity>
     </>
@@ -37,5 +37,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 10,
     borderRadius: 10,
+  },
+  text: {
+    fontSize: 14,
   },
 });

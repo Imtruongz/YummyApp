@@ -6,11 +6,9 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import color from '../utils/color';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
-import CustomTitle from '../components/customize/Title';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store.ts';
@@ -20,11 +18,11 @@ import CustomInput from '../components/customize/Input.tsx';
 import CustomButton from '../components/customize/Button.tsx';
 import {userUpdateAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
+import Header from '../components/customize/Header.tsx';
 
 interface SettingProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
 const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
-  navigation,
 }) => {
   const dispatch = useAppDispatch();
   const [username, setusername] = useState<string>('');
@@ -81,7 +79,7 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
       });
     }
   };
- 
+
   useEffect(() => {
     if (user?.username && user?.avatar) {
       setusername(user.username);
@@ -92,18 +90,7 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <AntDesignIcon
-          name="arrowleft"
-          size={24}
-          color={color.dark}
-          style={styles.icon}
-          onPress={() => {
-            navigation.goBack();
-          }}
-        />
-        <CustomTitle style={styles.title1} title="Edit Profile" />
-      </View>
+      <Header title="Edit Profile" iconName="arrowleft" />
       <View style={styles.body}>
         {isLoadingUser ? (
           <ActivityIndicator size="large" color={color.primary} />
@@ -134,17 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: color.light,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: color.secondary,
-  },
-  title1: {
-    color: color.dark,
-    fontSize: 24,
-    textAlign: 'center',
-  },
   title: {
     fontWeight: 'bold',
     borderBottomColor: color.dark,
@@ -157,44 +133,5 @@ const styles = StyleSheet.create({
     gap: 14,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  imagePreview: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  accountContainer: {
-    marginBottom: 10,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  accountSetting: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 10,
-    padding: 10,
-    borderRadius: 10,
-  },
-  SystemContainer: {
-    marginBottom: 10,
-  },
-  btn: {
-    width: '80%',
-    height: 40,
-    backgroundColor: color.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    flexDirection: 'row',
-  },
-  icon: {
-    padding: 12,
-    paddingHorizontal: 14,
-    marginRight: 64,
   },
 });

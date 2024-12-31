@@ -10,18 +10,15 @@ import {
 import React, {useState} from 'react';
 
 import CustomInput from '../components/customize/Input';
-import CustomButton from '../components//customize/Button';
-import CustomTitle from '../components//customize/Title';
-
+import CustomButton from '../components/customize/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 
-import {useAppDispatch} from '../redux/hooks';
-
 import {food} from '../redux/slices/food/types';
-import {addFood} from '../redux/slices/food/foodSlice';
 import Toast from 'react-native-toast-message';
 
 import imgURL from '../utils/urlImg';
+import Header from '../components/customize/Header';
+import color from '../utils/color';
 
 const AddFoodPage = ({}) => {
   const [foodName, setFoodName] = useState('');
@@ -30,7 +27,6 @@ const AddFoodPage = ({}) => {
   const [foodRecipe, setFoodRecipe] = useState('');
   const [img, setImg] = useState('');
 
-  const dispatch = useAppDispatch();
 
   const handleAddFood = () => {
     const newFood: food = {
@@ -41,7 +37,6 @@ const AddFoodPage = ({}) => {
       step: foodRecipe,
       image: img,
     };
-    dispatch(addFood(newFood));
     console.log('Add food success', newFood);
     Toast.show({
       type: 'success',
@@ -89,10 +84,10 @@ const AddFoodPage = ({}) => {
 
   return (
     <View style={styles.container}>
+      <Header title="Add food" iconName="close"/>
       <View style={styles.modal}>
         <ScrollView style={styles.modalScroll}>
           <View style={styles.content}>
-            <CustomTitle title="Add food" />
             <CustomInput
               value={foodName}
               onChangeText={setFoodName}
@@ -125,13 +120,6 @@ const AddFoodPage = ({}) => {
               />
             </Pressable>
             <CustomButton title="Add food" onPress={handleAddFood} />
-            <CustomButton
-              isText={false}
-              isIcon={true}
-              iconSize={24}
-              icon="close"
-              style={styles.close}
-            />
           </View>
         </ScrollView>
       </View>
@@ -144,9 +132,7 @@ export default AddFoodPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginTop: 14,
+    backgroundColor: color.light,
   },
   modal: {
     width: 350,
