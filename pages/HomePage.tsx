@@ -27,11 +27,9 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 //asyncThunk
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
-
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import {getUserByIdAPI, getAllUsers} from '../redux/slices/auth/authThunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Thumnail from '../components/customize/Thumnail';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -50,17 +48,16 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
       if (userId) {
         dispatch(getUserByIdAPI(userId));
       }
-
-      dispatch(getAllCategoriesAPI());
-      dispatch(getAllFoodAPI());
     } catch (error) {
       console.error('Error fetching data from AsyncStorage', error);
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(getAllCategoriesAPI());
+    dispatch(getAllFoodAPI());
+    dispatch(getAllUsers());
+  }, [dispatch]);
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -93,9 +90,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           <CustomTitle title="Trending now " />
         </View>
         {/* Thumnail */}
-        <View style={styles.popularBlock}>
-          <Thumnail />
-        </View>
         {/* Thumnail */}
 
         <View style={styles.titleContainer}>
@@ -138,8 +132,8 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                   foodDescription: item.foodDescription,
                   foodIngredient: item.foodIngredient,
                   foodThumbnail: item.foodThumbnail,
-                  created_at: item.created_at,
-                  updated_at: item.updated_at,
+                  created_at: item.created_at?.toString(), // Chuyển Date thành string
+                  updated_at: item.updated_at?.toString(), // Chuyển Date thành string
                 })
               }>
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
@@ -153,6 +147,27 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 style={styles.favoriteIcon}
               />
             </Pressable>
+          )}
+        />
+        <View style={styles.titleContainer}>
+          <CustomTitle title="Popular creators" />
+          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
+        </View>
+        <FlatList
+          data={user}
+          horizontal
+          showsHorizontalScrollIndicator={true}
+          keyExtractor={item => item.userId}
+          renderItem={({item}) => (
+            <View style={styles.creatorItems}>
+              <CustomAvatar style={styles.creatorAvatar} image={item.avatar} />
+              <CustomTitle
+                title={item.username}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.creatorText}
+              />
+            </View>
           )}
         />
         <View style={{height: 100}} />
@@ -257,7 +272,6 @@ const styles = StyleSheet.create({
     height: 200,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
-
     resizeMode: 'cover',
   },
   openModalStyle: {
@@ -281,5 +295,23 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     flexDirection: 'row',
+  },
+  creatorItems: {
+    margin: 10,
+    padding: 10,
+    gap: 10,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  creatorAvatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  creatorText: {
+    fontSize: 14,
+    maxWidth: 100,
+    textAlign: 'center',
   },
 });

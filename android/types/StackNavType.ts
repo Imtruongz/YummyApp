@@ -17,8 +17,8 @@ export type RootStackParamList = {
     foodDescription: string;
     foodIngredient: string;
     foodThumbnail: string;
-    created_at: Date;
-    updated_at: Date;
+    created_at: string;
+    updated_at: string;
   };
   SettingPage: undefined;
   AddFoodPage: undefined;

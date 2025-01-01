@@ -14,6 +14,7 @@ interface CustomInputProps {
   multiline?: boolean;
   numberOfLines?: number;
   style?: object;
+  isDisabled?: boolean;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -28,6 +29,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   multiline = false,
   numberOfLines = 1,
   style,
+  isDisabled = true,
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -47,6 +49,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         placeholder={placeholder}
         multiline={multiline}
         numberOfLines={numberOfLines}
+        editable={isDisabled}
       />
       {!iconOnLeft && showIcon && (
         <AntDesignIcon

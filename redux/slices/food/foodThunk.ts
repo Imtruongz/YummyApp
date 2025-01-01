@@ -1,24 +1,37 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-
+import {food} from './types';
 import api from '../../../api/api';
 
 export const getAllFoodAPI = createAsyncThunk(
   'food/getAllFoodAPI',
-  async (_, {rejectWithValue}) => {
+  async (_, thunkAPI) => {
     try {
-      const response = await api.get('/foods/getAll');
+      const response = await api.get<food[]>('/foods/getAll', {
+        signal: thunkAPI.signal,
+      });
+
+      // Kiểm tra nếu response.data là undefined hoặc không hợp lệ
+      if (!response.data || response.data.length === 0) {
+        console.error('No data returned from the server for getAllFoodAPI');
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+
+      // Trả về dữ liệu hợp lệ
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Errorrrr fooood:',
+      console.error(
+        'Error from getAllFoodAPI',
         error.message,
-       'Data',
+        'Response data error from getAllFoodAPI',
         error.response?.data,
       );
-      return rejectWithValue(error.response?.data);
+
+      // Trả về thông báo lỗi qua rejectWithValue nếu cần
+      return thunkAPI.rejectWithValue(error.response?.data || 'Unexpected error occurred');
     }
   },
 );
+
 
 //Get food by id
 export const getFoodByIdAPI = createAsyncThunk(
@@ -31,7 +44,7 @@ export const getFoodByIdAPI = createAsyncThunk(
       console.log(
         'Errorrrr fooood:',
         error.message,
-       'Data',
+        'Data',
         error.response?.data,
       );
       return rejectWithValue(error.response?.data);
@@ -49,7 +62,7 @@ export const deleteFoodAPI = createAsyncThunk(
       console.log(
         'Errorrrr fooood:',
         error.message,
-       'Data',
+        'Data',
         error.response?.data,
       );
       return rejectWithValue(error.response?.data);

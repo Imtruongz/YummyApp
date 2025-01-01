@@ -19,15 +19,24 @@ interface UpdatePayload {
   email?: string;
   phoneNumber?: string;
   avatar?: string;
+  description?: string;
 }
 
 interface User {
   userId?: string;
   username?: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
   phoneNumber?: string;
   avatar?: string;
+  description?: string;
+  createdAt?: Date;
+}
+
+export interface UserState {
+  ListUser: User[];
+  isLoadingUser: boolean;
+  isErrorUser: boolean;
 }
 
 interface AuthState {

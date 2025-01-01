@@ -132,7 +132,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
               </View>
             </View>
             <CustomTitle title={user?.username} />
-            <Text>Description</Text>
+            <Text>{user?.description}</Text>
           </View>
         )}
       </View>

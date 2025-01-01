@@ -17,16 +17,19 @@ import img from '../utils/urlImg.ts';
 import CustomInput from '../components/customize/Input.tsx';
 import CustomButton from '../components/customize/Button.tsx';
 import {userUpdateAPI} from '../redux/slices/auth/authThunk.ts';
+import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 interface SettingProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
-const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
-}) => {
+const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
   const dispatch = useAppDispatch();
   const [username, setusername] = useState<string>('');
   const [avatar, setavatar] = useState<string>('');
+  const [description, setdescription] = useState<string>('');
 
   const {user, isLoadingUser, isErrorUser} = useAppSelector(
     (state: RootState) => state.auth,
@@ -60,10 +63,14 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
       dispatch(
         userUpdateAPI({
           userId: user?.userId,
-          username: username,
-          avatar: avatar,
+          username: user?.username,
+          avatar: user?.avatar,
+          description: user?.description,
         }),
       );
+      setusername(username);
+      setdescription(description);
+      setavatar(avatar);
       Toast.show({
         type: 'success',
         text1: 'Update success',
@@ -79,13 +86,20 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (user?.username && user?.avatar) {
-      setusername(user.username);
-      setavatar(user.avatar);
-    }
-    console.log('re-render');
-  }, [dispatch, user?.avatar, user?.username]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const userId = await AsyncStorage.getItem('userId'); // Chờ giá trị userId
+  //       if (userId) {
+  //         dispatch(getUserByIdAPI(userId));
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching userId from AsyncStorage:', error);
+  //     }
+  //   };
+
+  //   fetchData(); // Gọi hàm fetchData
+  // }, []); // Dependency chỉ chạy một lần ở lần render đầu tiên
 
   return (
     <View style={styles.container}>
@@ -105,6 +119,14 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({
           value={username}
           onChangeText={setusername}
           placeholder="Enter your username"
+        />
+        <CustomInput placeholder={user?.email} isDisabled={false} />
+        <CustomInput placeholder={user?.phoneNumber} isDisabled={false} />
+        <CustomInput
+          value={description}
+          onChangeText={setdescription}
+          placeholder="Enter your description"
+          isDisabled={true}
         />
         <CustomButton onPress={handleUpdateAccount} title="Save" />
         <CustomButton title="Cancel" />

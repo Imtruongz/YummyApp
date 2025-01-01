@@ -40,7 +40,7 @@ export const userUpdateAPI = createAsyncThunk(
   'auth/userUpdateAPI',
   async (payload: UpdatePayload, {rejectWithValue}) => {
     try {
-      const response = await api.put('/users/update', payload);
+      const response = await api.patch('/users/update', payload);
       return response.data;
     } catch (error: any) {
       console.log('Errorrrr:', error.message, 'Data', error.response?.data);
@@ -71,6 +71,24 @@ export const getUserByIdAPI = createAsyncThunk(
     } catch (error: any) {
       console.log(
         'Error in getUserByIdAPI:',
+        error.message,
+        'Data',
+        error.response?.data,
+      );
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const getAllUsers = createAsyncThunk(
+  'auth/getAllUsers',
+  async (_, {rejectWithValue}) => {
+    try {
+      const response = await api.get('/users/getAll');
+      return response.data;
+    } catch (error: any) {
+      console.log(
+        'Error in getAllUsers:',
         error.message,
         'Data',
         error.response?.data,

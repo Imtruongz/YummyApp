@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AuthState, User} from './types';
- import {userLoginAPI, userRegisterAPI, getUserByIdAPI, userUpdateAPI} from './authThunk';
+import {userLoginAPI, userRegisterAPI, getUserByIdAPI, userUpdateAPI, userDeleteAPI, getAllUsers} from './authThunk';
 
 const initialState: AuthState = {
   user: null,
@@ -73,6 +73,34 @@ const authSlice = createSlice({
       state.isErrorUser = false;
     });
     builder.addCase(userUpdateAPI.rejected, state => {
+      state.isLoadingUser = false;
+      state.isErrorUser = true;
+    });
+    //Delete User
+    builder.addCase(userDeleteAPI.pending, state => {
+      state.isLoadingUser = true;
+      state.isErrorUser = false;
+    });
+    builder.addCase(userDeleteAPI.fulfilled, state => {
+      state.user = null;
+      state.isLoadingUser = false;
+      state.isErrorUser = false;
+    });
+    builder.addCase(userDeleteAPI.rejected, state => {
+      state.isLoadingUser = false;
+      state.isErrorUser = true;
+    });
+    //Get All Users
+    builder.addCase(getAllUsers.pending, state => {
+      state.isLoadingUser = true;
+      state.isErrorUser = false;
+    });
+    builder.addCase(getAllUsers.fulfilled, (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
+      state.isLoadingUser = false;
+      state.isErrorUser = false;
+    });
+    builder.addCase(getAllUsers.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
     });

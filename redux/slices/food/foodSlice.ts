@@ -12,7 +12,7 @@ const foodSlice = createSlice({
   name: 'food',
   initialState,
   reducers: {},
-  extraReducers: builder => {
+  extraReducers(builder) {
     // Get all food
     builder.addCase(getAllFoodAPI.pending, state => {
       state.isLoadingFood = true;
@@ -20,7 +20,7 @@ const foodSlice = createSlice({
     });
     builder.addCase(
       getAllFoodAPI.fulfilled,
-      (state, action: PayloadAction<food[]>) => {
+      (state, action) => {
         state.foodList = action.payload;
         state.isLoadingFood = false;
         state.isErrorFood = false;
@@ -60,7 +60,7 @@ const foodSlice = createSlice({
         const deleteFoodIndex = state.foodList.findIndex(
           food => food.foodId === action.payload[0].foodId,
         );
-        if(deleteFoodIndex !== -1) {
+        if (deleteFoodIndex !== -1) {
           state.foodList.splice(deleteFoodIndex, 1);
         }
         state.isLoadingFood = false;

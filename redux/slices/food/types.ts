@@ -6,12 +6,12 @@ interface food {
   foodDescription: string,
   foodIngredient: string,
   foodThumbnail: string,
-  created_at: Date
-  updated_at: Date
+  created_at: string
+  updated_at: string
 }
 
 interface foodState {
-  foodList: food[] | null;
+  foodList: food[]
   isLoadingFood: boolean;
   isErrorFood: boolean;
 }
