@@ -1,7 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/api';
 import {LoginPayload, RegisterPayload, UpdatePayload} from './types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const userLoginAPI = createAsyncThunk(
   'auth/userLoginAPI',
@@ -9,9 +8,6 @@ export const userLoginAPI = createAsyncThunk(
     try {
       const response = await api.post('/users/login', payload);
       if (response && response.data) {
-        AsyncStorage.setItem('accessToken', response.data.accessToken);
-        AsyncStorage.setItem('refreshToken', response.data.refreshToken);
-        AsyncStorage.setItem('userId', response.data.user.userId);
         return response.data;
       }
     } catch (error: any) {

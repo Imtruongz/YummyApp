@@ -31,9 +31,10 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import colors from '../utils/color';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
+
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -68,19 +69,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   const {user, isLoadingUser, isErrorUser} = useAppSelector(
     (state: RootState) => state.auth,
   );
+
   const {foodList} = useAppSelector((state: RootState) => state.food);
-
-  const fetchData = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (userId) {
-        dispatch(getUserByIdAPI(userId));
-      }
-    } catch (error) {
-      console.error('Error fetching data from AsyncStorage', error);
-    }
-  };
 
   const renderTabBar = (
     props: SceneRendererProps & {navigationState: NavigationState<Route>},
@@ -94,10 +84,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     />
   );
 
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(getUserByIdAPI(storage.getString('userId') || ''));
+  }, [dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -127,7 +116,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
               />
               <View style={styles.myInfo3}>
                 <InfoItem number={foodList?.length ?? 0} label="Posts" />
-                <InfoItem number= "0" label="Follower" />
+                <InfoItem number="0" label="Follower" />
                 <InfoItem number="0" label="Following" />
               </View>
             </View>

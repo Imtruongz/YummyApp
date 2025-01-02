@@ -17,7 +17,6 @@ import CustomTextFooter from '../components/customize/TextFooter';
 import CustomAuthHeader from '../components/customize/authHeader';
 
 import color from '../utils/color';
-import auth from '@react-native-firebase/auth';
 import img from '../utils/urlImg.ts';
 
 interface ForgotPasswordPageProps
@@ -32,7 +31,6 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
 
   const handleResetPassword = async () => {
     try {
-      await auth().sendPasswordResetEmail(email);
       setIsErrorMessage(false);
       setErrorMessage('Email sent, please check your email');
     } catch (error: any) {

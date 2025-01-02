@@ -78,7 +78,7 @@ const AddFoodPage = () => {
   const handleSubmit = async () => {
     const updatedFormData = {
       ...formData,
-      userId: user?.userId || '', // Lấy userId từ Redux store
+      userId: user?.userId || '',
     };
     try {
       // Dispatch the add food action

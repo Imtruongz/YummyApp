@@ -23,6 +23,10 @@ import {verifyEmail, verifyPassword} from '../utils/validate';
 import {useAppDispatch} from '../redux/hooks';
 import {userLoginAPI} from '../redux/slices/auth/authThunk';
 
+import { MMKV } from 'react-native-mmkv';
+
+const storage = new MMKV();
+
 interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
 
@@ -56,6 +60,9 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
         const user = resultAction.payload;
         if (user) {
           navigation.navigate('BottomTabs');
+          console.log('Login success, save userId', user.user.userId , 'accessToken', user.accessToken);
+          storage.set('userId', String(user.user.userId || ''));
+          storage.set('accessToken', user.accessToken);
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');

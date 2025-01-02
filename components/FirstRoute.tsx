@@ -15,12 +15,15 @@ import {RootState} from '../redux/store';
 import {food} from '../redux/slices/food/types';
 
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../utils/color';
+
+import { MMKV } from 'react-native-mmkv';
+const storage = new MMKV();
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const {foodList} = useAppSelector((state: RootState) => state.food);
+  const {user} = useAppSelector((state: RootState) => state.auth);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -41,21 +44,9 @@ const FirstRoute = () => {
     setCurrentItem(null);
   };
 
-  const fetchData = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (userId) {
-        dispatch(getFoodByIdAPI(userId));
-      }
-    } catch (error) {
-      console.error('Error fetching data from AsyncStorage', error);
-    }
-  };
-
   useEffect(() => {
-    fetchData();
-  }, []);
+    dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
+  }, [dispatch]);
 
   return (
     <>
@@ -73,7 +64,6 @@ const FirstRoute = () => {
             </View>
           </TouchableOpacity>
         ))}
-
       </ScrollView>
       <Dialog.Container visible={visible}>
         <Dialog.Title>Delete</Dialog.Title>

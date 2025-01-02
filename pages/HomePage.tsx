@@ -7,7 +7,6 @@ import {
   Text,
   View,
   Image,
-  Touchable,
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect} from 'react';
@@ -31,7 +30,9 @@ import {RootState} from '../redux/store';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI, getAllUsers} from '../redux/slices/auth/authThunk';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { MMKV } from 'react-native-mmkv';
+const storage = new MMKV();
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
@@ -43,22 +44,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const {user} = useAppSelector((state: RootState) => state.auth);
   const {categoryList} = useAppSelector((state: RootState) => state.categories);
 
-  const fetchData = async () => {
-    try {
-      const userId = await AsyncStorage.getItem('userId');
-
-      if (userId) {
-        dispatch(getUserByIdAPI(userId));
-      }
-    } catch (error) {
-      console.error('Error fetching data from AsyncStorage', error);
-    }
-  };
-
   useEffect(() => {
     dispatch(getAllCategoriesAPI());
     dispatch(getAllFoodAPI());
     dispatch(getAllUsers());
+    dispatch(getUserByIdAPI(storage.getString('userId') || ''));
   }, [dispatch]);
 
   const greetingMessage = () => {

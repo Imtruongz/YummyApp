@@ -1,6 +1,8 @@
 // use axios to get data from the api
 import axios, {AxiosInstance} from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
+
 const Yummy_API: string = 'http://10.100.13.24:4040/api';
 
 // const api = axios.create({
@@ -19,8 +21,8 @@ class Http {
 const api = new Http().instance;
 
 //Lấy token từ AsyncStorage
-api.interceptors.request.use(async config => {
-  const token = await AsyncStorage.getItem('accessToken');
+api.interceptors.request.use( config => {
+  const token = storage.getString('accessToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
