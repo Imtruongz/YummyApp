@@ -1,7 +1,7 @@
 export interface category {
-  categoryId?: string;
-  categoryName?: string;
-  categoryThumbnail?: string;
+  categoryId: string;
+  categoryName: string;
+  categoryThumbnail: string;
 }
 
 export interface categoryState {

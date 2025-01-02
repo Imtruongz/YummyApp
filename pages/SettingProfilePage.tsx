@@ -21,7 +21,8 @@ import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
 
 interface SettingProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
@@ -59,18 +60,14 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
 
   const handleUpdateAccount = async () => {
     try {
-      // Update user account
       dispatch(
         userUpdateAPI({
-          userId: user?.userId,
+          userId: user?.userId || '',
           username: user?.username,
           avatar: user?.avatar,
           description: user?.description,
         }),
       );
-      setusername(username);
-      setdescription(description);
-      setavatar(avatar);
       Toast.show({
         type: 'success',
         text1: 'Update success',
@@ -86,20 +83,19 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const userId = await AsyncStorage.getItem('userId'); // Chờ giá trị userId
-  //       if (userId) {
-  //         dispatch(getUserByIdAPI(userId));
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching userId from AsyncStorage:', error);
-  //     }
-  //   };
+  //  useEffect(() => {
+  //     dispatch(getUserByIdAPI(storage.getString('userId') || ''));
+  //   }, [dispatch]);
 
-  //   fetchData(); // Gọi hàm fetchData
-  // }, []); // Dependency chỉ chạy một lần ở lần render đầu tiên
+    useEffect(() => {
+      if(user?.username && user.avatar && user.description) {
+        setusername(user.username);
+        setavatar(user.avatar);
+        setdescription(user.description);
+      }
+      dispatch(getUserByIdAPI(storage.getString('userId') || ''));
+      console.log('re-render');
+    }, [dispatch, user?.username, user?.avatar, user?.description]);
 
   return (
     <View style={styles.container}>

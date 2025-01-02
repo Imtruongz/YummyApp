@@ -1,6 +1,6 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {getAllCategoriesAPI} from './categoryThunk';
-import {categoryState, category} from './types';
+import {categoryState} from './types';
 
 const initialState: categoryState = {
   categoryList: [],
@@ -17,14 +17,11 @@ const categoriesSlice = createSlice({
       state.isLoadingCategory = true;
       state.isErrorCategory = false;
     });
-    builder.addCase(
-      getAllCategoriesAPI.fulfilled,
-      (state, action: PayloadAction<category[]>) => {
-        state.categoryList = action.payload;
-        state.isLoadingCategory = false;
-        state.isErrorCategory = false;
-      },
-    );
+    builder.addCase(getAllCategoriesAPI.fulfilled, (state, action) => {
+      state.categoryList = action.payload ?? [];
+      state.isLoadingCategory = false;
+      state.isErrorCategory = false;
+    });
     builder.addCase(getAllCategoriesAPI.rejected, state => {
       state.isLoadingCategory = false;
       state.isErrorCategory = true;

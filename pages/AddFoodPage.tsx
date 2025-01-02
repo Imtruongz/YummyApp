@@ -22,6 +22,9 @@ import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {food} from '../redux/slices/food/types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import colors from '../utils/color';
+import CustomTitle from '../components/customize/Title';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 // Initial state
 const initialState: food = {
@@ -102,111 +105,123 @@ const AddFoodPage = () => {
   // Còn thiếu id, category id, user id , validate , giới hạn text
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="Add Food" iconName="close" />
-      <ScrollView style={styles.body}>
-        <View>
-          <Text style={styles.label}>Food Image</Text>
-          <Pressable onPress={requestCameraPermission}>
-            <Image
-              source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
-              style={styles.previewImg}
+      <ScrollView>
+        <View style={styles.body}>
+          <View style={styles.foodImg}>
+            <CustomTitle title="Choose Image" />
+            <Pressable onPress={requestCameraPermission}>
+              <Image
+                source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
+                style={styles.previewImg}
+              />
+            </Pressable>
+            {errorForm?.foodThumbnail && (
+              <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
+            )}
+          </View>
+
+          <View style={styles.foodName}>
+            <CustomTitle title="Food Name" />
+            <CustomInput
+              placeholder="Enter food name"
+              value={formData.foodName}
+              onChangeText={
+                text => setFormData(prev => ({...prev, foodName: text})) //2
+              }
             />
-          </Pressable>
-          {errorForm?.foodThumbnail && (
-            <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
-          )}
+            {errorForm?.foodName && (
+              <Text style={styles.errorText}>{errorForm.foodName}</Text>
+            )}
+          </View>
+
+          <View style={styles.foodDescription}>
+            <CustomTitle title="Description" />
+            <CustomInput
+              placeholder="Enter description"
+              value={formData.foodDescription}
+              onChangeText={
+                text => setFormData(prev => ({...prev, foodDescription: text})) //5
+              }
+            />
+            {errorForm?.foodDescription && (
+              <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
+            )}
+          </View>
+
+          <View style={styles.foodcategory}>
+            <CustomTitle title="Category" />
+
+            <SelectDropdown
+              data={categoryList || []}
+              onSelect={selectedItem => {
+                console.log(selectedItem.categoryId);
+                setFormData(prev => ({
+                  ...prev,
+                  categoryId: selectedItem.categoryId,
+                }));
+              }}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View style={styles.dropdownButtonStyle}>
+                    <Text style={styles.dropdownButtonTxtStyle}>
+                      {(selectedItem && selectedItem.categoryName) ||
+                        'Category Name'}
+                    </Text>
+                    <Icon
+                      name={isOpened ? 'chevron-up' : 'chevron-down'}
+                      style={styles.dropdownButtonArrowStyle}
+                    />
+                  </View>
+                );
+              }}
+              renderItem={(item, isSelected) => {
+                return (
+                  <View
+                    style={{
+                      ...styles.dropdownItemStyle,
+                      ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                    }}>
+                    <Text style={styles.dropdownItemTxtStyle}>
+                      {item.categoryName}
+                    </Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+            />
+          </View>
+
+          <View style={styles.foodIngredient}>
+            <CustomTitle title="Ingredient" />
+            <CustomInput
+              placeholder="Enter ingredients"
+              value={formData.foodIngredient}
+              onChangeText={
+                text => setFormData(prev => ({...prev, foodIngredient: text})) //6
+              }
+            />
+          </View>
+
+          <View style={styles.foodSteps}>
+            <CustomTitle title="Step" />
+            <CustomInput
+              placeholder="Enter steps or recipe"
+              value={formData.foodSteps}
+              onChangeText={
+                text => setFormData(prev => ({...prev, foodSteps: text})) //8
+              }
+            />
+          </View>
         </View>
-
-        <Text style={styles.label}>Food Name</Text>
-        <CustomInput
-          placeholder="Enter food name"
-          value={formData.foodName}
-          onChangeText={
-            text => setFormData(prev => ({...prev, foodName: text})) //2
-          }
-        />
-        {errorForm?.foodName && (
-          <Text style={styles.errorText}>{errorForm.foodName}</Text>
-        )}
-
-        <Text style={styles.label}>Description</Text>
-        <CustomInput
-          placeholder="Enter description"
-          value={formData.foodDescription}
-          onChangeText={
-            text => setFormData(prev => ({...prev, foodDescription: text})) //5
-          }
-        />
-        {errorForm?.foodDescription && (
-          <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
-        )}
-
-        <Text style={styles.label}>Category</Text>
-
-        <SelectDropdown
-          data={categoryList || []}
-          onSelect={selectedItem => {
-            console.log(selectedItem.categoryId);
-            setFormData(prev => ({
-              ...prev,
-              categoryId: selectedItem.categoryId,
-            }));
-          }}
-          renderButton={(selectedItem, isOpened) => {
-            return (
-              <View style={styles.dropdownButtonStyle}>
-                <Text style={styles.dropdownButtonTxtStyle}>
-                  {(selectedItem && selectedItem.categoryName) ||
-                    'Select your mood'}
-                </Text>
-                <Icon
-                  name={isOpened ? 'chevron-up' : 'chevron-down'}
-                  style={styles.dropdownButtonArrowStyle}
-                />
-              </View>
-            );
-          }}
-          renderItem={(item, isSelected) => {
-            return (
-              <View
-                style={{
-                  ...styles.dropdownItemStyle,
-                  ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                }}>
-                <Text style={styles.dropdownItemTxtStyle}>
-                  {item.categoryName}
-                </Text>
-              </View>
-            );
-          }}
-          showsVerticalScrollIndicator={false}
-          dropdownStyle={styles.dropdownMenuStyle}
-        />
-
-        <Text style={styles.label}>Ingredients</Text>
-        <CustomInput
-          placeholder="Enter ingredients"
-          value={formData.foodIngredient}
-          onChangeText={
-            text => setFormData(prev => ({...prev, foodIngredient: text})) //6
-          }
-        />
-
-        <Text style={styles.label}>Recipe Steps</Text>
-        <CustomInput
-          placeholder="Enter steps or recipe"
-          value={formData.foodSteps}
-          onChangeText={
-            text => setFormData(prev => ({...prev, foodSteps: text})) //8
-          }
-        />
       </ScrollView>
 
       <View style={styles.buttons}>
         <CustomButton title="Add Food" onPress={handleSubmit} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -218,11 +233,14 @@ const styles = StyleSheet.create({
     backgroundColor: color.light,
   },
   body: {
-    padding: 20,
+    margin: 20,
+    flexDirection: 'column',
+    backgroundColor: color.secondary,
+    borderRadius: 12,
   },
   previewImg: {
-    width: 100,
-    height: 100,
+    width: 200,
+    height: 150,
     borderRadius: 12,
   },
   errorText: {
@@ -239,12 +257,12 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginVertical: 20,
   },
 
   dropdownButtonStyle: {
-    width: 200,
-    height: 50,
+    width: 140,
+    height: 40,
     backgroundColor: '#E9ECEF',
     borderRadius: 12,
     flexDirection: 'row',
@@ -254,12 +272,12 @@ const styles = StyleSheet.create({
   },
   dropdownButtonTxtStyle: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 13,
     fontWeight: '500',
     color: '#151E26',
   },
   dropdownButtonArrowStyle: {
-    fontSize: 28,
+    fontSize: 22,
   },
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
@@ -284,5 +302,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 28,
+  },
+
+  foodImg: {
+    marginBottom: 20,
+    //backgroundColor: 'blue',
+    width: 300,
+  },
+  foodName: {
+    marginBottom: 20,
+    //backgroundColor: 'yellow',
+  },
+  foodDescription: {
+    marginBottom: 20,
+    //backgroundColor: 'green',
+  },
+  foodcategory: {
+    marginBottom: 20,
+    //backgroundColor: 'red',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  foodIngredient: {
+    marginBottom: 20,
+    //backgroundColor: 'pink',
+  },
+  foodSteps: {
+    marginBottom: 20,
+    //backgroundColor: 'purple',
   },
 });

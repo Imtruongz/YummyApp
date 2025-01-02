@@ -23,7 +23,6 @@ const storage = new MMKV();
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const {foodList} = useAppSelector((state: RootState) => state.food);
-  const {user} = useAppSelector((state: RootState) => state.auth);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
