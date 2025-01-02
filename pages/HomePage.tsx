@@ -31,7 +31,7 @@ import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI, getAllUsers} from '../redux/slices/auth/authThunk';
 
-import { MMKV } from 'react-native-mmkv';
+import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
 interface HomePageProps
@@ -40,8 +40,8 @@ interface HomePageProps
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
   const {foodList} = useAppSelector(state => state.food);
-
   const {user} = useAppSelector((state: RootState) => state.auth);
+  const {ListUser} = useAppSelector((state: RootState) => state.user);
   const {categoryList} = useAppSelector((state: RootState) => state.categories);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           <AntDesignIcon name="arrowright" size={24} color={color.dark} />
         </View>
         <FlatList
-          data={user}
+          data={ListUser}
           horizontal
           showsHorizontalScrollIndicator={true}
           keyExtractor={item => item.userId}

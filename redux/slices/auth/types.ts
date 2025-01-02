@@ -1,4 +1,5 @@
 // types.ts
+
 interface LoginPayload {
   email: string;
   password: string;
@@ -13,7 +14,7 @@ interface RegisterPayload {
 }
 
 interface UpdatePayload {
-  userId?: string;
+  userId: string;
   username?: string;
   password?: string;
   email?: string;
@@ -23,7 +24,7 @@ interface UpdatePayload {
 }
 
 interface User {
-  userId?: string;
+  userId: string;
   username?: string;
   email?: string;
   password?: string;

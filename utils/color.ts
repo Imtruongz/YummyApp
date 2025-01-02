@@ -7,6 +7,7 @@ type Colors = {
   danger: string;
   light: string;
   dark: string;
+  loadingColor: string;
 };
 
 const colors: Colors = {
@@ -17,6 +18,7 @@ const colors: Colors = {
   danger: '#d9534f',
   light: '#ffffff',
   dark: '#333',
+  loadingColor: '#FB9400',
 };
 
 export default colors;

@@ -145,7 +145,7 @@ const AddFoodPage = () => {
         <Text style={styles.label}>Category</Text>
 
         <SelectDropdown
-          data={categoryList}
+          data={categoryList || []}
           onSelect={selectedItem => {
             console.log(selectedItem.categoryId);
             setFormData(prev => ({
@@ -235,9 +235,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: color.dark,
-  },
-  dropdownButtonStyle: {
-    marginBottom: 16,
   },
   buttons: {
     flexDirection: 'row',

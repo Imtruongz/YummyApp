@@ -1,6 +1,12 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {AuthState, User} from './types';
-import {userLoginAPI, userRegisterAPI, getUserByIdAPI, userUpdateAPI, userDeleteAPI, getAllUsers} from './authThunk';
+import {
+  userLoginAPI,
+  userRegisterAPI,
+  getUserByIdAPI,
+  userUpdateAPI,
+  userDeleteAPI,
+} from './authThunk';
 
 const initialState: AuthState = {
   user: null,
@@ -12,12 +18,6 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // setUser: (state, action: PayloadAction<User>) => {
-    //   state.user = action.payload;
-    // },
-    // clearUser: state => {
-    //   state.user = null;
-    // },
   },
   extraReducers: builder => {
     //Login
@@ -25,11 +25,14 @@ const authSlice = createSlice({
       state.isLoadingUser = true;
       state.isErrorUser = false;
     });
-    builder.addCase(userLoginAPI.fulfilled, (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
+    builder.addCase(
+      userLoginAPI.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isLoadingUser = false;
+        state.isErrorUser = false;
+      },
+    );
     builder.addCase(userLoginAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
@@ -39,11 +42,14 @@ const authSlice = createSlice({
       state.isLoadingUser = true;
       state.isErrorUser = false;
     });
-    builder.addCase(userRegisterAPI.fulfilled, (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
+    builder.addCase(
+      userRegisterAPI.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isLoadingUser = false;
+        state.isErrorUser = false;
+      },
+    );
     builder.addCase(userRegisterAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
@@ -53,11 +59,14 @@ const authSlice = createSlice({
       state.isLoadingUser = true;
       state.isErrorUser = false;
     });
-    builder.addCase(getUserByIdAPI.fulfilled, (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
+    builder.addCase(
+      getUserByIdAPI.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isLoadingUser = false;
+        state.isErrorUser = false;
+      },
+    );
     builder.addCase(getUserByIdAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
@@ -67,11 +76,14 @@ const authSlice = createSlice({
       state.isLoadingUser = true;
       state.isErrorUser = false;
     });
-    builder.addCase(userUpdateAPI.fulfilled, (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
+    builder.addCase(
+      userUpdateAPI.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isLoadingUser = false;
+        state.isErrorUser = false;
+      },
+    );
     builder.addCase(userUpdateAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
@@ -87,20 +99,6 @@ const authSlice = createSlice({
       state.isErrorUser = false;
     });
     builder.addCase(userDeleteAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
-    });
-    //Get All Users
-    builder.addCase(getAllUsers.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(getAllUsers.fulfilled, (state, action: PayloadAction<User>) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
-    builder.addCase(getAllUsers.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
     });

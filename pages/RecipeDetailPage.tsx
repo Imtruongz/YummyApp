@@ -22,6 +22,8 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
 import { getDetailFoodAPI } from '../redux/slices/food/foodThunk';
 
+import Loading from '../components/skeleton/Loading';
+
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> {}
 
@@ -49,7 +51,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   }, [dispatch, foodId]);
 
   if (isLoadingFood) {
-    return <Text>Loading...</Text>; // Hiển thị khi dữ liệu đang được tải
+    return <Loading />; // Hiển thị khi dữ liệu đang được tải
   }
 
   if (isErrorFood || !selectedFood) {

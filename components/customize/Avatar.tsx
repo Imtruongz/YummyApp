@@ -3,7 +3,7 @@ import React from 'react';
 import colors from '../../utils/color';
 
 interface CustomAvatarProps {
-  image: string;
+  image?: string;
   style?: object;
 }
 
