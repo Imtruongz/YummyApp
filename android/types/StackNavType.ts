@@ -10,18 +10,11 @@ export type RootStackParamList = {
   };
   FoodPage: undefined;
   RecipeDetailPage: {
-    foodId: string;
-    foodName?: string;
-    categoryId: string;
-    userId: string;
-    foodDescription: string;
-    foodIngredient: string;
-    foodThumbnail: string;
-    created_at: string;
-    updated_at: string;
+    foodId?: string;
   };
   SettingPage: undefined;
   AddFoodPage: undefined;
   SettingProfilePage: undefined;
   changePasswordPage: undefined;
+  ListFoodPage: undefined;
 };

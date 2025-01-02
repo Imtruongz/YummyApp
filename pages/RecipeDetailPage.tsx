@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -18,6 +18,9 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { RootState } from '../redux/store';
+import { getDetailFoodAPI } from '../redux/slices/food/foodThunk';
 
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> {}
@@ -26,22 +29,32 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   route,
   navigation,
 }) => {
-  const {
-    foodId,
-    foodName,
-    categoryId,
-    userId,
-    foodDescription,
-    foodIngredient,
-    foodThumbnail,
-    created_at,
-    updated_at,
-  } = route.params;
+  const {foodId} = route.params;
   const [showstrInstructions, setShowstrInstructions] = useState(false);
 
   const handleAddFavoriteFood = () => {
     console.log('Add favorite food');
   };
+
+
+  const dispatch = useAppDispatch();
+  const {selectedFood, isLoadingFood, isErrorFood} = useAppSelector(
+    (state: RootState) => state.food,
+  );
+
+  useEffect(() => {
+    if (foodId) {
+      dispatch(getDetailFoodAPI(foodId));
+    }
+  }, [dispatch, foodId]);
+
+  if (isLoadingFood) {
+    return <Text>Loading...</Text>; // Hiển thị khi dữ liệu đang được tải
+  }
+
+  if (isErrorFood || !selectedFood) {
+    return <Text>Error loading recipe details.</Text>; // Hiển thị khi có lỗi
+  }
 
   return (
     <>
@@ -65,29 +78,29 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         <ScrollView>
           <ImageBackground
             style={styles.imgHeader}
-            source={{uri: foodThumbnail}}>
+            source={{uri: selectedFood.foodThumbnail}}>
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
               style={styles.linearGradient}>
-              <Text style={styles.textTitle}>{foodName}</Text>
+              <Text style={styles.textTitle}>{selectedFood.foodName}</Text>
             </LinearGradient>
           </ImageBackground>
 
           <View style={styles.body}>
             <View style={styles.headerBlock2}>
-              <CustomAvatar image={img.UndefineImg} />
+              <CustomAvatar image={ selectedFood.userDetail?.avatar || img.UndefineImg} />
               <View style={styles.headerBlock3}>
-                <CustomTitle title="UserName" />
-                <Text>email</Text>
+                <CustomTitle title={selectedFood.userDetail?.username} />
+                <Text>{selectedFood.userDetail?.email}</Text>
               </View>
             </View>
 
             <CustomTitle title="Description" />
             {showstrInstructions ? (
-              <Text>{foodDescription}</Text>
+              <Text>{selectedFood.foodDescription}</Text>
             ) : (
               <Text>
-                {foodDescription ? foodDescription.substring(0, 200) : ''}...
+                {selectedFood.foodDescription ? selectedFood.foodDescription.substring(0, 200) : ''}...
               </Text>
             )}
             {!showstrInstructions && (

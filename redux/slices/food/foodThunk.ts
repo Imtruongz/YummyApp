@@ -27,13 +27,13 @@ export const getAllFoodAPI = createAsyncThunk(
       );
 
       // Trả về thông báo lỗi qua rejectWithValue nếu cần
-      return thunkAPI.rejectWithValue(error.response?.data || 'Unexpected error occurred');
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Unexpected error occurred',
+      );
     }
   },
 );
 
-
-//Get food by id
 export const getFoodByIdAPI = createAsyncThunk(
   'food/getFoodByIdAPI',
   async (userId: string, {rejectWithValue}) => {
@@ -52,6 +52,29 @@ export const getFoodByIdAPI = createAsyncThunk(
   },
 );
 
+export const addFoodAPI = createAsyncThunk(
+  'food/addFoodAPI',
+  async (newFood: food, thunkAPI) => {
+    try {
+      const response = await api.post<food>('/foods/add', newFood, {
+        signal: thunkAPI.signal,
+      });
+      if (!response || !response.data) {
+        console.error('No data returned from the server for addFoodAPI');
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+      return response.data;
+    } catch (error: any) {
+      console.log(
+        'Errorrrr fooood:',
+        error.message,
+        'Data',
+        error.response?.data,
+      );
+    }
+  },
+);
+
 export const deleteFoodAPI = createAsyncThunk(
   'food/deleteFoodAPI',
   async (foodId: string, {rejectWithValue}) => {
@@ -66,6 +89,30 @@ export const deleteFoodAPI = createAsyncThunk(
         error.response?.data,
       );
       return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
+export const getDetailFoodAPI = createAsyncThunk(
+  'food/getDetailFoodAPI',
+  async (foodId: string, thunkAPI) => {
+    try {
+      const response = await api.get<food>(`/foods/getDetail/${foodId}`, {
+        signal: thunkAPI.signal,
+      });
+      if (!response || !response.data) {
+        console.error('No data returned from the server for addFoodAPI');
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+      console.log('Data from getDetailFoodAPI:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.log(
+        'Error food from getDetailFoodAPI:',
+        error.message,
+        'Data from getDetailFoodAPI',
+        error.response?.data,
+      );
     }
   },
 );

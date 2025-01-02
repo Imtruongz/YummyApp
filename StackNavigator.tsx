@@ -21,6 +21,7 @@ import SettingPage from './pages/SettingPage';
 import AddFoodPage from './pages/AddFoodPage';
 import SettingProfilePage from './pages/SettingProfilePage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
+import ListFoodPage from './pages/ListFoodPage';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -127,6 +128,11 @@ function StackNavigator() {
         <Stack.Screen
           name="changePasswordPage"
           component={ChangePasswordPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ListFoodPage"
+          component={ListFoodPage}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

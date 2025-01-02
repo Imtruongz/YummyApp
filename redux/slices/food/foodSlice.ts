@@ -1,9 +1,10 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getAllFoodAPI, getFoodByIdAPI, deleteFoodAPI} from './foodThunk';
+import {getAllFoodAPI, getFoodByIdAPI , addFoodAPI , deleteFoodAPI, getDetailFoodAPI} from './foodThunk';
 import {foodState, food} from './types';
 
 const initialState: foodState = {
   foodList: [],
+  selectedFood: null,
   isLoadingFood: false,
   isErrorFood: false,
 };
@@ -47,6 +48,26 @@ const foodSlice = createSlice({
       state.isLoadingFood = false;
       state.isErrorFood = true;
     });
+
+    // Add food
+    builder.addCase(addFoodAPI.pending, state => {
+      state.isLoadingFood = true;
+      state.isErrorFood = false;
+    });
+    builder.addCase(
+      addFoodAPI.fulfilled,
+      (state, action: PayloadAction<food | undefined>) => {
+        if (action.payload) {
+          state.foodList.push(action.payload);
+        }
+        state.isLoadingFood = false;
+        state.isErrorFood = false;
+      },
+    );
+    builder.addCase(addFoodAPI.rejected, state => {
+      state.isLoadingFood = false;
+      state.isErrorFood = true;
+    });
     // Delete the food
     builder.addCase(deleteFoodAPI.pending, state => {
       state.isLoadingFood = true;
@@ -68,6 +89,25 @@ const foodSlice = createSlice({
       },
     );
     builder.addCase(deleteFoodAPI.rejected, state => {
+      state.isLoadingFood = false;
+      state.isErrorFood = true;
+    });
+    //Get detail food
+    builder.addCase(getDetailFoodAPI.pending, state => {
+      state.isLoadingFood = true;
+      state.isErrorFood = false;
+      state.selectedFood = null;
+    });
+    builder.addCase(getDetailFoodAPI.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.selectedFood = action.payload;
+      } else {
+        state.selectedFood = null;
+      }
+      state.isLoadingFood = false;
+      state.isErrorFood = false;
+    });
+    builder.addCase(getDetailFoodAPI.rejected, state => {
       state.isLoadingFood = false;
       state.isErrorFood = true;
     });

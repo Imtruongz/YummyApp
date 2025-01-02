@@ -7,6 +7,8 @@ import {
   Text,
   View,
   Image,
+  Touchable,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -111,29 +113,23 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           )}
         />
 
-        <View style={styles.titleContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ListFoodPage')}
+          style={styles.titleContainer}>
           <CustomTitle title="Daily Food " />
           <AntDesignIcon name="arrowright" size={24} color={color.dark} />
-        </View>
+        </TouchableOpacity>
         <FlatList
           data={foodList}
           horizontal
           showsHorizontalScrollIndicator={true}
-          keyExtractor={item => item.foodId}
+          keyExtractor={item => item.foodId || ''}
           renderItem={({item}) => (
             <Pressable
               style={styles.itemContainer}
               onPress={() =>
                 navigation.navigate('RecipeDetailPage', {
-                  foodName: item.foodName,
-                  foodId: item.foodId,
-                  categoryId: item.categoryId,
-                  userId: item.userId,
-                  foodDescription: item.foodDescription,
-                  foodIngredient: item.foodIngredient,
-                  foodThumbnail: item.foodThumbnail,
-                  created_at: item.created_at?.toString(), // Chuyển Date thành string
-                  updated_at: item.updated_at?.toString(), // Chuyển Date thành string
+                  foodId: item.foodId, // Gửi foodId qua navigation
                 })
               }>
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
