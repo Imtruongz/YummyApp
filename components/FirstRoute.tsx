@@ -7,6 +7,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Text,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Dialog from 'react-native-dialog';
@@ -17,7 +18,7 @@ import {food} from '../redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
 
-import { MMKV } from 'react-native-mmkv';
+import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
 const FirstRoute = () => {

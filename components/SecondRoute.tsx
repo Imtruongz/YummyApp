@@ -1,18 +1,14 @@
-import { FlatList, Image, View, StyleSheet} from 'react-native';
+import {FlatList, Image, View, StyleSheet} from 'react-native';
 import React from 'react';
 
-import { useAppSelector } from '../redux/hooks';
+import {useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 
 import CustomTitle from './customize/Title';
 import color from '../utils/color';
 
 const SecondRoute = () => {
-  return (
-    <View style={[styles.container]}>
-     
-    </View>
-  );
+  return <View style={[styles.container]}></View>;
 };
 
 export default SecondRoute;
@@ -53,4 +49,3 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 });
-

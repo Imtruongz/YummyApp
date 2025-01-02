@@ -1,4 +1,4 @@
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
@@ -8,12 +8,43 @@ import SettingButton from '../components/customize/SettingButton';
 import colors from '../utils/color';
 import Header from '../components/customize/Header';
 
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
+
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
+  const handleLogout = () => {
+    Alert.alert(
+      'Log Out',
+      'Are you sure you want to log out?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: logout},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const logout = async () => {
+    try {
+      // Xóa accessToken từ MMKV
+      storage.delete('accessToken');
+      console.log('Access Token removed', storage.getString('accessToken'));
+
+      // Điều hướng người dùng tới trang đăng nhập sau đăng xuất thành công
+      navigation.replace('LoginPage');
+    } catch (exception) {
+      console.error('Error clearing accessToken', exception);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Header title="Settings" iconName="arrowleft"/>
+      <Header title="Settings" iconName="arrowleft" />
       <View style={styles.body}>
         <View style={styles.accountContainer}>
           <CustomTitle style={styles.title} title="Account" />
@@ -31,10 +62,9 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         <View style={styles.SystemContainer}>
           <CustomTitle style={styles.title} title="System" />
           <SettingButton
-            style={{color: colors.danger}}
+            style={{color: colors.success}}
             title="Log Out"
-            navigation={navigation}
-            targetScreen="LoginPage"
+            onPress={handleLogout}
           />
         </View>
       </View>

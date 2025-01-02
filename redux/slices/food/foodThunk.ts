@@ -30,6 +30,7 @@ export const getAllFoodAPI = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         error.response?.data || 'Unexpected error occurred',
       );
+      //Ném lỗi lên trên component để xử lý bằng Toast
     }
   },
 );

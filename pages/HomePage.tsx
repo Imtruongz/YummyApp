@@ -113,7 +113,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           data={foodList}
           horizontal
           showsHorizontalScrollIndicator={true}
-          keyExtractor={item => item.foodId || ''}
+          keyExtractor={item => item.foodId}
           renderItem={({item}) => (
             <Pressable
               style={styles.itemContainer}
@@ -125,6 +125,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
                 <CustomTitle title={item.foodName} />
+                <Text>by: {item.userDetail?.username}</Text>
               </View>
               <MaterialIcons
                 name="favorite-border"

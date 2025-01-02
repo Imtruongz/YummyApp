@@ -12,15 +12,15 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-import color from '../utils/color';
+import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { RootState } from '../redux/store';
-import { getDetailFoodAPI } from '../redux/slices/food/foodThunk';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import {RootState} from '../redux/store';
+import {getDetailFoodAPI} from '../redux/slices/food/foodThunk';
 
 import Loading from '../components/skeleton/Loading';
 
@@ -37,7 +37,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const handleAddFavoriteFood = () => {
     console.log('Add favorite food');
   };
-
 
   const dispatch = useAppDispatch();
   const {selectedFood, isLoadingFood, isErrorFood} = useAppSelector(
@@ -65,7 +64,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           name="arrowleft"
           size={24}
           style={styles.arrowLeftIcon}
-          color={color.dark}
+          color={colors.dark}
           onPress={() => {
             navigation.goBack();
           }}
@@ -73,7 +72,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         <MaterialIcons
           name="favorite-border"
           size={24}
-          color={color.dark}
+          color={colors.dark}
           style={styles.favoriteIcon}
           onPress={handleAddFavoriteFood}
         />
@@ -90,19 +89,26 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
           <View style={styles.body}>
             <View style={styles.headerBlock2}>
-              <CustomAvatar image={ selectedFood.userDetail?.avatar || img.UndefineImg} />
+              <CustomAvatar
+                image={selectedFood.userDetail?.avatar || img.UndefineImg}
+              />
               <View style={styles.headerBlock3}>
                 <CustomTitle title={selectedFood.userDetail?.username} />
                 <Text>{selectedFood.userDetail?.email}</Text>
               </View>
             </View>
 
+            <Text>{selectedFood.created_at}</Text>
+
             <CustomTitle title="Description" />
             {showstrInstructions ? (
               <Text>{selectedFood.foodDescription}</Text>
             ) : (
               <Text>
-                {selectedFood.foodDescription ? selectedFood.foodDescription.substring(0, 200) : ''}...
+                {selectedFood.foodDescription
+                  ? selectedFood.foodDescription.substring(0, 200)
+                  : ''}
+                ...
               </Text>
             )}
             {!showstrInstructions && (
@@ -123,7 +129,7 @@ export default RecipeDetailPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   imgHeader: {
     height: 300,
@@ -154,7 +160,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     left: 10,
-    color: color.light,
+    color: colors.light,
   },
 
   arrowLeftIcon: {
@@ -162,7 +168,7 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
     zIndex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
     padding: 10,
     borderRadius: 50,
   },
@@ -172,7 +178,7 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     zIndex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
     padding: 10,
     borderRadius: 50,
   },

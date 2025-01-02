@@ -16,7 +16,6 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import imgURL from '../utils/urlImg';
 import Header from '../components/customize/Header';
-import color from '../utils/color';
 import SelectDropdown from 'react-native-select-dropdown';
 import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
@@ -230,12 +229,12 @@ export default AddFoodPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   body: {
     margin: 20,
     flexDirection: 'column',
-    backgroundColor: color.secondary,
+    backgroundColor: colors.secondary,
     borderRadius: 12,
   },
   previewImg: {
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: color.dark,
+    color: colors.dark,
   },
   buttons: {
     flexDirection: 'row',

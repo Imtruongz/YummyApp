@@ -1,7 +1,7 @@
 import {WritableDraft} from 'immer';
 
 interface food {
-  foodId?: string;
+  foodId: string;
   foodName?: string;
   categoryId?: string;
   userId?: string;

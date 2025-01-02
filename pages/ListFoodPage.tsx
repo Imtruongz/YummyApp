@@ -1,8 +1,8 @@
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -11,17 +11,17 @@ import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomTitle from '../components/customize/Title';
 
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
+import CustomAvatar from '../components/customize/Avatar';
 
 interface ListFoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}
 
-const ListFoodPage: React.FC<ListFoodPageProps> = ({}) => {
+const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   const {foodList} = useAppSelector(state => state.food);
@@ -38,12 +38,22 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({}) => {
       </View>
       <ScrollView contentContainerStyle={styles.container2}>
         {foodList?.map(item => (
-          <TouchableOpacity key={item.foodId} style={styles.itemContainer}>
+          <TouchableOpacity
+            key={item.foodId}
+            style={styles.itemContainer}
+            onPress={() =>
+              navigation.navigate('RecipeDetailPage', {foodId: item.foodId})
+            }>
             {/* Top img */}
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />
             {/* Bottom info */}
             <View style={styles.titleItemLeft}>
               <CustomTitle style={styles.title} title={item.foodName} />
+              <CustomAvatar
+                style={styles.avatar}
+                image={item.userDetail?.avatar}
+              />
+              <Text>by: {item.userDetail?.username}</Text>
             </View>
           </TouchableOpacity>
         ))}
@@ -63,6 +73,13 @@ const styles = StyleSheet.create({
   },
   icon: {
     padding: 12,
+  },
+
+  avatar: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    margin: 8,
   },
 
   titleHeader: {
