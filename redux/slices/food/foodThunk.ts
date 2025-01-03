@@ -1,5 +1,5 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {food} from './types';
+import {food, foodPayload} from './types';
 import api from '../../../api/api';
 
 export const getAllFoodAPI = createAsyncThunk(
@@ -55,7 +55,7 @@ export const getFoodByIdAPI = createAsyncThunk(
 
 export const addFoodAPI = createAsyncThunk(
   'food/addFoodAPI',
-  async (newFood: food, thunkAPI) => {
+  async (newFood: foodPayload, thunkAPI) => {
     try {
       const response = await api.post<food>('/foods/add', newFood, {
         signal: thunkAPI.signal,
@@ -64,6 +64,7 @@ export const addFoodAPI = createAsyncThunk(
         console.error('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
+      console.log('Data from addFoodAPI:', response.data);
       return response.data;
     } catch (error: any) {
       console.log(

@@ -31,12 +31,12 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
 
   const logout = async () => {
     try {
-      // Xóa accessToken từ MMKV
       storage.delete('accessToken');
       console.log('Access Token removed', storage.getString('accessToken'));
-
-      // Điều hướng người dùng tới trang đăng nhập sau đăng xuất thành công
-      navigation.replace('LoginPage');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'LoginPage'}],
+      });
     } catch (exception) {
       console.error('Error clearing accessToken', exception);
     }

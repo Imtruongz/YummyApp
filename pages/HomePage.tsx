@@ -14,6 +14,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -54,18 +56,33 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
     if (currentTime < 12) {
-      return 'Good Morning';
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+          <FontAwesomeIcon name="sun-o" size={18} color={color.dark} />
+          <Text>Good Morning</Text>
+        </View>
+      );
     } else if (currentTime < 18) {
-      return 'Good Afternoon';
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+          <FontAwesomeIcon name="sun-o" size={18} color={color.dark} />
+          <Text>Good Afternoon</Text>
+        </View>
+      );
     } else {
-      return 'Good Evening';
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+          <FontAwesomeIcon name="moon-o" size={18} color={color.dark} />
+          <Text>Good Evening</Text>
+        </View>
+      );
     }
   };
   const message = greetingMessage();
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.headerBlock}>
           <View style={styles.headerBlock2}>
@@ -107,7 +124,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           onPress={() => navigation.navigate('ListFoodPage')}
           style={styles.titleContainer}>
           <CustomTitle title="Daily Food " />
-          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
+          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
         </TouchableOpacity>
         <FlatList
           data={foodList}
@@ -119,7 +136,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               style={styles.itemContainer}
               onPress={() =>
                 navigation.navigate('RecipeDetailPage', {
-                  foodId: item.foodId, // Gửi foodId qua navigation
+                  foodId: item.foodId,
                 })
               }>
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
@@ -179,13 +196,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.light,
+    padding: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerBlock: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 14,
   },
   headerBlock2: {
     flexDirection: 'row',
@@ -221,7 +240,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    paddingVertical: 12,
   },
   item2: {
     flex: 1,
@@ -284,9 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   creatorItems: {
-    margin: 10,
-    padding: 10,
-    gap: 10,
+    padding: 12,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -300,5 +317,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     maxWidth: 100,
     textAlign: 'center',
+  },
+
+  SeeAllDailyFood: {
+    fontSize: 14,
+    color: color.primary,
   },
 });

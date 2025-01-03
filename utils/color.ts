@@ -8,6 +8,9 @@ type Colors = {
   light: string;
   dark: string;
   loadingColor: string;
+  smallText: string;
+  primaryText: string;
+  InputBg: string;
 };
 
 const colors: Colors = {
@@ -19,6 +22,10 @@ const colors: Colors = {
   light: '#ffffff',
   dark: '#333',
   loadingColor: '#FB9400',
+
+  smallText: '#94A3B8',
+  primaryText: '#0F172A',
+  InputBg: '#F3F4F6',
 };
 
 export default colors;

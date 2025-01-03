@@ -1,5 +1,6 @@
 import {StyleSheet, Text} from 'react-native';
 import React from 'react';
+import colors from '../../utils/color';
 
 interface CustomTitleProps {
   title?: string;
@@ -31,6 +32,8 @@ export default CustomTitle;
 const styles = StyleSheet.create({
   text: {
     fontSize: 18,
+    fontFamily: 'Poppins',
     fontWeight: 'bold',
+    color: colors.primaryText,
   },
 });

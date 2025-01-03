@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomTitle from '../components/customize/Title';
 
@@ -16,7 +16,9 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
-import CustomAvatar from '../components/customize/Avatar';
+
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import Header from '../components/customize/Header';
 
 interface ListFoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}
@@ -25,6 +27,11 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   const {foodList} = useAppSelector(state => state.food);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const filteredFoodList = foodList?.filter(
+    item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood
+  );
 
   useEffect(() => {
     dispatch(getAllFoodAPI());
@@ -32,12 +39,14 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <CustomTitle style={styles.titleHeader} title="Recipe" />
-        <TextInput style={styles.inputHeader} placeholder="Search" />
-      </View>
+      <Header title="Recipes" iconName="arrowleft" />
+      <TextInput
+        style={styles.inputHeader}
+        placeholder="Search"
+        onChangeText={text => setSearchQuery(text)}
+      />
       <ScrollView contentContainerStyle={styles.container2}>
-        {foodList?.map(item => (
+        {filteredFoodList?.map(item => (
           <TouchableOpacity
             key={item.foodId}
             style={styles.itemContainer}
@@ -48,12 +57,20 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />
             {/* Bottom info */}
             <View style={styles.titleItemLeft}>
-              <CustomTitle style={styles.title} title={item.foodName} />
-              <CustomAvatar
-                style={styles.avatar}
-                image={item.userDetail?.avatar}
+              <CustomTitle
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.title}
+                title={item.foodName}
               />
-              <Text>by: {item.userDetail?.username}</Text>
+              <Text style={styles.title2}>{item.userDetail?.username}</Text>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                <AntDesignIcon name="star" size={20} color={colors.primary} />
+                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                  (4.0)
+                </Text>
+              </View>
             </View>
           </TouchableOpacity>
         ))}
@@ -66,11 +83,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'column',
-  },
+  header: {},
   icon: {
     padding: 12,
   },
@@ -84,18 +97,16 @@ const styles = StyleSheet.create({
 
   titleHeader: {
     padding: 12,
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
   },
 
   inputHeader: {
     width: '90%',
-    height: 40,
     backgroundColor: colors.light,
     borderRadius: 12,
-    padding: 8,
-    paddingHorizontal: 16,
-    margin: 8,
+    padding: 16,
+    margin: 18,
   },
 
   container2: {
@@ -108,7 +119,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: '47%',
-    height: 180,
+    height: 190,
     backgroundColor: colors.light,
     borderRadius: 15,
     gap: 8,
@@ -119,8 +130,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   titleItemLeft: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingHorizontal: 8,
+    gap: 8,
   },
   img: {
     width: 'auto',
@@ -130,8 +143,14 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
+  },
+  title2: {
+    fontSize: 12,
+    color: colors.smallText,
+    fontFamily: 'Poppins',
+    fontWeight: '700',
   },
 });
 

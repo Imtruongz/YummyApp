@@ -6,7 +6,7 @@ interface food {
   categoryId?: string;
   userId?: string;
   foodDescription?: string;
-  foodIngredient?: string;
+  foodIngredients?: string;
   foodThumbnail?: string;
   foodSteps?: string;
   created_at?: string;
@@ -21,9 +21,20 @@ interface food {
   };
 }
 
+export interface foodPayload {
+  foodName?: string;
+  categoryId?: string;
+  userId?: string;
+  foodDescription?: string;
+  foodIngredients?: string;
+  foodThumbnail?: string;
+  foodSteps?: string;
+}
+
 export interface foodState {
-  foodList: WritableDraft<food>[]; // Danh sách món ăn
-  selectedFood: WritableDraft<food> | null; // Món ăn chi tiết
+  foodList: WritableDraft<food>[];
+  userFoodList: food[];
+  selectedFood: WritableDraft<food> | null;
   isLoadingFood: boolean;
   isErrorFood: boolean;
 }

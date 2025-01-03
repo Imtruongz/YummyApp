@@ -8,11 +8,12 @@ import {useNavigation} from '@react-navigation/native';
 interface CustomHeaderProps {
   title: string;
   iconName: string;
+  style?: object;
 }
-const Header: React.FC<CustomHeaderProps> = ({title, iconName}) => {
+const Header: React.FC<CustomHeaderProps> = ({title, iconName, style}) => {
   const navigation = useNavigation();
   return (
-      <View style={styles.header}>
+      <View style={[styles.header, style]}>
         <AntDesignIcon
           name={iconName}
           size={24}
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     color: color.dark,
-    fontSize: 22,
+    fontSize: 20,
     textAlign: 'center',
     padding: 8,
   },

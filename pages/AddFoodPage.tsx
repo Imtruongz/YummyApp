@@ -19,26 +19,32 @@ import Header from '../components/customize/Header';
 import SelectDropdown from 'react-native-select-dropdown';
 import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
-import {food} from '../redux/slices/food/types';
+import { foodPayload} from '../redux/slices/food/types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
+import { getAllFoodAPI } from '../redux/slices/food/foodThunk';
+import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
+
 // Initial state
-const initialState: food = {
+const initialState: foodPayload = {
   foodName: '',
   categoryId: '',
   userId: '',
   foodDescription: '',
-  foodIngredient: '',
+  foodIngredients: '',
   foodThumbnail: '',
   foodSteps: '',
 };
 
 const AddFoodPage = () => {
   const dispatch = useAppDispatch();
-  const [formData, setFormData] = useState<food>(initialState);
+  const [formData, setFormData] = useState<foodPayload>(initialState);
   const [errorForm, setErrorForm] = useState<null | {[key: string]: string}>(
     null,
   );
@@ -93,6 +99,9 @@ const AddFoodPage = () => {
         visibilityTime: 2000,
       });
 
+      await dispatch(getAllFoodAPI());
+      await     dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
+      
       // Reset the form after successful submission
       setFormData(initialState);
       setErrorForm(null);
@@ -197,9 +206,9 @@ const AddFoodPage = () => {
             <CustomTitle title="Ingredient" />
             <CustomInput
               placeholder="Enter ingredients"
-              value={formData.foodIngredient}
+              value={formData.foodIngredients}
               onChangeText={
-                text => setFormData(prev => ({...prev, foodIngredient: text})) //6
+                text => setFormData(prev => ({...prev, foodIngredients: text})) //6
               }
             />
           </View>

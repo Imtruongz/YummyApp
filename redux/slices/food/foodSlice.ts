@@ -4,6 +4,7 @@ import {foodState, food} from './types';
 
 const initialState: foodState = {
   foodList: [],
+  userFoodList: [],
   selectedFood: null,
   isLoadingFood: false,
   isErrorFood: false,
@@ -38,8 +39,8 @@ const foodSlice = createSlice({
     });
     builder.addCase(
       getFoodByIdAPI.fulfilled,
-      (state, action: PayloadAction<food[]>) => {
-        state.foodList = action.payload;
+      (state, action) => {
+        state.userFoodList = action.payload;
         state.isLoadingFood = false;
         state.isErrorFood = false;
       },
@@ -48,7 +49,6 @@ const foodSlice = createSlice({
       state.isLoadingFood = false;
       state.isErrorFood = true;
     });
-
     // Add food
     builder.addCase(addFoodAPI.pending, state => {
       state.isLoadingFood = true;
@@ -59,6 +59,7 @@ const foodSlice = createSlice({
       (state, action: PayloadAction<food | undefined>) => {
         if (action.payload) {
           state.foodList.push(action.payload);
+          state.userFoodList.push(action.payload);
         }
         state.isLoadingFood = false;
         state.isErrorFood = false;

@@ -7,7 +7,6 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Text,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Dialog from 'react-native-dialog';
@@ -19,11 +18,12 @@ import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
 
 import {MMKV} from 'react-native-mmkv';
+import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
-  const {foodList} = useAppSelector((state: RootState) => state.food);
+  const {userFoodList} = useAppSelector((state: RootState) => state.food);
 
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -40,18 +40,25 @@ const FirstRoute = () => {
     if (currentItem) {
       dispatch(deleteFoodAPI(currentItem.foodId));
     }
+    dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
+    Toast.show({
+      type: 'success',
+      text1: 'Delete successfully',
+      visibilityTime: 2000,
+    });
     setVisible(false);
     setCurrentItem(null);
   };
 
   useEffect(() => {
+    console.log('Render');
     dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
   }, [dispatch]);
 
   return (
     <>
       <ScrollView contentContainerStyle={styles.container}>
-        {foodList?.map(item => (
+        {userFoodList?.map(item => (
           <TouchableOpacity
             key={item.foodId}
             onLongPress={() => showDialog(item)}

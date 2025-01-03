@@ -59,43 +59,43 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
   };
 
   const handleUpdateAccount = async () => {
-    try {
-      dispatch(
-        userUpdateAPI({
-          userId: user?.userId || '',
-          username: user?.username,
-          avatar: user?.avatar,
-          description: user?.description,
-        }),
-      );
-      Toast.show({
-        type: 'success',
-        text1: 'Update success',
-        text2: 'Your account has been updated',
-      });
-    } catch (error) {
-      console.log('Update process failed', error);
+    if (!username || !description || !avatar) {
       Toast.show({
         type: 'error',
-        text1: 'Update failed',
-        text2: 'Please try again latttter',
+        text1: 'Validation Error',
+        text2: 'Please fill out all fields before updating.',
+      });
+      return;
+    }
+
+    try {
+      const payload = {
+        userId : storage.getString('userId') || '',
+        username: username,
+        description: description,
+        avatar: avatar,
+      };
+
+      const resultAction = await dispatch(userUpdateAPI(payload)).unwrap();
+      if (resultAction) {
+        Toast.show({
+          type: 'success',
+          text1: 'Successfully Updated',
+          text2: 'Your profile has been updated.',
+        });
+      }
+    } catch (err: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Update Failed',
+        text2: err.message || 'Something went wrong!',
       });
     }
   };
 
-  //  useEffect(() => {
-  //     dispatch(getUserByIdAPI(storage.getString('userId') || ''));
-  //   }, [dispatch]);
-
-    useEffect(() => {
-      if(user?.username && user.avatar && user.description) {
-        setusername(user.username);
-        setavatar(user.avatar);
-        setdescription(user.description);
-      }
+  useEffect(() => {
       dispatch(getUserByIdAPI(storage.getString('userId') || ''));
-      console.log('re-render');
-    }, [dispatch, user?.username, user?.avatar, user?.description]);
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>

@@ -16,6 +16,7 @@ import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -97,8 +98,26 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 <Text>{selectedFood.userDetail?.email}</Text>
               </View>
             </View>
-
-            <Text>{selectedFood.created_at}</Text>
+            <View style={styles.achivement}>
+              <View style={styles.achivementItem}>
+                <AntDesignIcon name="star" size={20} color={colors.primary} />
+                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                  (4.0)
+                </Text>
+              </View>
+              <View style={styles.achivementItem}>
+                <AntDesignIcon
+                  name="clockcircleo"
+                  size={20}
+                  color={colors.primary}
+                />
+                <Text>123 min</Text>
+              </View>
+              <View style={styles.achivementItem}>
+                <FontistoIcon name="date" size={20} color={colors.primary} />
+                <Text>123</Text>
+              </View>
+            </View>
 
             <CustomTitle title="Description" />
             {showstrInstructions ? (
@@ -117,6 +136,9 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               </TouchableOpacity>
             )}
             <CustomTitle title="Ingredient" />
+            <Text>{selectedFood.foodIngredients}</Text>
+            <CustomTitle title="Step" />
+            <Text>{selectedFood.foodSteps}</Text>
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -143,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     gap: 10,
-    padding: 18,
+    padding: 22,
   },
   readMore: {
     color: '#0056b3',
@@ -155,18 +177,18 @@ const styles = StyleSheet.create({
   },
 
   textTitle: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: 'bold',
     position: 'absolute',
-    bottom: 10,
-    left: 10,
+    bottom: 12,
+    left: 22,
     color: colors.light,
   },
 
   arrowLeftIcon: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: 12,
+    left: 22,
     zIndex: 1,
     backgroundColor: colors.light,
     padding: 10,
@@ -175,8 +197,8 @@ const styles = StyleSheet.create({
 
   favoriteIcon: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 12,
+    right: 22,
     zIndex: 1,
     backgroundColor: colors.light,
     padding: 10,
@@ -189,5 +211,23 @@ const styles = StyleSheet.create({
   },
   headerBlock3: {
     marginHorizontal: 10,
+  },
+
+  achivement: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingVertical: 10,
+  },
+  achivementItem: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+    fontSize: 12,
+    backgroundColor: colors.InputBg,
+    padding: 14,
+    borderRadius: 15,
   },
 });

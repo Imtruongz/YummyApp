@@ -14,11 +14,7 @@ interface RegisterPayload {
 }
 
 interface UpdatePayload {
-  userId: string;
   username?: string;
-  password?: string;
-  email?: string;
-  phoneNumber?: string;
   avatar?: string;
   description?: string;
 }
