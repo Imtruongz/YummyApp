@@ -85,7 +85,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         {/* Header */}
         <View style={styles.headerBlock}>
           <View style={styles.headerBlock2}>
-            <CustomAvatar image={user?.avatar || imgURL.UndefineImg} />
+            <CustomAvatar width={50} height={50} borderRadius={25} image={user?.avatar || imgURL.UndefineImg} />
             <View style={styles.headerBlock3}>
               <Text>{message}</Text>
               <CustomTitle title={user?.username} />
@@ -140,7 +140,10 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
                 <CustomTitle title={item.foodName} />
-                <Text>by: {item.userDetail?.username}</Text>
+                <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                <CustomAvatar width={30} height={30} borderRadius={15} image={item.userDetail?.avatar} />
+                <Text>{item.userDetail?.username}</Text>
+                </View>
               </View>
               <MaterialIcons
                 name="favorite-border"
@@ -162,7 +165,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           keyExtractor={item => item.userId}
           renderItem={({item}) => (
             <View style={styles.creatorItems}>
-              <CustomAvatar style={styles.creatorAvatar} image={item.avatar} />
+              <CustomAvatar width={100} height={100} borderRadius={50} image={item.avatar} />
               <CustomTitle
                 title={item.username}
                 numberOfLines={1}

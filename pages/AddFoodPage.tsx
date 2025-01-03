@@ -6,11 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
-import CustomInput from '../components/customize/Input';
 import CustomButton from '../components/customize/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
@@ -19,14 +19,14 @@ import Header from '../components/customize/Header';
 import SelectDropdown from 'react-native-select-dropdown';
 import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
-import { foodPayload} from '../redux/slices/food/types';
+import {foodPayload} from '../redux/slices/food/types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import { getAllFoodAPI } from '../redux/slices/food/foodThunk';
-import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
+import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
@@ -100,9 +100,7 @@ const AddFoodPage = () => {
       });
 
       await dispatch(getAllFoodAPI());
-      await     dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
-      
-      // Reset the form after successful submission
+      await dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
       setFormData(initialState);
       setErrorForm(null);
     } catch (error: any) {
@@ -110,15 +108,13 @@ const AddFoodPage = () => {
     }
   };
 
-  // Còn thiếu id, category id, user id , validate , giới hạn text
-
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Add Food" iconName="close" />
       <ScrollView>
         <View style={styles.body}>
           <View style={styles.foodImg}>
-            <CustomTitle title="Choose Image" />
+            <CustomTitle style={styles.foodNameTitle2} title="Choose Image" />
             <Pressable onPress={requestCameraPermission}>
               <Image
                 source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
@@ -131,8 +127,9 @@ const AddFoodPage = () => {
           </View>
 
           <View style={styles.foodName}>
-            <CustomTitle title="Food Name" />
-            <CustomInput
+            <CustomTitle style={styles.foodNameTitle} title="Food Name" />
+            <TextInput
+              style={styles.foodNameStyle}
               placeholder="Enter food name"
               value={formData.foodName}
               onChangeText={
@@ -145,10 +142,13 @@ const AddFoodPage = () => {
           </View>
 
           <View style={styles.foodDescription}>
-            <CustomTitle title="Description" />
-            <CustomInput
+            <CustomTitle style={styles.foodNameTitle} title="Description" />
+            <TextInput
+              style={styles.foodDescriptionStyle}
               placeholder="Enter description"
               value={formData.foodDescription}
+              numberOfLines={5}
+              multiline={true}
               onChangeText={
                 text => setFormData(prev => ({...prev, foodDescription: text})) //5
               }
@@ -159,7 +159,7 @@ const AddFoodPage = () => {
           </View>
 
           <View style={styles.foodcategory}>
-            <CustomTitle title="Category" />
+            <CustomTitle style={styles.foodNameTitle} title="Category" />
 
             <SelectDropdown
               data={categoryList || []}
@@ -175,7 +175,7 @@ const AddFoodPage = () => {
                   <View style={styles.dropdownButtonStyle}>
                     <Text style={styles.dropdownButtonTxtStyle}>
                       {(selectedItem && selectedItem.categoryName) ||
-                        'Category Name'}
+                        'Category'}
                     </Text>
                     <Icon
                       name={isOpened ? 'chevron-up' : 'chevron-down'}
@@ -203,10 +203,13 @@ const AddFoodPage = () => {
           </View>
 
           <View style={styles.foodIngredient}>
-            <CustomTitle title="Ingredient" />
-            <CustomInput
+            <CustomTitle style={styles.foodNameTitle} title="Ingredient" />
+            <TextInput
+              style={styles.foodDescriptionStyle}
               placeholder="Enter ingredients"
               value={formData.foodIngredients}
+              numberOfLines={5}
+              multiline={true}
               onChangeText={
                 text => setFormData(prev => ({...prev, foodIngredients: text})) //6
               }
@@ -214,10 +217,13 @@ const AddFoodPage = () => {
           </View>
 
           <View style={styles.foodSteps}>
-            <CustomTitle title="Step" />
-            <CustomInput
+            <CustomTitle style={styles.foodNameTitle} title="Step" />
+            <TextInput
+              style={styles.foodDescriptionStyle}
               placeholder="Enter steps or recipe"
               value={formData.foodSteps}
+              multiline={true}
+              numberOfLines={5}
               onChangeText={
                 text => setFormData(prev => ({...prev, foodSteps: text})) //8
               }
@@ -241,14 +247,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
   },
   body: {
-    margin: 20,
+    marginTop: 24,
     flexDirection: 'column',
-    backgroundColor: colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 12,
   },
   previewImg: {
-    width: 200,
-    height: 150,
+    width: '100%',
+    height: 180,
     borderRadius: 12,
   },
   errorText: {
@@ -265,7 +272,18 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginVertical: 20,
+    padding: 20,
+    backgroundColor: colors.light,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 10,
   },
 
   dropdownButtonStyle: {
@@ -277,6 +295,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 12,
+    marginHorizontal: 20,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
@@ -290,6 +309,8 @@ const styles = StyleSheet.create({
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',
     borderRadius: 8,
+    position: 'absolute',
+    bottom: 100,
   },
   dropdownItemStyle: {
     width: '100%',
@@ -314,22 +335,40 @@ const styles = StyleSheet.create({
 
   foodImg: {
     marginBottom: 20,
-    //backgroundColor: 'blue',
     width: 300,
   },
-  foodName: {
-    marginBottom: 20,
-    //backgroundColor: 'yellow',
+  foodNameTitle2: {
+    marginVertical: 20,
   },
-  foodDescription: {
-    marginBottom: 20,
-    //backgroundColor: 'green',
+  foodName: {},
+  foodNameTitle: {
+    marginHorizontal: 20,
+  },
+  foodNameStyle: {
+    width: 327,
+    height: 53,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+    margin: 18,
+  },
+  foodDescription: {},
+  foodDescriptionTitle: {
+    marginHorizontal: 20,
+  },
+  foodDescriptionStyle: {
+    width: 327,
+    height: 123,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+    margin: 18,
   },
   foodcategory: {
     marginBottom: 20,
-    //backgroundColor: 'red',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
   },
   foodIngredient: {
     marginBottom: 20,

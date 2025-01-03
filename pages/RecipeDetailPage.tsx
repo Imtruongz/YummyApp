@@ -91,6 +91,9 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           <View style={styles.body}>
             <View style={styles.headerBlock2}>
               <CustomAvatar
+                width={60}
+                height={60}
+                borderRadius={30}
                 image={selectedFood.userDetail?.avatar || img.UndefineImg}
               />
               <View style={styles.headerBlock3}>
@@ -120,21 +123,27 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
             </View>
 
             <CustomTitle title="Description" />
-            {showstrInstructions ? (
-              <Text>{selectedFood.foodDescription}</Text>
+            {selectedFood.foodDescription &&
+            selectedFood.foodDescription.length > 150 ? (
+              <>
+                {showstrInstructions ? (
+                  <Text>{selectedFood.foodDescription}</Text>
+                ) : (
+                  <Text>
+                    {selectedFood.foodDescription.substring(0, 150)}...
+                  </Text>
+                )}
+                <TouchableOpacity
+                  onPress={() => setShowstrInstructions(!showstrInstructions)}>
+                  <Text style={styles.readMore}>
+                    {showstrInstructions ? 'See less' : 'Read more'}
+                  </Text>
+                </TouchableOpacity>
+              </>
             ) : (
-              <Text>
-                {selectedFood.foodDescription
-                  ? selectedFood.foodDescription.substring(0, 200)
-                  : ''}
-                ...
-              </Text>
+              <Text>{selectedFood.foodDescription}</Text>
             )}
-            {!showstrInstructions && (
-              <TouchableOpacity onPress={() => setShowstrInstructions(true)}>
-                <Text style={styles.readMore}>Read more</Text>
-              </TouchableOpacity>
-            )}
+
             <CustomTitle title="Ingredient" />
             <Text>{selectedFood.foodIngredients}</Text>
             <CustomTitle title="Step" />
@@ -168,7 +177,8 @@ const styles = StyleSheet.create({
     padding: 22,
   },
   readMore: {
-    color: '#0056b3',
+    color: colors.secondary,
+    fontWeight: 'bold',
   },
 
   linearGradient: {

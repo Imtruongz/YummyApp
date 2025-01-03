@@ -25,7 +25,7 @@ const colors: Colors = {
 
   smallText: '#94A3B8',
   primaryText: '#0F172A',
-  InputBg: '#F3F4F6',
+  InputBg: '#ebe8e8',
 };
 
 export default colors;

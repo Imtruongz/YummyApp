@@ -12,6 +12,8 @@ import {RootState} from '../redux/store.ts';
 import CustomTitle from '../components/customize/Title.tsx';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
+import Loading from '../components/skeleton/Loading';
+
 
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
@@ -26,7 +28,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
 
   const {categoryId} = route.params;
 
-  const {categoryFoodList} = useAppSelector((state: RootState) => state.food);
+  const {categoryFoodList,isLoadingFood } = useAppSelector((state: RootState) => state.food);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -39,6 +41,10 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
       dispatch(getFoodByCategoryAPI(categoryId));
     }
   }, [dispatch, categoryId]);
+
+  if (isLoadingFood) {
+    return <Loading />; // Hiển thị khi dữ liệu đang được tải
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +114,7 @@ const styles = StyleSheet.create({
 
   inputHeader: {
     width: '90%',
-    backgroundColor: colors.light,
+    backgroundColor: colors.InputBg,
     borderRadius: 12,
     padding: 16,
     margin: 18,

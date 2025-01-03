@@ -34,7 +34,14 @@ function BottomTab() {
         tabBarStyle: {
           backgroundColor: colors.light,
           borderTopWidth: 0,
-          elevation: 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 6,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 1,
+          elevation: 10,
         },
       }}>
       <Tab.Screen

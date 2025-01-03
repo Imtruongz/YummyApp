@@ -111,7 +111,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
           <View style={styles.myInfoContainer}>
             <View style={styles.myInfo2}>
               <CustomAvatar
-                style={styles.avatar}
+                width={70}
+                height={70}
+                borderRadius={35}
                 image={user?.avatar || imgUrl.UndefineImg}
               />
               <View style={styles.myInfo3}>
