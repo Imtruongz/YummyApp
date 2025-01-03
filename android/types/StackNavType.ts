@@ -17,4 +17,7 @@ export type RootStackParamList = {
   SettingProfilePage: undefined;
   changePasswordPage: undefined;
   ListFoodPage: undefined;
+  ListFoodByCategoriesPage: {
+    categoryId?: string;
+  };
 };

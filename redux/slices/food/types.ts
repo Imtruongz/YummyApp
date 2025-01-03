@@ -2,7 +2,7 @@ import {WritableDraft} from 'immer';
 
 interface food {
   foodId: string;
-  foodName?: string;
+  foodName: string;
   categoryId?: string;
   userId?: string;
   foodDescription?: string;
@@ -34,6 +34,7 @@ export interface foodPayload {
 export interface foodState {
   foodList: WritableDraft<food>[];
   userFoodList: food[];
+  categoryFoodList: food[];
   selectedFood: WritableDraft<food> | null;
   isLoadingFood: boolean;
   isErrorFood: boolean;

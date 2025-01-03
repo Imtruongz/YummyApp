@@ -70,7 +70,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     (state: RootState) => state.auth,
   );
 
-  const {foodList} = useAppSelector((state: RootState) => state.food);
+  const {userFoodList} = useAppSelector((state: RootState) => state.food);
 
   const renderTabBar = (
     props: SceneRendererProps & {navigationState: NavigationState<Route>},
@@ -115,7 +115,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                 image={user?.avatar || imgUrl.UndefineImg}
               />
               <View style={styles.myInfo3}>
-                <InfoItem number={foodList?.length ?? 0} label="Posts" />
+                <InfoItem number={userFoodList?.length ?? 0} label="Posts" />
                 <InfoItem number="0" label="Follower" />
                 <InfoItem number="0" label="Following" />
               </View>

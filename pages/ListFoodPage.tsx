@@ -149,8 +149,6 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 12,
     color: colors.smallText,
-    fontFamily: 'Poppins',
-    fontWeight: '700',
   },
 });
 

@@ -36,18 +36,28 @@ const FirstRoute = () => {
     setVisible(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (currentItem) {
-      dispatch(deleteFoodAPI(currentItem.foodId));
+      try {
+        await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
+        Toast.show({
+          type: 'success',
+          text1: 'Delete successfully',
+          visibilityTime: 2000,
+        });
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Failed to delete food!',
+          visibilityTime: 2000,
+        });
+      } finally {
+        dispatch(getFoodByIdAPI(storage.getString('userId') || '')); // Reload danh sách
+        setVisible(false);
+        setCurrentItem(null);
+      }
     }
-    dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
-    Toast.show({
-      type: 'success',
-      text1: 'Delete successfully',
-      visibilityTime: 2000,
-    });
-    setVisible(false);
-    setCurrentItem(null);
   };
 
   useEffect(() => {

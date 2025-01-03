@@ -1,10 +1,18 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getAllFoodAPI, getFoodByIdAPI , addFoodAPI , deleteFoodAPI, getDetailFoodAPI} from './foodThunk';
+import {
+  getAllFoodAPI,
+  getFoodByIdAPI,
+  addFoodAPI,
+  deleteFoodAPI,
+  getDetailFoodAPI,
+  getFoodByCategoryAPI,
+} from './foodThunk';
 import {foodState, food} from './types';
 
 const initialState: foodState = {
   foodList: [],
   userFoodList: [],
+  categoryFoodList: [],
   selectedFood: null,
   isLoadingFood: false,
   isErrorFood: false,
@@ -20,14 +28,11 @@ const foodSlice = createSlice({
       state.isLoadingFood = true;
       state.isErrorFood = false;
     });
-    builder.addCase(
-      getAllFoodAPI.fulfilled,
-      (state, action) => {
-        state.foodList = action.payload;
-        state.isLoadingFood = false;
-        state.isErrorFood = false;
-      },
-    );
+    builder.addCase(getAllFoodAPI.fulfilled, (state, action) => {
+      state.foodList = action.payload;
+      state.isLoadingFood = false;
+      state.isErrorFood = false;
+    });
     builder.addCase(getAllFoodAPI.rejected, state => {
       state.isLoadingFood = false;
       state.isErrorFood = true;
@@ -37,14 +42,11 @@ const foodSlice = createSlice({
       state.isLoadingFood = true;
       state.isErrorFood = false;
     });
-    builder.addCase(
-      getFoodByIdAPI.fulfilled,
-      (state, action) => {
-        state.userFoodList = action.payload;
-        state.isLoadingFood = false;
-        state.isErrorFood = false;
-      },
-    );
+    builder.addCase(getFoodByIdAPI.fulfilled, (state, action) => {
+      state.userFoodList = action.payload;
+      state.isLoadingFood = false;
+      state.isErrorFood = false;
+    });
     builder.addCase(getFoodByIdAPI.rejected, state => {
       state.isLoadingFood = false;
       state.isErrorFood = true;
@@ -76,19 +78,21 @@ const foodSlice = createSlice({
     });
     builder.addCase(
       deleteFoodAPI.fulfilled,
-      (state, action: PayloadAction<food[]>) => {
-        state.foodList = action.payload; // This is not correct
-        //Find the food index that we want to delete
-        const deleteFoodIndex = state.foodList.findIndex(
-          food => food.foodId === action.payload[0].foodId,
+      (state, action: PayloadAction<string>) => {
+        // Xóa item khỏi foodList
+        state.foodList = state.foodList.filter(
+          food => food.foodId !== action.payload,
         );
-        if (deleteFoodIndex !== -1) {
-          state.foodList.splice(deleteFoodIndex, 1);
-        }
+        // Xóa item khỏi userFoodList
+        state.userFoodList = state.userFoodList.filter(
+          food => food.foodId !== action.payload,
+        );
+
         state.isLoadingFood = false;
         state.isErrorFood = false;
       },
     );
+
     builder.addCase(deleteFoodAPI.rejected, state => {
       state.isLoadingFood = false;
       state.isErrorFood = true;
@@ -109,6 +113,21 @@ const foodSlice = createSlice({
       state.isErrorFood = false;
     });
     builder.addCase(getDetailFoodAPI.rejected, state => {
+      state.isLoadingFood = false;
+      state.isErrorFood = true;
+    });
+
+    // Get food by category
+    builder.addCase(getFoodByCategoryAPI.pending, state => {
+      state.isLoadingFood = true;
+      state.isErrorFood = false;
+    });
+    builder.addCase(getFoodByCategoryAPI.fulfilled, (state, action) => {
+      state.categoryFoodList = action.payload || [];
+      state.isLoadingFood = false;
+      state.isErrorFood = false;
+    });
+    builder.addCase(getFoodByCategoryAPI.rejected, state => {
       state.isLoadingFood = false;
       state.isErrorFood = true;
     });

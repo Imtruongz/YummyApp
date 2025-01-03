@@ -13,7 +13,6 @@ import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -95,23 +94,22 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           <FeatherIcon name="bell" size={24} color={color.dark} />
         </View>
 
-        <View style={styles.titleContainer}>
-          <CustomTitle title="Trending now " />
-        </View>
-        {/* Thumnail */}
-        {/* Thumnail */}
-
-        <View style={styles.titleContainer}>
+        <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title="Popular Category" />
-          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
-        </View>
+          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
+        </TouchableOpacity>
         <FlatList
           data={categoryList}
           horizontal
           showsHorizontalScrollIndicator={true}
           keyExtractor={item => item.categoryId}
           renderItem={({item}) => (
-            <Pressable>
+            <Pressable
+              onPress={() =>
+                navigation.navigate('ListFoodByCategoriesPage', {
+                  categoryId: item.categoryId,
+                })
+              }>
               <CustomFoodItem
                 title={item.categoryName}
                 image={item.categoryThumbnail}
@@ -153,10 +151,10 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             </Pressable>
           )}
         />
-        <View style={styles.titleContainer}>
+        <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title="Popular creators" />
-          <AntDesignIcon name="arrowright" size={24} color={color.dark} />
-        </View>
+          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
+        </TouchableOpacity>
         <FlatList
           data={ListUser}
           horizontal
