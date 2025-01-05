@@ -16,7 +16,15 @@ export const getAllCategoriesAPI = createAsyncThunk(
       }
       return response.data;
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, `Data:`, error.response?.data);
+      console.log(
+        'Error from getAllCategoriesAPI:',
+        error.message,
+        'Data',
+        error.response?.data,
+      );
+      return thunkAPI.rejectWithValue(
+        'An error occurred while fetching categories',
+      );
     }
   },
 );

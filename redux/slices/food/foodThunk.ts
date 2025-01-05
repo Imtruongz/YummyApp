@@ -9,14 +9,10 @@ export const getAllFoodAPI = createAsyncThunk(
       const response = await api.get<food[]>('/foods/getAll', {
         signal: thunkAPI.signal,
       });
-
-      // Kiểm tra nếu response.data là undefined hoặc không hợp lệ
       if (!response.data || response.data.length === 0) {
         console.error('No data returned from the server for getAllFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
-
-      // Trả về dữ liệu hợp lệ
       return response.data;
     } catch (error: any) {
       console.error(
@@ -25,12 +21,9 @@ export const getAllFoodAPI = createAsyncThunk(
         'Response data error from getAllFoodAPI',
         error.response?.data,
       );
-
-      // Trả về thông báo lỗi qua rejectWithValue nếu cần
       return thunkAPI.rejectWithValue(
         error.response?.data || 'Unexpected error occurred',
       );
-      //Ném lỗi lên trên component để xử lý bằng Toast
     }
   },
 );
@@ -39,7 +32,7 @@ export const getFoodByIdAPI = createAsyncThunk(
   'food/getFoodByIdAPI',
   async (userId: string, {rejectWithValue}) => {
     try {
-      const response = await api.get(`/foods/getFoodByUserId/${userId}`);
+      const response = await api.get<food[]>(`/foods/getFoodByUserId/${userId}`);
       return response.data;
     } catch (error: any) {
       console.log(

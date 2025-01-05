@@ -18,7 +18,7 @@ const categoriesSlice = createSlice({
       state.isErrorCategory = false;
     });
     builder.addCase(getAllCategoriesAPI.fulfilled, (state, action) => {
-      state.categoryList = action.payload ?? [];
+      state.categoryList = action.payload;
       state.isLoadingCategory = false;
       state.isErrorCategory = false;
     });

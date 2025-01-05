@@ -16,8 +16,8 @@ import {RootStackParamList} from '../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
-
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+
 import Header from '../components/customize/Header';
 
 interface ListFoodPageProps
@@ -83,18 +83,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {},
-  icon: {
-    padding: 12,
-  },
-
-  avatar: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    margin: 8,
-  },
-
   titleHeader: {
     padding: 12,
     fontSize: 22,

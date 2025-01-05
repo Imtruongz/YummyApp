@@ -187,18 +187,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
   },
-  statsContainer: {
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: 8,
-  },
-  stats: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    gap: 14,
-  },
   tabVIewContainer: {
     flex: 1,
     backgroundColor: colors.light,

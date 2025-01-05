@@ -21,6 +21,8 @@ import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {foodPayload} from '../redux/slices/food/types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -37,9 +39,10 @@ const initialState: foodPayload = {
   categoryId: '',
   userId: '',
   foodDescription: '',
-  foodIngredients: '',
+  foodIngredients: [],
   foodThumbnail: '',
-  foodSteps: '',
+  foodSteps: [],
+  CookingTime: '',
 };
 
 const AddFoodPage = () => {
@@ -49,9 +52,36 @@ const AddFoodPage = () => {
     null,
   );
 
+  const [ingredients, setIngredients] = useState<string[]>(['']);
+  const [steps, setSteps] = useState<string[]>(['']);
+
+  const handleAddIngredient = () => {
+    setIngredients([...ingredients, '']);
+  };
+  const handleIngredientChange = (text: string, index: number) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = text;
+    setIngredients(newIngredients);
+  };
+  const handleRemoveIngredient = (index: number) => {
+    const newIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(newIngredients);
+  };
+  const handleAddStep = () => {
+    setSteps([...steps, '']);
+  };
+  const handleStepChange = (text: string, index: number) => {
+    const newSteps = [...steps];
+    newSteps[index] = text;
+    setSteps(newSteps);
+  };
+  const handleRemoveStep = (index: number) => {
+    const newSteps = steps.filter((_, i) => i !== index);
+    setSteps(newSteps);
+  };
+
   // Redux state
   const {categoryList} = useAppSelector((state: RootState) => state.categories);
-  const {user} = useAppSelector((state: RootState) => state.auth);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -86,10 +116,11 @@ const AddFoodPage = () => {
   const handleSubmit = async () => {
     const updatedFormData = {
       ...formData,
-      userId: user?.userId || '',
+      userId: storage.getString('userId') || '',
+      foodIngredients: ingredients,
+      foodSteps: steps,
     };
     try {
-      // Dispatch the add food action
       await dispatch(addFoodAPI(updatedFormData)).unwrap();
       Toast.show({
         type: 'success',
@@ -102,6 +133,8 @@ const AddFoodPage = () => {
       await dispatch(getAllFoodAPI());
       await dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
       setFormData(initialState);
+      setIngredients(['']);
+      setSteps(['']);
       setErrorForm(null);
     } catch (error: any) {
       setErrorForm(error?.data?.errors || {general: 'Something went wrong!'});
@@ -112,123 +145,148 @@ const AddFoodPage = () => {
     <SafeAreaView style={styles.container}>
       <Header title="Add Food" iconName="close" />
       <ScrollView>
-        <View style={styles.body}>
-          <View style={styles.foodImg}>
-            <CustomTitle style={styles.foodNameTitle2} title="Choose Image" />
-            <Pressable onPress={requestCameraPermission}>
-              <Image
-                source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
-                style={styles.previewImg}
+        <View style={styles.container2}>
+          <CustomTitle title="Choose Image" />
+          <Pressable onPress={requestCameraPermission}>
+            <Image
+              source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
+              style={styles.imagePreview}
+            />
+          </Pressable>
+          {errorForm?.foodThumbnail && (
+            <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
+          )}
+        </View>
+
+        <View style={styles.container2}>
+          <CustomTitle title="Food Name" />
+          <TextInput
+            style={styles.foodNameTextInput}
+            placeholder="Enter food name"
+            value={formData.foodName}
+            onChangeText={
+              text => setFormData(prev => ({...prev, foodName: text})) //2
+            }
+          />
+          {errorForm?.foodName && (
+            <Text style={styles.errorText}>{errorForm.foodName}</Text>
+          )}
+        </View>
+
+        <View style={styles.container2}>
+          <CustomTitle title="Description" />
+          <TextInput
+            style={styles.foodDescriptionTextInput}
+            placeholder="Enter description"
+            value={formData.foodDescription}
+            numberOfLines={5}
+            multiline={true}
+            onChangeText={
+              text => setFormData(prev => ({...prev, foodDescription: text})) //5
+            }
+          />
+          {errorForm?.foodDescription && (
+            <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
+          )}
+        </View>
+
+        <View style={styles.foodcategoryContainer}>
+          <CustomTitle title="Category" />
+          <SelectDropdown
+            data={categoryList}
+            onSelect={selectedItem => {
+              console.log(selectedItem.categoryId);
+              setFormData(prev => ({
+                ...prev,
+                categoryId: selectedItem.categoryId,
+              }));
+            }}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(selectedItem && selectedItem.categoryName) || 'Category'}
+                  </Text>
+                  <Icon
+                    name={isOpened ? 'chevron-up' : 'chevron-down'}
+                    style={styles.dropdownButtonArrowStyle}
+                  />
+                </View>
+              );
+            }}
+            renderItem={(item, isSelected) => {
+              return (
+                <View
+                  style={{
+                    ...styles.dropdownItemStyle,
+                    ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                  }}>
+                  <Text style={styles.dropdownItemTxtStyle}>
+                    {item.categoryName}
+                  </Text>
+                </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.dropdownMenuStyle}
+          />
+        </View>
+
+        <View style={styles.foodcategoryContainer}>
+          <CustomTitle title="Cooking time" />
+          <TextInput
+            style={styles.cookingTimeTextInput}
+            keyboardType="numeric"
+            placeholder="Time in minutes"
+            value={formData.CookingTime}
+            onChangeText={
+              text => setFormData(prev => ({...prev, CookingTime: text})) //6
+            }
+          />
+        </View>
+
+        <View style={styles.container2}>
+          <CustomTitle title="Ingredients" />
+          {ingredients.map((ingredient, index) => (
+            <View key={index} style={styles.ISTextInputContainer}>
+              <TextInput
+                style={styles.ISTextInput}
+                placeholder={`Ingredient ${index + 1}`}
+                value={ingredient}
+                onChangeText={text => handleIngredientChange(text, index)}
               />
-            </Pressable>
-            {errorForm?.foodThumbnail && (
-              <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
-            )}
-          </View>
+              <Pressable onPress={() => handleRemoveIngredient(index)}>
+                <AntDesignIcon style={styles.icon} name="minus" size={22} />
+              </Pressable>
+            </View>
+          ))}
+          <CustomButton
+            style={styles.addIngredient}
+            title="Add Ingredient"
+            onPress={handleAddIngredient}
+          />
+        </View>
 
-          <View style={styles.foodName}>
-            <CustomTitle style={styles.foodNameTitle} title="Food Name" />
-            <TextInput
-              style={styles.foodNameStyle}
-              placeholder="Enter food name"
-              value={formData.foodName}
-              onChangeText={
-                text => setFormData(prev => ({...prev, foodName: text})) //2
-              }
-            />
-            {errorForm?.foodName && (
-              <Text style={styles.errorText}>{errorForm.foodName}</Text>
-            )}
-          </View>
-
-          <View style={styles.foodDescription}>
-            <CustomTitle style={styles.foodNameTitle} title="Description" />
-            <TextInput
-              style={styles.foodDescriptionStyle}
-              placeholder="Enter description"
-              value={formData.foodDescription}
-              numberOfLines={5}
-              multiline={true}
-              onChangeText={
-                text => setFormData(prev => ({...prev, foodDescription: text})) //5
-              }
-            />
-            {errorForm?.foodDescription && (
-              <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
-            )}
-          </View>
-
-          <View style={styles.foodcategory}>
-            <CustomTitle style={styles.foodNameTitle} title="Category" />
-
-            <SelectDropdown
-              data={categoryList || []}
-              onSelect={selectedItem => {
-                console.log(selectedItem.categoryId);
-                setFormData(prev => ({
-                  ...prev,
-                  categoryId: selectedItem.categoryId,
-                }));
-              }}
-              renderButton={(selectedItem, isOpened) => {
-                return (
-                  <View style={styles.dropdownButtonStyle}>
-                    <Text style={styles.dropdownButtonTxtStyle}>
-                      {(selectedItem && selectedItem.categoryName) ||
-                        'Category'}
-                    </Text>
-                    <Icon
-                      name={isOpened ? 'chevron-up' : 'chevron-down'}
-                      style={styles.dropdownButtonArrowStyle}
-                    />
-                  </View>
-                );
-              }}
-              renderItem={(item, isSelected) => {
-                return (
-                  <View
-                    style={{
-                      ...styles.dropdownItemStyle,
-                      ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                    }}>
-                    <Text style={styles.dropdownItemTxtStyle}>
-                      {item.categoryName}
-                    </Text>
-                  </View>
-                );
-              }}
-              showsVerticalScrollIndicator={false}
-              dropdownStyle={styles.dropdownMenuStyle}
-            />
-          </View>
-
-          <View style={styles.foodIngredient}>
-            <CustomTitle style={styles.foodNameTitle} title="Ingredient" />
-            <TextInput
-              style={styles.foodDescriptionStyle}
-              placeholder="Enter ingredients"
-              value={formData.foodIngredients}
-              numberOfLines={5}
-              multiline={true}
-              onChangeText={
-                text => setFormData(prev => ({...prev, foodIngredients: text})) //6
-              }
-            />
-          </View>
-
-          <View style={styles.foodSteps}>
-            <CustomTitle style={styles.foodNameTitle} title="Step" />
-            <TextInput
-              style={styles.foodDescriptionStyle}
-              placeholder="Enter steps or recipe"
-              value={formData.foodSteps}
-              multiline={true}
-              numberOfLines={5}
-              onChangeText={
-                text => setFormData(prev => ({...prev, foodSteps: text})) //8
-              }
-            />
-          </View>
+        <View style={styles.container2}>
+          <CustomTitle title="Steps" />
+          {steps.map((step, index) => (
+            <View key={index} style={styles.ISTextInputContainer}>
+              <TextInput
+                style={styles.ISTextInput}
+                placeholder={`Step ${index + 1}`}
+                value={step}
+                onChangeText={text => handleStepChange(text, index)}
+              />
+              <Pressable onPress={() => handleRemoveStep(index)}>
+                <AntDesignIcon style={styles.icon} name="minus" size={22} />
+              </Pressable>
+            </View>
+          ))}
+          <CustomButton
+            style={styles.addIngredient}
+            title="Add Step"
+            onPress={handleAddStep}
+          />
         </View>
       </ScrollView>
 
@@ -246,29 +304,83 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-  body: {
-    marginTop: 24,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 12,
+  //Image block
+  container2: {
+    marginHorizontal: 18,
+    marginVertical: 12,
+    gap: 10,
   },
-  previewImg: {
-    width: '100%',
+  imagePreview: {
+    width: 327,
     height: 180,
     borderRadius: 12,
+    resizeMode: 'cover',
   },
+  // FoodName block
+  foodNameTextInput: {
+    width: 327,
+    height: 53,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+  },
+  // FoodDescription block
+  foodDescriptionTextInput: {
+    width: 327,
+    height: 123,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+  },
+  // FoodCategory and cooking time block
+  foodcategoryContainer: {
+    marginHorizontal: 18,
+    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cookingTimeTextInput: {
+    width: 160,
+    height: 53,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+  },
+  //Ingredients and Step blocks
+  ISTextInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  ISTextInput: {
+    width: 280,
+    height: 53,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+    marginRight: 12,
+  },
+  icon: {
+    padding: 2,
+    borderRadius: 16,
+    color: colors.primary,
+    borderWidth: 1,
+    borderColor: colors.primary,
+  },
+
   errorText: {
     color: 'red',
     fontSize: 14,
     marginTop: 4,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    color: colors.dark,
+  addIngredient: {
+    width: 127,
+    backgroundColor: colors.secondary,
+    marginHorizontal: 18,
   },
+
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -287,7 +399,7 @@ const styles = StyleSheet.create({
   },
 
   dropdownButtonStyle: {
-    width: 140,
+    width: 160,
     height: 40,
     backgroundColor: '#E9ECEF',
     borderRadius: 12,
@@ -295,7 +407,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 12,
-    marginHorizontal: 20,
   },
   dropdownButtonTxtStyle: {
     flex: 1,
@@ -325,57 +436,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#151E26',
-  },
-  ingredients: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 28,
-  },
-
-  foodImg: {
-    marginBottom: 20,
-    width: 300,
-  },
-  foodNameTitle2: {
-    marginVertical: 20,
-  },
-  foodName: {},
-  foodNameTitle: {
-    marginHorizontal: 20,
-  },
-  foodNameStyle: {
-    width: 327,
-    height: 53,
-    backgroundColor: colors.InputBg,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
-  },
-  foodDescription: {},
-  foodDescriptionTitle: {
-    marginHorizontal: 20,
-  },
-  foodDescriptionStyle: {
-    width: 327,
-    height: 123,
-    backgroundColor: colors.InputBg,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
-  },
-  foodcategory: {
-    marginBottom: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  foodIngredient: {
-    marginBottom: 20,
-    //backgroundColor: 'pink',
-  },
-  foodSteps: {
-    marginBottom: 20,
-    //backgroundColor: 'purple',
   },
 });

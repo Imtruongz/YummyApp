@@ -3,6 +3,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -145,9 +146,38 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
             )}
 
             <CustomTitle title="Ingredient" />
-            <Text>{selectedFood.foodIngredients}</Text>
+            {selectedFood.foodIngredients.map((ingredient, index) => (
+              <Text key={index} style={styles.ingredientText}>
+                {ingredient}
+              </Text>
+            ))}
             <CustomTitle title="Step" />
-            <Text>{selectedFood.foodSteps}</Text>
+            {selectedFood.foodSteps.map((step, index) => (
+              <Text key={index} style={styles.ingredientText}>
+                {step}
+              </Text>
+            ))}
+            <CustomTitle title="Comment" />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}>
+              <CustomAvatar
+                width={40}
+                height={40}
+                borderRadius={20}
+                image={img.UndefineImg}
+              />
+              <TextInput
+                style={styles.foodNameStyle2}
+                placeholder="Write a comment..."
+                multiline={true}
+                numberOfLines={3}
+              />
+            </View>
+            <CustomTitle title="Another food" />
           </View>
         </ScrollView>
       </SafeAreaView>
@@ -239,5 +269,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.InputBg,
     padding: 14,
     borderRadius: 15,
+  },
+  ingredientText: {
+    backgroundColor: colors.InputBg,
+    padding: 10,
+    borderRadius: 10,
+  },
+  foodNameStyle2: {
+    width: 240,
+    height: 80,
+    backgroundColor: colors.InputBg,
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 18,
   },
 });

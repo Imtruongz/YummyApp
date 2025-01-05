@@ -6,14 +6,15 @@ interface food {
   categoryId?: string;
   userId?: string;
   foodDescription?: string;
-  foodIngredients?: string;
+  foodIngredients: string[];
   foodThumbnail?: string;
-  foodSteps?: string;
+  foodSteps: string[];
+  CookingTime: string;
   created_at?: string;
   updated_at?: string;
-  userDetail?: {
+  userDetail: {
     userId?: string;
-    username?: string;
+    username: string;
     email?: string;
     avatar?: string;
     created_at?: string;
@@ -22,13 +23,14 @@ interface food {
 }
 
 export interface foodPayload {
-  foodName?: string;
-  categoryId?: string;
-  userId?: string;
-  foodDescription?: string;
-  foodIngredients?: string;
-  foodThumbnail?: string;
-  foodSteps?: string;
+  foodName: string;
+  categoryId: string;
+  userId: string;
+  foodDescription: string;
+  foodIngredients: string[];
+  foodThumbnail: string;
+  foodSteps: string[];
+  CookingTime: string;
 }
 
 export interface foodState {

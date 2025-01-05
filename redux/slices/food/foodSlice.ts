@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 import {
   getAllFoodAPI,
   getFoodByIdAPI,
@@ -7,7 +7,7 @@ import {
   getDetailFoodAPI,
   getFoodByCategoryAPI,
 } from './foodThunk';
-import {foodState, food} from './types';
+import {foodState} from './types';
 
 const initialState: foodState = {
   foodList: [],
@@ -58,7 +58,7 @@ const foodSlice = createSlice({
     });
     builder.addCase(
       addFoodAPI.fulfilled,
-      (state, action: PayloadAction<food | undefined>) => {
+      (state, action) => {
         if (action.payload) {
           state.foodList.push(action.payload);
           state.userFoodList.push(action.payload);
@@ -78,12 +78,10 @@ const foodSlice = createSlice({
     });
     builder.addCase(
       deleteFoodAPI.fulfilled,
-      (state, action: PayloadAction<string>) => {
-        // Xóa item khỏi foodList
+      (state, action) => {
         state.foodList = state.foodList.filter(
           food => food.foodId !== action.payload,
         );
-        // Xóa item khỏi userFoodList
         state.userFoodList = state.userFoodList.filter(
           food => food.foodId !== action.payload,
         );

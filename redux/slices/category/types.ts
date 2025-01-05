@@ -5,7 +5,7 @@ export interface category {
 }
 
 export interface categoryState {
-  categoryList: category[] | null;
+  categoryList: category[];
   isLoadingCategory: boolean;
   isErrorCategory: boolean;
 }

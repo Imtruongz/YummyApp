@@ -10,7 +10,6 @@ import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import HomePage from './pages/HomePage';
 
-import FoodPage from './pages/FoodPage';
 import ProfilePage from './pages/ProfilePage';
 import {RootStackParamList} from './android/types/StackNavType';
 
@@ -106,11 +105,6 @@ function StackNavigator() {
         <Stack.Screen
           name="ProfilePage"
           component={ProfilePage}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="FoodPage"
-          component={FoodPage}
           options={{headerShown: false}}
         />
         <Stack.Screen

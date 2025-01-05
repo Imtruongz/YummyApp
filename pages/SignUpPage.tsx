@@ -26,7 +26,7 @@ import CustomAuthHeader from '../components/customize/authHeader';
 import img from '../utils/urlImg';
 
 import {useAppDispatch} from '../redux/hooks.ts';
-import {userRegisterAPI} from '../redux/slices/auth/authThunk'; // Import your thunk
+import {userRegisterAPI} from '../redux/slices/auth/authThunk';
 
 interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}

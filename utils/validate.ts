@@ -18,3 +18,7 @@ export const verifyConfirmPassword = (
     return false;
   }
 };
+
+export const verifyCookingTime = (cookingTime: number) => {
+  return cookingTime > 0;
+};

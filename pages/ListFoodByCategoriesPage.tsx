@@ -1,35 +1,35 @@
-import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import colors from '../utils/color';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Header from '../components/customize/Header';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-
-import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType.ts';
-import {RootState} from '../redux/store.ts';
-import CustomTitle from '../components/customize/Title.tsx';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import colors from '../utils/color';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
+import {RootState} from '../redux/store.ts';
+
+import {RootStackParamList} from '../android/types/StackNavType.ts';
+
+import Header from '../components/customize/Header';
+import CustomTitle from '../components/customize/Title.tsx';
 import Loading from '../components/skeleton/Loading';
 
-
 interface ListFoodByCategoriesProps
-  extends NativeStackScreenProps<
-    RootStackParamList,
-    'ListFoodByCategoriesPage'
-  > {}
-const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
-  route,
-  navigation,
-}) => {
+  extends NativeStackScreenProps<RootStackParamList, 'ListFoodByCategoriesPage'> {}
+const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({ route, navigation}) => {
   const dispatch = useAppDispatch();
-
   const {categoryId} = route.params;
 
-  const {categoryFoodList,isLoadingFood } = useAppSelector((state: RootState) => state.food);
-
+  const {categoryFoodList, isLoadingFood} = useAppSelector((state:RootState) => state.food);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   const filteredCategoryFoodList = categoryFoodList?.filter(
@@ -43,7 +43,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   }, [dispatch, categoryId]);
 
   if (isLoadingFood) {
-    return <Loading />; // Hiển thị khi dữ liệu đang được tải
+    return <Loading />;
   }
 
   return (
@@ -57,31 +57,31 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
       <ScrollView contentContainerStyle={styles.container2}>
         {filteredCategoryFoodList?.map(item => (
           <TouchableOpacity
-          key={item.foodId}
-          style={styles.itemContainer}
-          onPress={() =>
-            navigation.navigate('RecipeDetailPage', {foodId: item.foodId})
-          }>
-          {/* Top img */}
-          <Image style={styles.img} source={{uri: item.foodThumbnail}} />
-          {/* Bottom info */}
-          <View style={styles.titleItemLeft}>
-            <CustomTitle
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={styles.title}
-              title={item.foodName}
-            />
-            <Text style={styles.title2}>{item.userDetail?.username}</Text>
-            <View
-              style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-              <AntDesignIcon name="star" size={20} color={colors.primary} />
-              <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                (4.0)
-              </Text>
+            key={item.foodId}
+            style={styles.itemContainer}
+            onPress={() =>
+              navigation.navigate('RecipeDetailPage', {foodId: item.foodId})
+            }>
+            {/* Top img */}
+            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+            {/* Bottom info */}
+            <View style={styles.titleItemLeft}>
+              <CustomTitle
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={styles.title}
+                title={item.foodName}
+              />
+              <Text style={styles.title2}>{item.userDetail?.username}</Text>
+              <View
+                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                <AntDesignIcon name="star" size={20} color={colors.primary} />
+                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                  (4.0)
+                </Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </SafeAreaView>
@@ -94,24 +94,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {},
-  icon: {
-    padding: 12,
-  },
-
-  avatar: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    margin: 8,
-  },
-
   titleHeader: {
     padding: 12,
     fontSize: 22,
     fontWeight: 'bold',
   },
-
   inputHeader: {
     width: '90%',
     backgroundColor: colors.InputBg,
@@ -119,7 +106,6 @@ const styles = StyleSheet.create({
     padding: 16,
     margin: 18,
   },
-
   container2: {
     width: '100%',
     flexDirection: 'row',
@@ -160,7 +146,5 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 12,
     color: colors.smallText,
-    fontFamily: 'Poppins',
-    fontWeight: '700',
   },
 });

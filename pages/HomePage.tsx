@@ -13,8 +13,6 @@ import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
 
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -24,6 +22,7 @@ import CustomButton from '../components/customize/Button';
 import CustomTitle from '../components/customize/Title';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
+import Greeting from '../components/customize/Greeting';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
@@ -55,26 +54,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
     if (currentTime < 12) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
-          <FontAwesomeIcon name="sun-o" size={18} color={color.dark} />
-          <Text>Good Morning</Text>
-        </View>
-      );
+      return <Greeting iconName="sun-o" title="Good Morning" />;
     } else if (currentTime < 18) {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
-          <FontAwesomeIcon name="sun-o" size={18} color={color.dark} />
-          <Text>Good Afternoon</Text>
-        </View>
-      );
+      return <Greeting iconName="sun-o" title="Good Afternoon" />;
     } else {
-      return (
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
-          <FontAwesomeIcon name="moon-o" size={18} color={color.dark} />
-          <Text>Good Evening</Text>
-        </View>
-      );
+      return <Greeting iconName="moon-o" title="Good Evening" />;
     }
   };
   const message = greetingMessage();
@@ -83,21 +67,26 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.headerBlock}>
-          <View style={styles.headerBlock2}>
-            <CustomAvatar width={50} height={50} borderRadius={25} image={user?.avatar || imgURL.UndefineImg} />
-            <View style={styles.headerBlock3}>
+        <View style={styles.headerContainer}>
+          <View style={styles.header1}>
+            <CustomAvatar
+              width={50}
+              height={50}
+              borderRadius={25}
+              image={user?.avatar || imgURL.UndefineImg}
+            />
+            <View style={styles.header2}>
               <Text>{message}</Text>
               <CustomTitle title={user?.username} />
             </View>
           </View>
           <FeatherIcon name="bell" size={24} color={color.dark} />
         </View>
-
+        {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title="Popular Category" />
-          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
         </TouchableOpacity>
+        {/* Popular Category List */}
         <FlatList
           data={categoryList}
           horizontal
@@ -117,13 +106,14 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             </Pressable>
           )}
         />
-
+        {/* Daily Food Title */}
         <TouchableOpacity
           onPress={() => navigation.navigate('ListFoodPage')}
           style={styles.titleContainer}>
           <CustomTitle title="Daily Food " />
-          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
+          <CustomTitle style={styles.seeAll} title="See all" />
         </TouchableOpacity>
+        {/* Daily Food List */}
         <FlatList
           data={foodList}
           horizontal
@@ -140,9 +130,15 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
                 <CustomTitle title={item.foodName} />
-                <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-                <CustomAvatar width={30} height={30} borderRadius={15} image={item.userDetail?.avatar} />
-                <Text>{item.userDetail?.username}</Text>
+                <View
+                  style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                  <CustomAvatar
+                    width={30}
+                    height={30}
+                    borderRadius={15}
+                    image={item.userDetail?.avatar}
+                  />
+                  <Text>{item.userDetail?.username}</Text>
                 </View>
               </View>
               <MaterialIcons
@@ -154,10 +150,12 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             </Pressable>
           )}
         />
+        {/* Popular Creator Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title="Popular creators" />
-          <CustomTitle style={styles.SeeAllDailyFood} title="See all" />
+          <CustomTitle style={styles.seeAll} title="See all" />
         </TouchableOpacity>
+        {/* Popular Creator List */}
         <FlatList
           data={ListUser}
           horizontal
@@ -165,19 +163,22 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           keyExtractor={item => item.userId}
           renderItem={({item}) => (
             <View style={styles.creatorItems}>
-              <CustomAvatar width={100} height={100} borderRadius={50} image={item.avatar} />
+              <CustomAvatar
+                width={100}
+                height={100}
+                borderRadius={50}
+                image={item.avatar}
+              />
               <CustomTitle
                 title={item.username}
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={styles.creatorText}
+                style={styles.creatorName}
               />
             </View>
           )}
         />
-        <View style={{height: 100}} />
       </ScrollView>
-
       {/* Button add new Food */}
       <CustomButton
         isText={false}
@@ -185,7 +186,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         icon="plus"
         iconSize={24}
         onPress={() => navigation.navigate('AddFoodPage')}
-        style={styles.openModalStyle}
+        style={styles.addFoodBtn}
       />
     </SafeAreaView>
   );
@@ -201,63 +202,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerBlock: {
+  headerContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headerBlock2: {
+  header1: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  headerBlock3: {
+  header2: {
     marginHorizontal: 10,
-  },
-  imgStyle: {
-    maxWidth: 60,
-    width: 50,
-    height: 20,
-    resizeMode: 'contain',
-  },
-  headerTitle: {
-    width: '60%',
-  },
-  inputContainter: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  popularBlock: {
-    width: '100%',
-    height: 200,
-  },
-
-  imgBackground: {
-    margin: 10,
-    resizeMode: 'center',
   },
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
-  },
-  item2: {
-    flex: 1,
-    width: 300,
-    height: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 20,
-    backgroundColor: color.light,
-    margin: 20,
-    shadowColor: color.dark,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
   },
   favoriteIcon: {
     position: 'absolute',
@@ -271,9 +233,6 @@ const styles = StyleSheet.create({
     width: '60%',
     height: '100%',
   },
-  titleItemRight2: {
-    width: '40%',
-  },
   img2: {
     width: 140,
     height: 200,
@@ -281,7 +240,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     resizeMode: 'cover',
   },
-  openModalStyle: {
+  addFoodBtn: {
     position: 'absolute',
     bottom: 20,
     right: 20,
@@ -309,18 +268,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  creatorAvatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  creatorText: {
+  creatorName: {
     fontSize: 14,
     maxWidth: 100,
     textAlign: 'center',
   },
-
-  SeeAllDailyFood: {
+  seeAll: {
     fontSize: 14,
     color: color.primary,
   },

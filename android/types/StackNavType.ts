@@ -8,7 +8,6 @@ export type RootStackParamList = {
   ProfilePage: {
     email: string;
   };
-  FoodPage: undefined;
   RecipeDetailPage: {
     foodId?: string;
   };
