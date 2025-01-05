@@ -72,7 +72,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({ route, 
                 style={styles.title}
                 title={item.foodName}
               />
-              <Text style={styles.title2}>{item.userDetail?.username}</Text>
+              <Text style={styles.title2}>{item.userDetail.username}</Text>
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                 <AntDesignIcon name="star" size={20} color={colors.primary} />

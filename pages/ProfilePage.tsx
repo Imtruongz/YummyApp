@@ -117,7 +117,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                 image={user?.avatar || imgUrl.UndefineImg}
               />
               <View style={styles.myInfo3}>
-                <InfoItem number={userFoodList?.length ?? 0} label="Posts" />
+                <InfoItem number={userFoodList.length ?? 0} label="Posts" />
                 <InfoItem number="0" label="Follower" />
                 <InfoItem number="0" label="Following" />
               </View>

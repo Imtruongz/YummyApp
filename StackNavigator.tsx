@@ -1,20 +1,19 @@
 import React from 'react';
-
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
+import {RootStackParamList} from './android/types/StackNavType';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import colors from './utils/color';
+//auth
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+
+//main
 import HomePage from './pages/HomePage';
-
 import ProfilePage from './pages/ProfilePage';
-import {RootStackParamList} from './android/types/StackNavType';
-
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import colors from './utils/color';
 import RecipeDetailPage from './pages/RecipeDetailPage';
 import SettingPage from './pages/SettingPage';
 import AddFoodPage from './pages/AddFoodPage';

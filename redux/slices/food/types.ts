@@ -1,24 +1,22 @@
-import {WritableDraft} from 'immer';
-
-interface food {
+export interface food {
   foodId: string;
   foodName: string;
-  categoryId?: string;
-  userId?: string;
-  foodDescription?: string;
+  categoryId: string;
+  userId: string;
+  foodDescription: string;
   foodIngredients: string[];
-  foodThumbnail?: string;
+  foodThumbnail: string;
   foodSteps: string[];
   CookingTime: string;
-  created_at?: string;
-  updated_at?: string;
+  created_at: string;
+  updated_at: string;
   userDetail: {
-    userId?: string;
+    userId: string;
     username: string;
-    email?: string;
-    avatar?: string;
-    created_at?: string;
-    updated_at?: string;
+    email: string;
+    avatar: string;
+    created_at: string;
+    updated_at: string;
   };
 }
 
@@ -34,12 +32,10 @@ export interface foodPayload {
 }
 
 export interface foodState {
-  foodList: WritableDraft<food>[];
+  foodList: food[];
   userFoodList: food[];
   categoryFoodList: food[];
-  selectedFood: WritableDraft<food> | null;
+  selectedFood: food | null
   isLoadingFood: boolean;
   isErrorFood: boolean;
 }
-
-export type {food};

@@ -1,45 +1,36 @@
-// types.ts
-
-interface LoginPayload {
+export interface LoginPayload {
   email: string;
   password: string;
 }
-
-interface RegisterPayload {
-  username?: string;
+export interface RegisterPayload {
+  username: string;
   email: string;
   password: string;
-  phoneNumber?: string;
-  avatar?: string;
+  phoneNumber: string;
+  avatar: string;
 }
-
-interface UpdatePayload {
-  username?: string;
-  avatar?: string;
-  description?: string;
+export interface UpdatePayload {
+  username: string;
+  avatar: string;
+  description: string;
 }
-
-interface User {
+export interface User {
   userId: string;
-  username?: string;
-  email?: string;
-  password?: string;
-  phoneNumber?: string;
-  avatar?: string;
-  description?: string;
-  createdAt?: Date;
+  username: string;
+  email: string;
+  password: string;
+  phoneNumber: string;
+  avatar: string;
+  description: string;
+  createdAt: Date;
 }
-
 export interface UserState {
   ListUser: User[];
   isLoadingUser: boolean;
   isErrorUser: boolean;
 }
-
-interface AuthState {
+export interface AuthState {
   user: User | null;
   isLoadingUser: boolean;
   isErrorUser: boolean;
 }
-
-export type {LoginPayload, RegisterPayload, UpdatePayload, User, AuthState};

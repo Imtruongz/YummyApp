@@ -95,11 +95,11 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 width={60}
                 height={60}
                 borderRadius={30}
-                image={selectedFood.userDetail?.avatar || img.UndefineImg}
+                image={selectedFood.userDetail.avatar || img.UndefineImg}
               />
               <View style={styles.headerBlock3}>
-                <CustomTitle title={selectedFood.userDetail?.username} />
-                <Text>{selectedFood.userDetail?.email}</Text>
+                <CustomTitle title={selectedFood.userDetail.username} />
+                <Text>{selectedFood.userDetail.email}</Text>
               </View>
             </View>
             <View style={styles.achivement}>
