@@ -27,7 +27,7 @@ const SettingButton: React.FC<SettingButtonProps> = ({
       style={[styles.accountSetting, style]}
       onPress={onPress || defaultOnPress}
     >
-      <Text style={styles.text}>{title}</Text>
+      <Text style={[styles.text, style]}>{title}</Text>
       <AntDesignIcon name="right" size={20} />
     </TouchableOpacity>
   );

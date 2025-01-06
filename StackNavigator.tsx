@@ -21,6 +21,7 @@ import SettingProfilePage from './pages/SettingProfilePage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import ListFoodPage from './pages/ListFoodPage';
 import ListFoodByCategoriesPage from './pages/ListFoodByCategoriesPage';
+import ListFoodByUser from './pages/ListFoodByUser';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -134,6 +135,11 @@ function StackNavigator() {
         <Stack.Screen
           name="ListFoodPage"
           component={ListFoodPage}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ListFoodByUserPage"
+          component={ListFoodByUser}
           options={{headerShown: false}}
         />
         <Stack.Screen

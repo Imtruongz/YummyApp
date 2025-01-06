@@ -19,4 +19,7 @@ export type RootStackParamList = {
   ListFoodByCategoriesPage: {
     categoryId?: string;
   };
+  ListFoodByUserPage: {
+    userId: string;
+  };
 };

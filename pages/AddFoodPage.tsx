@@ -143,7 +143,7 @@ const AddFoodPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Add Food" iconName="close" />
+      <Header title="Add Food" iconName="arrowleft" />
       <ScrollView>
         <View style={styles.container2}>
           <CustomTitle title="Choose Image" />

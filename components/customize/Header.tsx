@@ -32,10 +32,19 @@ export default Header;
 
 const styles = StyleSheet.create({
   header: {
+    height: 52,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: color.secondary,
+    backgroundColor: color.light,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 1,
+    elevation: 10,
   },
   icon: {
     position: 'absolute',

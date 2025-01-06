@@ -153,7 +153,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         {/* Popular Creator Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title="Popular creators" />
-          <CustomTitle style={styles.seeAll} title="See all" />
         </TouchableOpacity>
         {/* Popular Creator List */}
         <FlatList
@@ -162,7 +161,13 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           showsHorizontalScrollIndicator={true}
           keyExtractor={item => item.userId}
           renderItem={({item}) => (
-            <View style={styles.creatorItems}>
+            <Pressable
+              onPress={() =>
+                navigation.navigate('ListFoodByUserPage', {
+                  userId: item.userId,
+                })
+              }
+              style={styles.creatorItems}>
               <CustomAvatar
                 width={100}
                 height={100}
@@ -175,7 +180,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 ellipsizeMode="tail"
                 style={styles.creatorName}
               />
-            </View>
+            </Pressable>
           )}
         />
       </ScrollView>
