@@ -58,10 +58,9 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   };
 
   const dispatch = useAppDispatch();
-  const {selectedFood, userFoodList , isLoadingFood, isErrorFood} = useAppSelector(
-    (state: RootState) => state.food,
-  );
- 
+  const {selectedFood, userFoodList, isLoadingFood, isErrorFood} =
+    useAppSelector((state: RootState) => state.food);
+
   const {foodReviewList, isErrorReview} = useAppSelector(
     (state: RootState) => state.review,
   );
@@ -74,10 +73,8 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     const scrollY = event.nativeEvent.contentOffset.y;
     if (scrollY > 275) {
       setIconColor(colors.secondary);
-      console.log('changed icon color to dark', scrollY);
     } else {
       setIconColor(colors.light);
-      console.log('changed icon color to light', scrollY);
     }
   };
 
@@ -148,28 +145,29 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         />
         <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
           <ImageBackground
-            style={styles.imgHeader}
+            style={styles.imgContainer}
             source={{uri: selectedFood.foodThumbnail}}>
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
               style={styles.linearGradient}>
-              <Text style={styles.textTitle}>{selectedFood.foodName}</Text>
+              <Text style={styles.foodName}>{selectedFood.foodName}</Text>
             </LinearGradient>
           </ImageBackground>
 
           <View style={styles.body}>
-            <View style={styles.headerBlock2}>
+            <TouchableOpacity
+              style={styles.infoContainer}>
               <CustomAvatar
                 width={60}
                 height={60}
                 borderRadius={30}
                 image={selectedFood.userDetail.avatar || img.UndefineImg}
               />
-              <View style={styles.headerBlock3}>
+              <View>
                 <CustomTitle title={selectedFood.userDetail.username} />
                 <Text>{selectedFood.userDetail.email}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
             <View style={styles.achivement}>
               <View style={styles.achivementItem}>
                 <AntDesignIcon name="star" size={20} color={colors.primary} />
@@ -339,42 +337,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-  imgHeader: {
-    height: 300,
-  },
-  img: {
-    width: '100%',
-    height: '100%',
-  },
-  img2: {
-    width: 'auto',
-    height: 100,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    resizeMode: 'cover',
-  },
-  body: {
-    gap: 10,
-    padding: 18,
-  },
-  readMore: {
-    color: colors.secondary,
-    fontWeight: 'bold',
-  },
-
-  linearGradient: {
-    width: '100%',
-    height: '100%',
-  },
-
-  textTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    position: 'absolute',
-    bottom: 12,
-    left: 22,
-    color: colors.light,
-  },
 
   arrowLeftIcon: {
     position: 'absolute',
@@ -385,7 +347,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
   },
-
   favoriteIcon: {
     position: 'absolute',
     top: 12,
@@ -395,29 +356,57 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 50,
   },
-  headerBlock2: {
+  imgContainer: {
+    height: 240,
+    width: '100%',
+    resizeMode: 'cover',
+  },
+  linearGradient: {
+    width: '100%',
+    height: '100%',
+  },
+  img: {
+    width: '100%',
+    height: '100%',
+  },
+
+  body: {
+    gap: 10,
+    padding: 18,
+  },
+  readMore: {
+    color: colors.secondary,
+    fontWeight: 'bold',
+  },
+  foodName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    position: 'absolute',
+    bottom: 12,
+    left: 22,
+    color: colors.light,
+  },
+  infoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 10,
-  },
-  headerBlock3: {
-    marginHorizontal: 10,
+    gap: 12,
   },
 
   achivement: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     width: '100%',
-    paddingVertical: 10,
+    marginBottom: 12,
   },
   achivementItem: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: colors.InputBg,
     gap: 6,
     fontSize: 12,
-    backgroundColor: colors.InputBg,
     padding: 14,
     borderRadius: 15,
   },
@@ -445,36 +434,17 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   commentInput: {
+    borderTopWidth: 1,
+    paddingTop: 12,
+    marginTop: 12,
+    borderTopColor: colors.InputBg,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-
-  titleHeader: {
-    padding: 12,
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-
-  inputHeader: {
-    width: '90%',
-    backgroundColor: colors.light,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
-  },
-
-  container2: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 14,
-    padding: 12,
-  },
   itemContainer: {
     width: 180,
-    height: 190,
+    height: 180,
     backgroundColor: colors.light,
     borderRadius: 15,
     gap: 8,
@@ -484,6 +454,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     marginHorizontal: 12,
+    marginVertical: 6,
+  },
+  img2: {
+    width: '100%',
+    height: 100,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    resizeMode: 'cover',
   },
   titleItemLeft: {
     justifyContent: 'flex-start',
