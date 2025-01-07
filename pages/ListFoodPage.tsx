@@ -27,7 +27,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   const {foodList} = useAppSelector(state => state.food);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFoodList = foodList?.filter(
     item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood

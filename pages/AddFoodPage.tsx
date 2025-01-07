@@ -55,6 +55,8 @@ const AddFoodPage = () => {
   const [ingredients, setIngredients] = useState<string[]>(['']);
   const [steps, setSteps] = useState<string[]>(['']);
 
+  const {categoryList} = useAppSelector((state: RootState) => state.categories);
+
   const handleAddIngredient = () => {
     setIngredients([...ingredients, '']);
   };
@@ -79,10 +81,6 @@ const AddFoodPage = () => {
     const newSteps = steps.filter((_, i) => i !== index);
     setSteps(newSteps);
   };
-
-  // Redux state
-  const {categoryList} = useAppSelector((state: RootState) => state.categories);
-
   // Fetch categories on mount
   useEffect(() => {
     dispatch(getAllCategoriesAPI());

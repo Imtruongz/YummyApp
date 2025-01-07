@@ -28,9 +28,9 @@ interface SettingProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
 const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
   const dispatch = useAppDispatch();
-  const [username, setusername] = useState<string>('');
-  const [avatar, setavatar] = useState<string>('');
-  const [description, setdescription] = useState<string>('');
+  const [username, setusername] = useState('');
+  const [avatar, setavatar] = useState('');
+  const [description, setdescription] = useState('');
 
   const {user, isLoadingUser, isErrorUser} = useAppSelector(
     (state: RootState) => state.auth,
@@ -95,7 +95,10 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
 
   useEffect(() => {
       dispatch(getUserByIdAPI(storage.getString('userId') || ''));
-  }, [dispatch]);
+      setusername(user?.username || '');
+      setdescription(user?.description || '');
+      setavatar(user?.avatar || '');
+  }, [dispatch, user?.username, user?.description, user?.avatar]);
 
   return (
     <View style={styles.container}>

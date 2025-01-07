@@ -30,7 +30,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({ route, 
   const {categoryId} = route.params;
 
   const {categoryFoodList, isLoadingFood} = useAppSelector((state:RootState) => state.food);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCategoryFoodList = categoryFoodList?.filter(
     item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood

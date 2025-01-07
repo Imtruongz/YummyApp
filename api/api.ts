@@ -31,5 +31,5 @@ api.interceptors.request.use( config => {
 
 export default api;
 
-//192.168.0.103
+//192.168.0.100
 //10.100.13.24

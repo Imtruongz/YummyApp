@@ -39,6 +39,7 @@ interface HomePageProps
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
+  const userId = storage.getString('userId') || '';
   const {foodList} = useAppSelector(state => state.food);
   const {user} = useAppSelector((state: RootState) => state.auth);
   const {ListUser} = useAppSelector((state: RootState) => state.user);
@@ -48,8 +49,8 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     dispatch(getAllCategoriesAPI());
     dispatch(getAllFoodAPI());
     dispatch(getAllUsers());
-    dispatch(getUserByIdAPI(storage.getString('userId') || ''));
-  }, [dispatch]);
+    dispatch(getUserByIdAPI(userId));
+  }, [dispatch, userId]);
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -125,6 +126,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               onPress={() =>
                 navigation.navigate('RecipeDetailPage', {
                   foodId: item.foodId,
+                  userId: item.userId,
                 })
               }>
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />

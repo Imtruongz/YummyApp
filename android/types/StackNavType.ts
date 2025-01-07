@@ -9,7 +9,8 @@ export type RootStackParamList = {
     email: string;
   };
   RecipeDetailPage: {
-    foodId?: string;
+    foodId: string;
+    userId?: string;
   };
   SettingPage: undefined;
   AddFoodPage: undefined;

@@ -12,6 +12,7 @@ interface CustomButtonProps {
   icon?: string;
   isIcon?: boolean;
   iconSize?: number;
+  disabled?: boolean;
 }
 
 const customButton: React.FC<CustomButtonProps> = ({
@@ -22,9 +23,13 @@ const customButton: React.FC<CustomButtonProps> = ({
   icon = '',
   isIcon = false,
   iconSize = 14,
+  disabled = false,
 }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.btn, style]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.btn, style]}
+      disabled={disabled}>
       {isText && <Text style={styles.text}>{title}</Text>}
       {isIcon && <AntDesignIcon name={icon} size={iconSize} />}
     </TouchableOpacity>
