@@ -1,10 +1,12 @@
-// Root params list
 export type RootStackParamList = {
+  // auth, user page
   LoginPage: undefined;
-  BottomTabs: undefined;
-  HomePage: undefined;
   SignUpPage: undefined;
   ForgotPasswordPage: undefined;
+  changePasswordPage: undefined;
+  // main
+  BottomTabs: undefined;
+  HomePage: undefined;
   ProfilePage: {
     email: string;
   };
@@ -15,7 +17,6 @@ export type RootStackParamList = {
   SettingPage: undefined;
   AddFoodPage: undefined;
   SettingProfilePage: undefined;
-  changePasswordPage: undefined;
   ListFoodPage: undefined;
   ListFoodByCategoriesPage: {
     categoryId?: string;
@@ -23,4 +24,5 @@ export type RootStackParamList = {
   ListFoodByUserPage: {
     userId: string;
   };
+  OnBoarding: undefined;
 };

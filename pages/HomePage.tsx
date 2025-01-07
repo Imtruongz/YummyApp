@@ -76,7 +76,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               borderRadius={25}
               image={user?.avatar || imgURL.UndefineImg}
             />
-            <View style={styles.header2}>
+            <View>
               <Text>{message}</Text>
               <CustomTitle title={user?.username} />
             </View>
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.light,
-    padding: 14,
+    padding: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -214,13 +214,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: color.light,
+    shadowColor: color.dark,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+    paddingVertical: 8,
+
   },
   header1: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  header2: {
-    marginHorizontal: 10,
+    gap: 14,
   },
   titleContainer: {
     flexDirection: 'row',
