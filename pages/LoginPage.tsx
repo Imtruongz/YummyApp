@@ -1,6 +1,5 @@
 import {
   Keyboard,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -10,6 +9,7 @@ import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 //Customm components
 import CustomButton from '../components/customize/Button';

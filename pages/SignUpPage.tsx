@@ -1,6 +1,5 @@
 import {
   StyleSheet,
-  SafeAreaView,
   Text,
   View,
   TouchableWithoutFeedback,
@@ -11,6 +10,7 @@ import React, {useState} from 'react';
 import CustomButton from '../components/customize/Button';
 import CustomInput from '../components/customize/Input';
 import CustomTextFooter from '../components/customize/TextFooter';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import Toast from 'react-native-toast-message';
 import color from '../utils/color';

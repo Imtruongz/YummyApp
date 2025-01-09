@@ -93,7 +93,7 @@ function StackNavigator() {
         }
         <Stack.Screen name="SignUpPage" component={SignUpPage} />
         <Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordPage} />
-        <Stack.Screen name="changePasswordPage" component={ChangePasswordPage}/>
+        <Stack.Screen name="ChangePasswordPage" component={ChangePasswordPage}/>
           {/* main */}
         <Stack.Screen name="BottomTabs" component={BottomTab} />
         <Stack.Screen name="ProfilePage" component={ProfilePage} />

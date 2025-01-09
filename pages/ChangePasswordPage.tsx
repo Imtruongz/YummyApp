@@ -1,23 +1,65 @@
-import {StyleSheet, Text, View, Button, Alert} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
 import CustomInput from '../components/customize/Input';
 import {changePasswordAPI} from '../redux/slices/auth/authThunk';
 import {useAppDispatch} from '../redux/hooks';
+import CustomButton from '../components/customize/Button.tsx';
+
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {MMKV} from 'react-native-mmkv';
+import colors from '../utils/color';
+import Header from '../components/customize/Header';
+
+import {verifyPassword, verifyConfirmPassword} from '../utils/validate';
+import Toast from 'react-native-toast-message';
+import {RootStackParamList} from '../android/types/StackNavType.ts';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
 
-const ChangePasswordPage = () => {
+interface ChangePasswordPageProps
+  extends NativeStackScreenProps<RootStackParamList, 'ChangePasswordPage'> {}
+
+const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
+  navigation,
+}) => {
   const dispatch = useAppDispatch();
   const [oldPassword, setOldPassword] = useState('');
+  const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
   const [newPassword, setNewPassword] = useState('');
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleShowOldPassword = () => {
+    setShowOldPassword(!showOldPassword);
+  };
+
+  const handleShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const handleShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match!');
+    const isValidPassword = verifyPassword(newPassword);
+    const isValidConfirmPassword = verifyConfirmPassword(
+      newPassword,
+      confirmPassword,
+    );
+
+    setIsOldPasswordValid(isValidPassword);
+    setIsNewPasswordValid(isValidPassword);
+    setIsConfirmPasswordValid(isValidConfirmPassword);
+
+    if (!isValidPassword || !isValidConfirmPassword) {
       return;
     }
 
@@ -29,37 +71,84 @@ const ChangePasswordPage = () => {
       };
 
       await dispatch(changePasswordAPI(payload)).unwrap();
-      Alert.alert('Success', 'Password successfully changed!');
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Password successfully changed!',
+      });
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      logout();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to change password.');
+      console.log('Error', error.message || 'Failed to change password.');
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.message || 'Failed to change password.',
+      });
+    }
+  };
+
+  const logout = async () => {
+    try {
+      storage.delete('accessToken');
+      console.log('Access Token removed', storage.getString('accessToken'));
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'LoginPage'}],
+      });
+    } catch (exception) {
+      console.error('Error clearing accessToken', exception);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text>Change Password Page</Text>
-      <CustomInput
-        placeholder="Old Password"
-        value={oldPassword}
-        secureTextEntry
-        onChangeText={setOldPassword}
-      />
-      <CustomInput
-        placeholder="New Password"
-        value={newPassword}
-        secureTextEntry
-        onChangeText={setNewPassword}
-      />
-      <CustomInput
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        secureTextEntry
-        onChangeText={setConfirmPassword}
-      />
-      <Button title="Change Password" onPress={handleChangePassword} />
+      <Header title="Change Password" iconName="arrowleft" />
+      <View style={styles.body}>
+        <CustomInput
+          placeholder="Old Password"
+          value={oldPassword}
+          onChangeText={setOldPassword}
+          secureTextEntry={!showOldPassword}
+          showIcon={true}
+          onPressIcon={handleShowOldPassword}
+          iconName={showOldPassword ? 'eye' : 'eyeo'}
+        />
+        {!isOldPasswordValid && (
+          <Text style={{color: 'red', fontSize: 12}}>
+            Password must be at least 6 characters.
+          </Text>
+        )}
+        <CustomInput
+          placeholder="New Password"
+          value={newPassword}
+          secureTextEntry={!showNewPassword}
+          showIcon={true}
+          onChangeText={setNewPassword}
+          onPressIcon={handleShowNewPassword}
+          iconName={showNewPassword ? 'eye' : 'eyeo'}
+        />
+        {!isNewPasswordValid && (
+          <Text style={{color: 'red', fontSize: 12}}>Password invalid</Text>
+        )}
+        <CustomInput
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry={!showConfirmPassword}
+          showIcon={true}
+          onPressIcon={handleShowConfirmPassword}
+          iconName={showConfirmPassword ? 'eye' : 'eyeo'}
+        />
+        {!isConfirmPasswordValid && (
+          <Text style={{color: 'red', fontSize: 12}}>
+            Confirmation password invalid
+          </Text>
+        )}
+        <CustomButton title="Change Password" onPress={handleChangePassword} />
+      </View>
     </View>
   );
 };
@@ -69,7 +158,13 @@ export default ChangePasswordPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-    padding: 20,
+    backgroundColor: colors.light,
+  },
+  body: {
+    paddingHorizontal: 12,
+    paddingVertical: 24,
+    gap: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

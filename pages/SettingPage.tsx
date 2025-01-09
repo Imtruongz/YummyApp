@@ -8,6 +8,7 @@ import colors from '../utils/color';
 import Header from '../components/customize/Header';
 
 import {MMKV} from 'react-native-mmkv';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const storage = new MMKV();
 
 interface SettingPageProps
@@ -42,7 +43,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="Settings" iconName="arrowleft" />
       <View style={styles.accountContainer}>
         <CustomTitle style={styles.title} title="Account" />
@@ -54,7 +55,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
         <SettingButton
           title="Password Setting"
           navigation={navigation}
-          targetScreen="changePasswordPage"
+          targetScreen="ChangePasswordPage"
         />
       </View>
       <View style={styles.accountContainer}>
@@ -65,7 +66,7 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
           onPress={handleLogout}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -22,6 +22,7 @@ import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
 
 import {MMKV} from 'react-native-mmkv';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
@@ -103,7 +104,7 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
   }, [dispatch, user?.username, user?.description, user?.avatar]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Header title="Edit Profile" iconName="arrowleft" />
       <View style={styles.body}>
         {isLoadingUser ? (
@@ -132,7 +133,7 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
         <CustomButton onPress={handleUpdateAccount} title="Save" />
         <CustomButton title="Cancel" />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

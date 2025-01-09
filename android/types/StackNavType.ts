@@ -25,4 +25,5 @@ export type RootStackParamList = {
     userId: string;
   };
   OnBoarding: undefined;
+  ChangePasswordPage: undefined;
 };
