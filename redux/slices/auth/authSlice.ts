@@ -6,6 +6,7 @@ import {
   getUserByIdAPI,
   userUpdateAPI,
   userDeleteAPI,
+  changePasswordAPI,
 } from './authThunk';
 
 const initialState: AuthState = {
@@ -17,8 +18,7 @@ const initialState: AuthState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: builder => {
     //Login
     builder.addCase(userLoginAPI.pending, state => {
@@ -76,18 +76,30 @@ const authSlice = createSlice({
       state.isLoadingUser = true;
       state.isErrorUser = false;
     });
-    builder.addCase(
-      userUpdateAPI.fulfilled,
-      (state, action: PayloadAction<User>) => {
-        state.user = action.payload;
-        state.isLoadingUser = false;
-        state.isErrorUser = false;
-      },
-    );
+    builder.addCase(userUpdateAPI.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.isLoadingUser = false;
+      state.isErrorUser = false;
+    });
     builder.addCase(userUpdateAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
     });
+    //Change Password
+    builder.addCase(changePasswordAPI.pending, state => {
+      state.isLoadingUser = true;
+      state.isErrorUser = false;
+    });
+    builder.addCase(changePasswordAPI.fulfilled, (state, action) => {
+      state.user = action.payload;
+      state.isLoadingUser = false;
+      state.isErrorUser = false;
+    });
+    builder.addCase(changePasswordAPI.rejected, state => {
+      state.isLoadingUser = false;
+      state.isErrorUser = true;
+    });
+
     //Delete User
     builder.addCase(userDeleteAPI.pending, state => {
       state.isLoadingUser = true;

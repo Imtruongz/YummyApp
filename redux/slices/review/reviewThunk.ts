@@ -45,15 +45,9 @@ export const getAllCommentFromFoodIdAPI = createAsyncThunk(
           signal: thunkAPI.signal,
         },
       );
-      console.log('Dataaaaaaaa:', response.data);
       return response.data;
     } catch (error: any) {
-      console.error(
-        'Error from getAllCommentFromFoodIdAPI',
-        error.message,
-        'Response data error from getAllCommentFromFoodIdAPI',
-        error.response?.data,
-      );
+      console.error('Error from getAllCommentFromFoodIdAPI', error.message);
       return thunkAPI.rejectWithValue(
         error.response?.data || 'Unexpected error occurred',
       );

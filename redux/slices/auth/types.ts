@@ -13,6 +13,12 @@ export interface UpdatePayload {
   avatar: string;
   description: string;
 }
+
+export interface ChangePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export interface User {
   userId: string;
   username: string;

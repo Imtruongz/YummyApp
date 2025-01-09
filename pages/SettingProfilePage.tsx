@@ -24,6 +24,8 @@ import Header from '../components/customize/Header.tsx';
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
+const userId = storage.getString('userId') || '';
+
 interface SettingProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
 const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
@@ -70,7 +72,7 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
 
     try {
       const payload = {
-        userId : storage.getString('userId') || '',
+        userId: userId,
         username: username,
         description: description,
         avatar: avatar,
@@ -94,10 +96,10 @@ const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
   };
 
   useEffect(() => {
-      dispatch(getUserByIdAPI(storage.getString('userId') || ''));
-      setusername(user?.username || '');
-      setdescription(user?.description || '');
-      setavatar(user?.avatar || '');
+    dispatch(getUserByIdAPI(userId));
+    setusername(user?.username || '');
+    setdescription(user?.description || '');
+    setavatar(user?.avatar || '');
   }, [dispatch, user?.username, user?.description, user?.avatar]);
 
   return (

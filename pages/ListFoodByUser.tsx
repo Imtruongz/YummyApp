@@ -92,7 +92,10 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
         {userFoodList?.map(item => (
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate('RecipeDetailPage', {foodId: item.foodId})
+              navigation.navigate('RecipeDetailPage', {
+                foodId: item.foodId,
+                userId: item.userId,
+              })
             }
             key={item.foodId}
             style={styles.itemContainer}>

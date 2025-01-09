@@ -24,12 +24,20 @@ import CustomTitle from '../components/customize/Title.tsx';
 import Loading from '../components/skeleton/Loading';
 
 interface ListFoodByCategoriesProps
-  extends NativeStackScreenProps<RootStackParamList, 'ListFoodByCategoriesPage'> {}
-const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({ route, navigation}) => {
+  extends NativeStackScreenProps<
+    RootStackParamList,
+    'ListFoodByCategoriesPage'
+  > {}
+const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
+  route,
+  navigation,
+}) => {
   const dispatch = useAppDispatch();
   const {categoryId} = route.params;
 
-  const {categoryFoodList, isLoadingFood} = useAppSelector((state:RootState) => state.food);
+  const {categoryFoodList, isLoadingFood} = useAppSelector(
+    (state: RootState) => state.food,
+  );
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCategoryFoodList = categoryFoodList?.filter(
@@ -60,7 +68,10 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({ route, 
             key={item.foodId}
             style={styles.itemContainer}
             onPress={() =>
-              navigation.navigate('RecipeDetailPage', {foodId: item.foodId})
+              navigation.navigate('RecipeDetailPage', {
+                foodId: item.foodId,
+                userId: item.userId,
+              })
             }>
             {/* Top img */}
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />

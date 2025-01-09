@@ -33,6 +33,8 @@ import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
+const userId = storage.getString('userId') || '';
+
 // Initial state
 const initialState: foodPayload = {
   foodName: '',
@@ -84,6 +86,7 @@ const AddFoodPage = () => {
   // Fetch categories on mount
   useEffect(() => {
     dispatch(getAllCategoriesAPI());
+    console.log('getAllCategoriesAPI rendered successfully');
   }, [dispatch]);
 
   const requestCameraPermission = async () => {
@@ -114,7 +117,7 @@ const AddFoodPage = () => {
   const handleSubmit = async () => {
     const updatedFormData = {
       ...formData,
-      userId: storage.getString('userId') || '',
+      userId: userId,
       foodIngredients: ingredients,
       foodSteps: steps,
     };
@@ -129,7 +132,7 @@ const AddFoodPage = () => {
       });
 
       await dispatch(getAllFoodAPI());
-      await dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
+      await dispatch(getFoodByIdAPI(userId));
       setFormData(initialState);
       setIngredients(['']);
       setSteps(['']);

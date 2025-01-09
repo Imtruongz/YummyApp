@@ -99,10 +99,9 @@ export const getDetailFoodAPI = createAsyncThunk(
         console.error('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
-      console.log('Data from getDetailFoodAPI:', response.data);
       return response.data;
     } catch (error: any) {
-      console.log('Error food from getDetailFoodAPI:', error.message);
+      console.log('Error from getDetailFoodAPI:', error.message);
     }
   },
 );

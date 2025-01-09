@@ -12,7 +12,7 @@ export type RootStackParamList = {
   };
   RecipeDetailPage: {
     foodId: string;
-    userId?: string;
+    userId: string;
   };
   SettingPage: undefined;
   AddFoodPage: undefined;

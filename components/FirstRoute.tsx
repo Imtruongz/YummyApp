@@ -21,6 +21,8 @@ import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
+const userId = storage.getString('userId') || '';
+
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
@@ -53,7 +55,7 @@ const FirstRoute = () => {
           visibilityTime: 2000,
         });
       } finally {
-        dispatch(getFoodByIdAPI(storage.getString('userId') || '')); // Reload danh sách
+        dispatch(getFoodByIdAPI(userId));
         setVisible(false);
         setCurrentItem(null);
       }
@@ -61,8 +63,8 @@ const FirstRoute = () => {
   };
 
   useEffect(() => {
-    console.log('Render');
-    dispatch(getFoodByIdAPI(storage.getString('userId') || ''));
+    dispatch(getFoodByIdAPI(userId));
+    console.log('getFoodByIdAPI rendered successfully');
   }, [dispatch]);
 
   return (

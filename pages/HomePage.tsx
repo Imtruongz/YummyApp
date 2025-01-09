@@ -50,6 +50,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
     dispatch(getAllFoodAPI());
     dispatch(getAllUsers());
     dispatch(getUserByIdAPI(userId));
+    console.log('render');
   }, [dispatch, userId]);
 
   const greetingMessage = () => {

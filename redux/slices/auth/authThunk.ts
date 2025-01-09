@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/api';
-import {LoginPayload, RegisterPayload, UpdatePayload, User} from './types';
+import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User} from './types';
 
 export const userLoginAPI = createAsyncThunk(
   'auth/userLoginAPI',
@@ -40,6 +40,19 @@ export const userUpdateAPI = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       console.log('Errorrrr:', error.message, 'Data', error.response?.data);
+      return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const changePasswordAPI = createAsyncThunk(
+  'auth/changePasswordAPI',
+  async (payload: ChangePasswordPayload, {rejectWithValue}) => {
+    try {
+      const response = await api.patch<User>('/users/changePassword', payload);
+      return response.data;
+    } catch (error: any) {
+      console.log('Error from changePasswordAPI:', error.message, 'Data', error.response?.data);
       return rejectWithValue(error.response.data);
     }
   },

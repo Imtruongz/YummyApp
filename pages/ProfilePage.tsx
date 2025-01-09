@@ -35,6 +35,8 @@ import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
+const userId = storage.getString('userId') || '';
+
 const initialLayout = {width: Dimensions.get('window').width};
 
 interface InfoItemProps {
@@ -84,7 +86,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   );
 
   useEffect(() => {
-    dispatch(getUserByIdAPI(storage.getString('userId') || ''));
+    dispatch(getUserByIdAPI(userId));
+    console.log('getUserByIdAPI rendered successfully');
   }, [dispatch]);
 
   return (

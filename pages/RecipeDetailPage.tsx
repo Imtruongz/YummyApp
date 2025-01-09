@@ -80,12 +80,12 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
   const handleAddComment = async () => {
     if (!commentText.trim()) {
-      setCommentError('Please enter a comment'); // Hiển thị lỗi nếu người dùng gửi văn bản rỗng
+      setCommentError('Please enter a comment');
       return;
     }
 
-    setCommentError(null); // Xóa lỗi nếu có
-    setIsAddingComment(true); // Bật trạng thái "Đang thêm bình luận"
+    setCommentError(null);
+    setIsAddingComment(true);
     dispatch(getAllCommentFromFoodIdAPI(foodId));
 
     try {
@@ -103,17 +103,15 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     } catch (error) {
       setCommentError('Failed to add the comment. Please try again.');
     } finally {
-      setIsAddingComment(false); // Tắt trạng thái "Đang thêm bình luận"
+      setIsAddingComment(false);
     }
   };
 
   useEffect(() => {
-    if (foodId) {
-      dispatch(getDetailFoodAPI(foodId));
-      dispatch(getAllCommentFromFoodIdAPI(foodId));
-      dispatch(getUserByIdAPI(myUserId));
-      dispatch(getFoodByIdAPI(userId || ''));
-    }
+    dispatch(getDetailFoodAPI(foodId));
+    dispatch(getAllCommentFromFoodIdAPI(foodId));
+    dispatch(getUserByIdAPI(myUserId));
+    dispatch(getFoodByIdAPI(userId));
   }, [dispatch, foodId, myUserId, userId]);
 
   if (isLoadingFood) {
@@ -155,8 +153,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           </ImageBackground>
 
           <View style={styles.body}>
-            <TouchableOpacity
-              style={styles.infoContainer}>
+            <TouchableOpacity style={styles.infoContainer}>
               <CustomAvatar
                 width={60}
                 height={60}
@@ -284,6 +281,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   onPress={() =>
                     navigation.navigate('RecipeDetailPage', {
                       foodId: item.foodId,
+                      userId: item.userId,
                     })
                   }>
                   {/* Top img */}
