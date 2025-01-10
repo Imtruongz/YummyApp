@@ -7,8 +7,6 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import color from '../utils/color';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store.ts';
@@ -22,14 +20,12 @@ import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
 
 import {MMKV} from 'react-native-mmkv';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
 
-interface SettingProfilePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'SettingProfilePage'> {}
-const SettingProfilePage: React.FC<SettingProfilePageProps> = ({}) => {
+const SettingProfilePage = () => {
   const dispatch = useAppDispatch();
   const [username, setusername] = useState('');
   const [avatar, setavatar] = useState('');

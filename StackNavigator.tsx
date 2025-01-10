@@ -21,10 +21,9 @@ import SettingProfilePage from './pages/SettingProfilePage';
 import ListFoodPage from './pages/ListFoodPage';
 import ListFoodByCategoriesPage from './pages/ListFoodByCategoriesPage';
 import ListFoodByUser from './pages/ListFoodByUser';
-import OnBoarding from './components/skeleton/OnBoarding';
 
-import {observer} from 'mobx-react-lite';
-import {useAppState} from './contexts/app-state';
+import {MMKV} from 'react-native-mmkv';
+const storage = new MMKV();
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 function BottomTab() {
@@ -77,25 +76,62 @@ function BottomTab() {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function StackNavigator() {
-  const {skipOnboarding} = useAppState();
-  console.log('skipOnboarding', skipOnboarding);
+  const accessToken = storage.getString('accessToken') || '';
+  console.log('accessToken', accessToken);
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        {/* auth, user page */}
-        {
-          skipOnboarding ? (
+        {!accessToken ? (
+          <>
             <Stack.Screen name="LoginPage" component={LoginPage} />
-          ) : (
-            <Stack.Screen name="OnBoarding" component={OnBoarding} />
-          )
-        }
+            <Stack.Screen name="SignUpPage" component={SignUpPage} />
+            <Stack.Screen
+              name="ForgotPasswordPage"
+              component={ForgotPasswordPage}
+            />
+            <Stack.Screen name="BottomTabs" component={BottomTab} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="BottomTabs" component={BottomTab} />
+            <Stack.Screen name="ProfilePage" component={ProfilePage} />
+            <Stack.Screen name="HomePage" component={HomePage} />
+            <Stack.Screen
+              name="RecipeDetailPage"
+              component={RecipeDetailPage}
+            />
+            <Stack.Screen name="SettingPage" component={SettingPage} />
+            <Stack.Screen name="ListFoodPage" component={ListFoodPage} />
+            <Stack.Screen
+              name="ListFoodByUserPage"
+              component={ListFoodByUser}
+            />
+            <Stack.Screen
+              name="ListFoodByCategoriesPage"
+              component={ListFoodByCategoriesPage}
+            />
+            <Stack.Screen
+              name="ChangePasswordPage"
+              component={ChangePasswordPage}
+            />
+            <Stack.Screen name="LoginPage" component={LoginPage} />
+            <Stack.Screen
+              name="SettingProfilePage"
+              component={SettingProfilePage}
+            />
+            <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
+          </>
+        )}
+      </Stack.Navigator>
+
+      {/* auth, user page */}
+      {/* <Stack.Screen name="LoginPage" component={LoginPage} />
         <Stack.Screen name="SignUpPage" component={SignUpPage} />
-        <Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordPage} />
-        <Stack.Screen name="ChangePasswordPage" component={ChangePasswordPage}/>
-          {/* main */}
-        <Stack.Screen name="BottomTabs" component={BottomTab} />
+        <Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordPage} /> */}
+
+      {/* main */}
+      {/* <Stack.Screen name="BottomTabs" component={BottomTab} />
         <Stack.Screen name="ProfilePage" component={ProfilePage} />
         <Stack.Screen name="HomePage" component={HomePage} />
         <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
@@ -103,11 +139,19 @@ function StackNavigator() {
         <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
         <Stack.Screen name="ListFoodPage" component={ListFoodPage} />
         <Stack.Screen name="ListFoodByUserPage" component={ListFoodByUser} />
-        <Stack.Screen name="ListFoodByCategoriesPage" component={ListFoodByCategoriesPage} />
-        <Stack.Screen name="SettingProfilePage" component={SettingProfilePage} />
-      </Stack.Navigator>
+        <Stack.Screen
+          name="ListFoodByCategoriesPage"
+          component={ListFoodByCategoriesPage}
+        />
+        <Stack.Screen
+          name="SettingProfilePage"
+          component={SettingProfilePage}
+        />
+        <Stack.Screen
+          name="ChangePasswordPage"
+          component={ChangePasswordPage}
+        /> */}
     </NavigationContainer>
   );
 }
-
-export default observer(StackNavigator);
+export default StackNavigator;
