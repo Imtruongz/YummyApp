@@ -60,9 +60,10 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
         const user = resultAction.payload;
         if (user) {
           navigation.navigate('BottomTabs');
-          console.log('Login success, save userId', user.user.userId , 'accessToken', user.accessToken);
+          console.log('Login success, save userId', user.user.userId , 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
           storage.set('userId', String(user.user.userId || ''));
           storage.set('accessToken', user.accessToken);
+          storage.set('refreshToken', user.refreshToken);
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');

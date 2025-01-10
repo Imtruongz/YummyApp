@@ -1,6 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-import {addCommentToFoodAPI, getAllCommentFromFoodIdAPI} from './reviewThunk';
+import {addCommentToFoodAPI, deleteCommentAPI, getAllCommentFromFoodIdAPI} from './reviewThunk';
 
 import {reviewState} from './types';
 
@@ -43,6 +43,23 @@ const reviewSlice = createSlice({
       state.isErrorReview = false;
     });
     builder.addCase(getAllCommentFromFoodIdAPI.rejected, state => {
+      state.isLoadingReview = false;
+      state.isErrorReview = true;
+    });
+    //Delete comment
+    builder.addCase(deleteCommentAPI.pending, state => {
+      state.isLoadingReview = true;
+      state.isErrorReview = false;
+    });
+    builder.addCase(deleteCommentAPI.fulfilled, (state, action) => {
+      const deletedReviewId = action.payload.reviewId;
+      state.foodReviewList = state.foodReviewList.filter(
+        review => review.reviewId !== deletedReviewId, // Remove the deleted comment
+      );
+      state.isLoadingReview = false;
+      state.isErrorReview = false;
+    });
+    builder.addCase(deleteCommentAPI.rejected, state => {
       state.isLoadingReview = false;
       state.isErrorReview = true;
     });

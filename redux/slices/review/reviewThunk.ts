@@ -54,3 +54,23 @@ export const getAllCommentFromFoodIdAPI = createAsyncThunk(
     }
   },
 );
+
+export const deleteCommentAPI = createAsyncThunk(
+  'review/deleteCommentAPI',
+  async (reviewId: string, thunkAPI) => {
+    try {
+      const response = await api.delete<review>(
+        `/foodReviews/deleteComment/${reviewId}`,
+        {
+          signal: thunkAPI.signal,
+        },
+      );
+      return response.data;
+    } catch (error: any) {
+      console.error('Error from deleteCommentAPI', error.message.data);
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Unexpected error occurred',
+      );
+    }
+  },
+);

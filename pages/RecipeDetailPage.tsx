@@ -20,6 +20,7 @@ import CustomTitle from '../components/customize/Title';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
+import FontAwesome6Icons from 'react-native-vector-icons/FontAwesome6';
 
 import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import CustomAvatar from '../components/customize/Avatar';
@@ -28,14 +29,16 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {getDetailFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import Dialog from 'react-native-dialog';
 
 import {
   getAllCommentFromFoodIdAPI,
   addCommentToFoodAPI,
+  deleteCommentAPI,
 } from '../redux/slices/review/reviewThunk';
 
 import Loading from '../components/skeleton/Loading';
-
+import {review} from '../redux/slices/review/types';
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
@@ -52,6 +55,43 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const [commentText, setCommentText] = useState('');
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [currentItem, setCurrentItem] = useState<review | null>(null);
+
+  const [dialogTitle, setDialogTitle] = useState('');
+
+  const showDialog = (item: review) => {
+    setCurrentItem(item);
+    if (item.userId !== myUserId) {
+      // Nếu không có quyền, hiển thị Dialog "Hidden"
+      setDialogTitle('Hidden');
+      setVisible(true);
+      console.log('Check myuserId', myUserId, 'and userComment', item.userId);
+    } else {
+      // Nếu có quyền, hiển thị Dialog "Delete"
+      setDialogTitle('Delete');
+      setVisible(true);
+      console.log('Check myuserId', myUserId, 'and userComment', item.userId);
+    }
+  };
+  const handleCancel = () => {
+    if (currentItem) {
+      setVisible(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setVisible(false);
+    if (currentItem) {
+      try {
+        await dispatch(deleteCommentAPI(currentItem.reviewId)); // Call delete thunk
+        dispatch(getAllCommentFromFoodIdAPI(foodId)); // Refresh comments list
+        console.log('Comment deleted successfully');
+      } catch (error) {
+        console.error('Failed to delete comment:', error);
+      }
+    }
+  };
 
   const handleAddFavoriteFood = () => {
     console.log('Add favorite food');
@@ -94,8 +134,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           foodId: foodId,
           userId: myUserId,
           reviewText: commentText.trim(),
-          rating: 0,
-          isLiked: false,
         }),
       );
       setCommentText('');
@@ -224,26 +262,32 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               <CustomTitle title="Comment" />
               <CustomTitle style={styles.seeAll} title="See all" />
             </TouchableOpacity>
-            {foodReviewList.map((foodReview, index) => (
-              <View key={index} style={{flexDirection: 'row', gap: 10}}>
-                <CustomAvatar
-                  width={40}
-                  height={40}
-                  borderRadius={20}
-                  image={foodReview.userDetail.avatar || img.UndefineImg}
-                />
-                <View>
-                  <Text
-                    style={{
-                      color: colors.primaryText,
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                    }}>
-                    {foodReview.userDetail.username}
-                  </Text>
-                  <Text>{foodReview.reviewText}</Text>
+            {foodReviewList.map(item => (
+              <TouchableOpacity
+                onLongPress={() => showDialog(item)}
+                key={item.reviewId}
+                style={styles.foodReviewListContainer}>
+                <View style={styles.foodReviewListItem1}>
+                  <CustomAvatar
+                    width={40}
+                    height={40}
+                    borderRadius={20}
+                    image={item.userDetail.avatar || img.UndefineImg}
+                  />
+                  <View style={styles.foodReviewListItem2}>
+                    <CustomTitle
+                      style={styles.userNameDetail}
+                      title={item.userDetail.username}
+                    />
+                    <Text>{item.reviewText}</Text>
+                  </View>
                 </View>
-              </View>
+                <FontAwesome6Icons
+                  name="ellipsis-vertical"
+                  size={20}
+                  color={colors.primary}
+                />
+              </TouchableOpacity>
             ))}
             <View style={styles.commentInput}>
               <CustomAvatar
@@ -324,6 +368,25 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           {commentError && <Text>{commentError}</Text>}
         </ScrollView>
       </SafeAreaView>
+      <Dialog.Container visible={visible}>
+        <Dialog.Title>{dialogTitle}</Dialog.Title>
+        {dialogTitle === 'Hidden' ? (
+          <>
+            <Dialog.Description>
+              You are not authorized to delete this comment!
+            </Dialog.Description>
+            <Dialog.Button label="OK" onPress={handleCancel} />
+          </>
+        ) : (
+          <>
+            <Dialog.Description>
+              Do you want to delete this comment? This action cannot be undone.
+            </Dialog.Description>
+            <Dialog.Button label="Cancel" onPress={handleCancel} />
+            <Dialog.Button label="Delete" onPress={handleDelete} />
+          </>
+        )}
+      </Dialog.Container>
     </>
   );
 };
@@ -475,4 +538,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.smallText,
   },
+  userNameDetail: {
+    fontSize: 12,
+  },
+  foodReviewListContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 12,
+    marginBottom: 8,
+    width: '100%',
+  },
+  foodReviewListItem1: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 10,
+    width: '100%',
+  },
+  foodReviewListItem2: {maxWidth: '80%'},
 });

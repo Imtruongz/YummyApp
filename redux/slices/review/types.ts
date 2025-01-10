@@ -2,8 +2,6 @@ export interface review {
   reviewId: string;
   foodId: string;
   userId: string;
-  rating: number;
-  isLiked: boolean;
   reviewText: string;
   createdAt: string;
   userDetail: {
@@ -26,6 +24,4 @@ export interface reviewPayload {
   foodId: string;
   userId: string;
   reviewText: string;
-  rating: number;
-  isLiked: boolean;
 }
