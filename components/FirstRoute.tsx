@@ -1,5 +1,4 @@
 import color from '../utils/color';
-import CustomTitle from './customize/Title';
 
 import {
   Image,
@@ -19,6 +18,7 @@ import colors from '../utils/color';
 
 import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
+import Typography from './customize/Typography';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
@@ -79,7 +79,12 @@ const FirstRoute = () => {
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />
             {/* Bottom info */}
             <View style={styles.titleItemLeft}>
-              <CustomTitle style={styles.title} title={item.foodName} />
+              <Typography
+                title={item.foodName}
+                fontSize={14}
+                fontFamily="Poppins-SemiBold"
+                numberOfLines={2}
+              />
             </View>
           </TouchableOpacity>
         ))}
@@ -109,7 +114,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: '47%',
-    height: 180,
+    height: 160,
     backgroundColor: colors.light,
     borderRadius: 15,
     gap: 8,

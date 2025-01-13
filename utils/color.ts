@@ -23,7 +23,7 @@ const colors: Colors = {
   dark: '#333',
   loadingColor: '#FB9400',
 
-  smallText: '#94A3B8',
+  smallText: '#A9A9A9',
   primaryText: '#0F172A',
   InputBg: '#ebe8e8',
 };

@@ -1,5 +1,4 @@
 import {
-  ActivityIndicator,
   Image,
   StyleSheet,
   Text,
@@ -23,6 +22,7 @@ import colors from '../utils/color.ts';
 import Header from '../components/customize/Header.tsx';
 import CustomAvatar from '../components/customize/Avatar.tsx';
 import imgUrl from '../utils/urlImg.ts';
+import Typography from '../components/customize/Typography.tsx';
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> {}
@@ -34,8 +34,8 @@ interface InfoItemProps {
 
 const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
   <View style={styles.infoItem}>
-    <Text>{number}</Text>
-    <Text>{label}</Text>
+    <Typography title={number} fontSize={14} fontFamily="Poppins-SemiBold" />
+    <Typography title={label} fontSize={12} fontFamily="Poppins-Medium" />
   </View>
 );
 
@@ -47,7 +47,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const dispatch = useAppDispatch();
 
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
-  const {user, isErrorUser, isLoadingUser} = useAppSelector(
+  const {user} = useAppSelector(
     (state: RootState) => state.auth,
   );
 
@@ -58,12 +58,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Recipes" iconName="arrowleft" />
-      {isLoadingUser ? (
-        <ActivityIndicator size="large" color={colors.primary} />
-      ) : isErrorUser ? (
-        <Text>Something went wrong</Text>
-      ) : (
+      <Header title={user?.username} iconName="left" />
         <View style={styles.infoContainer}>
           <View style={styles.infoBlock1}>
             {/* Left */}
@@ -87,7 +82,6 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
 
           <CustomButton title="Follow" />
         </View>
-      )}
       <ScrollView contentContainerStyle={styles.ListFoodContainer}>
         {userFoodList?.map(item => (
           <TouchableOpacity
@@ -103,7 +97,12 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />
             {/* Bottom info */}
             <View style={styles.titleItemLeft}>
-              <CustomTitle style={styles.title} title={item.foodName} />
+              <Typography
+                title={item.foodName}
+                fontSize={14}
+                fontFamily="Poppins-SemiBold"
+                numberOfLines={2}
+              />
             </View>
           </TouchableOpacity>
         ))}
@@ -119,11 +118,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoContainer: {
-    paddingVertical: 16,
-    backgroundColor: colors.light,
-    justifyContent: 'center',
+    paddingVertical: 12,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    width: '100%',
+    backgroundColor: colors.light,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 10,
+    elevation: 11,
   },
   infoBlock1: {
     marginBottom: 22,
@@ -200,7 +198,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: '47%',
-    height: 180,
+    height: 160,
     backgroundColor: colors.light,
     borderRadius: 15,
     gap: 8,
@@ -211,10 +209,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   titleItemLeft: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingHorizontal: 8,
-    gap: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   img: {
     width: 'auto',

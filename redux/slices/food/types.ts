@@ -8,14 +8,14 @@ export interface food {
   foodThumbnail: string;
   foodSteps: string[];
   CookingTime: string;
-  created_at: string;
+  createdAt: string;
   updated_at: string;
   userDetail: {
     userId: string;
     username: string;
     email: string;
     avatar: string;
-    created_at: string;
+    createdAt: string;
     updated_at: string;
   };
 }

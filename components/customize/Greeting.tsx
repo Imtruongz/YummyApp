@@ -12,8 +12,8 @@ interface GreetingProps {
 const Greeting: React.FC<GreetingProps> = ({iconName, title}) => {
   return (
     <View style={styles.container}>
-      <FontAwesomeIcon name={iconName} size={18} color={colors.dark} />
-      <Text>{title}</Text>
+      <FontAwesomeIcon name={iconName} size={16} color={colors.dark} />
+      <Text style={styles.text}>{title}</Text>
     </View>
   );
 };
@@ -25,5 +25,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+  },
+  text: {
+    fontFamily: 'Poppins-Regular',
+    color: colors.dark,
+    fontSize: 14,
   },
 });

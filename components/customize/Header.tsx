@@ -6,7 +6,7 @@ import CustomTitle from './Title';
 import {useNavigation} from '@react-navigation/native';
 
 interface CustomHeaderProps {
-  title: string;
+  title: string | undefined;
   iconName: string;
   style?: object;
 }
@@ -23,7 +23,7 @@ const Header: React.FC<CustomHeaderProps> = ({title, iconName, style}) => {
             navigation.goBack();
           }}
         />
-        <CustomTitle style={styles.headerTitle} title={title} />
+        <CustomTitle style={styles.headerTitle} title={title || ''} />
       </View>
   );
 };
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 1,
-    elevation: 10,
+    elevation: 14,
   },
   icon: {
     position: 'absolute',

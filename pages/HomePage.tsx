@@ -11,7 +11,7 @@ import {
 import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -20,6 +20,7 @@ import color from '../utils/color';
 import imgURL from '../utils/urlImg';
 import CustomButton from '../components/customize/Button';
 import CustomTitle from '../components/customize/Title';
+import Typography from '../components/customize/Typography';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Greeting from '../components/customize/Greeting';
@@ -80,7 +81,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
             />
             <View>
               <Text>{message}</Text>
-              <CustomTitle title={user?.username} />
+              <Typography
+                title={user?.username}
+                fontSize={16}
+                fontFamily="Poppins-SemiBold"
+              />
             </View>
           </View>
           <FeatherIcon name="bell" size={24} color={color.dark} />
@@ -133,7 +138,13 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               }>
               <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
-                <CustomTitle title={item.foodName} />
+                <Typography
+                  title={item.foodName}
+                  fontSize={18}
+                  fontFamily="Poppins-Regular"
+                  fontWeight="700"
+                  numberOfLines={2}
+                />
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
                   <CustomAvatar
@@ -142,7 +153,10 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                     borderRadius={15}
                     image={item.userDetail?.avatar}
                   />
-                  <Text>{item.userDetail?.username}</Text>
+                  <Typography
+                    title={item.userDetail?.username}
+                    fontFamily="Poppins-SemiBold"
+                  />
                 </View>
               </View>
               <MaterialIcons
@@ -207,9 +221,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.light,
-    padding: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   headerContainer: {
     width: '100%',
@@ -223,7 +234,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     paddingVertical: 12,
-
+    paddingHorizontal: 14,
   },
   header1: {
     flexDirection: 'row',
@@ -235,6 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
+    paddingHorizontal: 14,
   },
   favoriteIcon: {
     position: 'absolute',
@@ -282,6 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 8,
   },
   creatorName: {
     fontSize: 14,

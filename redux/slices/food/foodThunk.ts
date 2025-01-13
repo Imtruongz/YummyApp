@@ -32,7 +32,7 @@ export const getFoodByIdAPI = createAsyncThunk(
   'food/getFoodByIdAPI',
   async (userId: string, {rejectWithValue}) => {
     try {
-      const response = await api.get<food[]>(
+      const response = await api.get<food>(
         `/foods/getFoodByUserId/${userId}`,
       );
       return response.data;

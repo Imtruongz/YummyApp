@@ -33,6 +33,7 @@ import colors from '../utils/color';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 
 import {MMKV} from 'react-native-mmkv';
+import Typography from '../components/customize/Typography.tsx';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
@@ -46,8 +47,9 @@ interface InfoItemProps {
 
 const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
   <View style={styles.infoItem}>
-    <Text style={{ fontSize: 28 , fontWeight: '300'}}>{number}</Text>
-    <Text>{label}</Text>
+    <Typography title={number} fontSize={14} fontFamily="Poppins-SemiBold" />
+    <Typography title={label} fontSize={12} fontFamily="Poppins-Medium" />
+
   </View>
 );
 
@@ -150,13 +152,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 14,
-    paddingHorizontal: 14,
+    paddingHorizontal: 22,
     paddingVertical: 12,
   },
   myInfoContainer: {
     flexDirection: 'column',
     width: '100%',
-    gap: 8,
   },
   myInfo2: {
     justifyContent: 'flex-start',
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 24,
+    gap: 32,
   },
   infoItem: {
     justifyContent: 'center',

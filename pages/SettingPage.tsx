@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
   },
   title: {
-    borderBottomColor: colors.dark,
+    borderBottomColor: colors.InputBg,
     borderBottomWidth: 1,
     width: '100%',
   },

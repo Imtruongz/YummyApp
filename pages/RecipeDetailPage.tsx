@@ -30,6 +30,7 @@ import {RootState} from '../redux/store';
 import {getDetailFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
 import Dialog from 'react-native-dialog';
+import {formatDate, formatDateTime} from '../utils/formatDate'; // Đường dẫn tới file bạn vừa tạo
 
 import {
   getAllCommentFromFoodIdAPI,
@@ -40,6 +41,7 @@ import {
 import Loading from '../components/skeleton/Loading';
 import {review} from '../redux/slices/review/types';
 import {MMKV} from 'react-native-mmkv';
+import Typography from '../components/customize/Typography';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
@@ -200,15 +202,22 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               />
               <View>
                 <CustomTitle title={selectedFood.userDetail.username} />
-                <Text>{selectedFood.userDetail.email}</Text>
+                <Typography
+                  title={selectedFood.userDetail.email}
+                  color="Poppins-Regular"
+                  fontSize={12}
+                />
               </View>
             </TouchableOpacity>
-            <View style={styles.achivement}>
+            <View style={styles.achivementContainer}>
               <View style={styles.achivementItem}>
                 <AntDesignIcon name="star" size={20} color={colors.primary} />
-                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                  (4.0)
-                </Text>
+                <Typography
+                  title="4.0"
+                  fontFamily="Poppins-Medium"
+                  color={colors.smallText}
+                  fontSize={12}
+                />
               </View>
               <View style={styles.achivementItem}>
                 <AntDesignIcon
@@ -216,11 +225,21 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   size={20}
                   color={colors.primary}
                 />
-                <Text>{selectedFood.CookingTime}</Text>
+                <Typography
+                  title={selectedFood.CookingTime}
+                  fontFamily="Poppins-Medium"
+                  color={colors.smallText}
+                  fontSize={12}
+                />
               </View>
               <View style={styles.achivementItem}>
                 <FontistoIcon name="date" size={20} color={colors.primary} />
-                <Text>123</Text>
+                <Typography
+                  title={formatDate(selectedFood?.createdAt)}
+                  fontFamily="Poppins-Medium"
+                  color={colors.smallText}
+                  fontSize={12}
+                />
               </View>
             </View>
 
@@ -275,9 +294,16 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                     image={item.userDetail.avatar || img.defaultAvatar}
                   />
                   <View style={styles.foodReviewListItem2}>
-                    <CustomTitle
-                      style={styles.userNameDetail}
+                    <Typography
                       title={item.userDetail.username}
+                      color={colors.dark}
+                      fontFamily="Poppins-SemiBold"
+                      fontSize={13}
+                    />
+                    <Typography
+                      title={formatDateTime(item.createdAt)}
+                      color={colors.smallText}
+                      fontSize={10}
                     />
                     <Text>{item.reviewText}</Text>
                   </View>
@@ -355,10 +381,12 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                         size={20}
                         color={colors.primary}
                       />
-                      <Text
-                        style={{color: colors.smallText, fontWeight: 'bold'}}>
-                        (4.0)
-                      </Text>
+
+                      <Typography
+                        title="4.0"
+                        fontFamily="Poppins-SemiBold"
+                        color={colors.smallText}
+                      />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -454,10 +482,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 
-  achivement: {
+  achivementContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    alignItems: 'center',
     width: '100%',
     marginBottom: 12,
   },
@@ -467,8 +494,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.InputBg,
     gap: 6,
-    fontSize: 12,
-    padding: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderRadius: 15,
   },
   ingredientText: {

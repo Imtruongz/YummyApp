@@ -45,10 +45,10 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
     color: color.dark,
     paddingHorizontal: 6,
-    paddingVertical: 12,
+    paddingVertical: 8,
     textAlign: 'center',
   },
   img: {
