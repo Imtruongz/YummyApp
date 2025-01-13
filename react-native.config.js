@@ -1,7 +1,7 @@
 module.exports = {
   project: {
-      ios: {},
-      android: {},
+    ios: {},
+    android: {},
   },
-  assets: ['../YummyApp/android/app/src/assets/fonts'],
-  };
+  assets: ['./android/app/src/main/assets/fonts'],
+}

@@ -196,7 +196,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 width={60}
                 height={60}
                 borderRadius={30}
-                image={selectedFood.userDetail.avatar || img.UndefineImg}
+                image={selectedFood.userDetail.avatar || img.defaultAvatar}
               />
               <View>
                 <CustomTitle title={selectedFood.userDetail.username} />
@@ -272,7 +272,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                     width={40}
                     height={40}
                     borderRadius={20}
-                    image={item.userDetail.avatar || img.UndefineImg}
+                    image={item.userDetail.avatar || img.defaultAvatar}
                   />
                   <View style={styles.foodReviewListItem2}>
                     <CustomTitle
@@ -294,7 +294,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 width={40}
                 height={40}
                 borderRadius={20}
-                image={user?.avatar || img.UndefineImg}
+                image={user?.avatar || img.defaultAvatar}
               />
               <TextInput
                 style={styles.foodNameStyle2}
@@ -496,9 +496,13 @@ const styles = StyleSheet.create({
   },
   commentInput: {
     borderTopWidth: 1,
-    paddingTop: 12,
-    marginTop: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.InputBg,
     borderTopColor: colors.InputBg,
+    paddingTop: 12,
+    paddingBottom: 18,
+    marginTop: 12,
+    marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

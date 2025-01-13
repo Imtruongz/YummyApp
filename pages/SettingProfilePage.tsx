@@ -109,7 +109,7 @@ const SettingProfilePage = () => {
           <Text>Something went wronggg</Text>
         ) : (
           <OverlayBadge
-            imageUrl={avatar || img.UndefineImg}
+            imageUrl={avatar || img.defaultAvatar}
             onEditPress={() => requestCameraPermission()}
           />
         )}

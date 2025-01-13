@@ -46,7 +46,7 @@ interface InfoItemProps {
 
 const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
   <View style={styles.infoItem}>
-    <Text>{number}</Text>
+    <Text style={{ fontSize: 28 , fontWeight: '300'}}>{number}</Text>
     <Text>{label}</Text>
   </View>
 );
@@ -116,7 +116,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                 width={70}
                 height={70}
                 borderRadius={35}
-                image={user?.avatar || imgUrl.UndefineImg}
+                image={user?.avatar || imgUrl.defaultAvatar}
               />
               <View style={styles.myInfo3}>
                 <InfoItem number={userFoodList.length ?? 0} label="Posts" />

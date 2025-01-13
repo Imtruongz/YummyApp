@@ -31,8 +31,8 @@ export default CustomTitle;
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'Poppins-Bold',
     color: colors.primaryText,
   },
 });

@@ -72,7 +72,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
                 width={70}
                 height={70}
                 borderRadius={35}
-                image={user?.avatar || imgUrl.UndefineImg}
+                image={user?.avatar || imgUrl.defaultAvatar}
               />
               <InfoItem number={userFoodList.length ?? 0} label="Posts" />
               <InfoItem number="0" label="Follower" />

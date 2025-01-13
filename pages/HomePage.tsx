@@ -32,6 +32,7 @@ import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI, getAllUsers} from '../redux/slices/auth/authThunk';
 
 import {MMKV} from 'react-native-mmkv';
+import img from '../utils/urlImg';
 const storage = new MMKV();
 
 interface HomePageProps
@@ -75,7 +76,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               width={50}
               height={50}
               borderRadius={25}
-              image={user?.avatar || imgURL.UndefineImg}
+              image={user?.avatar || imgURL.defaultAvatar}
             />
             <View>
               <Text>{message}</Text>
@@ -175,7 +176,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 width={100}
                 height={100}
                 borderRadius={50}
-                image={item.avatar}
+                image={item.avatar || img.defaultAvatar}
               />
               <CustomTitle
                 title={item.username}
