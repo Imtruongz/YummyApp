@@ -4,8 +4,10 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../android/types/StackNavType';
@@ -112,6 +114,24 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
           <CustomButton title="Login" onPress={handleLoginWithEmail} />
+          
+          {/* Nút đăng nhập bằng Google */}
+          <View style={styles.orContainer}>
+            <View style={styles.line} />
+            <Text style={styles.orText}>HOẶC</Text>
+            <View style={styles.line} />
+          </View>
+          
+          <TouchableOpacity 
+            style={styles.googleButton}
+            // onPress={handleLoginWithGoogle}
+            >
+            <Image 
+              source={{uri: 'https://developers.google.com/identity/images/g-logo.png'}} 
+              style={styles.googleIcon} 
+            />
+            <Text style={styles.googleButtonText}>Đăng nhập bằng Google</Text>
+          </TouchableOpacity>
         </View>
         {/* Footer */}
         <View style={styles.footer}>
@@ -155,6 +175,44 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: color.danger,
+  },
+  orContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    width: '80%',
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E0E0E0',
+  },
+  orText: {
+    paddingHorizontal: 10,
+    color: '#757575',
+    fontSize: 12,
+  },
+  googleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#DDDDDD',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    width: '80%',
+  },
+  googleIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  googleButtonText: {
+    color: '#757575',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
 
