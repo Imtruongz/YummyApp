@@ -23,6 +23,7 @@ import Header from '../components/customize/Header.tsx';
 import CustomAvatar from '../components/customize/Avatar.tsx';
 import imgUrl from '../utils/urlImg.ts';
 import Typography from '../components/customize/Typography.tsx';
+import Loading from '../components/skeleton/Loading.tsx';
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> {}
@@ -46,42 +47,44 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const {userId} = route.params;
   const dispatch = useAppDispatch();
 
-  const {userFoodList} = useAppSelector((state: RootState) => state.food);
-  const {user} = useAppSelector(
-    (state: RootState) => state.auth,
-  );
+  const {userFoodList, isLoadingFood} = useAppSelector((state: RootState) => state.food);
+  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(getFoodByIdAPI(userId));
     dispatch(getUserByIdAPI(userId));
   }, [dispatch, userId]);
 
+  if (isLoadingFood || isLoadingUser) {
+    return <Loading />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title={user?.username} iconName="left" />
-        <View style={styles.infoContainer}>
-          <View style={styles.infoBlock1}>
-            {/* Left */}
-            <View style={styles.infoBlock2}>
-              <CustomAvatar
-                width={70}
-                height={70}
-                borderRadius={35}
-                image={user?.avatar || imgUrl.defaultAvatar}
-              />
-              <InfoItem number={userFoodList.length ?? 0} label="Posts" />
-              <InfoItem number="0" label="Follower" />
-              <InfoItem number="0" label="Following" />
-            </View>
-            {/* Right */}
-            <View style={styles.infoBlock3}>
-              <CustomTitle title={user?.username} />
-              <Text>{user?.description}</Text>
-            </View>
+      <View style={styles.infoContainer}>
+        <View style={styles.infoBlock1}>
+          {/* Left */}
+          <View style={styles.infoBlock2}>
+            <CustomAvatar
+              width={70}
+              height={70}
+              borderRadius={35}
+              image={user?.avatar || imgUrl.defaultAvatar}
+            />
+            <InfoItem number={userFoodList.length ?? 0} label="Posts" />
+            <InfoItem number="0" label="Follower" />
+            <InfoItem number="0" label="Following" />
           </View>
-
-          <CustomButton title="Follow" />
+          {/* Right */}
+          <View style={styles.infoBlock3}>
+            <CustomTitle title={user?.username} />
+            <Text>{user?.description}</Text>
+          </View>
         </View>
+
+        <CustomButton title="Follow" />
+      </View>
       <ScrollView contentContainerStyle={styles.ListFoodContainer}>
         {userFoodList?.map(item => (
           <TouchableOpacity

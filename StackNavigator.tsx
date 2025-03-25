@@ -81,8 +81,9 @@ function StackNavigator() {
 
   return (
     <NavigationContainer>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         {!accessToken ? (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <>
             <Stack.Screen name="LoginPage" component={LoginPage} />
             <Stack.Screen name="SignUpPage" component={SignUpPage} />
             <Stack.Screen
@@ -90,9 +91,9 @@ function StackNavigator() {
               component={ForgotPasswordPage}
             />
             <Stack.Screen name="BottomTabs" component={BottomTab} />
-          </Stack.Navigator>
+          </>
         ) : (
-          <Stack.Navigator screenOptions={{headerShown: false}}>
+          <>
             <Stack.Screen name="BottomTabs" component={BottomTab} />
             <Stack.Screen name="ProfilePage" component={ProfilePage} />
             <Stack.Screen name="HomePage" component={HomePage} />
@@ -120,8 +121,9 @@ function StackNavigator() {
               component={SettingProfilePage}
             />
             <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
-          </Stack.Navigator>
+          </>
         )}
+      </Stack.Navigator>
 
       {/* auth, user page */}
       {/* <Stack.Screen name="LoginPage" component={LoginPage} />

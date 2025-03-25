@@ -49,7 +49,6 @@ const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
   <View style={styles.infoItem}>
     <Typography title={number} fontSize={14} fontFamily="Poppins-SemiBold" />
     <Typography title={label} fontSize={12} fontFamily="Poppins-Medium" />
-
   </View>
 );
 
@@ -148,6 +147,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   infoContainer: {
+    minHeight: 140,
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',

@@ -100,14 +100,13 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   };
 
   const dispatch = useAppDispatch();
-  const {selectedFood, userFoodList, isLoadingFood, isErrorFood} =
-    useAppSelector((state: RootState) => state.food);
-
-  const {foodReviewList, isErrorReview} = useAppSelector(
-    (state: RootState) => state.review,
+  const {selectedFood, userFoodList, isLoadingFood} = useAppSelector(
+    (state: RootState) => state.food,
   );
 
-  const {user} = useAppSelector((state: RootState) => state.auth);
+  const {foodReviewList, isLoadingReview} = useAppSelector((state: RootState) => state.review);
+
+  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
 
   const [iconColor, setIconColor] = useState<string>(colors.light);
 
@@ -154,12 +153,8 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     dispatch(getFoodByIdAPI(userId));
   }, [dispatch, foodId, myUserId, userId]);
 
-  if (isLoadingFood) {
+  if (isLoadingFood || isLoadingReview || isLoadingUser) {
     return <Loading />;
-  }
-
-  if (isErrorFood || !selectedFood || isErrorReview) {
-    return <Text>Error loading recipe details.</Text>;
   }
 
   return (
@@ -184,11 +179,11 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
           <ImageBackground
             style={styles.imgContainer}
-            source={{uri: selectedFood.foodThumbnail}}>
+            source={{uri: selectedFood?.foodThumbnail}}>
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
               style={styles.linearGradient}>
-              <Text style={styles.foodName}>{selectedFood.foodName}</Text>
+              <Text style={styles.foodName}>{selectedFood?.foodName}</Text>
             </LinearGradient>
           </ImageBackground>
 
@@ -198,12 +193,12 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 width={60}
                 height={60}
                 borderRadius={30}
-                image={selectedFood.userDetail.avatar || img.defaultAvatar}
+                image={selectedFood?.userDetail.avatar || img.defaultAvatar}
               />
               <View>
-                <CustomTitle title={selectedFood.userDetail.username} />
+                <CustomTitle title={selectedFood?.userDetail.username} />
                 <Typography
-                  title={selectedFood.userDetail.email}
+                  title={selectedFood?.userDetail.email}
                   color="Poppins-Regular"
                   fontSize={12}
                 />
@@ -226,7 +221,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   color={colors.primary}
                 />
                 <Typography
-                  title={selectedFood.CookingTime}
+                  title={selectedFood?.CookingTime}
                   fontFamily="Poppins-Medium"
                   color={colors.smallText}
                   fontSize={12}
@@ -244,14 +239,14 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
             </View>
 
             <CustomTitle title="Description" />
-            {selectedFood.foodDescription &&
-            selectedFood.foodDescription.length > 150 ? (
+            {selectedFood?.foodDescription &&
+            selectedFood?.foodDescription.length > 150 ? (
               <>
                 {showstrInstructions ? (
-                  <Text>{selectedFood.foodDescription}</Text>
+                  <Text>{selectedFood?.foodDescription}</Text>
                 ) : (
                   <Text>
-                    {selectedFood.foodDescription.substring(0, 150)}...
+                    {selectedFood?.foodDescription.substring(0, 150)}...
                   </Text>
                 )}
                 <TouchableOpacity
@@ -262,17 +257,17 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 </TouchableOpacity>
               </>
             ) : (
-              <Text>{selectedFood.foodDescription}</Text>
+              <Text>{selectedFood?.foodDescription}</Text>
             )}
 
             <CustomTitle title="Ingredient" />
-            {selectedFood.foodIngredients.map((ingredient, index) => (
+            {selectedFood?.foodIngredients.map((ingredient, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {ingredient}
               </Text>
             ))}
             <CustomTitle title="Step" />
-            {selectedFood.foodSteps.map((step, index) => (
+            {selectedFood?.foodSteps.map((step, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {step}
               </Text>

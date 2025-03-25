@@ -126,6 +126,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           data={foodList}
           horizontal
           showsHorizontalScrollIndicator={true}
+          initialNumToRender={5}
+          onEndReached={getAllFoodAPI}
+          onEndReachedThreshold={0.5}
           keyExtractor={item => item.foodId}
           renderItem={({item}) => (
             <Pressable
