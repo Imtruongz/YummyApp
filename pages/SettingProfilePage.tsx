@@ -119,7 +119,6 @@ const SettingProfilePage = () => {
           placeholder="Enter your username"
         />
         <CustomInput placeholder={user?.email} isDisabled={false} />
-        <CustomInput placeholder={user?.phoneNumber} isDisabled={false} />
         <CustomInput
           value={description}
           onChangeText={setdescription}

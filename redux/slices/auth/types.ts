@@ -6,7 +6,6 @@ export interface RegisterPayload {
   username: string;
   email: string;
   password: string;
-  phoneNumber: string;
 }
 export interface UpdatePayload {
   username: string;
@@ -24,7 +23,6 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  phoneNumber: string;
   avatar: string;
   description: string;
   createdAt: Date;

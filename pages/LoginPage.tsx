@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 //Customm components
@@ -21,18 +21,23 @@ import CustomAuthHeader from '../components/customize/authHeader';
 
 import color from '../utils/color';
 import img from '../utils/urlImg';
-import {verifyEmail, verifyPassword} from '../utils/validate';
-import {useAppDispatch} from '../redux/hooks';
-import {userLoginAPI} from '../redux/slices/auth/authThunk';
+import { verifyEmail, verifyPassword } from '../utils/validate';
+import { useAppDispatch } from '../redux/hooks';
+import { userLoginAPI } from '../redux/slices/auth/authThunk';
+
+import { Settings, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next'
+
+const fbAppId = '1178286763959143'
+Settings.setAppID(fbAppId)
 
 import { MMKV } from 'react-native-mmkv';
 
 const storage = new MMKV();
 
 interface LoginPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> {}
+  extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> { }
 
-const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
+const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,12 +62,12 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
       return;
     }
     try {
-      const resultAction = await dispatch(userLoginAPI({email, password}));
+      const resultAction = await dispatch(userLoginAPI({ email, password }));
       if (userLoginAPI.fulfilled.match(resultAction)) {
         const user = resultAction.payload;
         if (user) {
           navigation.navigate('BottomTabs');
-          console.log('Login success, save userId', user.user.userId , 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
+          console.log('Login success, save userId', user.user.userId, 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
           storage.set('userId', String(user.user.userId || ''));
           storage.set('accessToken', user.accessToken);
           storage.set('refreshToken', user.refreshToken);
@@ -80,6 +85,29 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
       setIsErrorMessage(true);
       setErrorMessage('An error occurred, please try again');
       console.log('An error occurred', error);
+    }
+  };
+
+  const handleLoginWithFacebook = async () => {
+    try {
+      const result = await LoginManager.logInWithPermissions(['public_profile']);
+      if (result.isCancelled) {
+        console.log('Login cancelled');
+      }
+      else {
+        const profile = await Profile.getCurrentProfile();
+        if (profile) {
+          const data = {
+            userId: profile.userID,
+            username: profile.name,
+            email: profile.email,
+            avatar: profile.imageURL,
+          }
+          console.log('Login with Facebook success', data);
+        }
+      }
+    } catch (error) {
+      console.log('Login with Facebook error', error);
     }
   };
 
@@ -114,24 +142,36 @@ const LoginPage: React.FC<LoginPageProps> = ({navigation}) => {
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
           <CustomButton title="Login" onPress={handleLoginWithEmail} />
-          
+
           {/* Nút đăng nhập bằng Google */}
           <View style={styles.orContainer}>
             <View style={styles.line} />
             <Text style={styles.orText}>HOẶC</Text>
             <View style={styles.line} />
           </View>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={styles.googleButton}
-            // onPress={handleLoginWithGoogle}
-            >
-            <Image 
-              source={{uri: 'https://developers.google.com/identity/images/g-logo.png'}} 
-              style={styles.googleIcon} 
+          // onPress={handleLoginWithGoogle}
+          >
+            <Image
+              source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+              style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>Đăng nhập bằng Google</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.googleButton}
+            onPress={handleLoginWithFacebook}
+          >
+            <Image
+              source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+              style={styles.googleIcon}
+            />
+            <Text style={styles.googleButtonText}>Đăng nhập bằng Facebook</Text>
+          </TouchableOpacity>
+          <LoginButton />
         </View>
         {/* Footer */}
         <View style={styles.footer}>

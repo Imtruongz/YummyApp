@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">YummyApp</string>
+    <string name="facebook_app_id">1178286763959143</string>
+    <string name="facebook_client_token">2c9a7c4a1ea294b2579c5a2240800f88</string>
 </resources>

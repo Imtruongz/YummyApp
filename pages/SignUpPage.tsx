@@ -34,7 +34,6 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
 
   const [username, setUsername] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -73,7 +72,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
 
     try {
       const resultAction = await dispatch(
-        userRegisterAPI({email, password, username, phoneNumber}),
+        userRegisterAPI({email, password, username}),
       );
       if (userRegisterAPI.fulfilled.match(resultAction)) {
         Toast.show({
@@ -104,11 +103,6 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
             value={username}
             placeholder="Username"
             onChangeText={setUsername}
-          />
-          <CustomInput
-            value={phoneNumber}
-            placeholder="Phone Number"
-            onChangeText={setPhoneNumber}
           />
           <CustomInput
             value={email}
