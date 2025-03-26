@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import api from '../../../api/api';
-import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User} from './types';
+import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User, FacebookLoginPayload} from './types';
 
 export const userLoginAPI = createAsyncThunk(
   'auth/userLoginAPI',
@@ -103,6 +103,18 @@ export const getAllUsers = createAsyncThunk(
         error.response?.data,
       );
       return rejectWithValue(error.response.data);
+    }
+  },
+);
+
+export const facebookLoginAPI = createAsyncThunk(
+  'auth/facebookLoginAPI',
+  async (payload: FacebookLoginPayload, {rejectWithValue}) => {
+    try {
+      const response = await api.post('/users/facebook-login', payload);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data);
     }
   },
 );

@@ -7,6 +7,7 @@ import {
   userUpdateAPI,
   userDeleteAPI,
   changePasswordAPI,
+  facebookLoginAPI,
 } from './authThunk';
 
 const initialState: AuthState = {
@@ -111,6 +112,24 @@ const authSlice = createSlice({
       state.isErrorUser = false;
     });
     builder.addCase(userDeleteAPI.rejected, state => {
+      state.isLoadingUser = false;
+      state.isErrorUser = true;
+    });
+
+    //Facebook Login
+    builder.addCase(facebookLoginAPI.pending, state => {
+      state.isLoadingUser = true;
+      state.isErrorUser = false;
+    });
+    builder.addCase(
+      facebookLoginAPI.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+        state.isLoadingUser = false;
+        state.isErrorUser = false;
+      },
+    );
+    builder.addCase(facebookLoginAPI.rejected, state => {
       state.isLoadingUser = false;
       state.isErrorUser = true;
     });

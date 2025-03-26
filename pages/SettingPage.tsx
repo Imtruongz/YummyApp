@@ -6,6 +6,7 @@ import CustomTitle from '../components/customize/Title';
 import SettingButton from '../components/customize/SettingButton';
 import colors from '../utils/color';
 import Header from '../components/customize/Header';
+import { LoginManager } from 'react-native-fbsdk-next';
 
 import {MMKV} from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -31,14 +32,21 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
 
   const logout = async () => {
     try {
+      // Đăng xuất Facebook
+      LoginManager.logOut();
+      
+      // Xóa token và thông tin người dùng
       storage.delete('accessToken');
-      console.log('Access Token removed', storage.getString('accessToken'));
+      storage.delete('refreshToken')
+      storage.delete('userId');
+      
+      // Chuyển về màn hình đăng nhập
       navigation.reset({
         index: 0,
         routes: [{name: 'LoginPage'}],
       });
     } catch (exception) {
-      console.error('Error clearing accessToken', exception);
+      console.error('Error during logout:', exception);
     }
   };
 

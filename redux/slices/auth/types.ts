@@ -18,6 +18,13 @@ export interface ChangePasswordPayload {
   newPassword: string;
 }
 
+export interface FacebookLoginPayload {
+  userId: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+}
+
 export interface User {
   userId: string;
   username: string;

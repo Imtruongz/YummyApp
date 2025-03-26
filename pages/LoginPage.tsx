@@ -23,9 +23,9 @@ import color from '../utils/color';
 import img from '../utils/urlImg';
 import { verifyEmail, verifyPassword } from '../utils/validate';
 import { useAppDispatch } from '../redux/hooks';
-import { userLoginAPI } from '../redux/slices/auth/authThunk';
+import { userLoginAPI, facebookLoginAPI } from '../redux/slices/auth/authThunk';
 
-import { Settings, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next'
+import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 
 const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
@@ -98,15 +98,31 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
         const profile = await Profile.getCurrentProfile();
         if (profile) {
           const data = {
-            userId: profile.userID,
-            username: profile.name,
-            email: profile.email,
-            avatar: profile.imageURL,
+            userId: profile.userID || '',
+            username: profile.name || 'Facebook User',
+            email: profile.userID || '',
+            avatar: profile.imageURL || '',
           }
           console.log('Login with Facebook success', data);
+          const resultAction = await dispatch(facebookLoginAPI(data));
+          if (facebookLoginAPI.fulfilled.match(resultAction)) {
+            const user = resultAction.payload;
+            if (user) {
+              navigation.navigate('BottomTabs');
+              console.log('Login with Facebook success, save userId', user.user.userId, 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
+              storage.set('userId', String(user.user.userId || ''));
+              storage.set('accessToken', user.accessToken);
+              storage.set('refreshToken', user.refreshToken);
+            }
+          } else {
+            setIsErrorMessage(true);
+            setErrorMessage('Login with Facebook failed, please try again');
+          }
         }
       }
     } catch (error) {
+      setIsErrorMessage(true);
+      setErrorMessage('An error occurred, please try again');
       console.log('Login with Facebook error', error);
     }
   };
@@ -166,12 +182,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             onPress={handleLoginWithFacebook}
           >
             <Image
-              source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+              source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png' }}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>Đăng nhập bằng Facebook</Text>
           </TouchableOpacity>
-          <LoginButton />
         </View>
         {/* Footer */}
         <View style={styles.footer}>
