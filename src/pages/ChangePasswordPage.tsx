@@ -13,7 +13,7 @@ import Header from '../components/customize/Header';
 
 import {verifyPassword, verifyConfirmPassword} from '../utils/validate';
 import Toast from 'react-native-toast-message';
-import {RootStackParamList} from '../android/types/StackNavType.ts';
+import {RootStackParamList} from '../../android/types/StackNavType.ts';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';

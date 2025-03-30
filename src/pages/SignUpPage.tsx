@@ -20,7 +20,7 @@ import {
   verifyConfirmPassword,
 } from '../utils/validate';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
+import {RootStackParamList} from '../../android/types/StackNavType';
 
 import CustomAuthHeader from '../components/customize/authHeader';
 import img from '../utils/urlImg';

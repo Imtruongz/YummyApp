@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../android/types/StackNavType';
+import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 //Customm components
@@ -31,6 +31,7 @@ const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
 
 import { MMKV } from 'react-native-mmkv';
+import { AuthContext } from '../contexts/AuthContext';
 
 const storage = new MMKV();
 
@@ -46,6 +47,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const { signIn } = useContext(AuthContext);
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -66,11 +68,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
       if (userLoginAPI.fulfilled.match(resultAction)) {
         const user = resultAction.payload;
         if (user) {
-          navigation.navigate('BottomTabs');
-          console.log('Login success, save userId', user.user.userId, 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
           storage.set('userId', String(user.user.userId || ''));
           storage.set('accessToken', user.accessToken);
           storage.set('refreshToken', user.refreshToken);
+          signIn();
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');
@@ -108,11 +109,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           if (facebookLoginAPI.fulfilled.match(resultAction)) {
             const user = resultAction.payload;
             if (user) {
-              navigation.navigate('BottomTabs');
-              console.log('Login with Facebook success, save userId', user.user.userId, 'accessToken', user.accessToken, 'refreshToken', user.refreshToken);
               storage.set('userId', String(user.user.userId || ''));
               storage.set('accessToken', user.accessToken);
               storage.set('refreshToken', user.refreshToken);
+              signIn();
             }
           } else {
             setIsErrorMessage(true);

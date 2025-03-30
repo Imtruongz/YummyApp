@@ -1,7 +1,7 @@
 import {Alert, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
+import {RootStackParamList} from '../../android/types/StackNavType';
 import CustomTitle from '../components/customize/Title';
 import SettingButton from '../components/customize/SettingButton';
 import colors from '../utils/color';

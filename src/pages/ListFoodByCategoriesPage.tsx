@@ -9,33 +9,50 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import CustomTitle from '../components/customize/Title';
-
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import colors from '../utils/color';
+
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import colors from '../utils/color';
+import {useAppDispatch, useAppSelector} from '../redux/hooks';
+import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
+import {RootState} from '../redux/store.ts';
+
+import {RootStackParamList} from '../../android/types/StackNavType.ts';
 
 import Header from '../components/customize/Header';
+import CustomTitle from '../components/customize/Title.tsx';
+import Loading from '../components/skeleton/Loading';
 
-interface ListFoodPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}
-
-const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
+interface ListFoodByCategoriesProps
+  extends NativeStackScreenProps<
+    RootStackParamList,
+    'ListFoodByCategoriesPage'
+  > {}
+const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
+  route,
+  navigation,
+}) => {
   const dispatch = useAppDispatch();
+  const {categoryId} = route.params;
 
-  const {foodList} = useAppSelector(state => state.food);
+  const {categoryFoodList, isLoadingFood} = useAppSelector(
+    (state: RootState) => state.food,
+  );
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredFoodList = foodList?.filter(
+  const filteredCategoryFoodList = categoryFoodList?.filter(
     item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood
   );
 
   useEffect(() => {
-    dispatch(getAllFoodAPI());
-  }, [dispatch]);
+    if (categoryId) {
+      dispatch(getFoodByCategoryAPI(categoryId));
+    }
+  }, [dispatch, categoryId]);
+
+  if (isLoadingFood) {
+    return <Loading />;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,7 +63,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
         onChangeText={text => setSearchQuery(text)}
       />
       <ScrollView contentContainerStyle={styles.container2}>
-        {filteredFoodList?.map(item => (
+        {filteredCategoryFoodList?.map(item => (
           <TouchableOpacity
             key={item.foodId}
             style={styles.itemContainer}
@@ -66,7 +83,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
                 style={styles.title}
                 title={item.foodName}
               />
-              <Text style={styles.title2}>{item.userDetail.username}</Text>
+              <Text style={styles.title2}>{item.userDetail?.username}</Text>
               <View
                 style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                 <AntDesignIcon name="star" size={20} color={colors.primary} />
@@ -82,6 +99,8 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   );
 };
 
+export default ListFoodByCategoriesPage;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -91,15 +110,13 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-
   inputHeader: {
     width: '90%',
-    backgroundColor: colors.light,
+    backgroundColor: colors.InputBg,
     borderRadius: 12,
     padding: 16,
     margin: 18,
   },
-
   container2: {
     width: '100%',
     flexDirection: 'row',
@@ -142,5 +159,3 @@ const styles = StyleSheet.create({
     color: colors.smallText,
   },
 });
-
-export default ListFoodPage;

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../android/types/StackNavType';
+import {RootStackParamList} from '../../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
