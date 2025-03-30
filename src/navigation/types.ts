@@ -20,6 +20,7 @@ export type RootStackParamList = {
     AddFoodPage: undefined;
     ListFoodPage: undefined
     RecipeDetailPage: undefined;
+    ListFoodByUserPage: undefined;
   }
 
   export type ProfileStack = {

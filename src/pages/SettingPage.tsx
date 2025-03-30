@@ -1,5 +1,5 @@
 import {Alert, StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, { useContext } from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import CustomTitle from '../components/customize/Title';
@@ -10,11 +10,14 @@ import { LoginManager } from 'react-native-fbsdk-next';
 
 import {MMKV} from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../contexts/AuthContext';
 const storage = new MMKV();
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
+  const { signOut } = useContext(AuthContext);
+
   const handleLogout = () => {
     Alert.alert(
       'Log Out',
@@ -37,14 +40,13 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
       
       // Xóa token và thông tin người dùng
       storage.delete('accessToken');
-      storage.delete('refreshToken')
+      storage.delete('refreshToken');
       storage.delete('userId');
       
-      // Chuyển về màn hình đăng nhập
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'LoginPage'}],
-      });
+      // Gọi signOut từ AuthContext để cập nhật trạng thái đăng nhập
+      signOut();
+      
+      // Không cần reset navigation vì AuthContext sẽ tự động chuyển về màn hình đăng nhập
     } catch (exception) {
       console.error('Error during logout:', exception);
     }
