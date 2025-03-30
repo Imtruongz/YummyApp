@@ -99,7 +99,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           data={categoryList}
           horizontal
           showsHorizontalScrollIndicator={true}
-          keyExtractor={item => item.categoryId}
+          keyExtractor={(item, index) => `${item.categoryId}_${index}`}
           renderItem={({item}) => (
             <Pressable
               onPress={() =>
@@ -127,9 +127,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={true}
           initialNumToRender={5}
-          onEndReached={getAllFoodAPI}
+          onEndReached={() => dispatch(getAllFoodAPI())}
           onEndReachedThreshold={0.5}
-          keyExtractor={item => item.foodId}
+          keyExtractor={(item, index) => `${item.foodId}_${index}`}
           renderItem={({item}) => (
             <Pressable
               style={styles.itemContainer}
@@ -180,7 +180,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           data={ListUser}
           horizontal
           showsHorizontalScrollIndicator={true}
-          keyExtractor={item => item.userId}
+          keyExtractor={(item, index) => `${item.userId}_${index}`}
           renderItem={({item}) => (
             <Pressable
               onPress={() =>

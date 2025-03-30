@@ -29,6 +29,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
+import { NativeModules } from 'react-native';
+import RNFS from 'react-native-fs';
 
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
@@ -47,6 +49,30 @@ const initialState: foodPayload = {
   CookingTime: '',
 };
 
+// Hàm chuyển đổi hình ảnh sang base64
+const convertImageToBase64 = async (uri: string): Promise<string> => {
+  try {
+    // Nếu uri bắt đầu với 'file://', sử dụng RNFS để đọc file
+    if (uri.startsWith('file://')) {
+      const base64Data = await RNFS.readFile(uri, 'base64');
+      return `data:image/jpeg;base64,${base64Data}`;
+    } 
+    // Nếu uri bắt đầu với 'content://', cần trích xuất đường dẫn thực
+    else if (uri.startsWith('content://')) {
+      // Đối với Android, có thể cần sử dụng thêm thư viện để xử lý content URI
+      console.log('Need to handle content:// URI');
+      const base64Data = await RNFS.readFile(uri, 'base64');
+      return `data:image/jpeg;base64,${base64Data}`;
+    } else {
+      console.error('Unsupported URI format');
+      return '';
+    }
+  } catch (error) {
+    console.error('Error converting image to base64:', error);
+    return '';
+  }
+};
+
 const AddFoodPage = () => {
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<foodPayload>(initialState);
@@ -56,6 +82,7 @@ const AddFoodPage = () => {
 
   const [ingredients, setIngredients] = useState<string[]>(['']);
   const [steps, setSteps] = useState<string[]>(['']);
+  const [originalImageUri, setOriginalImageUri] = useState<string>('');
 
   const {categoryList} = useAppSelector((state: RootState) => state.categories);
 
@@ -97,11 +124,20 @@ const AddFoodPage = () => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         const result: any = await launchImageLibrary({
           mediaType: 'photo',
+          includeBase64: false,
+          maxHeight: 800,
+          maxWidth: 800,
         });
         if (result.assets && result.assets.length > 0) {
+          const imageUri = result.assets[0].uri;
+          setOriginalImageUri(imageUri);
+          
+          // Chuyển đổi hình ảnh sang base64
+          const base64Image = await convertImageToBase64(imageUri);
+          
           setFormData(prev => ({
             ...prev,
-            foodThumbnail: result.assets[0].uri,
+            foodThumbnail: base64Image, // Lưu chuỗi base64 vào state
           }));
         } else {
           console.log('No image selected or camera launch failed');
@@ -137,6 +173,7 @@ const AddFoodPage = () => {
       setIngredients(['']);
       setSteps(['']);
       setErrorForm(null);
+      setOriginalImageUri('');
     } catch (error: any) {
       setErrorForm(error?.data?.errors || {general: 'Something went wrong!'});
     }
@@ -150,7 +187,7 @@ const AddFoodPage = () => {
           <CustomTitle title="Choose Image" />
           <Pressable onPress={requestCameraPermission}>
             <Image
-              source={{uri: formData.foodThumbnail || imgURL.UndefineImg}} //7
+              source={{uri: originalImageUri || imgURL.UndefineImg}}
               style={styles.imagePreview}
             />
           </Pressable>
@@ -208,10 +245,10 @@ const AddFoodPage = () => {
                   <Text style={styles.dropdownButtonTxtStyle}>
                     {(selectedItem && selectedItem.categoryName) || 'Category'}
                   </Text>
-                  <Icon
-                    name={isOpened ? 'chevron-up' : 'chevron-down'}
-                    style={styles.dropdownButtonArrowStyle}
-                  />
+                  {React.createElement(Icon, {
+                    name: isOpened ? 'chevron-up' : 'chevron-down',
+                    style: styles.dropdownButtonArrowStyle
+                  })}
                 </View>
               );
             }}
@@ -257,7 +294,11 @@ const AddFoodPage = () => {
                 onChangeText={text => handleIngredientChange(text, index)}
               />
               <Pressable onPress={() => handleRemoveIngredient(index)}>
-                <AntDesignIcon style={styles.icon} name="minus" size={22} />
+                {React.createElement(AntDesignIcon, {
+                  style: styles.icon,
+                  name: "minus",
+                  size: 22
+                })}
               </Pressable>
             </View>
           ))}
@@ -279,7 +320,11 @@ const AddFoodPage = () => {
                 onChangeText={text => handleStepChange(text, index)}
               />
               <Pressable onPress={() => handleRemoveStep(index)}>
-                <AntDesignIcon style={styles.icon} name="minus" size={22} />
+                {React.createElement(AntDesignIcon, {
+                  style: styles.icon,
+                  name: "minus",
+                  size: 22
+                })}
               </Pressable>
             </View>
           ))}

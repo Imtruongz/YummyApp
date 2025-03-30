@@ -70,7 +70,7 @@ const FirstRoute = () => {
   return (
     <>
       <ScrollView contentContainerStyle={styles.container}>
-        {userFoodList?.map(item => (
+        {Array.isArray(userFoodList) && userFoodList.map(item => (
           <TouchableOpacity
             key={item.foodId}
             onLongPress={() => showDialog(item)}
