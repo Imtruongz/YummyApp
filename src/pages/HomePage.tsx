@@ -12,6 +12,7 @@ import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -40,6 +41,7 @@ interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
   const {foodList} = useAppSelector(state => state.food);
@@ -58,11 +60,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
     if (currentTime < 12) {
-      return <Greeting iconName="sun-o" title="Good Morning" />;
+      return <Greeting iconName="sun-o" title={t('goodMorning')} />;
     } else if (currentTime < 18) {
-      return <Greeting iconName="sun-o" title="Good Afternoon" />;
+      return <Greeting iconName="sun-o" title={t('goodAfternoon')} />;
     } else {
-      return <Greeting iconName="moon-o" title="Good Evening" />;
+      return <Greeting iconName="moon-o" title={t('goodEvening')} />;
     }
   };
   const message = greetingMessage();

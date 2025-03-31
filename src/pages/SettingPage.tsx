@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import React, { useContext } from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
@@ -11,12 +11,30 @@ import { LoginManager } from 'react-native-fbsdk-next';
 import {MMKV} from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../contexts/AuthContext';
+import { Button } from 'react-native';
+
+
+import '../languages/i18n'; // đảm bảo file i18n.ts được import đến
+import { useTranslation } from 'react-i18next';
+
+
 const storage = new MMKV();
 
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> {}
 const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
   const { signOut } = useContext(AuthContext);
+
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lang: string) => {
+    i18n.changeLanguage(lang === 'vi' ? 'vn' : lang).then(() => {
+      console.log('Language changed to:', i18n.language);
+    });
+  };
+
+  // Log khi component render
+  console.log('Current language:', i18n.language);
 
   const handleLogout = () => {
     Alert.alert(
@@ -67,6 +85,10 @@ const SettingPage: React.FC<SettingPageProps> = ({navigation}) => {
           navigation={navigation}
           targetScreen="ChangePasswordPage"
         />
+        <Text>{t('greeting')}</Text>
+      <Text>{t('welcome')}</Text>
+      <Button title="Chuyển sang Tiếng Việt" onPress={() => changeLanguage('vi')} />
+      <Button title="Switch to English" onPress={() => changeLanguage('en')} />
       </View>
       <View style={styles.accountContainer}>
         <CustomTitle style={styles.title} title="System" />
