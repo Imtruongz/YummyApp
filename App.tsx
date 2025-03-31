@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './src/languages/i18n'; // Import i18n trước
 import { AuthContext } from './src/contexts/AuthContext';
 import NavigationRoot from './src/navigation/NavigationContainer';
 import { Provider } from 'react-redux';

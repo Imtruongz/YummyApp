@@ -1,0 +1,42 @@
+{
+    "greeting": "你好",
+    "welcome": "欢迎使用我们的应用程序",
+    
+    "goodMorning": "早上好",
+    "goodAfternoon": "下午好",
+    "goodEvening": "晚上好",
+    "home_popular_categories": "热门分类",
+    "home_daily_food": "每日美食",
+    "home_see_all": "查看全部",
+    "home_popular_creators": "热门创作者",
+  
+    "add_add_food_header": "添加美食",
+    "add_choose_image": "选择图片",
+    "add_food_name": "菜名",
+    "add_description": "描述",
+    "add_category": "分类",
+    "add_cooking_time": "烹饪时间",
+    "add_ingredients": "食材",
+    "add_placeholder_ingredients": "食材",
+    "add_add_ingredient": "添加食材",
+    "add_steps": "步骤",
+    "add_placeholder_steps": "步骤",
+    "add_add_step": "添加步骤",
+    "add_add_food_btn": "添加美食",
+  
+    "profile_my_profile_header": "我的资料",
+    "profile_posts": "帖子",
+    "profile_followers": "粉丝",
+    "profile_following": "关注",
+    "profile_your_posts": "你的帖子",
+    "profile_your_favorites": "你的收藏",
+  
+    "setting_settings_header": "设置",
+    "setting_account": "账户",
+    "setting_profile_setting": "个人资料设置",
+    "setting_Password": "密码设置",
+    "setting_system": "系统",
+    "setting_logout": "登出",
+    "setting_language": "语言"
+  }
+  

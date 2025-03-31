@@ -22,7 +22,7 @@ import {
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
 
-import imgUrl from '../utils/urlImg.ts';
+import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -30,12 +30,13 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import colors from '../utils/color';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
+import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
 
 import {MMKV} from 'react-native-mmkv';
-import Typography from '../components/customize/Typography.tsx';
-const storage = new MMKV();
+import Typography from '../components/customize/Typography';
+import {useTranslation} from 'react-i18next';
 
+const storage = new MMKV();
 const userId = storage.getString('userId') || '';
 
 const initialLayout = {width: Dimensions.get('window').width};
@@ -54,13 +55,16 @@ const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
 
 interface ProfilePageProps
   extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
+
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
+  const {t} = useTranslation();
   const dispatch = useAppDispatch();
 
   const [index, setIndex] = useState(0);
+  // Dùng t() để lấy title tab theo file JSON
   const [routes] = useState([
-    {key: 'first', title: 'Your Posts'},
-    {key: 'second', title: 'Your favorites'},
+    {key: 'first', title: t('profile_your_posts')},
+    {key: 'second', title: t('profile_your_favorites')},
   ]);
 
   const renderScene = SceneMap({
@@ -94,7 +98,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <CustomTitle style={styles.title} title="My profile" />
+        <CustomTitle style={styles.title} title={t('profile_my_profile_header')} />
         <AntDesignIcon
           onPress={() => {
             navigation.navigate('SettingPage');
@@ -109,7 +113,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         {isLoadingUser ? (
           <ActivityIndicator size="large" color={colors.primary} />
         ) : isErrorUser ? (
-          <Text>Something went wrong</Text>
+          <Text>{t('Something went wrong')}</Text>
         ) : (
           <View style={styles.myInfoContainer}>
             <View style={styles.myInfo2}>
@@ -120,9 +124,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                 image={user?.avatar || imgUrl.defaultAvatar}
               />
               <View style={styles.myInfo3}>
-                <InfoItem number={userFoodList.length ?? 0} label="Posts" />
-                <InfoItem number="0" label="Follower" />
-                <InfoItem number="0" label="Following" />
+                <InfoItem
+                  number={userFoodList.length ?? 0}
+                  label={t('profile_posts')}
+                />
+                <InfoItem number="0" label={t('profile_followers')} />
+                <InfoItem number="0" label={t('profile_following')} />
               </View>
             </View>
             <CustomTitle title={user?.username} />

@@ -29,12 +29,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import { NativeModules } from 'react-native';
+import {NativeModules} from 'react-native';
 import RNFS from 'react-native-fs';
-
 import {MMKV} from 'react-native-mmkv';
-const storage = new MMKV();
+import {useTranslation} from 'react-i18next';
 
+const storage = new MMKV();
 const userId = storage.getString('userId') || '';
 
 // Initial state
@@ -52,14 +52,10 @@ const initialState: foodPayload = {
 // Hàm chuyển đổi hình ảnh sang base64
 const convertImageToBase64 = async (uri: string): Promise<string> => {
   try {
-    // Nếu uri bắt đầu với 'file://', sử dụng RNFS để đọc file
     if (uri.startsWith('file://')) {
       const base64Data = await RNFS.readFile(uri, 'base64');
       return `data:image/jpeg;base64,${base64Data}`;
-    } 
-    // Nếu uri bắt đầu với 'content://', cần trích xuất đường dẫn thực
-    else if (uri.startsWith('content://')) {
-      // Đối với Android, có thể cần sử dụng thêm thư viện để xử lý content URI
+    } else if (uri.startsWith('content://')) {
       console.log('Need to handle content:// URI');
       const base64Data = await RNFS.readFile(uri, 'base64');
       return `data:image/jpeg;base64,${base64Data}`;
@@ -74,6 +70,7 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
 };
 
 const AddFoodPage = () => {
+  const {t} = useTranslation();
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<foodPayload>(initialState);
   const [errorForm, setErrorForm] = useState<null | {[key: string]: string}>(
@@ -110,6 +107,7 @@ const AddFoodPage = () => {
     const newSteps = steps.filter((_, i) => i !== index);
     setSteps(newSteps);
   };
+
   // Fetch categories on mount
   useEffect(() => {
     dispatch(getAllCategoriesAPI());
@@ -131,13 +129,10 @@ const AddFoodPage = () => {
         if (result.assets && result.assets.length > 0) {
           const imageUri = result.assets[0].uri;
           setOriginalImageUri(imageUri);
-          
-          // Chuyển đổi hình ảnh sang base64
           const base64Image = await convertImageToBase64(imageUri);
-          
           setFormData(prev => ({
             ...prev,
-            foodThumbnail: base64Image, // Lưu chuỗi base64 vào state
+            foodThumbnail: base64Image,
           }));
         } else {
           console.log('No image selected or camera launch failed');
@@ -181,10 +176,10 @@ const AddFoodPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Add Food" iconName="arrowleft" />
+      <Header title={t('add_add_food_header')} iconName="arrowleft" />
       <ScrollView>
         <View style={styles.container2}>
-          <CustomTitle title="Choose Image" />
+          <CustomTitle title={t('add_choose_image')} />
           <Pressable onPress={requestCameraPermission}>
             <Image
               source={{uri: originalImageUri || imgURL.UndefineImg}}
@@ -197,13 +192,13 @@ const AddFoodPage = () => {
         </View>
 
         <View style={styles.container2}>
-          <CustomTitle title="Food Name" />
+          <CustomTitle title={t('add_food_name')} />
           <TextInput
             style={styles.foodNameTextInput}
-            placeholder="Enter food name"
+            placeholder={t('add_food_name')}
             value={formData.foodName}
-            onChangeText={
-              text => setFormData(prev => ({...prev, foodName: text})) //2
+            onChangeText={text =>
+              setFormData(prev => ({...prev, foodName: text}))
             }
           />
           {errorForm?.foodName && (
@@ -212,15 +207,15 @@ const AddFoodPage = () => {
         </View>
 
         <View style={styles.container2}>
-          <CustomTitle title="Description" />
+          <CustomTitle title={t('add_description')} />
           <TextInput
             style={styles.foodDescriptionTextInput}
-            placeholder="Enter description"
+            placeholder={t('add_description')}
             value={formData.foodDescription}
             numberOfLines={5}
             multiline={true}
-            onChangeText={
-              text => setFormData(prev => ({...prev, foodDescription: text})) //5
+            onChangeText={text =>
+              setFormData(prev => ({...prev, foodDescription: text}))
             }
           />
           {errorForm?.foodDescription && (
@@ -229,7 +224,7 @@ const AddFoodPage = () => {
         </View>
 
         <View style={styles.foodcategoryContainer}>
-          <CustomTitle title="Category" />
+          <CustomTitle title={t('add_category')} />
           <SelectDropdown
             data={categoryList}
             onSelect={selectedItem => {
@@ -243,11 +238,12 @@ const AddFoodPage = () => {
               return (
                 <View style={styles.dropdownButtonStyle}>
                   <Text style={styles.dropdownButtonTxtStyle}>
-                    {(selectedItem && selectedItem.categoryName) || 'Category'}
+                    {(selectedItem && selectedItem.categoryName) ||
+                      t('add_category')}
                   </Text>
                   {React.createElement(Icon, {
                     name: isOpened ? 'chevron-up' : 'chevron-down',
-                    style: styles.dropdownButtonArrowStyle
+                    style: styles.dropdownButtonArrowStyle,
                   })}
                 </View>
               );
@@ -271,73 +267,73 @@ const AddFoodPage = () => {
         </View>
 
         <View style={styles.foodcategoryContainer}>
-          <CustomTitle title="Cooking time" />
+          <CustomTitle title={t('add_cooking_time')} />
           <TextInput
             style={styles.cookingTimeTextInput}
             keyboardType="numeric"
-            placeholder="Time in minutes"
+            placeholder={t('add_cooking_time')}
             value={formData.CookingTime}
-            onChangeText={
-              text => setFormData(prev => ({...prev, CookingTime: text})) //6
+            onChangeText={text =>
+              setFormData(prev => ({...prev, CookingTime: text}))
             }
           />
         </View>
 
         <View style={styles.container2}>
-          <CustomTitle title="Ingredients" />
+          <CustomTitle title={t('add_ingredients')} />
           {ingredients.map((ingredient, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
               <TextInput
                 style={styles.ISTextInput}
-                placeholder={`Ingredient ${index + 1}`}
+                placeholder={`${t('add_placeholder_ingredients')} ${index + 1}`}
                 value={ingredient}
                 onChangeText={text => handleIngredientChange(text, index)}
               />
               <Pressable onPress={() => handleRemoveIngredient(index)}>
                 {React.createElement(AntDesignIcon, {
                   style: styles.icon,
-                  name: "minus",
-                  size: 22
+                  name: 'minus',
+                  size: 22,
                 })}
               </Pressable>
             </View>
           ))}
           <CustomButton
             style={styles.addIngredient}
-            title="Add Ingredient"
+            title={t('add_add_ingredient')}
             onPress={handleAddIngredient}
           />
         </View>
 
         <View style={styles.container2}>
-          <CustomTitle title="Steps" />
+          <CustomTitle title={t('add_steps')} />
           {steps.map((step, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
               <TextInput
                 style={styles.ISTextInput}
-                placeholder={`Step ${index + 1}`}
+                placeholder={`${t('add_placeholder_steps')} ${index + 1}`}
                 value={step}
                 onChangeText={text => handleStepChange(text, index)}
               />
               <Pressable onPress={() => handleRemoveStep(index)}>
                 {React.createElement(AntDesignIcon, {
                   style: styles.icon,
-                  name: "minus",
-                  size: 22
+                  name: 'minus',
+                  size: 22,
                 })}
               </Pressable>
             </View>
           ))}
           <CustomButton
             style={styles.addIngredient}
-            title="Add Step"
+            title={t('add_add_step')}
             onPress={handleAddStep}
           />
         </View>
       </ScrollView>
 
       <View style={styles.buttons}>
-        <CustomButton title="Add Food" onPress={handleSubmit} />
+        <CustomButton title={t('add_add_food_btn')} onPress={handleSubmit} />
       </View>
     </SafeAreaView>
   );
@@ -350,7 +346,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-  //Image block
   container2: {
     marginHorizontal: 18,
     marginVertical: 12,
@@ -362,7 +357,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     resizeMode: 'cover',
   },
-  // FoodName block
   foodNameTextInput: {
     width: 327,
     height: 53,
@@ -370,7 +364,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
   },
-  // FoodDescription block
   foodDescriptionTextInput: {
     width: 327,
     height: 123,
@@ -378,7 +371,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
   },
-  // FoodCategory and cooking time block
   foodcategoryContainer: {
     marginHorizontal: 18,
     marginBottom: 20,
@@ -393,7 +385,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
   },
-  //Ingredients and Step blocks
   ISTextInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -415,7 +406,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
   },
-
   errorText: {
     color: 'red',
     fontSize: 14,
@@ -426,7 +416,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     marginHorizontal: 18,
   },
-
   buttons: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -443,7 +432,6 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     elevation: 10,
   },
-
   dropdownButtonStyle: {
     width: 160,
     height: 40,

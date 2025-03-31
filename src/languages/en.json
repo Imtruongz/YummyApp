@@ -1,8 +1,42 @@
 {
     "greeting": "Hello",
     "welcome": "Welcome to our app",
+    
     "goodMorning": "Good Morning",
     "goodAfternoon": "Good Afternoon",
-    "goodEvening": "Good Evening"
+    "goodEvening": "Good Evening",
+    "home_popular_categories": "Popular Categories",
+    "home_daily_food": "Daily Foods",
+    "home_see_all": "See all",
+    "home_popular_creators": "Popular Creators",
+
+    "add_add_food_header": "Add Food",
+    "add_choose_image": "Choose Image",
+    "add_food_name": "Food Name",
+    "add_description": "Description",
+    "add_category": "Category",
+    "add_cooking_time": "Cooking time",
+    "add_ingredients": "Ingredients",
+    "add_placeholder_ingredients": "Ingredient",
+    "add_add_ingredient": "Add Ingredient",
+    "add_steps": "Steps",
+    "add_placeholder_steps": "Step",
+    "add_add_step": "Add Step",
+    "add_add_food_btn": "Add Food",
+
+    "profile_my_profile_header": "My Profile",
+    "profile_posts": "Posts",
+    "profile_followers": "Followers",
+    "profile_following": "Following",
+    "profile_your_posts": "Your Posts",
+    "profile_your_favorites": "Your Favorites",
+
+    "setting_settings_header": "Settings",
+    "setting_account": "Account",
+    "setting_profile_setting": "Profile Settings",
+    "setting_Password": "Password Settings",
+    "setting_system": "System",
+    "setting_logout": "Logout",
+    "setting_language": "Language"
 }
   

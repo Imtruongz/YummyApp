@@ -1,8 +1,42 @@
 {
     "greeting": "Xin chào",
     "welcome": "Chào mừng bạn đến với ứng dụng của chúng tôi",
+    
     "goodMorning": "Chào buổi sáng",
     "goodAfternoon": "Chào buổi chiều",
-    "goodEvening": "Chào buổi tối"
-}
+    "goodEvening": "Chào buổi tối",
+    "home_popular_categories": "Danh mục phổ biến",
+    "home_daily_food": "Món ăn hàng ngày",
+    "home_see_all": "Xem tất cả",
+    "home_popular_creators": "Nhà sáng tạo nổi bật",
+  
+    "add_add_food_header": "Thêm món ăn",
+    "add_choose_image": "Chọn hình ảnh",
+    "add_food_name": "Tên món ăn",
+    "add_description": "Mô tả",
+    "add_category": "Danh mục",
+    "add_cooking_time": "Thời gian nấu",
+    "add_ingredients": "Thành phần",
+    "add_placeholder_ingredients": "Thành phần",
+    "add_add_ingredient": "Thêm thành phần",
+    "add_steps": "Các bước",
+    "add_placeholder_steps": "Bước",
+    "add_add_step": "Thêm bước",
+    "add_add_food_btn": "Thêm món ăn",
+  
+    "profile_my_profile_header": "Hồ sơ của tôi",
+    "profile_posts": "Bài đăng",
+    "profile_followers": "Người theo dõi",
+    "profile_following": "Đang theo dõi",
+    "profile_your_posts": "Bài đăng của bạn",
+    "profile_your_favorites": "Yêu thích của bạn",
+  
+    "setting_settings_header": "Cài đặt",
+    "setting_account": "Tài khoản",
+    "setting_profile_setting": "Cài đặt hồ sơ",
+    "setting_Password": "Cài đặt mật khẩu",
+    "setting_system": "Hệ thống",
+    "setting_logout": "Đăng xuất",
+    "setting_language": "Ngôn ngữ"
+  }
   

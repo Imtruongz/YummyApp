@@ -12,7 +12,7 @@ import React, {useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -41,7 +41,7 @@ interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
 const HomePage: React.FC<HomePageProps> = ({navigation}) => {
-  const { t } = useTranslation();
+  const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
   const {foodList} = useAppSelector(state => state.food);
@@ -82,7 +82,8 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               image={user?.avatar || imgURL.defaultAvatar}
             />
             <View>
-              <Text>{message}</Text>
+              {/* Hiển thị greeting theo thời gian */}
+              {message}
               <Typography
                 title={user?.username}
                 fontSize={16}
@@ -94,7 +95,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         </View>
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
-          <CustomTitle title="Popular Category" />
+          <CustomTitle title={t('home_popular_categories')} />
         </TouchableOpacity>
         {/* Popular Category List */}
         <FlatList
@@ -120,8 +121,8 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('ListFoodPage')}
           style={styles.titleContainer}>
-          <CustomTitle title="Daily Food " />
-          <CustomTitle style={styles.seeAll} title="See all" />
+          <CustomTitle title={t('home_daily_food')} />
+          <CustomTitle style={styles.seeAll} title={t('home_see_all')} />
         </TouchableOpacity>
         {/* Daily Food List */}
         <FlatList
@@ -175,7 +176,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         />
         {/* Popular Creator Title */}
         <TouchableOpacity style={styles.titleContainer}>
-          <CustomTitle title="Popular creators" />
+          <CustomTitle title={t('home_popular_creators')} />
         </TouchableOpacity>
         {/* Popular Creator List */}
         <FlatList
