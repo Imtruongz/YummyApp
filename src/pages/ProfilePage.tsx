@@ -21,6 +21,7 @@ import {
 
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
+import ProfileSkeleton from '../components/ProfileSkeleton';
 
 import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
@@ -95,6 +96,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     console.log('getUserByIdAPI rendered successfully');
   }, [dispatch]);
 
+  if (isLoadingUser) {
+    return <ProfileSkeleton />;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -110,9 +115,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         />
       </View>
       <View style={styles.infoContainer}>
-        {isLoadingUser ? (
-          <ActivityIndicator size="large" color={colors.primary} />
-        ) : isErrorUser ? (
+        {isErrorUser ? (
           <Text>{t('Something went wrong')}</Text>
         ) : (
           <View style={styles.myInfoContainer}>

@@ -11,6 +11,8 @@ type Colors = {
   smallText: string;
   primaryText: string;
   InputBg: string;
+  gray: string;
+  white: string;
 };
 
 const colors: Colors = {
@@ -26,6 +28,8 @@ const colors: Colors = {
   smallText: '#A9A9A9',
   primaryText: '#0F172A',
   InputBg: '#ebe8e8',
+  gray: '#E1E1E1',
+  white: '#FFFFFF',
 };
 
 export default colors;

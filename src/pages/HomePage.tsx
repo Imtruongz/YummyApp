@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -25,6 +25,7 @@ import Typography from '../components/customize/Typography';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Greeting from '../components/customize/Greeting';
+import HomeSkeleton from '../components/HomeSkeleton';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
@@ -44,17 +45,30 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
   const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
-  const {foodList} = useAppSelector(state => state.food);
-  const {user} = useAppSelector((state: RootState) => state.auth);
+  const {foodList, isLoadingFood} = useAppSelector(state => state.food);
+  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
   const {ListUser} = useAppSelector((state: RootState) => state.user);
-  const {categoryList} = useAppSelector((state: RootState) => state.categories);
+  const {categoryList, isLoadingCategory} = useAppSelector((state: RootState) => state.categories);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getAllCategoriesAPI());
-    dispatch(getAllFoodAPI());
-    dispatch(getAllUsers());
-    dispatch(getUserByIdAPI(userId));
-    console.log('render');
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          dispatch(getAllCategoriesAPI()),
+          dispatch(getAllFoodAPI()),
+          dispatch(getAllUsers()),
+          dispatch(getUserByIdAPI(userId)),
+        ]);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
   }, [dispatch, userId]);
 
   const greetingMessage = () => {
@@ -67,6 +81,11 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
       return <Greeting iconName="moon-o" title={t('goodEvening')} />;
     }
   };
+
+  if (isLoading || isLoadingFood || isLoadingUser || isLoadingCategory) {
+    return <HomeSkeleton />;
+  }
+
   const message = greetingMessage();
 
   return (
