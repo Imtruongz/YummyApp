@@ -82,7 +82,6 @@ const FirstRoute = () => {
               <Typography
                 title={item.foodName}
                 fontSize={14}
-                fontFamily="Poppins-SemiBold"
                 numberOfLines={2}
               />
             </View>

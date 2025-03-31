@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   languageText: {
     fontSize: 16,
     color: colors.primaryHover,
-    fontFamily: 'Poppins-SemiBold',
   },
   modalContainer: {
     flex: 1,
@@ -208,6 +207,5 @@ const styles = StyleSheet.create({
   modalItemText: {
     fontSize: 16,
     color: colors.dark,
-    fontFamily: 'Poppins-Medium',
   },
 });

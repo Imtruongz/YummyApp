@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    fontFamily: 'Poppins-SemiBold',
     color: color.dark,
     paddingHorizontal: 6,
     paddingVertical: 8,

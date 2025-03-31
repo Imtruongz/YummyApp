@@ -49,8 +49,8 @@ interface InfoItemProps {
 
 const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
   <View style={styles.infoItem}>
-    <Typography title={number} fontSize={14} fontFamily="Poppins-SemiBold" />
-    <Typography title={label} fontSize={12} fontFamily="Poppins-Medium" />
+    <Typography title={number} fontSize={14} />
+    <Typography title={label} fontSize={12} />
   </View>
 );
 

@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   text: {
-    fontFamily: 'Poppins-Regular',
     color: colors.dark,
     fontSize: 14,
   },

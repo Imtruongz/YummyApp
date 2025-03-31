@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
     borderBottomColor: color.dark,
     borderBottomWidth: 1,
     width: '100%',
-    fontFamily: 'Roboto',
   },
   body: {
     padding: 12,

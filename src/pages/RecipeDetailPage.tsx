@@ -209,7 +209,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 <AntDesignIcon name="star" size={20} color={colors.primary} />
                 <Typography
                   title="4.0"
-                  fontFamily="Poppins-Medium"
                   color={colors.smallText}
                   fontSize={12}
                 />
@@ -222,7 +221,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 />
                 <Typography
                   title={selectedFood?.CookingTime}
-                  fontFamily="Poppins-Medium"
                   color={colors.smallText}
                   fontSize={12}
                 />
@@ -231,7 +229,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 <FontistoIcon name="date" size={20} color={colors.primary} />
                 <Typography
                   title={formatDate(selectedFood?.createdAt)}
-                  fontFamily="Poppins-Medium"
                   color={colors.smallText}
                   fontSize={12}
                 />
@@ -292,7 +289,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                     <Typography
                       title={item.userDetail.username}
                       color={colors.dark}
-                      fontFamily="Poppins-SemiBold"
                       fontSize={13}
                     />
                     <Typography
@@ -379,7 +375,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
                       <Typography
                         title="4.0"
-                        fontFamily="Poppins-SemiBold"
                         color={colors.smallText}
                       />
                     </View>

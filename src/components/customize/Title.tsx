@@ -32,7 +32,7 @@ export default CustomTitle;
 const styles = StyleSheet.create({
   text: {
     fontSize: 20,
-    fontFamily: 'Poppins-SemiBold',
     color: colors.primaryText,
+    fontWeight: '700'
   },
 });

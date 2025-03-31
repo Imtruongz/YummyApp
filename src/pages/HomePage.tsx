@@ -106,7 +106,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
               <Typography
                 title={user?.username}
                 fontSize={16}
-                fontFamily="Poppins-SemiBold"
               />
             </View>
           </View>
@@ -166,7 +165,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 <Typography
                   title={item.foodName}
                   fontSize={18}
-                  fontFamily="Poppins-Regular"
                   fontWeight="700"
                   numberOfLines={2}
                 />
@@ -180,7 +178,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                   />
                   <Typography
                     title={item.userDetail?.username}
-                    fontFamily="Poppins-SemiBold"
                   />
                 </View>
               </View>
