@@ -22,6 +22,8 @@ import {RootStackParamList} from '../../android/types/StackNavType.ts';
 import Header from '../components/customize/Header';
 import CustomTitle from '../components/customize/Title.tsx';
 import Loading from '../components/skeleton/Loading';
+import NoData from '../components/NoData';
+import {useTranslation} from 'react-i18next';
 
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
@@ -32,6 +34,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   route,
   navigation,
 }) => {
+  const {t} = useTranslation();
   const dispatch = useAppDispatch();
   const {categoryId} = route.params;
 
@@ -54,6 +57,9 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
     return <Loading />;
   }
 
+  // Kiểm tra dữ liệu trống
+  const hasNoData = !filteredCategoryFoodList || filteredCategoryFoodList.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Recipes" iconName="arrowleft" />
@@ -62,39 +68,49 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
         placeholder="Search"
         onChangeText={text => setSearchQuery(text)}
       />
-      <ScrollView contentContainerStyle={styles.container2}>
-        {filteredCategoryFoodList?.map(item => (
-          <TouchableOpacity
-            key={item.foodId}
-            style={styles.itemContainer}
-            onPress={() =>
-              navigation.navigate('RecipeDetailPage', {
-                foodId: item.foodId,
-                userId: item.userId,
-              })
-            }>
-            {/* Top img */}
-            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
-            {/* Bottom info */}
-            <View style={styles.titleItemLeft}>
-              <CustomTitle
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={styles.title}
-                title={item.foodName}
-              />
-              <Text style={styles.title2}>{item.userDetail?.username}</Text>
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-                <AntDesignIcon name="star" size={20} color={colors.primary} />
-                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                  (4.0)
-                </Text>
+      
+      {hasNoData ? (
+        <NoData 
+          message={searchQuery ? t('list_can_not_find') : t('list_nodata')} 
+          width={120}
+          height={120}
+          textSize={16}
+        />
+      ) : (
+        <ScrollView contentContainerStyle={styles.container2}>
+          {filteredCategoryFoodList?.map(item => (
+            <TouchableOpacity
+              key={item.foodId}
+              style={styles.itemContainer}
+              onPress={() =>
+                navigation.navigate('RecipeDetailPage', {
+                  foodId: item.foodId,
+                  userId: item.userId,
+                })
+              }>
+              {/* Top img */}
+              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+              {/* Bottom info */}
+              <View style={styles.titleItemLeft}>
+                <CustomTitle
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={styles.title}
+                  title={item.foodName}
+                />
+                <Text style={styles.title2}>{item.userDetail?.username}</Text>
+                <View
+                  style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                  <AntDesignIcon name="star" size={20} color={colors.primary} />
+                  <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                    (4.0)
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

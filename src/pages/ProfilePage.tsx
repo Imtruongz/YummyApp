@@ -176,10 +176,11 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   myInfo3: {
-    justifyContent: 'center',
+    width: 220,
+    justifyContent: 'space-around',
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 32,
+    gap: 12,
   },
   infoItem: {
     justifyContent: 'center',

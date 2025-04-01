@@ -21,6 +21,7 @@ export type RootStackParamList = {
     ListFoodPage: undefined
     RecipeDetailPage: undefined;
     ListFoodByUserPage: undefined;
+    ListFoodByCategoriesPage: undefined;
   }
 
   export type ProfileStack = {

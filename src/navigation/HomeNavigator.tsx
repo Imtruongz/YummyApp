@@ -6,6 +6,7 @@ import HomePage from '../pages/HomePage';
 import ListFoodPage from '../pages/ListFoodPage';
 import {HomeStack} from './types'
 import ListFoodByUser from '../pages/ListFoodByUser';
+import ListFoodByCategoriesPage from '../pages/ListFoodByCategoriesPage';
 
 const HomeNavigator = () => {
   const Stack = createNativeStackNavigator<HomeStack>();
@@ -20,7 +21,7 @@ const HomeNavigator = () => {
 
       <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
       <Stack.Screen name="ListFoodByUserPage" component={ListFoodByUser} />
-
+      <Stack.Screen name="ListFoodByCategoriesPage" component={ListFoodByCategoriesPage} />
     </Stack.Navigator>
   );
 };

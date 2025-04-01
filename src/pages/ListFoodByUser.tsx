@@ -6,16 +6,16 @@ import {
   View,
   ScrollView,
 } from 'react-native';
-import React, {useEffect} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useEffect } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
+import { getUserByIdAPI } from '../redux/slices/auth/authThunk.ts';
 
-import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import {useAppSelector, useAppDispatch} from '../redux/hooks';
-import {RootState} from '../redux/store';
+import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { RootState } from '../redux/store';
 import CustomTitle from '../components/customize/Title.tsx';
 import CustomButton from '../components/customize/Button.tsx';
 import colors from '../utils/color.ts';
@@ -24,19 +24,21 @@ import CustomAvatar from '../components/customize/Avatar.tsx';
 import imgUrl from '../utils/urlImg.ts';
 import Typography from '../components/customize/Typography.tsx';
 import Loading from '../components/skeleton/Loading.tsx';
+import NoData from '../components/NoData';
+import { useTranslation } from 'react-i18next';
 
 interface ListFoodByUserPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> {}
+  extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
 
 interface InfoItemProps {
   number: number | string;
   label: string;
 }
 
-const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
+const InfoItem: React.FC<InfoItemProps> = ({ number, label }) => (
   <View style={styles.infoItem}>
-    <Typography title={number} fontSize={14}  />
-    <Typography title={label} fontSize={12}  />
+    <Typography title={number} fontSize={14} />
+    <Typography title={label} fontSize={12} />
   </View>
 );
 
@@ -44,11 +46,12 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   route,
   navigation,
 }) => {
-  const {userId} = route.params;
+  const { t } = useTranslation();
+  const { userId } = route.params;
   const dispatch = useAppDispatch();
 
-  const {userFoodList, isLoadingFood} = useAppSelector((state: RootState) => state.food);
-  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
+  const { userFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
+  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(getFoodByIdAPI(userId));
@@ -59,22 +62,27 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
     return <Loading />;
   }
 
+  // Kiểm tra dữ liệu trống
+  const hasNoData = !userFoodList || userFoodList.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title={user?.username} iconName="left" />
       <View style={styles.infoContainer}>
-        <View style={styles.infoBlock1}>
-          {/* Left */}
-          <View style={styles.infoBlock2}>
+        <View style={styles.myInfoContainer}>
+          <View style={styles.myInfo2}>
             <CustomAvatar
               width={70}
               height={70}
               borderRadius={35}
               image={user?.avatar || imgUrl.defaultAvatar}
             />
-            <InfoItem number={userFoodList.length ?? 0} label="Posts" />
-            <InfoItem number="0" label="Follower" />
-            <InfoItem number="0" label="Following" />
+            <View style={styles.myInfo3}>
+              <InfoItem number={userFoodList?.length ?? 0} label={t('profile_posts')} />
+              <InfoItem number="0" label={t('profile_followers')} />
+              <InfoItem number="0" label={t('profile_following')} />
+            </View>
+
           </View>
           {/* Right */}
           <View style={styles.infoBlock3}>
@@ -83,32 +91,42 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
           </View>
         </View>
 
-        <CustomButton title="Follow" />
+        <CustomButton title={t('profile_follow_btn')} />
       </View>
-      <ScrollView contentContainerStyle={styles.ListFoodContainer}>
-        {userFoodList?.map(item => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('RecipeDetailPage', {
-                foodId: item.foodId,
-                userId: item.userId,
-              })
-            }
-            key={item.foodId}
-            style={styles.itemContainer}>
-            {/* Top img */}
-            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
-            {/* Bottom info */}
-            <View style={styles.titleItemLeft}>
-              <Typography
-                title={item.foodName}
-                fontSize={14}
-                numberOfLines={2}
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+
+      {hasNoData ? (
+        <NoData
+          message={t('list_nodata')}
+          width={120}
+          height={120}
+          textSize={16}
+        />
+      ) : (
+        <ScrollView contentContainerStyle={styles.ListFoodContainer}>
+          {userFoodList?.map(item => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('RecipeDetailPage', {
+                  foodId: item.foodId,
+                  userId: item.userId,
+                })
+              }
+              key={item.foodId}
+              style={styles.itemContainer}>
+              {/* Top img */}
+              <Image style={styles.img} source={{ uri: item.foodThumbnail }} />
+              {/* Bottom info */}
+              <View style={styles.titleItemLeft}>
+                <Typography
+                  title={item.foodName}
+                  fontSize={14}
+                  numberOfLines={2}
+                />
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -182,7 +200,23 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
   },
-
+  myInfoContainer: {
+    flexDirection: 'column',
+    width: '100%',
+  },
+  myInfo2: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 14,
+  },
+  myInfo3: {
+    width: 120,
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: 12,
+  },
   inputHeader: {
     width: '90%',
     backgroundColor: colors.light,
@@ -205,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     gap: 8,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,

@@ -30,6 +30,7 @@
     "profile_following": "Following",
     "profile_your_posts": "Your Posts",
     "profile_your_favorites": "Your Favorites",
+    "profile_follow_btn": "Follow",
 
     "setting_settings_header": "Settings",
     "setting_account": "Account",
@@ -37,6 +38,9 @@
     "setting_Password": "Password Settings",
     "setting_system": "System",
     "setting_logout": "Logout",
-    "setting_language": "Language"
+    "setting_language": "Language",
+
+    "list_can_not_find": "No matching food found",
+    "list_nodata": "There is no food in this category"
 }
   

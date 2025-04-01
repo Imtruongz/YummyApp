@@ -19,14 +19,18 @@ import colors from '../utils/color';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import Header from '../components/customize/Header';
+import NoData from '../components/NoData';
+import Loading from '../components/skeleton/Loading';
+import {useTranslation} from 'react-i18next';
 
 interface ListFoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}
 
 const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
+  const {t} = useTranslation();
   const dispatch = useAppDispatch();
 
-  const {foodList} = useAppSelector(state => state.food);
+  const {foodList, isLoadingFood} = useAppSelector(state => state.food);
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFoodList = foodList?.filter(
@@ -37,6 +41,13 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
     dispatch(getAllFoodAPI());
   }, [dispatch]);
 
+  if (isLoadingFood) {
+    return <Loading />;
+  }
+
+  // Kiểm tra dữ liệu trống
+  const hasNoData = !filteredFoodList || filteredFoodList.length === 0;
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Recipes" iconName="arrowleft" />
@@ -45,39 +56,49 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
         placeholder="Search"
         onChangeText={text => setSearchQuery(text)}
       />
-      <ScrollView contentContainerStyle={styles.container2}>
-        {filteredFoodList?.map(item => (
-          <TouchableOpacity
-            key={item.foodId}
-            style={styles.itemContainer}
-            onPress={() =>
-              navigation.navigate('RecipeDetailPage', {
-                foodId: item.foodId,
-                userId: item.userId,
-              })
-            }>
-            {/* Top img */}
-            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
-            {/* Bottom info */}
-            <View style={styles.titleItemLeft}>
-              <CustomTitle
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={styles.title}
-                title={item.foodName}
-              />
-              <Text style={styles.title2}>{item.userDetail.username}</Text>
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-                <AntDesignIcon name="star" size={20} color={colors.primary} />
-                <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                  (4.0)
-                </Text>
+      
+      {hasNoData ? (
+        <NoData 
+          message={searchQuery ? t('list_can_not_find') : t('list_nodata')} 
+          width={120}
+          height={120}
+          textSize={16}
+        />
+      ) : (
+        <ScrollView contentContainerStyle={styles.container2}>
+          {filteredFoodList?.map(item => (
+            <TouchableOpacity
+              key={item.foodId}
+              style={styles.itemContainer}
+              onPress={() =>
+                navigation.navigate('RecipeDetailPage', {
+                  foodId: item.foodId,
+                  userId: item.userId,
+                })
+              }>
+              {/* Top img */}
+              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+              {/* Bottom info */}
+              <View style={styles.titleItemLeft}>
+                <CustomTitle
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={styles.title}
+                  title={item.foodName}
+                />
+                <Text style={styles.title2}>{item.userDetail.username}</Text>
+                <View
+                  style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                  <AntDesignIcon name="star" size={20} color={colors.primary} />
+                  <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                    (4.0)
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
