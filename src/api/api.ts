@@ -3,7 +3,10 @@ import axios, {AxiosInstance} from 'axios';
 import {MMKV} from 'react-native-mmkv';
 const storage = new MMKV();
 
-const Yummy_API: string = 'http://192.168.0.104:4040/api';
+const API_EVOTEK = process.env.EVOTEK
+const API_HOME = process.env.HOME
+
+const Yummy_API = `http://${API_EVOTEK}:4040/api`;
 
 // const api = axios.create({
 //   baseURL: Yummy_API,
