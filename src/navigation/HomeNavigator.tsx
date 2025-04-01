@@ -16,10 +16,9 @@ const HomeNavigator = () => {
         headerShown: false,
       }}>
       <Stack.Screen name="HomePage" component={HomePage} />
+      <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
       <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
       <Stack.Screen name="ListFoodPage" component={ListFoodPage} />
-
-      <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
       <Stack.Screen name="ListFoodByUserPage" component={ListFoodByUser} />
       <Stack.Screen name="ListFoodByCategoriesPage" component={ListFoodByCategoriesPage} />
     </Stack.Navigator>
