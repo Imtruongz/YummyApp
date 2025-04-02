@@ -41,6 +41,28 @@
     "setting_language": "Language",
 
     "list_can_not_find": "No matching food found",
-    "list_nodata": "There is no food in this category"
+    "list_nodata": "There is no food in this category",
+
+    "edit_profile_header": "Edit Profile",
+    "edit_profile_btn_save": "Save",
+    "edit_profile_btn_cancel": "Cancel",
+    "edit_profile_input_name": "Enter your username",
+    "edit_profile_input_email": "Enter your email",
+    "edit_profile_input_description": "Enter your description",
+
+    "change_pw_header": "Change Password",
+    "change_old_pw": "Old Password",
+    "change_new_pw": "New Password",
+    "change_confirm_pw": "Confirm Password",
+    "change_pw_btn": "Change Password",
+
+    "toast_delete_success": "Delete successfully",
+    "toast_delete_error": "Failed to delete food",
+    "toast_change_success": "Password successfully changed",
+    "toast_change_failed": "Failed to change password",
+    "toast_fill_fields": "Please fill out all fields before updating.",
+    "toast_profile_update_success": "Your profile has been updated.",
+    "toast_profile_update_failed": "Failed to update your profile.",
+    "toast verify_email": "Please check your email to verify your account"
 }
   

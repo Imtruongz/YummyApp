@@ -41,6 +41,19 @@
     "setting_language": "语言",
 
     "list_can_not_find": "未找到符合条件的美食",
-    "list_nodata": "该分类中没有美食"
+    "list_nodata": "该分类中没有美食",
+
+    "edit_profile_header": "编辑资料",
+    "edit_profile_btn_save": "保存",
+    "edit_profile_btn_cancel": "取消",
+    "edit_profile_input_name": "输入用户名",
+    "edit_profile_input_email": "输入您的电子邮件",
+    "edit_profile_input_description": "输入您的描述",
+
+    "change_pw_header": "更改密码",
+    "change_old_pw": "旧密码",
+    "change_new_pw": "新密码",
+    "change_confirm_pw": "确认密码",
+    "change_pw_btn": "更改密码"
   }
   

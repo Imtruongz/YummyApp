@@ -14,6 +14,8 @@ import Header from '../components/customize/Header';
 import {verifyPassword, verifyConfirmPassword} from '../utils/validate';
 import Toast from 'react-native-toast-message';
 import {RootStackParamList} from '../../android/types/StackNavType.ts';
+import {useTranslation} from 'react-i18next';
+
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
@@ -24,6 +26,7 @@ interface ChangePasswordPageProps
 const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
   navigation,
 }) => {
+  const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const [oldPassword, setOldPassword] = useState('');
   const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
@@ -105,10 +108,10 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
 
   return (
     <View style={styles.container}>
-      <Header title="Change Password" iconName="arrowleft" />
+      <Header title={t('change_pw_header')} iconName="arrowleft" />
       <View style={styles.body}>
         <CustomInput
-          placeholder="Old Password"
+          placeholder={t('change_old_pw')}
           value={oldPassword}
           onChangeText={setOldPassword}
           secureTextEntry={!showOldPassword}
@@ -122,7 +125,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
           </Text>
         )}
         <CustomInput
-          placeholder="New Password"
+          placeholder={t('change_new_pw')}
           value={newPassword}
           secureTextEntry={!showNewPassword}
           showIcon={true}
@@ -134,7 +137,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
           <Text style={{color: 'red', fontSize: 12}}>Password invalid</Text>
         )}
         <CustomInput
-          placeholder="Confirm Password"
+          placeholder={t('change_confirm_pw')}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={!showConfirmPassword}
@@ -147,7 +150,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
             Confirmation password invalid
           </Text>
         )}
-        <CustomButton title="Change Password" onPress={handleChangePassword} />
+        <CustomButton title={t('change_pw_btn')} onPress={handleChangePassword} />
       </View>
     </View>
   );

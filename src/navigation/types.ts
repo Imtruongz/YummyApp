@@ -38,4 +38,5 @@ export type ProfileStack = {
   ProfilePage: {
     email: string;
   };
+  ChangePasswordPage: undefined
 }

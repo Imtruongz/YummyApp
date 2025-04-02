@@ -41,9 +41,21 @@
     "setting_language": "Ngôn ngữ",
 
     "list_can_not_find": "Không tìm thấy món ăn phù hợp",
-    "list_nodata": "Không có món ăn nào trong danh mục này"
+    "list_nodata": "Không có món ăn nào trong danh mục này",
 
+    "edit_profile_header": "Chỉnh sửa hồ sơ",
+    "edit_profile_btn_save": "Lưu",
+    "edit_profile_btn_cancel": "Hủy",
+    "edit_profile_input_name": "Nhập tên người dùng của bạn",
+    "edit_profile_input_email": "Nhập email của bạn",
+    "edit_profile_input_description": "Nhập mô tả của bạn",
 
+    "change_pw_header": "Đổi mật khẩu",
+    "change_old_pw": "Mật khẩu cũ",
+    "change_new_pw": "Mật khẩu mới",
+    "change_confirm_pw": "Xác nhận mật khẩu",
+    "change_pw_btn": "Đổi mật khẩu"
 
+    
   }
   

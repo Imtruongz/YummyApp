@@ -18,6 +18,7 @@ import {userUpdateAPI} from '../redux/slices/auth/authThunk.ts';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
+import {useTranslation} from 'react-i18next';
 
 import {MMKV} from 'react-native-mmkv';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -26,6 +27,7 @@ const storage = new MMKV();
 const userId = storage.getString('userId') || '';
 
 const SettingProfilePage = () => {
+  const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const [username, setusername] = useState('');
   const [avatar, setavatar] = useState('');
@@ -101,7 +103,7 @@ const SettingProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Edit Profile" iconName="arrowleft" />
+      <Header title={t('edit_profile_header')} iconName="arrowleft" />
       <View style={styles.body}>
         {isLoadingUser ? (
           <ActivityIndicator size="large" color={color.primary} />
@@ -116,17 +118,16 @@ const SettingProfilePage = () => {
         <CustomInput
           value={username}
           onChangeText={setusername}
-          placeholder="Enter your username"
-        />
+          placeholder={t('edit_profile_input_name')}      />
         <CustomInput placeholder={user?.email} isDisabled={false} />
         <CustomInput
           value={description}
           onChangeText={setdescription}
-          placeholder="Enter your description"
+          placeholder={t('edit_profile_input_description')}
           isDisabled={true}
         />
-        <CustomButton onPress={handleUpdateAccount} title="Save" />
-        <CustomButton title="Cancel" />
+        <CustomButton onPress={handleUpdateAccount} title={t('edit_profile_btn_save')} />
+        <CustomButton title={t('edit_profile_btn_cancel')} />
       </View>
     </SafeAreaView>
   );
