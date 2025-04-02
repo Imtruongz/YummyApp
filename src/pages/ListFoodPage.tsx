@@ -50,10 +50,10 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="Recipes" iconName="arrowleft" />
+      <Header title={t('add_category')} iconName="arrowleft" />
       <TextInput
         style={styles.inputHeader}
-        placeholder="Search"
+        placeholder={t('search')}
         onChangeText={text => setSearchQuery(text)}
       />
       

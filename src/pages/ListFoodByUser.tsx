@@ -206,16 +206,17 @@ const styles = StyleSheet.create({
   },
   myInfo2: {
     justifyContent: 'flex-start',
+    width: '100%',
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 14,
+    gap: 4,
+    paddingHorizontal: 12,
   },
   myInfo3: {
     width: 120,
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 12,
   },
   inputHeader: {
     width: '90%',

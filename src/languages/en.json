@@ -82,7 +82,8 @@
     "pw_invalid": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
     "pw_not_match": "Passwords do not match",
     "pw_confirm_not_match": "Confirm password does not match",
-    "register_success": "Registration successful! Please check your email to verify your account."
+    "register_success": "Registration successful! Please check your email to verify your account.",
+    "search": "Search"
 
 }
   
