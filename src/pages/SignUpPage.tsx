@@ -27,11 +27,13 @@ import img from '../utils/urlImg';
 
 import {useAppDispatch} from '../redux/hooks.ts';
 import {userRegisterAPI} from '../redux/slices/auth/authThunk';
+import { useTranslation } from 'react-i18next';
 
 interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
 const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
+  const { t, i18n } = useTranslation();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -101,20 +103,20 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         <View style={styles.body}>
           <CustomInput
             value={username}
-            placeholder="Username"
+            placeholder={t('login_username')}
             onChangeText={setUsername}
           />
           <CustomInput
             value={email}
-            placeholder="Email"
+            placeholder={t('login_email')}
             onChangeText={setEmail}
           />
           {!isEmailValid ? (
-            <Text style={styles.errorMessage}>Email invalidd</Text>
+            <Text style={styles.errorMessage}>{t('email_invalid')}</Text>
           ) : null}
           <CustomInput
             value={password}
-            placeholder="Password"
+            placeholder={t('login_pw')}
             secureTextEntry={!showPassword}
             onChangeText={setPassword}
             showIcon={true}
@@ -122,11 +124,11 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
             iconName={showPassword ? 'eye' : 'eyeo'}
           />
           {isPasswordValid ? null : (
-            <Text style={styles.errorMessage}>Password invalid</Text>
+            <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
           )}
           <CustomInput
             value={confirmPassword}
-            placeholder="Confirm Password"
+            placeholder={t('change_confirm_pw')}
             secureTextEntry={!showConfirmPassword}
             onChangeText={setConfirmPassword}
             showIcon={true}
@@ -136,7 +138,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
 
           {isConfirmPasswordValid ? null : (
             <Text style={styles.errorMessage}>
-              Confirmation password invalid
+              {t('pw_invalid')}
             </Text>
           )}
           {
@@ -145,13 +147,13 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
               <Text style={styles.errorMessage}>{errorMessage}</Text>
             ) : null
           }
-          <CustomButton title="Sign Up" onPress={handleSignUp} />
+          <CustomButton title={t('login_register_btn')} onPress={handleSignUp} />
         </View>
         {/* Footer */}
         <View style={styles.footer}>
           <CustomTextFooter
-            content="Already have an account?"
-            navigateTo="Login"
+            content={t('login_already_accounted')}
+            navigateTo={t('login_btn')}
             navigation={navigation}
             targetScreen="LoginPage"
           />

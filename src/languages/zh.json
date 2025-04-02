@@ -54,6 +54,24 @@
     "change_old_pw": "旧密码",
     "change_new_pw": "新密码",
     "change_confirm_pw": "确认密码",
-    "change_pw_btn": "更改密码"
+    "change_pw_btn": "更改密码",
+
+     "login_username": "用户名",
+    "login_already_accounted": "已经有账户了？",
+    "login_email": "请输入您的电子邮件地址",
+    "login_pw": "请输入您的密码",
+    "login_btn": "登录",
+    "login_register": "还没有账户？",
+    "login_or": "或者",
+    "login_register_btn": "注册",
+    "login_forgot_pw": "忘记密码？",
+    "login_with_google": "用谷歌登录",
+    "login_with_facebook": "用Facebook登录",
+    "login_invalid": "无效的用户名或密码",
+    "email_invalid": "无效的电子邮件",
+    "pw_invalid": "密码必须至少包含8个字符，其中至少一个大写字母、一个小写字母、一个数字和一个特殊字符",
+    "pw_not_match": "密码不匹配",
+    "pw_confirm_not_match": "确认密码不匹配",
+    "register_success": "注册成功！ 请检查您的电子邮件以验证您的帐户。"
   }
   

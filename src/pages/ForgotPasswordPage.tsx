@@ -19,6 +19,7 @@ import CustomAuthHeader from '../components/customize/authHeader';
 
 import color from '../utils/color';
 import img from '../utils/urlImg.ts';
+import { useTranslation } from 'react-i18next';
 
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}
@@ -26,6 +27,8 @@ interface ForgotPasswordPageProps
 const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
   navigation,
 }) => {
+    const { t, i18n } = useTranslation();
+  
   const [email, setEmail] = useState('');
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
@@ -56,7 +59,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
         <View style={styles.body}>
           <CustomInput
             value={email}
-            placeholder="Email"
+            placeholder={t('login_email')}
             onChangeText={setEmail}
           />
           {isErrorMessage ? (
@@ -64,7 +67,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
           ) : (
             <Text style={styles.sentEmailMessage}>{errorMessage}</Text>
           )}
-          <CustomButton title="Send mail" onPress={handleResetPassword} />
+          <CustomButton title={t('login_send_mail')} onPress={handleResetPassword} />
           <CustomTextFooter
             content="Back to"
             navigateTo="Login"

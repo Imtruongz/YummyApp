@@ -32,6 +32,7 @@ Settings.setAppID(fbAppId)
 
 import { MMKV } from 'react-native-mmkv';
 import { AuthContext } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const storage = new MMKV();
 
@@ -39,6 +40,7 @@ interface LoginPageProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> { }
 
 const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -137,14 +139,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           <CustomInput
             value={email}
             onChangeText={setEmail}
-            placeholder="Email"
+            placeholder={t('login_email')}
           />
           {!isEmailValid ? (
-            <Text style={styles.errorMessage}>Email invalidd</Text>
+            <Text style={styles.errorMessage}>{t('email_invalid')}</Text>
           ) : null}
           <CustomInput
             value={password}
-            placeholder="Password"
+            placeholder={t('login_pw')}
             secureTextEntry={!showPassword}
             onChangeText={setPassword}
             showIcon={true}
@@ -152,17 +154,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             iconName={showPassword ? 'eye' : 'eyeo'}
           />
           {isPasswordValid ? null : (
-            <Text style={styles.errorMessage}>Password invalid</Text>
+            <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
           )}
           {isErrorMessage ? (
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
-          <CustomButton title="Login" onPress={handleLoginWithEmail} />
+          <CustomButton title={t('login_btn')} onPress={handleLoginWithEmail} />
 
           {/* Nút đăng nhập bằng Google */}
           <View style={styles.orContainer}>
             <View style={styles.line} />
-            <Text style={styles.orText}>HOẶC</Text>
+            <Text style={styles.orText}>{t('login_or')}</Text>
             <View style={styles.line} />
           </View>
 
@@ -174,7 +176,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
               source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
               style={styles.googleIcon}
             />
-            <Text style={styles.googleButtonText}>Đăng nhập bằng Google</Text>
+            <Text style={styles.googleButtonText}>{t('login_with_google')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -185,19 +187,19 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
               source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png' }}
               style={styles.googleIcon}
             />
-            <Text style={styles.googleButtonText}>Đăng nhập bằng Facebook</Text>
+            <Text style={styles.googleButtonText}>{t('login_with_facebook')}</Text>
           </TouchableOpacity>
         </View>
         {/* Footer */}
         <View style={styles.footer}>
           <CustomTextFooter
-            content="Don't have an account?"
-            navigateTo="Sign up"
+            content={t('login_register')}
+            navigateTo={t('login_register_btn')}
             navigation={navigation}
             targetScreen="SignUpPage"
           />
           <CustomTextFooter
-            navigateTo="Forgot password"
+            navigateTo={t('login_forgot_pw')}
             navigation={navigation}
             targetScreen="ForgotPasswordPage"
           />

@@ -63,6 +63,26 @@
     "toast_fill_fields": "Please fill out all fields before updating.",
     "toast_profile_update_success": "Your profile has been updated.",
     "toast_profile_update_failed": "Failed to update your profile.",
-    "toast verify_email": "Please check your email to verify your account"
+    "toast verify_email": "Please check your email to verify your account",
+
+    "login_username": "Username",
+    "login_already_accounted": "Already have an account?",
+    "login_email": "Please enter your email address",
+    "login_pw": "Please enter your password",
+    "login_btn": "Login",
+    "login_send_mail": "Send mail",
+    "login_register": "Don't have an account?",
+    "login_or": "Or",
+    "login_register_btn": "Sign up",
+    "login_forgot_pw": "Forgot Password?",
+    "login_with_google": "Login with Google",
+    "login_with_facebook": "Login with Facebook",
+    "login_invalid": "Invalid username or password",
+    "email_invalid": "Invalid email",
+    "pw_invalid": "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+    "pw_not_match": "Passwords do not match",
+    "pw_confirm_not_match": "Confirm password does not match",
+    "register_success": "Registration successful! Please check your email to verify your account."
+
 }
   
