@@ -27,6 +27,7 @@ import Loading from '../components/skeleton/Loading.tsx';
 import NoData from '../components/NoData';
 import { useTranslation } from 'react-i18next';
 import { resetViewedUser } from '../redux/slices/auth/authSlice';
+import { resetViewedUserFoodList } from '../redux/slices/food/foodSlice';
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
@@ -51,16 +52,17 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const { userId } = route.params;
   const dispatch = useAppDispatch();
 
-  const { userFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
+  const { viewedUserFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
   const { viewedUser, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    dispatch(getFoodByIdAPI(userId));
+    dispatch(getFoodByIdAPI({userId, isViewMode: true}));
     dispatch(getUserByIdAPI({userId, isViewMode: true}));
     
-    // Cleanup khi rời khỏi màn hình - reset viewedUser
+    // Cleanup khi rời khỏi màn hình - reset viewedUser và viewedUserFoodList
     return () => {
       dispatch(resetViewedUser());
+      dispatch(resetViewedUserFoodList());
     };
   }, [dispatch, userId]);
 
@@ -69,7 +71,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   }
 
   // Kiểm tra dữ liệu trống
-  const hasNoData = !userFoodList || userFoodList.length === 0;
+  const hasNoData = !viewedUserFoodList || viewedUserFoodList.length === 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -84,7 +86,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
               image={viewedUser?.avatar || imgUrl.defaultAvatar}
             />
             <View style={styles.myInfo3}>
-              <InfoItem number={userFoodList?.length ?? 0} label={t('profile_posts')} />
+              <InfoItem number={viewedUserFoodList?.length ?? 0} label={t('profile_posts')} />
               <InfoItem number="0" label={t('profile_followers')} />
               <InfoItem number="0" label={t('profile_following')} />
             </View>
@@ -109,7 +111,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
         />
       ) : (
         <ScrollView contentContainerStyle={styles.ListFoodContainer}>
-          {userFoodList?.map(item => (
+          {viewedUserFoodList?.map(item => (
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('RecipeDetailPage', {

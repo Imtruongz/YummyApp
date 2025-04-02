@@ -12,6 +12,7 @@ import {foodState} from './types';
 const initialState: foodState = {
   foodList: [],
   userFoodList: [],
+  viewedUserFoodList: [],
   categoryFoodList: [],
   selectedFood: null,
   isLoadingFood: false,
@@ -21,7 +22,11 @@ const initialState: foodState = {
 const foodSlice = createSlice({
   name: 'food',
   initialState,
-  reducers: {},
+  reducers: {
+    resetViewedUserFoodList: (state) => {
+      state.viewedUserFoodList = [];
+    },
+  },
   extraReducers(builder) {
     // Get all food
     builder.addCase(getAllFoodAPI.pending, state => {
@@ -43,7 +48,11 @@ const foodSlice = createSlice({
       state.isErrorFood = false;
     });
     builder.addCase(getFoodByIdAPI.fulfilled, (state, action) => {
-      state.userFoodList = action.payload;
+      if (action.payload.isViewMode) {
+        state.viewedUserFoodList = action.payload.data || [];
+      } else {
+        state.userFoodList = action.payload.data || [];
+      }
       state.isLoadingFood = false;
       state.isErrorFood = false;
     });
@@ -131,5 +140,7 @@ const foodSlice = createSlice({
     });
   },
 });
+
+export const { resetViewedUserFoodList } = foodSlice.actions;
 
 export default foodSlice.reducer;

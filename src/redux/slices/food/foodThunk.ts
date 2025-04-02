@@ -30,12 +30,15 @@ export const getAllFoodAPI = createAsyncThunk(
 
 export const getFoodByIdAPI = createAsyncThunk(
   'food/getFoodByIdAPI',
-  async (userId: string, {rejectWithValue}) => {
+  async ({userId, isViewMode = false}: {userId: string, isViewMode?: boolean}, {rejectWithValue}) => {
     try {
-      const response = await api.get<food>(
+      const response = await api.get<food[]>(
         `/foods/getFoodByUserId/${userId}`,
       );
-      return response.data;
+      return {
+        data: response.data,
+        isViewMode
+      };
     } catch (error: any) {
       console.log(
         'Errorrrr fooood:',

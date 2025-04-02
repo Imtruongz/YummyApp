@@ -183,7 +183,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     dispatch(getDetailFoodAPI(foodId));
     dispatch(getAllCommentFromFoodIdAPI(foodId));
     dispatch(getUserByIdAPI({userId: myUserId}));
-    dispatch(getFoodByIdAPI(userId));
+    dispatch(getFoodByIdAPI({userId, isViewMode: true}));
   }, [dispatch, foodId, myUserId, userId]);
 
   if (isLoadingFood || isLoadingReview || isLoadingUser) {

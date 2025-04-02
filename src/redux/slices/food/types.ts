@@ -34,6 +34,7 @@ export interface foodPayload {
 export interface foodState {
   foodList: food[];
   userFoodList: food[];
+  viewedUserFoodList: food[];
   categoryFoodList: food[];
   selectedFood: food | null
   isLoadingFood: boolean;

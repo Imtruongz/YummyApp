@@ -55,7 +55,7 @@ const FirstRoute = () => {
         });
       } finally {
         if (userId) {
-          dispatch(getFoodByIdAPI(userId));
+          dispatch(getFoodByIdAPI({userId}));
         }
         setVisible(false);
         setCurrentItem(null);
@@ -65,7 +65,7 @@ const FirstRoute = () => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(getFoodByIdAPI(userId));
+      dispatch(getFoodByIdAPI({userId}));
       console.log('getFoodByIdAPI rendered successfully with userId:', userId);
     } else {
       console.log('userId is empty, skipping getFoodByIdAPI call');
