@@ -21,11 +21,10 @@ import Toast from 'react-native-toast-message';
 import Typography from './customize/Typography';
 const storage = new MMKV();
 
-const userId = storage.getString('userId') || '';
-
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
+  const [userId, setUserId] = useState(storage.getString('userId') || '');
 
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -55,7 +54,9 @@ const FirstRoute = () => {
           visibilityTime: 2000,
         });
       } finally {
-        dispatch(getFoodByIdAPI(userId));
+        if (userId) {
+          dispatch(getFoodByIdAPI(userId));
+        }
         setVisible(false);
         setCurrentItem(null);
       }
@@ -63,9 +64,13 @@ const FirstRoute = () => {
   };
 
   useEffect(() => {
-    dispatch(getFoodByIdAPI(userId));
-    console.log('getFoodByIdAPI rendered successfully');
-  }, [dispatch]);
+    if (userId) {
+      dispatch(getFoodByIdAPI(userId));
+      console.log('getFoodByIdAPI rendered successfully with userId:', userId);
+    } else {
+      console.log('userId is empty, skipping getFoodByIdAPI call');
+    }
+  }, [dispatch, userId]);
 
   return (
     <>

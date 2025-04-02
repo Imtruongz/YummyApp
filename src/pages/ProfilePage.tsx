@@ -38,7 +38,6 @@ import Typography from '../components/customize/Typography';
 import {useTranslation} from 'react-i18next';
 
 const storage = new MMKV();
-const userId = storage.getString('userId') || '';
 
 const initialLayout = {width: Dimensions.get('window').width};
 
@@ -60,6 +59,7 @@ interface ProfilePageProps
 const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
+  const [userId, setUserId] = useState(storage.getString('userId') || '');
 
   const [index, setIndex] = useState(0);
   // Dùng t() để lấy title tab theo file JSON
@@ -92,9 +92,13 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   );
 
   useEffect(() => {
-    dispatch(getUserByIdAPI(userId));
-    console.log('getUserByIdAPI rendered successfully');
-  }, [dispatch]);
+    if (userId) {
+      dispatch(getUserByIdAPI(userId));
+      console.log('getUserByIdAPI rendered successfully with userId:', userId);
+    } else {
+      console.log('userId is empty, skipping API call');
+    }
+  }, [dispatch, userId]);
 
   if (isLoadingUser) {
     return <ProfileSkeleton />;

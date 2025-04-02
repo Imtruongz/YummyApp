@@ -42,6 +42,8 @@ import Loading from '../components/skeleton/Loading';
 import {review} from '../redux/slices/review/types';
 import {MMKV} from 'react-native-mmkv';
 import Typography from '../components/customize/Typography';
+import Toast from 'react-native-toast-message';
+import {addFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
@@ -95,8 +97,39 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     }
   };
 
-  const handleAddFavoriteFood = () => {
-    console.log('Add favorite food');
+  const handleAddFavoriteFood = async () => {
+    if (!myUserId || !foodId) {
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể thêm vào yêu thích, vui lòng thử lại sau',
+        visibilityTime: 2000,
+      });
+      return;
+    }
+
+    try {
+      await dispatch(
+        addFavoriteFoodAPI({
+          userId: myUserId,
+          foodId: foodId,
+        }),
+      ).unwrap();
+      Toast.show({
+        type: 'success',
+        text1: 'Thành công',
+        text2: 'Đã thêm vào danh sách yêu thích',
+        visibilityTime: 2000,
+      });
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Không thể thêm vào yêu thích';
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: errorMessage,
+        visibilityTime: 2000,
+      });
+    }
   };
 
   const dispatch = useAppDispatch();

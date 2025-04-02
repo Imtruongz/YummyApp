@@ -6,7 +6,7 @@ const storage = new MMKV();
 const API_EVOTEK = process.env.EVOTEK
 const API_HOME = process.env.HOME
 
-const Yummy_API = `http://${API_EVOTEK}:4040/api`;
+const Yummy_API = `http://${API_HOME}:4040/api`;
 
 // const api = axios.create({
 //   baseURL: Yummy_API,

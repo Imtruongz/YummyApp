@@ -32,10 +32,13 @@ import {RootState} from '../redux/store';
 //asyncThunk
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import {getUserByIdAPI, getAllUsers} from '../redux/slices/auth/authThunk';
+import {getAllUsers} from '../redux/slices/auth/authThunk';
+import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import {addFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
 
 import {MMKV} from 'react-native-mmkv';
 import img from '../utils/urlImg';
+import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
 interface HomePageProps
@@ -186,6 +189,27 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 size={24}
                 color={color.dark}
                 style={styles.favoriteIcon}
+                onPress={() => {
+                  if (userId) {
+                    dispatch(addFavoriteFoodAPI({
+                      userId: userId,
+                      foodId: item.foodId,
+                    }));
+                    Toast.show({
+                      type: 'success',
+                      text1: 'Thành công',
+                      text2: 'Đã thêm vào danh sách yêu thích',
+                      visibilityTime: 2000,
+                    });
+                  } else {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'Lỗi',
+                      text2: 'Vui lòng đăng nhập để thêm vào yêu thích',
+                      visibilityTime: 2000,
+                    });
+                  }
+                }}
               />
             </Pressable>
           )}
