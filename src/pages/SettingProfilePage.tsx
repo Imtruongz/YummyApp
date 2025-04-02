@@ -95,7 +95,7 @@ const SettingProfilePage = () => {
   };
 
   useEffect(() => {
-    dispatch(getUserByIdAPI(userId));
+    dispatch(getUserByIdAPI({userId}));
     setusername(user?.username || '');
     setdescription(user?.description || '');
     setavatar(user?.avatar || '');

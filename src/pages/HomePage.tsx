@@ -62,7 +62,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           dispatch(getAllCategoriesAPI()),
           dispatch(getAllFoodAPI()),
           dispatch(getAllUsers()),
-          dispatch(getUserByIdAPI(userId)),
+          dispatch(getUserByIdAPI({userId})),
         ]);
       } catch (error) {
         console.error('Error loading data:', error);

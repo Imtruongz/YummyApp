@@ -14,12 +14,20 @@ const initialState: AuthState = {
   user: null,
   isLoadingUser: false,
   isErrorUser: false,
+  viewedUser: null
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    resetViewedUser: (state) => {
+      state.viewedUser = null;
+    },
+    setViewedUser: (state, action: PayloadAction<User>) => {
+      state.viewedUser = action.payload;
+    }
+  },
   extraReducers: builder => {
     //Login
     builder.addCase(userLoginAPI.pending, state => {
@@ -62,8 +70,12 @@ const authSlice = createSlice({
     });
     builder.addCase(
       getUserByIdAPI.fulfilled,
-      (state, action: PayloadAction<User>) => {
-        state.user = action.payload;
+      (state, action: PayloadAction<{ data: User, isViewMode?: boolean }>) => {
+        if (action.payload.isViewMode) {
+          state.viewedUser = action.payload.data;
+        } else {
+          state.user = action.payload.data;
+        }
         state.isLoadingUser = false;
         state.isErrorUser = false;
       },
@@ -136,6 +148,6 @@ const authSlice = createSlice({
   },
 });
 
-export const {} = authSlice.actions;
+export const { resetViewedUser, setViewedUser } = authSlice.actions;
 
 export default authSlice.reducer;

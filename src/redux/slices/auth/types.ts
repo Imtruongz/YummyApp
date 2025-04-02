@@ -41,6 +41,7 @@ export interface UserState {
 }
 export interface AuthState {
   user: User | null;
+  viewedUser: User | null;
   isLoadingUser: boolean;
   isErrorUser: boolean;
 }

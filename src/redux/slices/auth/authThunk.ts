@@ -73,10 +73,13 @@ export const userDeleteAPI = createAsyncThunk(
 
 export const getUserByIdAPI = createAsyncThunk(
   'auth/getUserByIdAPI',
-  async (userId: string, {rejectWithValue}) => {
+  async ({userId, isViewMode = false}: {userId: string, isViewMode?: boolean}, {rejectWithValue}) => {
     try {
       const response = await api.get(`/users/getUserById/${userId}`);
-      return response.data;
+      return {
+        data: response.data,
+        isViewMode
+      };
     } catch (error: any) {
       console.log(
         'Error in getUserByIdAPI:',

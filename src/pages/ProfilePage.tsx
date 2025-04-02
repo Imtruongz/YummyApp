@@ -93,7 +93,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(getUserByIdAPI(userId));
+      dispatch(getUserByIdAPI({userId}));
       console.log('getUserByIdAPI rendered successfully with userId:', userId);
     } else {
       console.log('userId is empty, skipping API call');

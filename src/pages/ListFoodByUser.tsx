@@ -26,6 +26,7 @@ import Typography from '../components/customize/Typography.tsx';
 import Loading from '../components/skeleton/Loading.tsx';
 import NoData from '../components/NoData';
 import { useTranslation } from 'react-i18next';
+import { resetViewedUser } from '../redux/slices/auth/authSlice';
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
@@ -51,11 +52,16 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const dispatch = useAppDispatch();
 
   const { userFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
-  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
+  const { viewedUser, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(getFoodByIdAPI(userId));
-    dispatch(getUserByIdAPI(userId));
+    dispatch(getUserByIdAPI({userId, isViewMode: true}));
+    
+    // Cleanup khi rời khỏi màn hình - reset viewedUser
+    return () => {
+      dispatch(resetViewedUser());
+    };
   }, [dispatch, userId]);
 
   if (isLoadingFood || isLoadingUser) {
@@ -67,7 +73,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={user?.username} iconName="left" />
+      <Header title={viewedUser?.username} iconName="left" />
       <View style={styles.infoContainer}>
         <View style={styles.myInfoContainer}>
           <View style={styles.myInfo2}>
@@ -75,7 +81,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
               width={70}
               height={70}
               borderRadius={35}
-              image={user?.avatar || imgUrl.defaultAvatar}
+              image={viewedUser?.avatar || imgUrl.defaultAvatar}
             />
             <View style={styles.myInfo3}>
               <InfoItem number={userFoodList?.length ?? 0} label={t('profile_posts')} />
@@ -86,8 +92,8 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
           </View>
           {/* Right */}
           <View style={styles.infoBlock3}>
-            <CustomTitle title={user?.username} />
-            <Text>{user?.description}</Text>
+            <CustomTitle title={viewedUser?.username} />
+            <Text>{viewedUser?.description}</Text>
           </View>
         </View>
 

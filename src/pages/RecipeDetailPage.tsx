@@ -182,7 +182,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   useEffect(() => {
     dispatch(getDetailFoodAPI(foodId));
     dispatch(getAllCommentFromFoodIdAPI(foodId));
-    dispatch(getUserByIdAPI(myUserId));
+    dispatch(getUserByIdAPI({userId: myUserId}));
     dispatch(getFoodByIdAPI(userId));
   }, [dispatch, foodId, myUserId, userId]);
 
