@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {category} from './types';
-import api from '../../../api/api';
+import api from '../../../api/config';
 
 export const getAllCategoriesAPI = createAsyncThunk(
   'categories/getAllCategoriesAPI',

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../api/api';
+import api from '../../../api/config';
 import { FavoriteFood, FavoriteFoodPayload, DeleteFavoriteFoodPayload } from './types';
 
 export const getAllFavoriteFoodsAPI = createAsyncThunk(

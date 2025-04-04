@@ -1,5 +1,5 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import api from '../../../api/api';
+import api from '../../../api/config';
 import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User, FacebookLoginPayload} from './types';
 
 export const userLoginAPI = createAsyncThunk(

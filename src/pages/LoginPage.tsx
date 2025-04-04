@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   Image,
+  Button,
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 
@@ -26,6 +27,8 @@ import { useAppDispatch } from '../redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '../redux/slices/auth/authThunk';
 
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
+import crashlytics from '@react-native-firebase/crashlytics';
+import { logError, setCrashlyticsEnabled, logUserAction } from '../utils/crashlytics';
 
 const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
@@ -66,6 +69,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
       return;
     }
     try {
+      // Ghi log hành động người dùng
+      await logUserAction('login_attempt', `email: ${email.substring(0, 2)}***`);
+      
       const resultAction = await dispatch(userLoginAPI({ email, password }));
       if (userLoginAPI.fulfilled.match(resultAction)) {
         const user = resultAction.payload;
@@ -74,20 +80,41 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           storage.set('accessToken', user.accessToken);
           storage.set('refreshToken', user.refreshToken);
           signIn();
+          
+          // Ghi lại hành động đăng nhập thành công
+          await logUserAction('login_success');
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');
           console.log('Email not verified', user);
+          
+          // Ghi lại lỗi
+          await logError('Email not verified', { 
+            error_type: 'email_verification',
+            action: 'login'
+          });
         }
       } else {
         setIsErrorMessage(true);
         setErrorMessage('Login failed, please try again');
         console.log('Login failed');
+        
+        // Ghi lại lỗi
+        await logError('Login failed', { 
+          error_type: 'auth_failure',
+          action: 'login'
+        });
       }
     } catch (error) {
       setIsErrorMessage(true);
       setErrorMessage('An error occurred, please try again');
       console.log('An error occurred', error);
+      
+      // Ghi lại lỗi
+      await logError(error, {
+        action: 'login',
+        error_type: 'exception'
+      });
     }
   };
 
@@ -128,6 +155,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
       console.log('Login with Facebook error', error);
     }
   };
+
+  const [enabled, setEnabled] = useState(crashlytics().isCrashlyticsCollectionEnabled);
+
+  async function toggleCrashlytics() {
+    // Sử dụng utility function mới
+    const isEnabled = await setCrashlyticsEnabled(!enabled);
+    setEnabled(isEnabled);
+  }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -203,6 +238,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             navigation={navigation}
             targetScreen="ForgotPasswordPage"
           />
+        </View>
+        <View>
+          <Button title="Toggle Crashlytics" onPress={toggleCrashlytics} />
+          <Button title="Crash" onPress={() => crashlytics().crash()} />
+          <Text>Crashlytics is currently {enabled ? 'enabled' : 'disabled'}</Text>
         </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

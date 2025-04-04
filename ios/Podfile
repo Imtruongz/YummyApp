@@ -16,6 +16,10 @@ end
 
 target 'YummyApp' do
   config = use_native_modules!
+  # Firebase pods
+  pod 'Firebase/Core'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
 
   use_react_native!(
     :path => config[:reactNativePath],

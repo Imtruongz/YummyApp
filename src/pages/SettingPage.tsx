@@ -23,6 +23,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import '../languages/i18n'; // đảm bảo file i18n.ts được import đến
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
+import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
 
 const storage = new MMKV();
 
@@ -147,7 +148,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   );
 };
 
-export default SettingPage;
+export default withCrashlyticsMonitoring(SettingPage, 'ProfileScreen');;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {food, foodPayload} from './types';
-import api from '../../../api/api';
+import api from '../../../api/config';
 
 export const getAllFoodAPI = createAsyncThunk(
   'food/getAllFoodAPI',

@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {review, reviewPayload} from './types';
-import api from '../../../api/api';
+import api from '../../../api/config';
 
 export const addCommentToFoodAPI = createAsyncThunk(
   'review/addCommentToFoodAPI',
