@@ -21,7 +21,7 @@ import {RootStackParamList} from '../../android/types/StackNavType.ts';
 
 import Header from '../components/customize/Header';
 import CustomTitle from '../components/customize/Title.tsx';
-import Loading from '../components/skeleton/Loading';
+import Loading from '../components/Loading.tsx';
 import NoData from '../components/NoData';
 import {useTranslation} from 'react-i18next';
 

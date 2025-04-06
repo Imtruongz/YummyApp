@@ -19,13 +19,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
-import CustomButton from '../components/customize/Button';
+import CustomButton from '../components/customize/CustomButton';
 import CustomTitle from '../components/customize/Title';
 import Typography from '../components/customize/Typography';
 import CustomFoodItem from '../components/customize/FoodItem';
 import CustomAvatar from '../components/customize/Avatar';
 import Greeting from '../components/customize/Greeting';
-import HomeSkeleton from '../components/HomeSkeleton';
+import HomeSkeleton from '../components/skeleton/HomeSkeleton';
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';

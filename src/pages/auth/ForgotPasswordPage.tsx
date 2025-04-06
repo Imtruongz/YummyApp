@@ -4,22 +4,20 @@ import {
   Text,
   TouchableWithoutFeedback,
   View,
+  SafeAreaView
 } from 'react-native';
 import React, {useState} from 'react';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-
-import {SafeAreaView} from 'react-native-safe-area-context';
-
-import CustomInput from '../components/customize/Input';
-import CustomButton from '../components/customize/Button';
-import CustomTextFooter from '../components/customize/TextFooter';
-import CustomAuthHeader from '../components/customize/authHeader';
-
-import color from '../utils/color';
-import img from '../utils/urlImg.ts';
+import {RootStackParamList} from '../../../android/types/StackNavType.ts';
+import color from '../../utils/color.ts';
+import img from '../../utils/urlImg.ts';
 import { useTranslation } from 'react-i18next';
+
+import CustomInput from '../../components/customize/CustomInput.tsx';
+import CustomButton from '../../components/customize/CustomButton.tsx';
+import CustomTextFooter from '../../components/customize/CustomTextFooter.tsx';
+import CustomAuthHeader from '../../components/customize/CustomAuthHeader.tsx';
 
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}

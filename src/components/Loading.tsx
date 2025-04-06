@@ -1,16 +1,18 @@
 import {StyleSheet, View, ActivityIndicator, Image} from 'react-native';
 import React from 'react';
-import colors from '../../utils/color';
-import CustomTitle from '../customize/Title';
+import colors from '../utils/color';
+import CustomTitle from './customize/Title';
+import { useTranslation } from 'react-i18next';
 
 const Loading = () => {
+  const { t, i18n } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.body}>
-        <Image source={require('../../assets/loading.png')} />
+        <Image source={require('../assets/loading.png')} />
       </View>
       <View style={styles.body2}>
-        <CustomTitle style={styles.title} title="Loading..." />
+        <CustomTitle style={styles.title} title={t('loading')} />
         <ActivityIndicator size={52}  style={styles.loading} />
       </View>
     </View>

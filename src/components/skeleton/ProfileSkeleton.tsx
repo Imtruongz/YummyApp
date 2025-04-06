@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Animated, Dimensions } from 'react-native';
-import colors from '../utils/color';
+import colors from '../../utils/color';
 
 const initialLayout = {width: Dimensions.get('window').width};
 

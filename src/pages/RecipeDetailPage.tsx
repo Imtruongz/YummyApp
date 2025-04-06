@@ -38,7 +38,7 @@ import {
   deleteCommentAPI,
 } from '../redux/slices/review/reviewThunk';
 
-import Loading from '../components/skeleton/Loading';
+import Loading from '../components/Loading';
 import {review} from '../redux/slices/review/types';
 import {MMKV} from 'react-native-mmkv';
 import Typography from '../components/customize/Typography';

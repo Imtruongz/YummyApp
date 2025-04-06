@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
-import CustomButton from '../components/customize/Button';
+import CustomButton from '../components/customize/CustomButton';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import imgURL from '../utils/urlImg';

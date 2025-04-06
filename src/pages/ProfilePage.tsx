@@ -21,7 +21,7 @@ import {
 
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
-import ProfileSkeleton from '../components/ProfileSkeleton';
+import ProfileSkeleton from '../components/skeleton/ProfileSkeleton';
 
 import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';

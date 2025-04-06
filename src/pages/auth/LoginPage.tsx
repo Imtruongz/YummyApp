@@ -6,36 +6,30 @@ import {
   View,
   TouchableOpacity,
   Image,
-  Button,
   ScrollView,
 } from 'react-native';
-import React, { useState, useEffect, useContext } from 'react';
-
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useContext } from 'react';
 
 //Customm components
-import CustomButton from '../components/customize/Button';
-import CustomInput from '../components/customize/Input';
-import CustomTextFooter from '../components/customize/TextFooter';
-import CustomAuthHeader from '../components/customize/authHeader';
+import CustomButton from '../../components/customize/CustomButton';
+import CustomInput from '../../components/customize/CustomInput';
+import CustomTextFooter from '../../components/customize/CustomTextFooter';
+import CustomAuthHeader from '../../components/customize/CustomAuthHeader';
 
-import color from '../utils/color';
-import img from '../utils/urlImg';
-import { verifyEmail, verifyPassword } from '../utils/validate';
-import { useAppDispatch } from '../redux/hooks';
-import { userLoginAPI, facebookLoginAPI } from '../redux/slices/auth/authThunk';
-
+import color from '../../utils/color';
+import img from '../../utils/urlImg';
+import { verifyEmail, verifyPassword } from '../../utils/validate';
+import { useAppDispatch } from '../../redux/hooks';
+import { userLoginAPI, facebookLoginAPI } from '../../redux/slices/auth/authThunk';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
-import crashlytics from '@react-native-firebase/crashlytics';
-import { logError, setCrashlyticsEnabled, logUserAction, forceFlushReports } from '../utils/crashlytics';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../android/types/StackNavType';
 
 const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
 
 import { MMKV } from 'react-native-mmkv';
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const storage = new MMKV();
@@ -59,8 +53,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
     setShowPassword(!showPassword);
   };
 
-  console.log('render_login page')
-
   const handleLoginWithEmail = async () => {
     const isValidEmail = verifyEmail(email);
     const isValidPassword = verifyPassword(password);
@@ -72,9 +64,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
       return;
     }
     try {
-      // Ghi log hành động người dùng
-      await logUserAction('login_attempt', `email: ${email.substring(0, 2)}***`);
-      
       const resultAction = await dispatch(userLoginAPI({ email, password }));
       if (userLoginAPI.fulfilled.match(resultAction)) {
         const user = resultAction.payload;
@@ -84,40 +73,20 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           storage.set('refreshToken', user.refreshToken);
           signIn();
           
-          // Ghi lại hành động đăng nhập thành công
-          await logUserAction('login_success');
         } else {
           setIsErrorMessage(true);
           setErrorMessage('Email not verified, please check your email');
           console.log('Email not verified', user);
-          
-          // Ghi lại lỗi
-          await logError('Email not verified', { 
-            error_type: 'email_verification',
-            action: 'login'
-          });
         }
       } else {
         setIsErrorMessage(true);
         setErrorMessage('Login failed, please try again');
         console.log('Login failed');
-        
-        // Ghi lại lỗi
-        await logError('Login failed', { 
-          error_type: 'auth_failure',
-          action: 'login'
-        });
       }
     } catch (error) {
       setIsErrorMessage(true);
       setErrorMessage('An error occurred, please try again');
       console.log('An error occurred', error);
-      
-      // Ghi lại lỗi
-      await logError(error, {
-        action: 'login',
-        error_type: 'exception'
-      });
     }
   };
 
@@ -157,38 +126,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
       setErrorMessage('An error occurred, please try again');
       console.log('Login with Facebook error', error);
     }
-  };
-
-  const [enabled, setEnabled] = useState(crashlytics().isCrashlyticsCollectionEnabled);
-
-  async function toggleCrashlytics() {
-    // Sử dụng utility function mới
-    const isEnabled = await setCrashlyticsEnabled(!enabled);
-    setEnabled(isEnabled);
-  }
-
-  // Thêm hàm test API Error
-  const testApiError = async () => {
-    try {
-      // Tạo ra một lỗi API cố ý
-      throw new Error('API Error Test');
-    } catch (error) {
-      await logError(error, {
-        error_type: 'test_api_error',
-        action: 'test_button'
-      });
-      // Không cần gọi forceFlushReports vì logError đã tự động làm điều này
-    }
-  };
-
-  // Thêm hàm test Manual Flush
-  const testManualFlush = async () => {
-    // Ghi log vài thông tin
-    await crashlytics().log('Manual flush test log 1');
-    await crashlytics().log('Manual flush test log 2');
-    
-    // Force flush logs ngay lập tức
-    await forceFlushReports();
   };
 
   return (
@@ -265,13 +202,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             navigation={navigation}
             targetScreen="ForgotPasswordPage"
           />
-        </View>
-        <View>
-          <Button title="Toggle Crashlytics" onPress={toggleCrashlytics} />
-          <Button title="Crash" onPress={() => crashlytics().crash()} />
-          <Button title="Test API Error" onPress={testApiError} />
-          <Button title="Manual Flush Logs" onPress={testManualFlush} />
-          <Text>Crashlytics is currently {enabled ? 'enabled' : 'disabled'}</Text>
         </View>
       </ScrollView>
     </TouchableWithoutFeedback>

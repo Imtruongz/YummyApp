@@ -20,7 +20,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import Header from '../components/customize/Header';
 import NoData from '../components/NoData';
-import Loading from '../components/skeleton/Loading';
+import Loading from '../components/Loading';
 import {useTranslation} from 'react-i18next';
 
 interface ListFoodPageProps

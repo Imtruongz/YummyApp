@@ -8,6 +8,7 @@ import {
   Modal,
   FlatList,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -24,7 +25,8 @@ import '../languages/i18n'; // đảm bảo file i18n.ts được import đến
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
-
+import crashlytics from '@react-native-firebase/crashlytics';
+import { logError, setCrashlyticsEnabled, logUserAction, forceFlushReports } from '../utils/crashlytics';
 const storage = new MMKV();
 
 interface SettingPageProps
@@ -81,6 +83,30 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
     }
   };
 
+  // Thêm hàm test API Error
+  const testApiError = async () => {
+    try {
+      // Tạo ra một lỗi API cố ý
+      throw new Error('API Error Test');
+    } catch (error) {
+      await logError(error, {
+        error_type: 'test_api_error',
+        action: 'test_button'
+      });
+      // Không cần gọi forceFlushReports vì logError đã tự động làm điều này
+    }
+  };
+
+  // Thêm hàm test Manual Flush
+  const testManualFlush = async () => {
+    // Ghi log vài thông tin
+    await crashlytics().log('Manual flush test log 1');
+    await crashlytics().log('Manual flush test log 2');
+    
+    // Force flush logs ngay lập tức
+    await forceFlushReports();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title={t('setting_settings_header')} iconName="arrowleft" />
@@ -117,6 +143,11 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
           title={t('setting_logout')}
           onPress={handleLogout}
         />
+      </View>
+      <View>
+        <Button title="Crash" onPress={() => crashlytics().crash()} />
+        <Button title="Test API Error" onPress={testApiError} />
+        <Button title="Manual Flush Logs" onPress={testManualFlush} />
       </View>
 
       {/* Modal chọn ngôn ngữ */}

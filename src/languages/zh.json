@@ -1,6 +1,7 @@
 {
     "greeting": "你好",
     "welcome": "欢迎使用我们的应用程序",
+    "loading": "加载中...",
     
     "goodMorning": "早上好",
     "goodAfternoon": "下午好",

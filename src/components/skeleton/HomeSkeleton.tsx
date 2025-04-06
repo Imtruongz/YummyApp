@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Animated, ScrollView } from 'react-native';
-import colors from '../utils/color';
+import colors from '../../utils/color';
 
 const HomeSkeleton = () => {
   const animatedValue = new Animated.Value(0);

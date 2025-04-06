@@ -4,29 +4,27 @@ import {
   View,
   TouchableWithoutFeedback,
   Keyboard,
+  SafeAreaView
 } from 'react-native';
 import React, {useState} from 'react';
 
-import CustomButton from '../components/customize/Button';
-import CustomInput from '../components/customize/Input';
-import CustomTextFooter from '../components/customize/TextFooter';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import CustomButton from '../../components/customize/CustomButton.tsx';
+import CustomInput from '../../components/customize/CustomInput.tsx';
+import CustomTextFooter from '../../components/customize/CustomTextFooter.tsx';
+import CustomAuthHeader from '../../components/customize/CustomAuthHeader.tsx';
 
-import Toast from 'react-native-toast-message';
-import color from '../utils/color';
 import {
   verifyEmail,
   verifyPassword,
   verifyConfirmPassword,
-} from '../utils/validate';
+} from '../../utils/validate.ts';
+import Toast from 'react-native-toast-message';
+import color from '../../utils/color.ts';
+import img from '../../utils/urlImg.ts';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-
-import CustomAuthHeader from '../components/customize/authHeader';
-import img from '../utils/urlImg';
-
-import {useAppDispatch} from '../redux/hooks.ts';
-import {userRegisterAPI} from '../redux/slices/auth/authThunk';
+import {RootStackParamList} from '../../../android/types/StackNavType.ts';
+import {useAppDispatch} from '../../redux/hooks.ts';
+import {userRegisterAPI} from '../../redux/slices/auth/authThunk.ts';
 import { useTranslation } from 'react-i18next';
 
 interface SignUpPageProps
