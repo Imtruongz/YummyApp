@@ -6,7 +6,7 @@ import { MMKV } from 'react-native-mmkv';
 const API_EVOTEK = process.env.EVOTEK
 const API_HOME = process.env.HOME
 // Lấy API URL từ biến môi trường hoặc sử dụng giá trị mặc định
-const API_URL = `http://${API_EVOTEK}:4040/api`;
+const API_URL = `http://192.168.1.9:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
