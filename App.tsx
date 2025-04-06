@@ -11,6 +11,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { setUserIdentifier, setupGlobalErrorHandler } from './src/utils/crashlytics';
 import { View, Text } from 'react-native';
 import ErrorBoundary from './src/utils/errorBoundary';
+import { PaperProvider } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 // Bật thu thập dữ liệu Crashlytics
 crashlytics().setCrashlyticsCollectionEnabled(true);
@@ -42,20 +44,24 @@ export default function App() {
   }, [isSignedIn]);
   
   return (
-    <ErrorBoundary>
-      <AuthContext.Provider value={{
-        isSignedIn,
-        signIn: () => setIsSignedIn(true),
-        signOut: () => {
-          storage.delete('accessToken');
-          setIsSignedIn(false);
-        }
-      }}>
-        <Provider store={store}>
-          <NavigationRoot />
-          <Toast />
-        </Provider>
-      </AuthContext.Provider>
-    </ErrorBoundary>
+    <SafeAreaProvider>
+      <PaperProvider>
+        <ErrorBoundary>
+          <AuthContext.Provider value={{
+            isSignedIn,
+            signIn: () => setIsSignedIn(true),
+            signOut: () => {
+              storage.delete('accessToken');
+              setIsSignedIn(false);
+            }
+          }}>
+            <Provider store={store}>
+              <NavigationRoot />
+              <Toast />
+            </Provider>
+          </AuthContext.Provider>
+        </ErrorBoundary>
+      </PaperProvider>
+    </SafeAreaProvider>
   );
 }

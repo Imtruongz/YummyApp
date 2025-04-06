@@ -95,7 +95,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
           {/* Right */}
           <View style={styles.infoBlock3}>
             <CustomTitle title={viewedUser?.username} />
-            <Text>{viewedUser?.description}</Text>
+            <Typography title={viewedUser?.description || ''} />
           </View>
         </View>
 

@@ -117,16 +117,25 @@ export const logUserAction = async (action: string, details?: string) => {
 export const setupGlobalErrorHandler = () => {
   // Xử lý lỗi không bắt được trong JS
   const errorHandler = (error: Error, isFatal?: boolean) => {
-    crashlytics().recordError(error);
-    crashlytics().setAttributes({
-      isFatal: String(isFatal || false),
-      timestamp: new Date().toISOString(),
-      error_source: 'global_error_handler'
-    });
-    
-    // Force flush logs cho các lỗi nghiêm trọng
-    if (isFatal) {
-      forceFlushReports();
+    try {
+      // Ghi lại lỗi nhưng không hiển thị trực tiếp
+      crashlytics().recordError(error);
+      crashlytics().setAttributes({
+        isFatal: String(isFatal || false),
+        timestamp: new Date().toISOString(),
+        error_source: 'global_error_handler'
+      });
+      
+      // Force flush logs cho các lỗi nghiêm trọng
+      if (isFatal) {
+        forceFlushReports();
+      }
+
+      // Log lỗi vào console thay vì hiển thị trực tiếp
+      console.log('Global error caught:', error.message);
+    } catch (handlerError) {
+      // Tránh vòng lặp vô hạn nếu có lỗi trong error handler
+      console.error('Error in error handler:', handlerError);
     }
   };
 
