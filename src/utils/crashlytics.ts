@@ -10,11 +10,33 @@ declare global {
 }
 
 /**
+ * Buộc gửi tất cả các logs và errors hiện có lên Firebase
+ * Hữu ích khi cần đảm bảo logs được gửi đi ngay lập tức mà không cần đợi sự kiện crash
+ */
+export const forceFlushReports = async (): Promise<void> => {
+  try {
+    // Ghi một log để đánh dấu khi nào việc flush được thực hiện
+    await crashlytics().log('Manually flushing reports to Firebase');
+    
+    // Một số thiết bị cần một Non-Fatal error để trigger việc gửi logs
+    const tempError = new Error('Force flush logs trigger');
+    await crashlytics().recordError(tempError);
+    
+    // Hiện tại không có API trực tiếp để flush reports trong React Native Firebase
+    // Nhưng việc ghi log + recordError thường sẽ kích hoạt việc gửi logs
+    console.log('Reports flushed to Firebase');
+  } catch (error) {
+    console.error('Failed to flush reports:', error);
+  }
+};
+
+/**
  * Ghi lại lỗi trong Crashlytics và thêm thuộc tính tùy chỉnh
  * @param error - Đối tượng lỗi cần ghi lại
  * @param attributes - Đối tượng chứa các thuộc tính tùy chỉnh
+ * @param shouldFlush - Có nên force flush report ngay lập tức không (mặc định: true)
  */
-export const logError = async (error: any, attributes?: Record<string, string>) => {
+export const logError = async (error: any, attributes?: Record<string, string>, shouldFlush: boolean = true) => {
   if (attributes) {
     await crashlytics().setAttributes(attributes);
   }
@@ -23,6 +45,11 @@ export const logError = async (error: any, attributes?: Record<string, string>) 
     await crashlytics().recordError(error);
   } else {
     await crashlytics().recordError(new Error(String(error)));
+  }
+  
+  // Buộc gửi logs ngay lập tức nếu được yêu cầu
+  if (shouldFlush) {
+    await forceFlushReports();
   }
 };
 
@@ -57,12 +84,21 @@ export const setCrashlyticsEnabled = async (enabled: boolean): Promise<boolean> 
  * Ghi lại xử lý không thành công
  * @param name - Tên xử lý
  * @param reason - Lý do không thành công
+ * @param shouldFlush - Có nên force flush report ngay lập tức không (mặc định: true)
  */
-export const logFailure = async (name: string, reason: string) => {
+export const logFailure = async (name: string, reason: string, shouldFlush: boolean = true) => {
   await crashlytics().setAttributes({
     [`failure_${name}`]: reason,
     timestamp: new Date().toISOString()
   });
+
+  // Ghi thêm một non-fatal error để đảm bảo logs được gửi đi
+  await crashlytics().recordError(new Error(`Failure: ${name} - ${reason}`));
+  
+  // Buộc gửi logs ngay lập tức nếu được yêu cầu
+  if (shouldFlush) {
+    await forceFlushReports();
+  }
 };
 
 /**
@@ -87,6 +123,11 @@ export const setupGlobalErrorHandler = () => {
       timestamp: new Date().toISOString(),
       error_source: 'global_error_handler'
     });
+    
+    // Force flush logs cho các lỗi nghiêm trọng
+    if (isFatal) {
+      forceFlushReports();
+    }
   };
 
   // Override hàm console.error để log các lỗi
@@ -123,6 +164,9 @@ export const setupGlobalErrorHandler = () => {
         error_source: 'unhandled_promise_rejection',
         timestamp: new Date().toISOString()
       });
+      
+      // Force flush logs ngay lập tức cho promise rejections
+      forceFlushReports();
     });
   }
 
@@ -134,6 +178,9 @@ export const setupGlobalErrorHandler = () => {
         error_source: 'uncaught_exception',
         timestamp: new Date().toISOString()
       });
+      
+      // Force flush logs ngay lập tức cho uncaught exceptions
+      forceFlushReports();
     });
   }
 };

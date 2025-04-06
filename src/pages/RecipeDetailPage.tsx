@@ -199,7 +199,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           style={[styles.arrowLeftIcon, {backgroundColor: iconColor}]}
           color={colors.dark}
           onPress={() => {
-            navigation.navigate('HomePage');
+            navigation.goBack();
           }}
         />
         <MaterialIcons

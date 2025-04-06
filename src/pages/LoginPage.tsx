@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Button,
+  ScrollView,
 } from 'react-native';
 import React, { useState, useEffect, useContext } from 'react';
 
@@ -28,7 +29,7 @@ import { userLoginAPI, facebookLoginAPI } from '../redux/slices/auth/authThunk';
 
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import crashlytics from '@react-native-firebase/crashlytics';
-import { logError, setCrashlyticsEnabled, logUserAction } from '../utils/crashlytics';
+import { logError, setCrashlyticsEnabled, logUserAction, forceFlushReports } from '../utils/crashlytics';
 
 const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
@@ -57,6 +58,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  console.log('render_login page')
 
   const handleLoginWithEmail = async () => {
     const isValidEmail = verifyEmail(email);
@@ -164,9 +167,33 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
     setEnabled(isEnabled);
   }
 
+  // Thêm hàm test API Error
+  const testApiError = async () => {
+    try {
+      // Tạo ra một lỗi API cố ý
+      throw new Error('API Error Test');
+    } catch (error) {
+      await logError(error, {
+        error_type: 'test_api_error',
+        action: 'test_button'
+      });
+      // Không cần gọi forceFlushReports vì logError đã tự động làm điều này
+    }
+  };
+
+  // Thêm hàm test Manual Flush
+  const testManualFlush = async () => {
+    // Ghi log vài thông tin
+    await crashlytics().log('Manual flush test log 1');
+    await crashlytics().log('Manual flush test log 2');
+    
+    // Force flush logs ngay lập tức
+    await forceFlushReports();
+  };
+
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
+      <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
         {/* Title */}
         <CustomAuthHeader img={img.Yummy} />
         {/* Content */}
@@ -242,9 +269,11 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
         <View>
           <Button title="Toggle Crashlytics" onPress={toggleCrashlytics} />
           <Button title="Crash" onPress={() => crashlytics().crash()} />
+          <Button title="Test API Error" onPress={testApiError} />
+          <Button title="Manual Flush Logs" onPress={testManualFlush} />
           <Text>Crashlytics is currently {enabled ? 'enabled' : 'disabled'}</Text>
         </View>
-      </SafeAreaView>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
@@ -259,6 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     gap: 14,
+    
   },
   footer: {
     flex: 2,
