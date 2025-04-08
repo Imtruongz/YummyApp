@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './src/languages/i18n'; // Import i18n trước
 import { AuthContext } from './src/contexts/AuthContext';
 import NavigationRoot from './src/navigation/NavigationContainer';
@@ -6,10 +6,8 @@ import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 import Toast from 'react-native-toast-message';
 import { MMKV } from 'react-native-mmkv';
-import firebase from '@react-native-firebase/app';
 import crashlytics from '@react-native-firebase/crashlytics';
-import { setUserIdentifier, setupGlobalErrorHandler } from './src/utils/crashlytics';
-import { View, Text } from 'react-native';
+import { setupGlobalErrorHandler } from './src/utils/crashlytics';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -24,24 +22,6 @@ const storage = new MMKV();
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(!!storage.getString('accessToken'));
-  
-  useEffect(() => {
-    // Cập nhật thông tin người dùng cho Crashlytics khi đăng nhập
-    const setUserForCrashlytics = async () => {
-      try {
-        const userId = storage.getString('userId');
-        if (isSignedIn && userId) {
-          await setUserIdentifier(userId);
-          // Ghi log hành động đăng nhập thành công
-          await crashlytics().log('User signed in successfully');
-        }
-      } catch (error) {
-        console.error('Failed to set user for crashlytics:', error);
-      }
-    };
-    
-    setUserForCrashlytics();
-  }, [isSignedIn]);
   
   return (
     <SafeAreaProvider>

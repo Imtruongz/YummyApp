@@ -4,7 +4,7 @@ import { MMKV } from 'react-native-mmkv';
 
 
 const API_HOME = process.env.HOME
-const API_URL = `http://192.168.1.9:4040/api`;
+const API_URL = `http://10.100.13.81:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({

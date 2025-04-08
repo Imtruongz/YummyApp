@@ -201,13 +201,22 @@ export const setupGlobalErrorHandler = () => {
 export const setupAxiosInterceptor = (axiosInstance: any) => {
   axiosInstance.interceptors.request.use(
     (config: any) => {
-      // Có thể thêm logic khác ở đây nếu cần
+      // Ghi log request params
+      crashlytics().log(`API_REQUEST: ${config.method.toUpperCase()} ${config.url}`);
+      if (config.params) {
+        crashlytics().log(`REQUEST_PARAMS: ${JSON.stringify(config.params)}`);
+      }
+      if (config.data) {
+        crashlytics().log(`REQUEST_BODY: ${JSON.stringify(config.data)}`);
+      }
       return config;
     },
     (error: any) => {
       logError(error, {
         error_type: 'axios_request',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        request_params: error.config?.params ? JSON.stringify(error.config.params) : 'none',
+        request_body: error.config?.data ? JSON.stringify(error.config.data) : 'none'
       });
       return Promise.reject(error);
     }
@@ -215,6 +224,11 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
 
   axiosInstance.interceptors.response.use(
     (response: any) => {
+      // Ghi log response data
+      crashlytics().log(`API_RESPONSE: ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status}`);
+      if (response.data) {
+        crashlytics().log(`RESPONSE_DATA: ${JSON.stringify(response.data)}`);
+      }
       return response;
     },
     (error: any) => {
@@ -225,7 +239,10 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
         url: config?.url || 'unknown',
         method: config?.method || 'unknown',
         status: response?.status ? String(response.status) : 'unknown',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        request_params: config?.params ? JSON.stringify(config.params) : 'none',
+        request_body: config?.data ? JSON.stringify(config.data) : 'none',
+        response_data: response?.data ? JSON.stringify(response.data) : 'none'
       });
       
       return Promise.reject(error);
