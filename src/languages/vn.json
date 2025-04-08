@@ -40,6 +40,7 @@
     "setting_system": "Hệ thống",
     "setting_logout": "Đăng xuất",
     "setting_language": "Ngôn ngữ",
+    "setting_logout_content": "Bạn có chắc chắn muốn đăng xuất không ?",
 
     "list_can_not_find": "Không tìm thấy món ăn phù hợp",
     "list_nodata": "Không có món ăn nào trong danh mục này",

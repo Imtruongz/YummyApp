@@ -38,5 +38,10 @@ export type ProfileStack = {
   ProfilePage: {
     email: string;
   };
-  ChangePasswordPage: undefined
+  ChangePasswordPage: undefined,
+  SettingProfilePage: undefined,
+  RecipeDetailPage: {
+    foodId: string;
+    userId: string;
+  };
 }

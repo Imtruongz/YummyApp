@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   View,
@@ -8,7 +7,7 @@ import {
   Modal,
   FlatList,
   TouchableOpacity,
-  Button,
+  Button as RNButton, // Để tránh trùng lặp với 'Button' của paper
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -21,12 +20,14 @@ import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../contexts/AuthContext';
 
-import '../languages/i18n'; // đảm bảo file i18n.ts được import đến
+import '../languages/i18n';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { logError, setCrashlyticsEnabled, logUserAction, forceFlushReports } from '../utils/crashlytics';
+import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
+
 const storage = new MMKV();
 
 interface SettingPageProps
@@ -36,7 +37,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   const { signOut } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
 
-  // Danh sách các ngôn ngữ khả dụng
   const languages = [
     { code: 'en', label: 'English' },
     { code: 'vn', label: 'Tiếng Việt' },
@@ -44,6 +44,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   ];
 
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
 
   const handleSelectLanguage = async (lang: string) => {
     setLanguageModalVisible(false);
@@ -52,134 +53,128 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      t('setting_logout'),
-      t('Are you sure you want to log out?'),
-      [
-        {
-          text: t('Cancel'),
-          style: 'cancel',
-        },
-        { text: t('OK'), onPress: logout },
-      ],
-      { cancelable: false },
-    );
+    setDialogVisible(true);
   };
+
+  const hideDialog = () => setDialogVisible(false);
 
   const logout = async () => {
     try {
-      // Đăng xuất Facebook
       LoginManager.logOut();
-
-      // Xóa token và thông tin người dùng
       storage.delete('accessToken');
       storage.delete('refreshToken');
       storage.delete('userId');
-
-      // Gọi signOut từ AuthContext để cập nhật trạng thái đăng nhập
       signOut();
     } catch (exception) {
       console.error('Error during logout:', exception);
     }
   };
 
-  // Thêm hàm test API Error
   const testApiError = async () => {
     try {
-      // Tạo ra một lỗi API cố ý
       throw new Error('API Error Test');
     } catch (error) {
       await logError(error, {
         error_type: 'test_api_error',
         action: 'test_button'
       });
-      // Không cần gọi forceFlushReports vì logError đã tự động làm điều này
     }
   };
 
-  // Thêm hàm test Manual Flush
   const testManualFlush = async () => {
-    // Ghi log vài thông tin
     await crashlytics().log('Manual flush test log 1');
     await crashlytics().log('Manual flush test log 2');
-    
-    // Force flush logs ngay lập tức
     await forceFlushReports();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header title={t('setting_settings_header')} iconName="arrowleft" />
-      <View style={styles.accountContainer}>
-        <CustomTitle style={styles.title} title={t('setting_account')} />
-        <SettingButton
-          title={t('setting_profile_setting')}
-          navigation={navigation}
-          targetScreen="SettingProfilePage"
-        />
-        <SettingButton
-          title={t('setting_Password')}
-          navigation={navigation}
-          targetScreen="ChangePasswordPage"
-        />
-
-        {/* Phần chọn ngôn ngữ */}
-        <View style={styles.languageContainer}>
-          <CustomTitle title={t('setting_language')} />
-          <Pressable
-            onPress={() => setLanguageModalVisible(true)}
-            style={styles.languageButton}>
-            <Text style={styles.languageText}>
-              {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
-            </Text>
-          </Pressable>
+    <PaperProvider>
+      <SafeAreaView style={styles.container}>
+        <Header title={t('setting_settings_header')} iconName="arrowleft" />
+        <View style={styles.accountContainer}>
+          <CustomTitle style={styles.title} title={t('setting_account')} />
+          <SettingButton
+            title={t('setting_profile_setting')}
+            navigation={navigation}
+            targetScreen="SettingProfilePage"
+          />
+          <SettingButton
+            title={t('setting_Password')}
+            navigation={navigation}
+            targetScreen="ChangePasswordPage"
+          />
+          <View style={styles.languageContainer}>
+            <CustomTitle title={t('setting_language')} />
+            <Pressable
+              onPress={() => setLanguageModalVisible(true)}
+              style={styles.languageButton}>
+              <Text style={styles.languageText}>
+                {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
+              </Text>
+            </Pressable>
+          </View>
         </View>
-      </View>
 
-      <View style={styles.accountContainer}>
-        <CustomTitle style={styles.title} title={t('setting_system')} />
-        <SettingButton
-          style={styles.button}
-          title={t('setting_logout')}
-          onPress={handleLogout}
-        />
-      </View>
-      <View>
-        <Button title="Crash" onPress={() => crashlytics().crash()} />
-        <Button title="Test API Error" onPress={testApiError} />
-        <Button title="Manual Flush Logs" onPress={testManualFlush} />
-      </View>
+        <View style={styles.accountContainer}>
+          <CustomTitle style={styles.title} title={t('setting_system')} />
+          <SettingButton
+            style={styles.button}
+            title={t('setting_logout')}
+            onPress={handleLogout}
+          />
+        </View>
+        <View>
+          <RNButton title="Crash" onPress={() => crashlytics().crash()} />
+          <RNButton title="Test API Error" onPress={testApiError} />
+          <RNButton title="Manual Flush Logs" onPress={testManualFlush} />
+        </View>
 
-      {/* Modal chọn ngôn ngữ */}
-      <Modal
-        visible={languageModalVisible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setLanguageModalVisible(false)}>
-        <Pressable
-          style={styles.modalContainer}
-          onPress={() => setLanguageModalVisible(false)}>
-          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-            <FlatList
-              data={languages}
-              keyExtractor={(item) => item.code}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.modalItem}
-                  onPress={() => handleSelectLanguage(item.code)}>
-                  <Text style={styles.modalItemText}>{item.label}</Text>
-                </TouchableOpacity>
-              )}
-            />
+        <Portal>
+          <Dialog visible={dialogVisible} onDismiss={hideDialog}>
+            <Dialog.Title>{t('setting_logout')}</Dialog.Title>
+            <Dialog.Content>
+              <Text>{t('setting_logout_content')}</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button textColor={colors.primary} onPress={hideDialog}>{t('Cancel')}</Button>
+              <Button textColor={colors.primary} onPress={() => {
+                hideDialog();
+                logout();
+              }}>{t('OK')}</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+
+        <Modal
+          visible={languageModalVisible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setLanguageModalVisible(false)}>
+          <Pressable
+            style={styles.modalContainer}
+            onPress={() => setLanguageModalVisible(false)}>
+            <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+              <FlatList
+                data={languages}
+                keyExtractor={(item) => item.code}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.modalItem}
+                    onPress={() => handleSelectLanguage(item.code)}>
+                    <Text style={styles.modalItemText}>{item.label}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            </Pressable>
           </Pressable>
-        </Pressable>
-      </Modal>
+        </Modal>
 
-    </SafeAreaView>
+      </SafeAreaView>
+    </PaperProvider>
   );
 };
 
-export default withCrashlyticsMonitoring(SettingPage, 'ProfileScreen');;
+export default withCrashlyticsMonitoring(SettingPage, 'ProfileScreen');
 
 const styles = StyleSheet.create({
   container: {

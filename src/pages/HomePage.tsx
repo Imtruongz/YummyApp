@@ -8,11 +8,11 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useTranslation} from 'react-i18next';
+import React, { useEffect, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -27,31 +27,37 @@ import CustomAvatar from '../components/customize/Avatar';
 import Greeting from '../components/customize/Greeting';
 import HomeSkeleton from '../components/skeleton/HomeSkeleton';
 
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { RootState } from '../redux/store';
 //asyncThunk
-import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
-import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import {getAllUsers} from '../redux/slices/auth/authThunk';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
-import {addFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
+import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
+import { getAllFoodAPI } from '../redux/slices/food/foodThunk';
+import { getAllUsers } from '../redux/slices/auth/authThunk';
+import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
+import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
 
-import {MMKV} from 'react-native-mmkv';
+import { MMKV } from 'react-native-mmkv';
 import img from '../utils/urlImg';
 import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
-interface HomePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'HomePage'> {}
 
-const HomePage: React.FC<HomePageProps> = ({navigation}) => {
-  const {t, i18n} = useTranslation();
+
+
+import { Avatar } from 'react-native-paper';
+import { IconButton, MD3Colors } from 'react-native-paper';
+
+interface HomePageProps
+  extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
+
+const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
-  const {foodList, isLoadingFood} = useAppSelector(state => state.food);
-  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
-  const {ListUser} = useAppSelector((state: RootState) => state.user);
-  const {categoryList, isLoadingCategory} = useAppSelector((state: RootState) => state.categories);
+  const { foodList, isLoadingFood } = useAppSelector(state => state.food);
+  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
+  const { ListUser } = useAppSelector((state: RootState) => state.user);
+  const { categoryList, isLoadingCategory } = useAppSelector((state: RootState) => state.categories);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -62,7 +68,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           dispatch(getAllCategoriesAPI()),
           dispatch(getAllFoodAPI()),
           dispatch(getAllUsers()),
-          dispatch(getUserByIdAPI({userId})),
+          dispatch(getUserByIdAPI({ userId })),
         ]);
       } catch (error) {
         console.error('Error loading data:', error);
@@ -97,11 +103,9 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
         {/* Header */}
         <View style={styles.headerContainer}>
           <View style={styles.header1}>
-            <CustomAvatar
-              width={50}
-              height={50}
-              borderRadius={25}
-              image={user?.avatar || imgURL.defaultAvatar}
+            <Avatar.Image
+              size={52}
+              source={{ uri: user?.avatar || imgURL.defaultAvatar }}
             />
             <View>
               {/* Hiển thị greeting theo thời gian */}
@@ -124,7 +128,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={true}
           keyExtractor={(item, index) => `${item.categoryId}_${index}`}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <Pressable
               onPress={() =>
                 navigation.navigate('ListFoodByCategoriesPage', {
@@ -154,7 +158,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           onEndReached={() => dispatch(getAllFoodAPI())}
           onEndReachedThreshold={0.5}
           keyExtractor={(item, index) => `${item.foodId}_${index}`}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <Pressable
               style={styles.itemContainer}
               onPress={() =>
@@ -163,24 +167,28 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                   userId: item.userId,
                 })
               }>
-              <Image source={{uri: item.foodThumbnail}} style={styles.img2} />
+              <Image source={{ uri: item.foodThumbnail }} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
                 <Typography
                   title={item.foodName}
                   fontSize={18}
                   fontWeight="700"
                   numberOfLines={2}
+                  ellipsizeMode="tail"
                 />
                 <View
-                  style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <CustomAvatar
                     width={30}
                     height={30}
                     borderRadius={15}
-                    image={item.userDetail?.avatar}
+                    image={item.userDetail?.avatar || imgURL.defaultAvatar}
                   />
                   <Typography
                     title={item.userDetail?.username}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    style={{ flex: 1 }}
                   />
                 </View>
               </View>
@@ -189,27 +197,6 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
                 size={24}
                 color={color.dark}
                 style={styles.favoriteIcon}
-                onPress={() => {
-                  if (userId) {
-                    dispatch(addFavoriteFoodAPI({
-                      userId: userId,
-                      foodId: item.foodId,
-                    }));
-                    Toast.show({
-                      type: 'success',
-                      text1: 'Thành công',
-                      text2: 'Đã thêm vào danh sách yêu thích',
-                      visibilityTime: 2000,
-                    });
-                  } else {
-                    Toast.show({
-                      type: 'error',
-                      text1: 'Lỗi',
-                      text2: 'Vui lòng đăng nhập để thêm vào yêu thích',
-                      visibilityTime: 2000,
-                    });
-                  }
-                }}
               />
             </Pressable>
           )}
@@ -224,7 +211,7 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           horizontal
           showsHorizontalScrollIndicator={true}
           keyExtractor={(item, index) => `${item.userId}_${index}`}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <Pressable
               onPress={() =>
                 navigation.navigate('ListFoodByUserPage', {
@@ -248,12 +235,10 @@ const HomePage: React.FC<HomePageProps> = ({navigation}) => {
           )}
         />
       </ScrollView>
-      {/* Button add new Food */}
-      <CustomButton
-        isText={false}
-        isIcon={true}
+      <IconButton
         icon="plus"
-        iconSize={24}
+        iconColor='white'
+        size={24}
         onPress={() => navigation.navigate('AddFoodPage')}
         style={styles.addFoodBtn}
       />
@@ -275,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: color.light,
     shadowColor: color.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
@@ -303,8 +288,9 @@ const styles = StyleSheet.create({
     padding: 14,
     justifyContent: 'flex-start',
     gap: 14,
-    width: '60%',
+    flex: 1,
     height: '100%',
+    overflow: 'hidden',
   },
   img2: {
     width: 140,
@@ -329,7 +315,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: color.light,
     shadowColor: color.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,

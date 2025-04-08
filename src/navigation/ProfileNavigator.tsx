@@ -5,6 +5,7 @@ import ProfilePage from '../pages/ProfilePage';
 import SettingPage from '../pages/SettingPage';
 import ChangePasswordPage from '../pages/ChangePasswordPage';
 import SettingProfilePage from '../pages/SettingProfilePage';
+import RecipeDetailPage from '../pages/RecipeDetailPage';
 
 const ProfileNavigator = () => {
   const Stack = createNativeStackNavigator<ProfileStack>();
@@ -17,6 +18,7 @@ const ProfileNavigator = () => {
       <Stack.Screen name="SettingPage" component={SettingPage} />
       <Stack.Screen name="ChangePasswordPage" component={ChangePasswordPage} />
       <Stack.Screen name="SettingProfilePage" component={SettingProfilePage} />
+      <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
 
     </Stack.Navigator>
   );

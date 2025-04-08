@@ -12,6 +12,8 @@ import React, {useEffect, useState} from 'react';
 
 import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
+import {RootStackParamList} from '../../android/types/StackNavType';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 import CustomTitle from './customize/Title';
 import colors from '../utils/color';
@@ -27,7 +29,7 @@ const storage = new MMKV();
 
 const SecondRoute = () => {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
   const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
     (state: RootState) => state.favorite,
@@ -111,10 +113,10 @@ const SecondRoute = () => {
               style={styles.item}
               onLongPress={() => showDialog(favorite.favoriteFoodId)}
               onPress={() => {
-                navigation.navigate('RecipeDetailPage' as never, {
+                navigation.navigate('RecipeDetailPage', {
                   foodId: favorite.foodId,
                   userId: favorite.userId,
-                } as never);
+                });
               }}>
               <Image
                 style={styles.img}
