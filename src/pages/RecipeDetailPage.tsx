@@ -44,6 +44,7 @@ import {MMKV} from 'react-native-mmkv';
 import Typography from '../components/customize/Typography';
 import Toast from 'react-native-toast-message';
 import {addFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
+import { useTranslation } from 'react-i18next';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
@@ -63,6 +64,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const [currentItem, setCurrentItem] = useState<review | null>(null);
 
   const [dialogTitle, setDialogTitle] = useState('');
+  const { t, i18n } = useTranslation();
 
   const showDialog = (item: review) => {
     setCurrentItem(item);
@@ -122,7 +124,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         visibilityTime: 2000,
       });
     } catch (error: any) {
-      const errorMessage = error?.message || 'Không thể thêm vào yêu thích';
+      const errorMessage = 'Món ăn đã có trong danh sách ưa thích';
       Toast.show({
         type: 'error',
         text1: 'Lỗi',
@@ -268,7 +270,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               </View>
             </View>
 
-            <CustomTitle title="Description" />
+            <CustomTitle title={t('recipe_detail_description')} />
             {selectedFood?.foodDescription &&
             selectedFood?.foodDescription.length > 150 ? (
               <>
@@ -290,20 +292,20 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               <Text>{selectedFood?.foodDescription}</Text>
             )}
 
-            <CustomTitle title="Ingredient" />
+            <CustomTitle title={t('recipe_detail_ingredient')} />
             {selectedFood?.foodIngredients.map((ingredient, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {ingredient}
               </Text>
             ))}
-            <CustomTitle title="Step" />
+            <CustomTitle title={t('recipe_detail_step')} />
             {selectedFood?.foodSteps.map((step, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {step}
               </Text>
             ))}
             <TouchableOpacity style={styles.titleContainer}>
-              <CustomTitle title="Comment" />
+              <CustomTitle title={t('recipe_detail_comment')} />
               <CustomTitle style={styles.seeAll} title="See all" />
             </TouchableOpacity>
             {foodReviewList.map(item => (
@@ -348,7 +350,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               />
               <TextInput
                 style={styles.foodNameStyle2}
-                placeholder="Write a comment..."
+                placeholder={t('recipe_detail_comment_placeholder')}
                 value={commentText}
                 onChangeText={setCommentText}
                 multiline={true}
@@ -362,7 +364,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 disabled={isAddingComment}
               />
             </View>
-            <CustomTitle title="More food" />
+            <CustomTitle title={t('recipe_detail_more_food')} />
             <FlatList
               data={userFoodList}
               horizontal

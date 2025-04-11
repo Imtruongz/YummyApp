@@ -10,31 +10,62 @@ declare global {
 }
 
 /**
- * Buộc gửi tất cả các logs và errors hiện có lên Firebase
- * Hữu ích khi cần đảm bảo logs được gửi đi ngay lập tức mà không cần đợi sự kiện crash
+ * Mask các thông tin nhạy cảm trong data
+ * @param data - Dữ liệu cần mask
+ * @returns Dữ liệu đã được mask
  */
-export const forceFlushReports = async (): Promise<void> => {
-  try {
-    // Ghi một log để đánh dấu khi nào việc flush được thực hiện
-    await crashlytics().log('Manually flushing reports to Firebase');
-    
-    // Một số thiết bị cần một Non-Fatal error để trigger việc gửi logs
-    const tempError = new Error('Force flush logs trigger');
-    await crashlytics().recordError(tempError);
-    
-    // Hiện tại không có API trực tiếp để flush reports trong React Native Firebase
-    // Nhưng việc ghi log + recordError thường sẽ kích hoạt việc gửi logs
-    console.log('Reports flushed to Firebase');
-  } catch (error) {
-    console.error('Failed to flush reports:', error);
+const maskSensitiveData = (data: any): any => {
+  if (!data) return data;
+  
+  // Danh sách các key chứa thông tin nhạy cảm
+  const sensitiveKeys = [
+    'password',
+    'token',
+    'access_token',
+    'refresh_token',
+    'authorization',
+    'api_key',
+    'secret',
+    'credit_card',
+    'card_number',
+    'cvv',
+    'pin',
+    'ssn',
+    'social_security',
+    'phone',
+    'email'
+  ];
+
+  // Nếu data là string, kiểm tra xem có chứa thông tin nhạy cảm không
+  if (typeof data === 'string') {
+    // Mask các token thường gặp
+    return data.replace(/(Bearer\s+)[^\s]+/g, '$1[REDACTED]')
+               .replace(/(token=)[^&]+/g, '$1[REDACTED]')
+               .replace(/(password=)[^&]+/g, '$1[REDACTED]');
   }
+
+  // Nếu data là object, mask các key nhạy cảm
+  if (typeof data === 'object') {
+    const maskedData = { ...data };
+    for (const key in maskedData) {
+      if (sensitiveKeys.some(sensitiveKey => 
+        key.toLowerCase().includes(sensitiveKey.toLowerCase())
+      )) {
+        maskedData[key] = '[REDACTED]';
+      } else if (typeof maskedData[key] === 'object') {
+        maskedData[key] = maskSensitiveData(maskedData[key]);
+      }
+    }
+    return maskedData;
+  }
+
+  return data;
 };
 
 /**
  * Ghi lại lỗi trong Crashlytics và thêm thuộc tính tùy chỉnh
  * @param error - Đối tượng lỗi cần ghi lại
  * @param attributes - Đối tượng chứa các thuộc tính tùy chỉnh
- * @param shouldFlush - Có nên force flush report ngay lập tức không (mặc định: true)
  */
 export const logError = async (error: any, attributes?: Record<string, string>, shouldFlush: boolean = true) => {
   if (attributes) {
@@ -46,11 +77,7 @@ export const logError = async (error: any, attributes?: Record<string, string>, 
   } else {
     await crashlytics().recordError(new Error(String(error)));
   }
-  
-  // Buộc gửi logs ngay lập tức nếu được yêu cầu
-  if (shouldFlush) {
-    await forceFlushReports();
-  }
+ 
 };
 
 /**
@@ -84,9 +111,8 @@ export const setCrashlyticsEnabled = async (enabled: boolean): Promise<boolean> 
  * Ghi lại xử lý không thành công
  * @param name - Tên xử lý
  * @param reason - Lý do không thành công
- * @param shouldFlush - Có nên force flush report ngay lập tức không (mặc định: true)
  */
-export const logFailure = async (name: string, reason: string, shouldFlush: boolean = true) => {
+export const logFailure = async (name: string, reason: string) => {
   await crashlytics().setAttributes({
     [`failure_${name}`]: reason,
     timestamp: new Date().toISOString()
@@ -94,11 +120,6 @@ export const logFailure = async (name: string, reason: string, shouldFlush: bool
 
   // Ghi thêm một non-fatal error để đảm bảo logs được gửi đi
   await crashlytics().recordError(new Error(`Failure: ${name} - ${reason}`));
-  
-  // Buộc gửi logs ngay lập tức nếu được yêu cầu
-  if (shouldFlush) {
-    await forceFlushReports();
-  }
 };
 
 /**
@@ -125,11 +146,6 @@ export const setupGlobalErrorHandler = () => {
         timestamp: new Date().toISOString(),
         error_source: 'global_error_handler'
       });
-      
-      // Force flush logs cho các lỗi nghiêm trọng
-      if (isFatal) {
-        forceFlushReports();
-      }
 
       // Log lỗi vào console thay vì hiển thị trực tiếp
       console.log('Global error caught:', error.message);
@@ -173,9 +189,6 @@ export const setupGlobalErrorHandler = () => {
         error_source: 'unhandled_promise_rejection',
         timestamp: new Date().toISOString()
       });
-      
-      // Force flush logs ngay lập tức cho promise rejections
-      forceFlushReports();
     });
   }
 
@@ -187,9 +200,6 @@ export const setupGlobalErrorHandler = () => {
         error_source: 'uncaught_exception',
         timestamp: new Date().toISOString()
       });
-      
-      // Force flush logs ngay lập tức cho uncaught exceptions
-      forceFlushReports();
     });
   }
 };
@@ -204,10 +214,12 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
       // Ghi log request params
       crashlytics().log(`API_REQUEST: ${config.method.toUpperCase()} ${config.url}`);
       if (config.params) {
-        crashlytics().log(`REQUEST_PARAMS: ${JSON.stringify(config.params)}`);
+        const maskedParams = maskSensitiveData(config.params);
+        crashlytics().log(`REQUEST_PARAMS: ${JSON.stringify(maskedParams)}`);
       }
       if (config.data) {
-        crashlytics().log(`REQUEST_BODY: ${JSON.stringify(config.data)}`);
+        const maskedData = maskSensitiveData(config.data);
+        crashlytics().log(`REQUEST_BODY: ${JSON.stringify(maskedData)}`);
       }
       return config;
     },
@@ -215,8 +227,8 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
       logError(error, {
         error_type: 'axios_request',
         timestamp: new Date().toISOString(),
-        request_params: error.config?.params ? JSON.stringify(error.config.params) : 'none',
-        request_body: error.config?.data ? JSON.stringify(error.config.data) : 'none'
+        request_params: error.config?.params ? JSON.stringify(maskSensitiveData(error.config.params)) : 'none',
+        request_body: error.config?.data ? JSON.stringify(maskSensitiveData(error.config.data)) : 'none'
       });
       return Promise.reject(error);
     }
@@ -227,7 +239,8 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
       // Ghi log response data
       crashlytics().log(`API_RESPONSE: ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status}`);
       if (response.data) {
-        crashlytics().log(`RESPONSE_DATA: ${JSON.stringify(response.data)}`);
+        const maskedData = maskSensitiveData(response.data);
+        crashlytics().log(`RESPONSE_DATA: ${JSON.stringify(maskedData)}`);
       }
       return response;
     },
@@ -240,9 +253,9 @@ export const setupAxiosInterceptor = (axiosInstance: any) => {
         method: config?.method || 'unknown',
         status: response?.status ? String(response.status) : 'unknown',
         timestamp: new Date().toISOString(),
-        request_params: config?.params ? JSON.stringify(config.params) : 'none',
-        request_body: config?.data ? JSON.stringify(config.data) : 'none',
-        response_data: response?.data ? JSON.stringify(response.data) : 'none'
+        request_params: config?.params ? JSON.stringify(maskSensitiveData(config.params)) : 'none',
+        request_body: config?.data ? JSON.stringify(maskSensitiveData(config.data)) : 'none',
+        response_data: response?.data ? JSON.stringify(maskSensitiveData(response.data)) : 'none'
       });
       
       return Promise.reject(error);

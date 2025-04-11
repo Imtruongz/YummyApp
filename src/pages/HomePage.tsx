@@ -155,8 +155,6 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
           horizontal
           showsHorizontalScrollIndicator={true}
           initialNumToRender={5}
-          onEndReached={() => dispatch(getAllFoodAPI())}
-          onEndReachedThreshold={0.5}
           keyExtractor={(item, index) => `${item.foodId}_${index}`}
           renderItem={({ item }) => (
             <Pressable
@@ -259,11 +257,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: color.light,
-    shadowColor: color.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
     paddingVertical: 12,
     paddingHorizontal: 14,
   },

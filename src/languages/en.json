@@ -85,7 +85,16 @@
     "pw_not_match": "Passwords do not match",
     "pw_confirm_not_match": "Confirm password does not match",
     "register_success": "Registration successful! Please check your email to verify your account.",
-    "search": "Search"
+    "search": "Search",
+
+    "recipe_detail_error_add": "This dish is already in your favorites list",
+    "recipe_detail_description": "Description",
+    "recipe_detail_ingredient": "Ingredient",
+    "recipe_detail_step": "Cooking Step",
+    "recipe_detail_comment": "Comment",
+    "recipe_detail_see_all": "See All",
+    "recipe_detail_comment_placeholder": "Enter your comment",
+    "recipe_detail_more_food": "More Foods"
 
 }
   

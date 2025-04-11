@@ -163,7 +163,7 @@ const AddFoodPage = () => {
       });
 
       await dispatch(getAllFoodAPI());
-      await dispatch(getFoodByIdAPI(userId));
+      await dispatch(getFoodByIdAPI({ userId: userId }));
       setFormData(initialState);
       setIngredients(['']);
       setSteps(['']);

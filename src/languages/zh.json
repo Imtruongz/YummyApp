@@ -75,6 +75,15 @@
     "pw_not_match": "密码不匹配",
     "pw_confirm_not_match": "确认密码不匹配",
     "register_success": "注册成功！ 请检查您的电子邮件以验证您的帐户。",
-    "search": "搜索"
+    "search": "搜索",
+
+    "recipe_detail_error_add": "该菜品已在您的收藏列表中",
+    "recipe_detail_description": "描述",
+    "recipe_detail_ingredient": "成分",
+    "recipe_detail_step": "烹饪步骤",
+    "recipe_detail_comment": "评论",
+    "recipe_detail_see_all": "查看全部",
+    "recipe_detail_comment_placeholder": "输入您的评论",
+    "recipe_detail_more_food": "更多食品"
   }
   

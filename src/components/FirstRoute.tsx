@@ -19,10 +19,17 @@ import colors from '../utils/color';
 import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
 import Typography from './customize/Typography';
+
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../android/types/StackNavType';
+
 const storage = new MMKV();
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
   const [userId, setUserId] = useState(storage.getString('userId') || '');
 
@@ -79,6 +86,12 @@ const FirstRoute = () => {
           <TouchableOpacity
             key={item.foodId}
             onLongPress={() => showDialog(item)}
+            onPress={() => {
+              navigation.navigate('RecipeDetailPage', {
+                foodId: item.foodId,
+                userId: item.userId,
+              });
+            }}
             style={styles.itemContainer}>
             {/* Top img */}
             <Image style={styles.img} source={{uri: item.foodThumbnail}} />

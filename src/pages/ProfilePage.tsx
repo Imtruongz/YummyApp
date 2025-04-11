@@ -62,8 +62,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   const [userId, setUserId] = useState(storage.getString('userId') || '');
 
   const [index, setIndex] = useState(0);
-  // Dùng t() để lấy title tab theo file JSON
-  const [routes] = useState([
+  const [routes, setRoutes] = useState([
     {key: 'first', title: t('profile_your_posts')},
     {key: 'second', title: t('profile_your_favorites')},
   ]);
@@ -72,6 +71,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     first: FirstRoute,
     second: SecondRoute,
   });
+
+  useEffect(() => {
+    // Cập nhật các tiêu đề tab mỗi khi ngôn ngữ thay đổi
+    setRoutes([
+      {key: 'first', title: t('profile_your_posts')},
+      {key: 'second', title: t('profile_your_favorites')},
+    ]);
+  }, [t]); // Đảm bảo rằng nó được cập nhật khi 't' thay đổi
 
   const {user, isLoadingUser, isErrorUser} = useAppSelector(
     (state: RootState) => state.auth,

@@ -75,7 +75,16 @@
     "pw_not_match": "Mật khẩu không khớp",
     "pw_confirm_not_match": "Xác nhận mật khẩu không khớp",
     "register_success": "Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác minh tài khoản.",
-    "search": "Tìm kiếm"
+    "search": "Tìm kiếm",
+
+    "recipe_detail_error_add": "Món ăn đã có trong danh sách ưa thích",
+    "recipe_detail_description": "Mô tả",
+    "recipe_detail_ingredient": "Thành phần",
+    "recipe_detail_step": "Bước nấu",
+    "recipe_detail_comment": "Bình luận",
+    "recipe_detail_see_all": "Xem tất cả",
+    "recipe_detail_comment_placeholder": "Nhập bình luận của bạn",
+    "recipe_detail_more_food": "Thêm món ăn khác"
     
   }
   

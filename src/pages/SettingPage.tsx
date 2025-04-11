@@ -25,11 +25,9 @@ import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
 import crashlytics from '@react-native-firebase/crashlytics';
-import { logError, setCrashlyticsEnabled, logUserAction, forceFlushReports } from '../utils/crashlytics';
 import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
 
 const storage = new MMKV();
-
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> { }
 
@@ -70,23 +68,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
     }
   };
 
-  const testApiError = async () => {
-    try {
-      throw new Error('API Error Test');
-    } catch (error) {
-      await logError(error, {
-        error_type: 'test_api_error',
-        action: 'test_button'
-      });
-    }
-  };
-
-  const testManualFlush = async () => {
-    await crashlytics().log('Manual flush test log 1');
-    await crashlytics().log('Manual flush test log 2');
-    await forceFlushReports();
-  };
-
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
@@ -125,8 +106,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
         </View>
         <View>
           <RNButton title="Crash" onPress={() => crashlytics().crash()} />
-          <RNButton title="Test API Error" onPress={testApiError} />
-          <RNButton title="Manual Flush Logs" onPress={testManualFlush} />
         </View>
 
         <Portal>

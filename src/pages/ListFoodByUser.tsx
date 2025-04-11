@@ -153,11 +153,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: 6, // Tăng giá trị để chỉ tạo bóng dưới
     },
     shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 11,
+    shadowRadius: 3, // Điều chỉnh độ mờ của cạnh bóng
+    elevation: 5, // Chỉ chỉnh sửa đối với Android, nếu cần thiết
   },
   infoBlock1: {
     marginBottom: 22,
