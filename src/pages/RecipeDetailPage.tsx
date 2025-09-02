@@ -8,6 +8,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -181,14 +182,26 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     }
   };
 
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
   useEffect(() => {
-    dispatch(getDetailFoodAPI(foodId));
-    dispatch(getAllCommentFromFoodIdAPI(foodId));
-    dispatch(getUserByIdAPI({userId: myUserId}));
-    dispatch(getFoodByIdAPI({userId, isViewMode: true}));
+    const loadInitialData = async () => {
+      try {
+        await Promise.all([
+          dispatch(getDetailFoodAPI(foodId)),
+          dispatch(getAllCommentFromFoodIdAPI(foodId)),
+          dispatch(getUserByIdAPI({userId: myUserId})),
+          dispatch(getFoodByIdAPI({userId, isViewMode: true}))
+        ]);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+    
+    loadInitialData();
   }, [dispatch, foodId, myUserId, userId]);
 
-  if (isLoadingFood || isLoadingReview || isLoadingUser) {
+  if (isInitialLoading) {
     return <Loading />;
   }
 
@@ -355,14 +368,20 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 onChangeText={setCommentText}
                 multiline={true}
                 numberOfLines={3}
+                editable={!isAddingComment}
               />
-              <FontAwesomeIcons
-                name={isAddingComment ? 'send' : 'send-o'}
-                size={24}
-                color={colors.primary}
-                onPress={handleAddComment}
-                disabled={isAddingComment}
-              />
+              {isAddingComment ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={colors.primary} />
+                </View>
+              ) : (
+                <FontAwesomeIcons
+                  name="send"
+                  size={24}
+                  color={colors.primary}
+                  onPress={handleAddComment}
+                />
+              )}
             </View>
             <CustomTitle title={t('recipe_detail_more_food')} />
             <FlatList
@@ -557,6 +576,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  loadingContainer: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   itemContainer: {

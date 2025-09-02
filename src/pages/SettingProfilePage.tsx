@@ -19,12 +19,33 @@ import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import Header from '../components/customize/Header.tsx';
 import {useTranslation} from 'react-i18next';
+import RNFS from 'react-native-fs';
 
 import {MMKV} from 'react-native-mmkv';
 import {SafeAreaView} from 'react-native-safe-area-context';
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
+
+// Hàm chuyển đổi hình ảnh sang base64
+const convertImageToBase64 = async (uri: string): Promise<string> => {
+  try {
+    if (uri.startsWith('file://')) {
+      const base64Data = await RNFS.readFile(uri, 'base64');
+      return `data:image/jpeg;base64,${base64Data}`;
+    } else if (uri.startsWith('content://')) {
+      console.log('Need to handle content:// URI');
+      const base64Data = await RNFS.readFile(uri, 'base64');
+      return `data:image/jpeg;base64,${base64Data}`;
+    } else {
+      console.error('Unsupported URI format');
+      return '';
+    }
+  } catch (error) {
+    console.error('Error converting image to base64:', error);
+    return '';
+  }
+};
 
 const SettingProfilePage = () => {
   const {t, i18n} = useTranslation();
@@ -45,9 +66,14 @@ const SettingProfilePage = () => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         const result: any = await launchImageLibrary({
           mediaType: 'photo',
+          includeBase64: false,
+          maxHeight: 800,
+          maxWidth: 800,
         });
         if (result.assets && result.assets.length > 0) {
-          setavatar(result.assets[0].uri);
+          const imageUri = result.assets[0].uri;
+          const base64Image = await convertImageToBase64(imageUri);
+          setavatar(base64Image);
         } else {
           console.log('No image selected or camera launch failed');
         }
