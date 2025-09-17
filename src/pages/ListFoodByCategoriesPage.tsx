@@ -11,7 +11,7 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 import colors from '../utils/color';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';

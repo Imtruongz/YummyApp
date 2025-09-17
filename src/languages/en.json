@@ -1,4 +1,7 @@
 {
+    "tab_home": "Home",
+    "tab_profile": "Profile",
+    "tab_add": "Add",
     "greeting": "Hello",
     "welcome": "Welcome to our app",
     "loading": "Loading...",

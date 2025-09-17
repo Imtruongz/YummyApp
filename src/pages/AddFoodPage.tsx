@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -20,8 +20,9 @@ import SelectDropdown from 'react-native-select-dropdown';
 import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
 import {foodPayload} from '../redux/slices/food/types';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+
+const Icon = require('react-native-vector-icons/MaterialCommunityIcons').default;
+const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
@@ -69,8 +70,18 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
   }
 };
 
-const AddFoodPage = () => {
+const AddFoodPage = ({ navigation }: any) => {
   const {t} = useTranslation();
+  useLayoutEffect(() => {
+    navigation?.getParent?.()?.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+    return () => {
+      navigation?.getParent?.()?.setOptions({
+        tabBarStyle: undefined,
+      });
+    };
+  }, [navigation]);
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<foodPayload>(initialState);
   const [errorForm, setErrorForm] = useState<null | {[key: string]: string}>(

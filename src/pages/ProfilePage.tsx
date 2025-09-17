@@ -26,7 +26,7 @@ import ProfileSkeleton from '../components/skeleton/ProfileSkeleton';
 import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';

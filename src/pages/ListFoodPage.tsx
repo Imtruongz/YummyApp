@@ -16,7 +16,7 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import Header from '../components/customize/Header';
 import NoData from '../components/NoData';

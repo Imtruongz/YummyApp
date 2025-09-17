@@ -15,6 +15,7 @@ export type MainStackParamList = {
   Settings: undefined;
   HomeNavigator: undefined;
   ProfileNavigator: undefined;
+  AddFoodPage: undefined;
 };
 
 export type HomeStack = {

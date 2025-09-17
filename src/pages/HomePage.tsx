@@ -14,8 +14,9 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import FeatherIcon from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+const FeatherIcon = require('react-native-vector-icons/Feather').default;
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
@@ -232,14 +233,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
             </Pressable>
           )}
         />
+        {/* Khoảng trống tránh bị BottomTab che */}
+        <View style={{ height: 80 }} />
       </ScrollView>
-      <IconButton
-        icon="plus"
-        iconColor='white'
-        size={24}
-        onPress={() => navigation.navigate('AddFoodPage')}
-        style={styles.addFoodBtn}
-      />
     </SafeAreaView>
   );
 };

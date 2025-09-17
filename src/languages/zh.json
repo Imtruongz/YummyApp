@@ -1,4 +1,7 @@
 {
+  "tab_home": "首页",
+  "tab_profile": "个人",
+  "tab_add": "添加",
     "greeting": "你好",
     "welcome": "欢迎使用我们的应用程序",
     "loading": "加载中...",

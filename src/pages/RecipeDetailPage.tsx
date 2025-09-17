@@ -10,7 +10,7 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useLayoutEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -18,12 +18,11 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesomeIcons from 'react-native-vector-icons/FontAwesome';
-import FontAwesome6Icons from 'react-native-vector-icons/FontAwesome6';
-
-import FontistoIcon from 'react-native-vector-icons/Fontisto';
+const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
+const FontAwesomeIcons = require('react-native-vector-icons/FontAwesome').default;
+const FontAwesome6Icons = require('react-native-vector-icons/FontAwesome6').default;
+const FontistoIcon = require('react-native-vector-icons/Fontisto').default;
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
@@ -55,6 +54,16 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   route,
   navigation,
 }) => {
+  useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+    return () => {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+    };
+  }, [navigation]);
   const {foodId, userId} = route.params;
   const myUserId = storage.getString('userId') || '';
   const [showstrInstructions, setShowstrInstructions] = useState(false);

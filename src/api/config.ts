@@ -5,7 +5,7 @@ import { MMKV } from 'react-native-mmkv';
 
 const API_HOME = process.env.HOME
 // const API_URL = `https://yummyserver.onrender.com/api`;
-const API_URL = `http://172.20.10.2:4040/api`;
+const API_URL = `http://192.168.0.104:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({

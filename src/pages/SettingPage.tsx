@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   Button as RNButton, // Để tránh trùng lặp với 'Button' của paper
+  Linking,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -106,6 +107,17 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
         </View>
         <View>
           <RNButton title="Crash" onPress={() => crashlytics().crash()} />
+        </View>
+        <View style={{marginTop: 16, marginHorizontal: 16}}>
+          <RNButton
+            title="Thanh toán qua MBLaos"
+            onPress={() => {
+              const url = 'mblaos://pay?amount=100000&orderId=12345';
+              Linking.openURL(url).catch(() => {
+                console.log('MBLaos app is not installed');
+              });
+            }}
+          />
         </View>
 
         <Portal>
