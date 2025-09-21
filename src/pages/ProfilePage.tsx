@@ -32,6 +32,7 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import colors from '../utils/color';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import { countFollowersAPI, countFollowingAPI } from '../redux/slices/follow/followThunk';
 
 import {MMKV} from 'react-native-mmkv';
 import Typography from '../components/customize/Typography';
@@ -46,11 +47,27 @@ interface InfoItemProps {
   label: string;
 }
 
-const InfoItem: React.FC<InfoItemProps> = ({number, label}) => (
-  <View style={styles.infoItem}>
-    <Typography title={number} fontSize={14} />
-    <Typography title={label} fontSize={12} />
-  </View>
+import { TouchableOpacity } from 'react-native';
+const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({number, label, onPress}) => (
+  onPress ? (
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      style={[styles.infoItem, styles.infoItemTouchable]}
+      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+    >
+      <Typography
+        title={number === undefined || number === null ? '0' : String(number)}
+        fontSize={16}
+      />
+      <Typography title={label} fontSize={13} />
+    </TouchableOpacity>
+  ) : (
+    <View style={styles.infoItem}>
+      <Typography title={number === undefined || number === null ? '0' : String(number)} fontSize={14} />
+      <Typography title={label} fontSize={12} />
+    </View>
+  )
 );
 
 interface ProfilePageProps
@@ -80,11 +97,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     ]);
   }, [t]); // Đảm bảo rằng nó được cập nhật khi 't' thay đổi
 
-  const {user, isLoadingUser, isErrorUser} = useAppSelector(
-    (state: RootState) => state.auth,
-  );
 
+  const {user, isLoadingUser, isErrorUser} = useAppSelector((state: RootState) => state.auth);
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
+  const followInfo = useAppSelector((state: RootState) => state.follow.byUserId[userId] || {});
+  const followerCount = followInfo.followerCount ?? 0;
+  const followingCount = followInfo.followingCount ?? 0;
+  const followLoading = followInfo.loading ?? false;
+  console.log('ProfilePage - followerCount:', followerCount, 'followingCount:', followingCount);
 
   const renderTabBar = (
     props: SceneRendererProps & {navigationState: NavigationState<Route>},
@@ -98,12 +118,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     />
   );
 
+
   useEffect(() => {
     if (userId) {
       dispatch(getUserByIdAPI({userId}));
-      console.log('getUserByIdAPI rendered successfully with userId:', userId);
-    } else {
-      console.log('userId is empty, skipping API call');
+      dispatch(countFollowersAPI(userId));
+      dispatch(countFollowingAPI(userId));
     }
   }, [dispatch, userId]);
 
@@ -111,19 +131,19 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
     return <ProfileSkeleton />;
   }
 
+  const handleFollowersPress = () => {
+    // @ts-ignore
+    navigation.navigate('FollowersFollowingListScreen', { userId, type: 'followers' });
+  };
+  const handleFollowingPress = () => {
+    // @ts-ignore
+    navigation.navigate('FollowersFollowingListScreen', { userId, type: 'following' });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <CustomTitle style={styles.title} title={t('profile_my_profile_header')} />
-        <AntDesignIcon
-          onPress={() => {
-            navigation.navigate('SettingPage');
-          }}
-          name="setting"
-          size={30}
-          color={colors.dark}
-          style={styles.icon}
-        />
       </View>
       <View style={styles.infoContainer}>
         {isErrorUser ? (
@@ -142,8 +162,16 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
                   number={userFoodList.length ?? 0}
                   label={t('profile_posts')}
                 />
-                <InfoItem number="0" label={t('profile_followers')} />
-                <InfoItem number="0" label={t('profile_following')} />
+                <InfoItem
+                  number={followLoading ? '...' : followerCount}
+                  label={t('profile_followers')}
+                  onPress={handleFollowersPress}
+                />
+                <InfoItem
+                  number={followLoading ? '...' : followingCount}
+                  label={t('profile_following')}
+                  onPress={handleFollowingPress}
+                />
               </View>
             </View>
             <CustomTitle title={user?.username} />
@@ -187,17 +215,23 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   myInfo3: {
-    width: 220,
+    width: 180,
     justifyContent: 'space-around',
     alignItems: 'flex-start',
     flexDirection: 'row',
-    gap: 12,
+    gap: 6,
   },
   infoItem: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
     gap: 4,
+    minWidth: 64,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+  },
+  infoItemTouchable: {
+    borderRadius: 10,
   },
   header: {
     justifyContent: 'space-between',

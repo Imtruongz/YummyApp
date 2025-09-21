@@ -6,11 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
 const Icon = require('react-native-vector-icons/AntDesign').default;
+const IonIcon = require('react-native-vector-icons/Ionicons').default;
 import colors from '../utils/color';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
 import { MainStackParamList } from './types.ts';
 import AddFoodPage from '../pages/AddFoodPage.tsx';
+import SearchPage from '../pages/SearchPage.tsx';
+import SettingNavigator from './SettingNavigator';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator<MainStackParamList>();
@@ -29,6 +32,16 @@ const BottomTab = () => {
           tabBarLabel: t('tab_home'),
           tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
             <Icon name="home" color={focused ? colors.primary : color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="SearchPage"
+        component={SearchPage}
+        options={{
+          tabBarLabel: t('tab_search'),
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
+            <IonIcon name="search-outline" color={focused ? colors.primary : color} size={26} />
           ),
         }}
       />
@@ -60,18 +73,28 @@ const BottomTab = () => {
           ),
         }}
       />
+      <Tab.Screen
+        name="SettingNavigator"
+        component={SettingNavigator}
+        options={{
+          tabBarLabel: t('tab_setting'),
+          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
+            <Icon name="setting" color={focused ? colors.primary : color} size={26} />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
 
 const CustomTabBar = ({ state, descriptors, navigation }: any) => {
-  // Kiểm tra nếu đang ở RecipeDetailPage hoặc AddFoodPage thì ẩn tab bar
+  // Kiểm tra nếu đang ở các trang chi tiết thì ẩn tab bar
   let hideTabBar = false;
   // Kiểm tra trong HomeNavigator
   const homeRoute = state.routes.find((r: any) => r.name === 'HomeNavigator');
   if (homeRoute && homeRoute.state && homeRoute.state.routes) {
     const nested = homeRoute.state.routes[homeRoute.state.index];
-    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage')) {
+    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage' || nested.name === 'ListFoodByCategoriesPage' || nested.name === 'ListFoodByUserPage' || nested.name === 'ListFoodPage')) {
       hideTabBar = true;
     }
   }
@@ -79,7 +102,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   const profileRoute = state.routes.find((r: any) => r.name === 'ProfileNavigator');
   if (profileRoute && profileRoute.state && profileRoute.state.routes) {
     const nested = profileRoute.state.routes[profileRoute.state.index];
-    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage')) {
+    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage' || nested.name === 'ListFoodByCategoriesPage' || nested.name === 'ListFoodByUserPage' || nested.name === 'ListFoodPage')) {
       hideTabBar = true;
     }
   }

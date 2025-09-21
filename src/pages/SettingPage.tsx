@@ -72,7 +72,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
-        <Header title={t('setting_settings_header')} iconName="arrowleft" />
+        <Header title={t('setting_settings_header')} />
         <View style={styles.accountContainer}>
           <CustomTitle style={styles.title} title={t('setting_account')} />
           <SettingButton
@@ -105,20 +105,23 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             onPress={handleLogout}
           />
         </View>
-        <View>
+        {/* <View>
           <RNButton title="Crash" onPress={() => crashlytics().crash()} />
         </View>
         <View style={{marginTop: 16, marginHorizontal: 16}}>
           <RNButton
             title="Thanh toán qua MBLaos"
             onPress={() => {
-              const url = 'mblaos://pay?amount=100000&orderId=12345';
+              // Tạo token động cho mỗi phiên giao dịch (demo)
+              const token = `REF_${Date.now()}_${Math.floor(Math.random()*100000)}`;
+              const url = `mblaos://pay?reference=${token}`;
+              console.log('Opening URL:', url);
               Linking.openURL(url).catch(() => {
                 console.log('MBLaos app is not installed');
               });
             }}
           />
-        </View>
+        </View> */}
 
         <Portal>
           <Dialog visible={dialogVisible} onDismiss={hideDialog}>

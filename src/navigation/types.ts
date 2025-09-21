@@ -16,6 +16,9 @@ export type MainStackParamList = {
   HomeNavigator: undefined;
   ProfileNavigator: undefined;
   AddFoodPage: undefined;
+  SearchPage: undefined;
+  SettingPage: undefined;
+  SettingNavigator: undefined;
 };
 
 export type HomeStack = {
@@ -44,5 +47,9 @@ export type ProfileStack = {
   RecipeDetailPage: {
     foodId: string;
     userId: string;
+  };
+  FollowersFollowingListScreen: {
+    userId: string;
+    type: 'followers' | 'following';
   };
 }
