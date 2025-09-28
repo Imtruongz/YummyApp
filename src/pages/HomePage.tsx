@@ -42,11 +42,7 @@ import img from '../utils/urlImg';
 import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
-
-
-
-import { Avatar } from 'react-native-paper';
-import { IconButton, MD3Colors } from 'react-native-paper';
+import HomeHeader from '../components/HomeHeader';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
@@ -100,25 +96,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header fixed trên cùng */}
+      <HomeHeader avatar={user?.avatar} username={user?.username} greetingMessage={message} navigation={navigation} />
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <View style={styles.header1}>
-            <Avatar.Image
-              size={52}
-              source={{ uri: user?.avatar || imgURL.defaultAvatar }}
-            />
-            <View>
-              {/* Hiển thị greeting theo thời gian */}
-              {message}
-              <Typography
-                title={user?.username}
-                fontSize={16}
-              />
-            </View>
-          </View>
-          <FeatherIcon name="bell" size={24} color={color.dark} />
-        </View>
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title={t('home_popular_categories')} />

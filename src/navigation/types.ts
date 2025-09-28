@@ -19,12 +19,13 @@ export type MainStackParamList = {
   SearchPage: undefined;
   SettingPage: undefined;
   SettingNavigator: undefined;
+  NotificationsScreen: undefined;
 };
 
 export type HomeStack = {
-  HomePage: undefined
+  HomePage: undefined;
   AddFoodPage: undefined;
-  ListFoodPage: undefined
+  ListFoodPage: undefined;
   RecipeDetailPage: {
     foodId: string;
     userId: string;
@@ -35,6 +36,7 @@ export type HomeStack = {
   ListFoodByUserPage: {
     userId: string;
   };
+  NotificationsScreen: undefined;
 }
 
 export type ProfileStack = {
