@@ -29,6 +29,8 @@ const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
 
 import { MMKV } from 'react-native-mmkv';
+import messaging from '@react-native-firebase/messaging';
+import { updateFcmTokenApi } from '../../api/updateFcmTokenApi';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
@@ -71,6 +73,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           storage.set('userId', String(user.user.userId || ''));
           storage.set('accessToken', user.accessToken);
           storage.set('refreshToken', user.refreshToken);
+          // Lấy FCM token và gửi lên server
+          try {
+            const fcmToken = await messaging().getToken();
+            console.log('FCM Token lấy từ Firebase:', fcmToken);
+            await updateFcmTokenApi(fcmToken, user.accessToken);
+          } catch (err) {
+            console.log('Gửi FCM token lên server thất bại:', err, user.accessToken);
+          }
           signIn();
           
         } else {
@@ -113,6 +123,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
               storage.set('userId', String(user.user.userId || ''));
               storage.set('accessToken', user.accessToken);
               storage.set('refreshToken', user.refreshToken);
+              // Lấy FCM token và gửi lên server
+              try {
+                const fcmToken = await messaging().getToken();
+                await updateFcmTokenApi(fcmToken, user.accessToken);
+              } catch (err) {
+                console.log('Gửi FCM token lên server thất bại:', err);
+              }
               signIn();
             }
           } else {

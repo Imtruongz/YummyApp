@@ -98,11 +98,26 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
       hideTabBar = true;
     }
   }
+  // Kiểm tra trong SettingNavigator
+  const settingRoute = state.routes.find((r: any) => r.name === 'SettingNavigator');
+  if (settingRoute && settingRoute.state && settingRoute.state.routes) {
+    const nested = settingRoute.state.routes[settingRoute.state.index];
+    if (nested && (nested.name === 'SettingProfilePage' || nested.name === 'ChangePasswordPage')) {
+      hideTabBar = true;
+    }
+  }
   // Kiểm tra trong ProfileNavigator
   const profileRoute = state.routes.find((r: any) => r.name === 'ProfileNavigator');
   if (profileRoute && profileRoute.state && profileRoute.state.routes) {
     const nested = profileRoute.state.routes[profileRoute.state.index];
-    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage' || nested.name === 'ListFoodByCategoriesPage' || nested.name === 'ListFoodByUserPage' || nested.name === 'ListFoodPage')) {
+    if (nested && (
+      nested.name === 'RecipeDetailPage' ||
+      nested.name === 'AddFoodPage' ||
+      nested.name === 'ListFoodByCategoriesPage' ||
+      nested.name === 'ListFoodByUserPage' ||
+      nested.name === 'ListFoodPage' ||
+      nested.name === 'FollowersFollowingListScreen'
+    )) {
       hideTabBar = true;
     }
   }
