@@ -175,16 +175,19 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     dispatch(getAllCommentFromFoodIdAPI(foodId));
 
     try {
-      await dispatch(
+      console.log('Gửi comment:', { foodId, userId: myUserId, reviewText: commentText.trim() });
+      const result = await dispatch(
         addCommentToFoodAPI({
           foodId: foodId,
           userId: myUserId,
           reviewText: commentText.trim(),
         }),
       );
+      console.log('Kết quả trả về:', result);
       setCommentText('');
       await dispatch(getAllCommentFromFoodIdAPI(foodId));
     } catch (error) {
+      console.error('Lỗi khi gửi comment:', error);
       setCommentError('Failed to add the comment. Please try again.');
     } finally {
       setIsAddingComment(false);

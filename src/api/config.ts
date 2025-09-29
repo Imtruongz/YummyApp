@@ -5,7 +5,7 @@ import { MMKV } from 'react-native-mmkv';
 
 const API_HOME = process.env.HOME
 // const API_URL = `https://yummyserver.onrender.com/api`;
-const API_URL = `http://192.168.0.103:4040/api`;
+const API_URL = `http://192.168.0.104:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
@@ -24,6 +24,13 @@ const storage = new MMKV();
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = storage.getString('accessToken');
+    console.log('Gửi request:', {
+      url: `${config.baseURL || ''}${config.url || ''}`,
+      method: config.method,
+      token,
+      headers: config.headers,
+      data: config.data
+    });
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

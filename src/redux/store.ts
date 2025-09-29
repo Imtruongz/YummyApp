@@ -1,5 +1,5 @@
-import {configureStore} from '@reduxjs/toolkit';
-import {setupListeners} from '@reduxjs/toolkit/query';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 
 
@@ -10,16 +10,18 @@ import categoriesSlice from './slices/category/categoriesSlice';
 import reviewSlice from './slices/review/reviewSlice';
 import favoriteSlice from './slices/favorite/favoriteSlice';
 import followSlice from './slices/follow/followSlice';
+import notificationSlice from './slices/notification/notificationSlice';
 
 export const store = configureStore({
   reducer: {
-  food: foodSlice,
-  auth: authSlice,
-  user: userSlice,
-  categories: categoriesSlice,
-  review: reviewSlice,
-  favorite: favoriteSlice,
-  follow: followSlice,
+    food: foodSlice,
+    auth: authSlice,
+    user: userSlice,
+    categories: categoriesSlice,
+    review: reviewSlice,
+    favorite: favoriteSlice,
+    follow: followSlice,
+    notification: notificationSlice,
   },
 });
 

@@ -12,7 +12,7 @@
     "buildAPK": "npm run android -- --mode=release"
   },
   "dependencies": {
-    "@react-native-firebase/app": "^19.3.0",
+    "@react-native-firebase/app": "23.4.0",
     "@react-native-firebase/crashlytics": "^19.3.0",
     "@react-native-firebase/messaging": "^23.3.1",
     "@react-navigation/bottom-tabs": "^7.1.3",

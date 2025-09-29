@@ -6,26 +6,24 @@ import Typography from './customize/Typography';
 import { IconButton } from 'react-native-paper';
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
-import Greeting from './customize/Greeting';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useAppSelector } from '../redux/hooks';
 
 type RootStackParamList = {
   NotificationsScreen: { userId: string | undefined };
-  // Add other screens here if needed
 };
 
 type HomeHeaderNavigationProp = NativeStackNavigationProp<RootStackParamList, 'NotificationsScreen'>;
-import { useAppSelector } from '../redux/hooks';
-const navigation = useNavigation<HomeHeaderNavigationProp>();
+
 interface HomeHeaderProps {
   avatar?: string;
   username?: string;
   greetingMessage: React.ReactNode;
-  navigation: any;
 }
 
-const HomeHeader: React.FC<HomeHeaderProps> = ({ avatar, username, greetingMessage, navigation }) => {
+const HomeHeader: React.FC<HomeHeaderProps> = ({ avatar, username, greetingMessage }) => {
+  const navigation = useNavigation<HomeHeaderNavigationProp>();
   const user = useAppSelector(state => state.auth.user);
   return (
     <SafeAreaView style={{ backgroundColor: color.primaryHover }}>
