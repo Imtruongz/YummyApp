@@ -1,110 +1,124 @@
-import crashlytics from '@react-native-firebase/crashlytics';
+import { 
+  getCrashlytics, 
+  log as crashlyticsLog,
+  recordError as crashlyticsRecordError,
+  setAttribute as crashlyticsSetAttribute,
+  setAttributes as crashlyticsSetAttributes,
+  setCrashlyticsCollectionEnabled as crashlyticsSetCrashlyticsCollectionEnabled,
+  setUserId as crashlyticsSetUserId
+} from '@react-native-firebase/crashlytics/lib/modular';
 
-// Khai báo interface để TypeScript hiểu được global
-declare global {
-  interface Global {
-    ErrorUtils: {
-      setGlobalHandler: (callback: (error: Error, isFatal?: boolean) => void) => void;
-    };
-  }
-}
+// Import axios để setup interceptors
+import axios from 'axios';
 
 /**
- * Mask các thông tin nhạy cảm trong data
- * @param data - Dữ liệu cần mask
- * @returns Dữ liệu đã được mask
+ * Utility để mask các dữ liệu nhạy cảm trước khi gửi lên Crashlytics
  */
 const maskSensitiveData = (data: any): any => {
-  if (!data) return data;
+  if (!data || typeof data !== 'object') return data;
   
-  // Danh sách các key chứa thông tin nhạy cảm
-  const sensitiveKeys = [
-    'password',
-    'token',
-    'access_token',
-    'refresh_token',
-    'authorization',
-    'api_key',
-    'secret',
-    'credit_card',
-    'card_number',
-    'cvv',
-    'pin',
-    'ssn',
-    'social_security',
-    'phone',
-    'email'
-  ];
-
-  // Nếu data là string, kiểm tra xem có chứa thông tin nhạy cảm không
-  if (typeof data === 'string') {
-    // Mask các token thường gặp
-    return data.replace(/(Bearer\s+)[^\s]+/g, '$1[REDACTED]')
-               .replace(/(token=)[^&]+/g, '$1[REDACTED]')
-               .replace(/(password=)[^&]+/g, '$1[REDACTED]');
-  }
-
-  // Nếu data là object, mask các key nhạy cảm
-  if (typeof data === 'object') {
-    const maskedData = { ...data };
-    for (const key in maskedData) {
-      if (sensitiveKeys.some(sensitiveKey => 
-        key.toLowerCase().includes(sensitiveKey.toLowerCase())
-      )) {
-        maskedData[key] = '[REDACTED]';
-      } else if (typeof maskedData[key] === 'object') {
-        maskedData[key] = maskSensitiveData(maskedData[key]);
-      }
+  const maskedData = { ...data };
+  const sensitiveFields = ['password', 'token', 'accessToken', 'refreshToken', 'secret', 'key', 'authorization'];
+  
+  Object.keys(maskedData).forEach(key => {
+    if (sensitiveFields.some(field => key.toLowerCase().includes(field))) {
+      maskedData[key] = '***MASKED***';
     }
-    return maskedData;
-  }
-
-  return data;
+  });
+  
+  return maskedData;
 };
 
 /**
- * Ghi lại lỗi trong Crashlytics và thêm thuộc tính tùy chỉnh
- * @param error - Đối tượng lỗi cần ghi lại
- * @param attributes - Đối tượng chứa các thuộc tính tùy chỉnh
+ * Ghi lại lỗi với context và gửi lên Crashlytics
+ * @param error - Error object cần ghi lại
+ * @param context - Context hoặc mô tả thêm về lỗi
  */
-export const logError = async (error: any, attributes?: Record<string, string>, shouldFlush: boolean = true) => {
-  if (attributes) {
-    await crashlytics().setAttributes(attributes);
+export const logError = (error: Error, context?: string): void => {
+  try {
+    const crashlyticsInstance = getCrashlytics();
+    // Ghi lại lỗi trước khi gửi lên Crashlytics
+    const errorMessage = `${context ? `[${context}] ` : ''}${error.name}: ${error.message}`;
+    
+    console.error(errorMessage, error.stack);
+    
+    // Gửi lỗi lên Crashlytics sử dụng modular API
+    crashlyticsRecordError(crashlyticsInstance, error);
+    crashlyticsSetAttributes(crashlyticsInstance, {
+      error_context: context || 'unknown',
+      error_name: error.name,
+      timestamp: new Date().toISOString()
+    });
+  } catch (crashlyticsError) {
+    // Nếu Crashlytics fail, vẫn log lỗi gốc ra console
+    console.error('Failed to log to Crashlytics:', crashlyticsError);
+    console.error('Original error:', error);
   }
-  
-  if (error instanceof Error) {
-    await crashlytics().recordError(error);
-  } else {
-    await crashlytics().recordError(new Error(String(error)));
-  }
- 
 };
 
 /**
- * Cập nhật thông tin người dùng trong Crashlytics khi họ đăng nhập
- * @param userId - ID của người dùng
- * @param email - Email của người dùng (tùy chọn)
- * @param username - Tên người dùng (tùy chọn)
+ * Ghi log message với level khác nhau
+ * @param message - Nội dung message
+ * @param level - Level của log (info, warning, error)
  */
-export const setUserIdentifier = async (userId: string, email?: string, username?: string) => {
-  await crashlytics().setUserId(userId);
-  
-  const attributes: Record<string, string> = {};
-  if (email) attributes.email = email;
-  if (username) attributes.username = username;
-  
-  if (Object.keys(attributes).length > 0) {
-    await crashlytics().setAttributes(attributes);
+export const logMessage = (message: string, level: 'info' | 'warning' | 'error' = 'info'): void => {
+  try {
+    const crashlyticsInstance = getCrashlytics();
+    const logMessage = `[${level.toUpperCase()}] ${message}`;
+    
+    // Log local trước
+    if (level === 'error') {
+      console.error(logMessage);
+    } else if (level === 'warning') {
+      console.warn(logMessage);
+    } else {
+      console.log(logMessage);
+    }
+    
+    // Gửi log lên Crashlytics sử dụng modular API
+    crashlyticsLog(crashlyticsInstance, logMessage);
+    crashlyticsSetAttributes(crashlyticsInstance, {
+      log_level: level,
+      timestamp: new Date().toISOString()
+    });
+  } catch (crashlyticsError) {
+    console.error('Failed to log message to Crashlytics:', crashlyticsError);
   }
 };
 
 /**
- * Đặt trạng thái thu thập dữ liệu Crashlytics
- * @param enabled - Bật hoặc tắt thu thập dữ liệu
+ * Đặt user context cho Crashlytics
+ * @param userId - ID của user
+ * @param additionalAttributes - Các attributes bổ sung
+ */
+export const setUserContext = (userId: string, additionalAttributes?: Record<string, string>): void => {
+  try {
+    const crashlyticsInstance = getCrashlytics();
+    // Đặt user ID sử dụng modular API
+    crashlyticsSetUserId(crashlyticsInstance, userId);
+    
+    // Đặt các attributes bổ sung
+    if (additionalAttributes) {
+      crashlyticsSetAttributes(crashlyticsInstance, additionalAttributes);
+    }
+    
+    crashlyticsSetAttributes(crashlyticsInstance, {
+      user_context_updated: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Failed to set user context in Crashlytics:', error);
+  }
+};
+
+/**
+ * Bật/tắt Crashlytics collection
+ * @param enabled - true để bật, false để tắt
  */
 export const setCrashlyticsEnabled = async (enabled: boolean): Promise<boolean> => {
-  await crashlytics().setCrashlyticsCollectionEnabled(enabled);
-  return crashlytics().isCrashlyticsCollectionEnabled;
+  const crashlyticsInstance = getCrashlytics();
+  
+  await crashlyticsSetCrashlyticsCollectionEnabled(crashlyticsInstance, enabled);
+  return crashlyticsInstance.isCrashlyticsCollectionEnabled;
 };
 
 /**
@@ -113,150 +127,192 @@ export const setCrashlyticsEnabled = async (enabled: boolean): Promise<boolean> 
  * @param reason - Lý do không thành công
  */
 export const logFailure = async (name: string, reason: string) => {
-  await crashlytics().setAttributes({
+  const crashlyticsInstance = getCrashlytics();
+  
+  await crashlyticsSetAttributes(crashlyticsInstance, {
     [`failure_${name}`]: reason,
     timestamp: new Date().toISOString()
   });
 
   // Ghi thêm một non-fatal error để đảm bảo logs được gửi đi
-  await crashlytics().recordError(new Error(`Failure: ${name} - ${reason}`));
+  const error = new Error(`Operation failed: ${name} - ${reason}`);
+  error.name = 'OperationFailure';
+  crashlyticsRecordError(crashlyticsInstance, error);
 };
 
 /**
- * Ghi lại hành động của người dùng
- * @param action - Tên hành động
- * @param details - Chi tiết về hành động
+ * Setup global error handler để tự động ghi lại các lỗi không được handle
  */
-export const logUserAction = async (action: string, details?: string) => {
-  await crashlytics().log(`USER_ACTION: ${action}${details ? ` - ${details}` : ''}`);
-};
-
-/**
- * Thiết lập global error handler cho toàn bộ ứng dụng
- * Gọi hàm này trong file App.tsx
- */
-export const setupGlobalErrorHandler = () => {
-  // Xử lý lỗi không bắt được trong JS
-  const errorHandler = (error: Error, isFatal?: boolean) => {
-    try {
-      // Ghi lại lỗi nhưng không hiển thị trực tiếp
-      crashlytics().recordError(error);
-      crashlytics().setAttributes({
-        isFatal: String(isFatal || false),
-        timestamp: new Date().toISOString(),
-        error_source: 'global_error_handler'
-      });
-
-      // Log lỗi vào console thay vì hiển thị trực tiếp
-      console.log('Global error caught:', error.message);
-    } catch (handlerError) {
-      // Tránh vòng lặp vô hạn nếu có lỗi trong error handler
-      console.error('Error in error handler:', handlerError);
-    }
-  };
-
-  // Override hàm console.error để log các lỗi
-  const originalConsoleError = console.error;
-  console.error = (...args: any[]) => {
-    // Gọi hàm console.error gốc
-    originalConsoleError(...args);
+export const setupGlobalErrorHandler = (): void => {
+  // Setup cho React Native ErrorUtils
+  if (typeof globalThis !== 'undefined' && (globalThis as any).ErrorUtils) {
+    const errorUtils = (globalThis as any).ErrorUtils;
+    const originalHandler = errorUtils.getGlobalHandler && errorUtils.getGlobalHandler();
     
-    // Log lỗi vào Crashlytics
-    const errorMessage = args.map(arg => 
-      typeof arg === 'string' ? arg : JSON.stringify(arg)
-    ).join(' ');
-    
-    crashlytics().log(`CONSOLE_ERROR: ${errorMessage}`);
-  };
-
-  // Cấu hình các xử lý lỗi khác nhau cho ứng dụng
-  const globalAny = global as any;
-  if (globalAny.ErrorUtils) {
-    globalAny.ErrorUtils.setGlobalHandler(errorHandler);
-  }
-
-  // Xử lý unhandled promise rejections
-  if (typeof process !== 'undefined' && process.on) {
-    process.on('unhandledRejection', (reason) => {
-      let error;
-      if (reason instanceof Error) {
-        error = reason;
-      } else {
-        error = new Error(`Unhandled Promise Rejection: ${reason}`);
+    errorUtils.setGlobalHandler((error: Error, isFatal?: boolean) => {
+      logError(error, `Global Error Handler (Fatal: ${isFatal})`);
+      
+      // Gửi lên Crashlytics với thông tin chi tiết
+      try {
+        const crashlyticsInstance = getCrashlytics();
+        // Ghi lại lỗi nhưng không hiển thị trực tiếp sử dụng modular API
+        crashlyticsRecordError(crashlyticsInstance, error);
+        crashlyticsSetAttributes(crashlyticsInstance, {
+          isFatal: String(isFatal || false),
+          timestamp: new Date().toISOString(),
+          error_source: 'global_error_handler'
+        });
+      } catch (crashlyticsError) {
+        console.error('Failed to log global error to Crashlytics:', crashlyticsError);
       }
-      crashlytics().recordError(error);
-      crashlytics().setAttributes({
-        error_source: 'unhandled_promise_rejection',
-        timestamp: new Date().toISOString()
-      });
+      
+      // Chạy handler gốc nếu có
+      if (originalHandler) {
+        originalHandler(error, isFatal);
+      }
     });
   }
 
-  // Xử lý uncaught exceptions
+  // Override console.error để tự động log (chỉ log những lỗi quan trọng)
+  if (typeof console !== 'undefined') {
+    const originalConsoleError = console.error;
+    console.error = (...args: any[]) => {
+      // Gọi console.error gốc trước
+      originalConsoleError.apply(console, args);
+      
+      // Filter ra những warning/error không quan trọng
+      const errorMessage = args.map(arg => 
+        typeof arg === 'string' ? arg : JSON.stringify(arg)
+      ).join(' ');
+      
+      // Chỉ log lên Crashlytics nếu không phải là network error hoặc warning thông thường
+      const shouldSkip = errorMessage.includes('Network Error') || 
+                        errorMessage.includes('Warning:') ||
+                        errorMessage.includes('[Axios Response Error]') ||
+                        errorMessage.includes('[Axios Request Error]') ||
+                        errorMessage.includes('AxiosError') ||
+                        errorMessage.includes('timeout') ||
+                        errorMessage.includes('ECONNREFUSED') ||
+                        errorMessage.includes('Request failed');
+      
+      if (!shouldSkip) {
+        crashlyticsLog(getCrashlytics(), `CONSOLE_ERROR: ${errorMessage}`);
+      }
+    };
+  }
+  
+  // Setup unhandled promise rejection handler
   if (typeof process !== 'undefined' && process.on) {
-    process.on('uncaughtException', (error) => {
-      crashlytics().recordError(error);
-      crashlytics().setAttributes({
-        error_source: 'uncaught_exception',
-        timestamp: new Date().toISOString()
-      });
+    process.on('unhandledRejection', (reason: any, promise: Promise<any>) => {
+      const error = reason instanceof Error ? reason : new Error(String(reason));
+      logError(error, 'Unhandled Promise Rejection');
+      
+      try {
+        const crashlyticsInstance = getCrashlytics();
+        crashlyticsRecordError(crashlyticsInstance, error);
+        crashlyticsSetAttributes(crashlyticsInstance, {
+          error_source: 'unhandled_promise_rejection',
+          timestamp: new Date().toISOString()
+        });
+      } catch (crashlyticsError) {
+        console.error('Failed to log unhandled rejection to Crashlytics:', crashlyticsError);
+      }
+    });
+
+    process.on('uncaughtException', (error: Error) => {
+      logError(error, 'Uncaught Exception');
+      
+      try {
+        const crashlyticsInstance = getCrashlytics();
+        crashlyticsRecordError(crashlyticsInstance, error);
+        crashlyticsSetAttributes(crashlyticsInstance, {
+          error_source: 'uncaught_exception',
+          timestamp: new Date().toISOString()
+        });
+      } catch (crashlyticsError) {
+        console.error('Failed to log uncaught exception to Crashlytics:', crashlyticsError);
+      }
     });
   }
 };
 
 /**
- * Thiết lập interceptor cho tất cả API calls sử dụng Axios
- * @param axiosInstance - Instance của Axios được sử dụng trong ứng dụng
+ * Setup Axios interceptors để tự động log các API errors
  */
-export const setupAxiosInterceptor = (axiosInstance: any) => {
-  axiosInstance.interceptors.request.use(
-    (config: any) => {
-      // Ghi log request params
-      crashlytics().log(`API_REQUEST: ${config.method.toUpperCase()} ${config.url}`);
-      if (config.params) {
-        const maskedParams = maskSensitiveData(config.params);
-        crashlytics().log(`REQUEST_PARAMS: ${JSON.stringify(maskedParams)}`);
-      }
-      if (config.data) {
-        const maskedData = maskSensitiveData(config.data);
-        crashlytics().log(`REQUEST_BODY: ${JSON.stringify(maskedData)}`);
+export const setupAxiosInterceptor = (): void => {
+  // Request interceptor
+  axios.interceptors.request.use(
+    (config) => {
+      try {
+        const crashlyticsInstance = getCrashlytics();
+        // Ghi log request params
+        crashlyticsLog(crashlyticsInstance, `API_REQUEST: ${config.method?.toUpperCase()} ${config.url}`);
+        if (config.params) {
+          const maskedParams = maskSensitiveData(config.params);
+          crashlyticsLog(crashlyticsInstance, `REQUEST_PARAMS: ${JSON.stringify(maskedParams)}`);
+        }
+        if (config.data) {
+          const maskedData = maskSensitiveData(config.data);
+          crashlyticsLog(crashlyticsInstance, `REQUEST_BODY: ${JSON.stringify(maskedData)}`);
+        }
+      } catch (error) {
+        console.error('Error in axios request interceptor:', error);
       }
       return config;
     },
-    (error: any) => {
-      logError(error, {
-        error_type: 'axios_request',
-        timestamp: new Date().toISOString(),
-        request_params: error.config?.params ? JSON.stringify(maskSensitiveData(error.config.params)) : 'none',
-        request_body: error.config?.data ? JSON.stringify(maskSensitiveData(error.config.data)) : 'none'
-      });
+    (error) => {
+      // Chỉ log request errors nghiêm trọng, không phải network issues thông thường
+      if (!__DEV__ || !error.message?.includes('Network Error')) {
+        logError(error, 'Axios Request Error');
+      }
       return Promise.reject(error);
     }
   );
 
-  axiosInstance.interceptors.response.use(
-    (response: any) => {
-      // Ghi log response data
-      crashlytics().log(`API_RESPONSE: ${response.config.method.toUpperCase()} ${response.config.url} - ${response.status}`);
-      if (response.data) {
-        const maskedData = maskSensitiveData(response.data);
-        crashlytics().log(`RESPONSE_DATA: ${JSON.stringify(maskedData)}`);
+  // Response interceptor
+  axios.interceptors.response.use(
+    (response) => {
+      try {
+        const crashlyticsInstance = getCrashlytics();
+        crashlyticsLog(crashlyticsInstance, `API_RESPONSE: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`);
+        if (response.data) {
+          const maskedData = maskSensitiveData(response.data);
+          crashlyticsLog(crashlyticsInstance, `RESPONSE_DATA: ${JSON.stringify(maskedData)}`);
+        }
+      } catch (error) {
+        console.error('Error in axios response interceptor:', error);
       }
       return response;
     },
-    (error: any) => {
-      const { config, response } = error;
+    (error) => {
+      const status = error.response?.status || 'unknown';
       
-      logError(error, {
-        error_type: 'axios_response',
-        url: config?.url || 'unknown',
-        method: config?.method || 'unknown',
-        status: response?.status ? String(response.status) : 'unknown',
-        timestamp: new Date().toISOString(),
-        request_params: config?.params ? JSON.stringify(maskSensitiveData(config.params)) : 'none',
-        request_body: config?.data ? JSON.stringify(maskSensitiveData(config.data)) : 'none',
-        response_data: response?.data ? JSON.stringify(maskSensitiveData(response.data)) : 'none'
-      });
+      // Chỉ log lên Crashlytics nếu không phải development mode hoặc không phải network error
+      const isDev = __DEV__;
+      const isNetworkError = error.message?.includes('Network Error') || !error.response;
+      
+      if (!isDev || !isNetworkError) {
+        try {
+          const crashlyticsInstance = getCrashlytics();
+          crashlyticsLog(crashlyticsInstance, `API_ERROR: ${error.config?.method?.toUpperCase()} ${error.config?.url} - ${status}`);
+          crashlyticsSetAttributes(crashlyticsInstance, {
+            error_code: String(status),
+            endpoint: error.config?.url || 'unknown',
+            method: error.config?.method || 'unknown',
+            timestamp: new Date().toISOString()
+          });
+
+          if (error.response?.data) {
+            const maskedError = maskSensitiveData(error.response.data);
+            crashlyticsLog(crashlyticsInstance, `ERROR_RESPONSE: ${JSON.stringify(maskedError)}`);
+          }
+        } catch (crashlyticsError) {
+          console.error('Failed to log axios error to Crashlytics:', crashlyticsError);
+        }
+
+        // Log error với context chi tiết (chỉ khi không phải network error trong dev)
+        logError(error, 'Axios Response Error');
+      }
       
       return Promise.reject(error);
     }

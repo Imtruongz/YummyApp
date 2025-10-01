@@ -17,7 +17,7 @@ import CustomButton from '../components/customize/CustomButton.tsx';
 import {userUpdateAPI} from '../redux/slices/auth/authThunk.ts';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
 import OverlayBadge from '../components/customize/OverlayBadge.tsx';
-import Header from '../components/customize/Header.tsx';
+import HomeHeader from '../components/HomeHeader';
 import {useTranslation} from 'react-i18next';
 import RNFS from 'react-native-fs';
 
@@ -129,7 +129,12 @@ const SettingProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={t('edit_profile_header')} iconName="arrowleft" />
+      <HomeHeader 
+        mode="back" 
+        title={t('edit_profile_header')} 
+        showGoBack={true}
+        showNotification={false}
+      />
       <View style={styles.body}>
         {isLoadingUser ? (
           <ActivityIndicator size="large" color={color.primary} />

@@ -91,6 +91,12 @@
     "pw_confirm_not_match": "Confirm password does not match",
     "register_success": "Registration successful! Please check your email to verify your account.",
     "search": "Search",
+    "search_suggestion_title": "Search suggestions by category",
+
+    "notifications": "Notifications",
+    "notification_unread": "Unread",
+    "notification_empty": "No notifications.",
+    "follow_no_users": "No users found.",
 
     "recipe_detail_error_add": "This dish is already in your favorites list",
     "recipe_detail_description": "Description",

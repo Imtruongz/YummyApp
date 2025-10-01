@@ -15,7 +15,7 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 import CustomTitle from '../components/customize/Title';
 import SettingButton from '../components/customize/SettingButton';
 import colors from '../utils/color';
-import Header from '../components/customize/Header';
+import HomeHeader from '../components/HomeHeader';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,7 +25,7 @@ import '../languages/i18n';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
-import crashlytics from '@react-native-firebase/crashlytics';
+import { getCrashlytics, crash } from '@react-native-firebase/crashlytics/lib/modular';
 import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
 
 const storage = new MMKV();
@@ -72,7 +72,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
-        <Header title={t('setting_settings_header')} />
+        <HomeHeader mode="title" title={t('setting_settings_header')} showNotification={false} />
         <View style={styles.accountContainer}>
           <CustomTitle style={styles.title} title={t('setting_account')} />
           <SettingButton
@@ -105,8 +105,8 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             onPress={handleLogout}
           />
         </View>
-        {/* <View>
-          <RNButton title="Crash" onPress={() => crashlytics().crash()} />
+        <View>
+          <RNButton title="Crash" onPress={() => crash(getCrashlytics())} />
         </View>
         <View style={{marginTop: 16, marginHorizontal: 16}}>
           <RNButton
@@ -117,11 +117,13 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
               const url = `mblaos://pay?reference=${token}`;
               console.log('Opening URL:', url);
               Linking.openURL(url).catch(() => {
-                console.log('MBLaos app is not installed');
+                console.log('MBLaos app is not installedd');
+                //Nếu app MBLaos chưa được cài đặt, chuyển hướng người dùng đến trang tải ứng dụng
+                Linking.openURL('https://play.google.com/store/apps/details?id=com.mblaos.mobilebanking');
               });
             }}
           />
-        </View> */}
+        </View>
 
         <Portal>
           <Dialog visible={dialogVisible} onDismiss={hideDialog}>

@@ -1,5 +1,5 @@
 import React, { ComponentType, useEffect } from 'react';
-import crashlytics from '@react-native-firebase/crashlytics';
+import { getCrashlytics, log, recordError, setAttributes } from '@react-native-firebase/crashlytics/lib/modular';
 
 /**
  * HOC (Higher Order Component) để tự động monitor và log các hoạt động của component
@@ -19,11 +19,11 @@ export function withCrashlyticsMonitoring<P extends object>(
   const WithCrashlyticsMonitoring = (props: P) => {
     useEffect(() => {
       // Log khi component mount
-      crashlytics().log(`COMPONENT_MOUNT: ${displayName}`);
+      log(getCrashlytics(), `COMPONENT_MOUNT: ${displayName}`);
       
       return () => {
         // Log khi component unmount
-        crashlytics().log(`COMPONENT_UNMOUNT: ${displayName}`);
+        log(getCrashlytics(), `COMPONENT_UNMOUNT: ${displayName}`);
       };
     }, []);
     
@@ -32,10 +32,11 @@ export function withCrashlyticsMonitoring<P extends object>(
       return <WrappedComponent {...props} />;
     } catch (error) {
       // Ghi lại lỗi trong quá trình render
-      crashlytics().recordError(error as Error);
-      crashlytics().setAttributes({
-        error_component: displayName,
-        error_stage: 'render',
+      const crashlyticsInstance = getCrashlytics();
+      recordError(crashlyticsInstance, error as Error);
+      setAttributes(crashlyticsInstance, {
+        component_name: displayName,
+        error_boundary: 'true',
         timestamp: new Date().toISOString()
       });
       

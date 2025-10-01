@@ -1,7 +1,10 @@
 
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchNotifications } from '../redux/slices/notification/notificationThunk';
+import HomeHeader from '../components/HomeHeader';
+import { useTranslation } from 'react-i18next';
 import { useRoute } from '@react-navigation/native';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
 import { setNotifications, setLoading, setError } from '../redux/slices/notification/notificationSlice';
@@ -12,6 +15,7 @@ const NotificationsScreen = () => {
   const dispatch = useAppDispatch();
   const notifications = useAppSelector(state => state.notification.list);
   const loading = useAppSelector(state => state.notification.isLoading);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (userId) {
@@ -27,31 +31,33 @@ const NotificationsScreen = () => {
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.body}>{item.body}</Text>
       <Text style={styles.time}>{new Date(item.createdAt).toLocaleString()}</Text>
-      {!item.isRead && <Text style={styles.unread}>Chưa đọc</Text>}
+      {!item.isRead && <Text style={styles.unread}>{t('notification_unread')}</Text>}
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Thông báo</Text>
-      {loading ? (
-        <Text>Đang tải...</Text>
-      ) : notifications.length === 0 ? (
-        <Text>Không có thông báo nào.</Text>
-      ) : (
-        <FlatList
-          data={notifications}
-          keyExtractor={item => item._id}
-          renderItem={renderItem}
-        />
-      )}
-    </View>
+    <SafeAreaView style={styles.container}>
+      <HomeHeader mode="title" title={t('notifications')} showNotification={false} />
+      <View style={styles.content}>
+        {loading ? (
+          <Text>{t('loading')}</Text>
+        ) : notifications.length === 0 ? (
+          <Text>{t('notification_empty')}</Text>
+        ) : (
+          <FlatList
+            data={notifications}
+            keyExtractor={item => item._id}
+            renderItem={renderItem}
+          />
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 16 },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 16 },
+  container: { flex: 1, backgroundColor: '#fff' },
+  content: { flex: 1, padding: 16 },
   item: { padding: 12, borderBottomWidth: 1, borderColor: '#eee' },
   title: { fontSize: 16, fontWeight: 'bold' },
   body: { fontSize: 14, color: '#333' },

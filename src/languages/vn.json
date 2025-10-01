@@ -81,8 +81,14 @@
     "pw_confirm_not_match": "Xác nhận mật khẩu không khớp",
     "register_success": "Đăng ký thành công! Vui lòng kiểm tra email của bạn để xác minh tài khoản.",
     "search": "Tìm kiếm",
+    "search_suggestion_title": "Gợi ý tìm kiếm theo thể loại",
 
-    "recipe_detail_error_add": "Món ăn đã có trong danh sách ưa thích",
+    "notifications": "Thông báo",
+    "notification_unread": "Chưa đọc",
+    "notification_empty": "Không có thông báo nào.",
+    "follow_no_users": "Không tìm thấy người dùng nào.",
+
+    "recipe_detail_error_add": "Món ăn này đã có trong danh sách yêu thích của bạn",
     "recipe_detail_description": "Mô tả",
     "recipe_detail_ingredient": "Thành phần",
     "recipe_detail_step": "Bước nấu",

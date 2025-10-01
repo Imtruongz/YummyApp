@@ -6,8 +6,8 @@ import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
 // import Toast from 'react-native-toast-message';
 import { MMKV } from 'react-native-mmkv';
-import crashlytics from '@react-native-firebase/crashlytics';
 import { setupGlobalErrorHandler } from './src/utils/crashlytics';
+import { getCrashlytics, setCrashlyticsCollectionEnabled } from '@react-native-firebase/crashlytics/lib/modular';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -17,11 +17,16 @@ import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
 import Toast from 'react-native-toast-message';
 import { updateFcmTokenApi } from './src/api/updateFcmTokenApi';
 
-// Bật thu thập dữ liệu Crashlytics
-crashlytics().setCrashlyticsCollectionEnabled(true);
+// Bật thu thập dữ liệu Crashlytics sử dụng modular API
+setCrashlyticsCollectionEnabled(getCrashlytics(), true);
 
 // Thiết lập global error handler
 setupGlobalErrorHandler();
+
+// Setup axios interceptor chỉ trong production
+// if (!__DEV__) {
+//   setupAxiosInterceptor();
+// }
 
 const storage = new MMKV();
 

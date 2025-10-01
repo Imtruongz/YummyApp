@@ -9,7 +9,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {MMKV} from 'react-native-mmkv';
 import colors from '../utils/color';
-import Header from '../components/customize/Header';
+import HomeHeader from '../components/HomeHeader';
 
 import {verifyPassword, verifyConfirmPassword} from '../utils/validate';
 import Toast from 'react-native-toast-message';
@@ -108,7 +108,12 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
 
   return (
     <View style={styles.container}>
-      <Header title={t('change_pw_header')} iconName="arrowleft" />
+      <HomeHeader 
+        mode="back" 
+        title={t('change_pw_header')} 
+        showGoBack={true}
+        showNotification={false}
+      />
       <View style={styles.body}>
         <CustomInput
           placeholder={t('change_old_pw')}

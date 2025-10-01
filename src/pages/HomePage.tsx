@@ -97,7 +97,13 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header fixed trên cùng */}
-      <HomeHeader avatar={user?.avatar} username={user?.username} greetingMessage={message} navigation={navigation} />
+      <HomeHeader 
+        mode="home"
+        avatar={user?.avatar} 
+        username={user?.username} 
+        greetingMessage={message}
+        showNotification={true}
+      />
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>

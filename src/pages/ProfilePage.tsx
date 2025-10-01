@@ -22,6 +22,7 @@ import {
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
 import ProfileSkeleton from '../components/skeleton/ProfileSkeleton';
+import HomeHeader from '../components/HomeHeader';
 
 import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
@@ -142,9 +143,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <CustomTitle style={styles.title} title={t('profile_my_profile_header')} />
-      </View>
+      <HomeHeader mode="profile" title={t('profile_my_profile_header')} showNotification={false} />
       <View style={styles.infoContainer}>
         {isErrorUser ? (
           <Text>{t('Something went wrong')}</Text>
@@ -233,12 +232,6 @@ const styles = StyleSheet.create({
   infoItemTouchable: {
     borderRadius: 10,
   },
-  header: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-
   avatar: {
     width: 80,
     height: 80,

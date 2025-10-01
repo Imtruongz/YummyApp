@@ -15,7 +15,7 @@ import CustomButton from '../components/customize/CustomButton';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import imgURL from '../utils/urlImg';
-import Header from '../components/customize/Header';
+import HomeHeader from '../components/HomeHeader';
 import SelectDropdown from 'react-native-select-dropdown';
 import {addFoodAPI} from '../redux/slices/food/foodThunk';
 import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
@@ -187,7 +187,12 @@ const AddFoodPage = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={t('add_add_food_header')} iconName="arrowleft" />
+      <HomeHeader 
+        mode="back" 
+        title={t('add_add_food_header')} 
+        showGoBack={true}
+        showNotification={false}
+      />
       <ScrollView>
         <View style={styles.container2}>
           <CustomTitle title={t('add_choose_image')} />

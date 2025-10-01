@@ -3,9 +3,10 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ActivityIndi
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { getFollowersAPI, getFollowingAPI } from '../redux/slices/follow/followThunk';
+import { useTranslation } from 'react-i18next';
 import colors from '../utils/color.ts';
 import imgUrl from '../utils/urlImg.ts';
-import Header from '../components/customize/Header.tsx';
+import HomeHeader from '../components/HomeHeader';
 import CustomAvatar from '../components/customize/Avatar.tsx';
 
 interface UserItemProps {
@@ -36,6 +37,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress }) => (
 );
 
 const FollowersFollowingListScreen: React.FC = () => {
+  const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
@@ -66,7 +68,12 @@ const FollowersFollowingListScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Header title={type === 'followers' ? 'Followers' : 'Following'} iconName="left" />
+      <HomeHeader 
+        mode="back" 
+        title={type === 'followers' ? t('profile_followers') || 'Followers' : t('profile_following') || 'Following'} 
+        showGoBack={true}
+        showNotification={false}
+      />
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />
       ) : (
@@ -75,7 +82,7 @@ const FollowersFollowingListScreen: React.FC = () => {
           keyExtractor={(item) => item.userId}
           renderItem={({ item }) => <UserItem user={item} onPress={handleUserPress} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<Text style={styles.emptyText}>No users found.</Text>}
+          ListEmptyComponent={<Text style={styles.emptyText}>{t('follow_no_users') || 'No users found.'}</Text>}
         />
       )}
     </View>

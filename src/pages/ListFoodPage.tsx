@@ -18,7 +18,7 @@ import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
 const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
-import Header from '../components/customize/Header';
+import HomeHeader from '../components/HomeHeader';
 import NoData from '../components/NoData';
 import Loading from '../components/Loading';
 import {useTranslation} from 'react-i18next';
@@ -50,7 +50,12 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={t('add_category')} iconName="arrowleft" />
+      <HomeHeader 
+        mode="back" 
+        title={t('add_category')} 
+        showGoBack={true}
+        showNotification={false}
+      />
       <TextInput
         style={styles.inputHeader}
         placeholder={t('search')}

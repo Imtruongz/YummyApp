@@ -1,7 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import HomeHeader from '../components/HomeHeader';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk';
 // Bỏ SUGGESTIONS cứng, sẽ lấy từ category
@@ -85,75 +87,77 @@ const SearchPage = () => {
   );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={styles.container}>
-        <Text style={styles.header}>{t('tab_search') || 'Tìm kiếm'}</Text>
-        <TextInput
-          style={styles.input}
-          placeholder={t('search') || 'Nhập tên món ăn...'}
-          value={query}
-          onChangeText={handleSearch}
-          clearButtonMode="while-editing"
-        />
-        {/* Tag category đang chọn */}
-        {isCategorySearch && selectedCategory && (
-          <View style={styles.selectedCategoryTagContainer}>
-            <View style={styles.selectedCategoryTag}>
-              <Text style={styles.selectedCategoryText}>{selectedCategory.name}</Text>
-              <TouchableOpacity onPress={handleClearCategory} style={styles.clearTagBtn}>
-                <Text style={styles.clearTagText}>×</Text>
-              </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <HomeHeader mode="search" title={t('tab_search') || 'Tìm kiếm'} showNotification={false} />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder={t('search') || 'Nhập tên món ăn...'}
+            value={query}
+            onChangeText={handleSearch}
+            clearButtonMode="while-editing"
+          />
+          {/* Tag category đang chọn */}
+          {isCategorySearch && selectedCategory && (
+            <View style={styles.selectedCategoryTagContainer}>
+              <View style={styles.selectedCategoryTag}>
+                <Text style={styles.selectedCategoryText}>{selectedCategory.name}</Text>
+                <TouchableOpacity onPress={handleClearCategory} style={styles.clearTagBtn}>
+                  <Text style={styles.clearTagText}>×</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-        {query.trim() === '' && !isCategorySearch ? (
-          <View style={styles.suggestionContainer}>
-            <Text style={styles.suggestionTitle}>Gợi ý tìm kiếm theo thể loại</Text>
-            {isLoadingCategory ? (
-              <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
+          )}
+          {query.trim() === '' && !isCategorySearch ? (
+            <View style={styles.suggestionContainer}>
+              <Text style={styles.suggestionTitle}>{t('search_suggestion_title')}</Text>
+              {isLoadingCategory ? (
+                <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
+              ) : (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical: 8}}>
+                  {categoryList.map(cat => (
+                    <TouchableOpacity
+                      key={cat.categoryId}
+                      style={styles.suggestionChip}
+                      onPress={() => handleCategorySearch(cat.categoryId, cat.categoryName)}
+                    >
+                      <Text style={styles.suggestionText}>{cat.categoryName}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
+            </View>
+          ) : isCategorySearch ? (
+            isLoadingFood ? (
+              <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
+            ) : categoryFoodList.length === 0 ? (
+              <Text style={styles.empty}>{t('list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
             ) : (
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical: 8}}>
-                {categoryList.map(cat => (
-                  <TouchableOpacity
-                    key={cat.categoryId}
-                    style={styles.suggestionChip}
-                    onPress={() => handleCategorySearch(cat.categoryId, cat.categoryName)}
-                  >
-                    <Text style={styles.suggestionText}>{cat.categoryName}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            )}
-          </View>
-        ) : isCategorySearch ? (
-          isLoadingFood ? (
+              <FlatList
+                data={categoryFoodList}
+                keyExtractor={item => item.foodId}
+                renderItem={renderItem}
+                style={{ width: '100%' }}
+                contentContainerStyle={{ paddingBottom: 24 }}
+              />
+            )
+          ) : loading ? (
             <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
-          ) : categoryFoodList.length === 0 ? (
+          ) : results.length === 0 ? (
             <Text style={styles.empty}>{t('list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
           ) : (
             <FlatList
-              data={categoryFoodList}
+              data={results}
               keyExtractor={item => item.foodId}
               renderItem={renderItem}
               style={{ width: '100%' }}
               contentContainerStyle={{ paddingBottom: 24 }}
             />
-          )
-        ) : loading ? (
-          <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
-        ) : results.length === 0 ? (
-          <Text style={styles.empty}>{t('list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
-        ) : (
-          <FlatList
-            data={results}
-            keyExtractor={item => item.foodId}
-            renderItem={renderItem}
-            style={{ width: '100%' }}
-            contentContainerStyle={{ paddingBottom: 24 }}
-          />
-        )}
-      </View>
-    </TouchableWithoutFeedback>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 }
 
@@ -193,15 +197,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingTop: 24,
   },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#222',
-    alignSelf: 'center',
+  searchContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   input: {
     borderWidth: 1,

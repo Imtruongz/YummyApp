@@ -19,7 +19,7 @@ import {RootState} from '../redux/store.ts';
 
 import {RootStackParamList} from '../../android/types/StackNavType.ts';
 
-import Header from '../components/customize/Header';
+import HomeHeader from '../components/HomeHeader';
 import CustomTitle from '../components/customize/Title.tsx';
 import Loading from '../components/Loading.tsx';
 import NoData from '../components/NoData';
@@ -62,7 +62,12 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={t('add_category')} iconName="arrowleft" />
+      <HomeHeader 
+        mode="back" 
+        title={t('add_category')} 
+        showGoBack={true}
+        showNotification={false}
+      />
       <TextInput
         style={styles.inputHeader}
         placeholder={t('search')}

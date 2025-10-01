@@ -32,7 +32,7 @@ import { resetViewedUserFoodList } from '../redux/slices/food/foodSlice';
 
 import colors from '../utils/color.ts';
 import imgUrl from '../utils/urlImg.ts';
-import Header from '../components/customize/Header.tsx';
+import HomeHeader from '../components/HomeHeader';
 import CustomAvatar from '../components/customize/Avatar.tsx';
 import CustomTitle from '../components/customize/Title.tsx';
 import CustomButton from '../components/customize/CustomButton.tsx';
@@ -201,7 +201,12 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title={viewedUser?.username || t('profile', 'Profile')} iconName="left" />
+      <HomeHeader 
+        mode="back" 
+        title={viewedUser?.username || t('profile', 'Profile')} 
+        showGoBack={true}
+        showNotification={false}
+      />
 
       {/* Profile Section */}
       <View style={styles.profileSection}>
