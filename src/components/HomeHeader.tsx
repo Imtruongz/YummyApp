@@ -92,7 +92,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
             <Typography
               title={title}
               fontSize={20}
-              fontWeight='600'
+              fontWeight='700'
               color={color.dark}
             />
           </View>
@@ -106,7 +106,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   return (
     <SafeAreaView style={{ backgroundColor: color.primaryHover }}>
       <StatusBar backgroundColor={color.primaryHover} barStyle="light-content" />
-      <View style={styles.headerContainer}>
+      <View style={[styles.headerContainer, { paddingHorizontal: showGoBack ? 0 : 16 }]}>
         <View style={styles.leftContainer}>
           {showGoBack && (
             <IconButton 
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 8,
-    paddingHorizontal: 16,
     backgroundColor: color.primaryHover,
     minHeight: 46, // Cố định chiều cao tối thiểu
   },

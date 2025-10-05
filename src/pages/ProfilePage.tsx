@@ -66,7 +66,7 @@ const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({number, l
   ) : (
     <View style={styles.infoItem}>
       <Typography title={number === undefined || number === null ? '0' : String(number)} fontSize={14} />
-      <Typography title={label} fontSize={12} />
+      <Typography title={label} fontSize={13} />
     </View>
   )
 );
@@ -206,6 +206,8 @@ const styles = StyleSheet.create({
   myInfoContainer: {
     flexDirection: 'column',
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
   },
   myInfo2: {
     justifyContent: 'flex-start',
@@ -214,20 +216,16 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   myInfo3: {
-    width: 180,
     justifyContent: 'space-around',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     flexDirection: 'row',
-    gap: 6,
+    gap: 4,
   },
   infoItem: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    gap: 4,
     minWidth: 64,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
   },
   infoItemTouchable: {
     borderRadius: 10,

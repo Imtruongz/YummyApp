@@ -46,6 +46,7 @@
     "setting_logout": "Đăng xuất",
     "setting_language": "Ngôn ngữ",
     "setting_logout_content": "Bạn có chắc chắn muốn đăng xuất không ?",
+    "setting_faceid": "Cài đặt sinh trắc học",
 
     "list_can_not_find": "Không tìm thấy món ăn phù hợp",
     "list_nodata": "Không có món ăn nào trong danh mục này",
@@ -95,7 +96,6 @@
     "recipe_detail_comment": "Bình luận",
     "recipe_detail_see_all": "Xem tất cả",
     "recipe_detail_comment_placeholder": "Nhập bình luận của bạn",
-    "recipe_detail_more_food": "Thêm món ăn khác"
-    
+    "recipe_detail_more_food": "Thêm món ăn khác"  
   }
   

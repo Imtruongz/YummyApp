@@ -46,6 +46,7 @@
     "setting_logout": "登出",
     "setting_language": "语言",
     "setting_logout_content": "您确定要退出吗 ?",
+    "setting_faceid": "Face ID / Touch ID",
 
     "list_can_not_find": "未找到符合条件的美食",
     "list_nodata": "该分类中没有美食",

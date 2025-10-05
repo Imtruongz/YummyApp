@@ -27,6 +27,8 @@ import { changeLanguage } from '../languages/i18n';
 import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
 import { getCrashlytics, crash } from '@react-native-firebase/crashlytics/lib/modular';
 import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
+import api from '../api/config'
+const EntypoIcon = require('react-native-vector-icons/Entypo').default;
 
 const storage = new MMKV();
 interface SettingPageProps
@@ -69,6 +71,28 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
     }
   };
 
+  const handlePaymentViaMBLaos = async () => {
+    try {
+      const response = await api.post('/payment/create-session', {
+        amount: 75000,
+        description: 'Thanh toán đơn hàng YummyApp từ Setting',
+        merchantName: 'YummyFood',
+      });
+
+      const data = response.data;
+
+      if (data.success && data.token) {
+        const url = `mblaos://pay?token=${data.token}`;
+        console.log('Opening URL with dynamic token:', url);
+        await Linking.openURL(url);
+      } else {
+        console.log('Không thể tạo token động');
+      }
+    } catch (error) {
+      console.error('Error opening MBLaos app:', error);
+    }
+  };
+
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
@@ -95,33 +119,41 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
               </Text>
             </Pressable>
           </View>
+          <TouchableOpacity
+            style={styles.biometricContainer}
+            activeOpacity={0.7}
+            onPress={() => crash(getCrashlytics())}>
+            <View style={styles.biometricContent}>
+              <View style={styles.biometricIconContainer}>
+                <EntypoIcon name="fingerprint" size={24} color={colors.primary} />
+              </View>
+              <View style={styles.biometricTextContainer}>
+                <Text style={styles.biometricTitle}>{t('setting_faceid')}</Text>
+                <Text style={styles.biometricDescription}>
+                  {i18n.language === 'vn'
+                    ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học'
+                    : 'Quickly unlock app with biometrics'}
+                </Text>
+              </View>
+              <View style={styles.switchContainer}>
+                <View style={styles.biometricSwitch}>
+                  <View style={styles.switchKnob} />
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
-
         <View style={styles.accountContainer}>
-          <CustomTitle style={styles.title} title={t('setting_system')} />
           <SettingButton
             style={styles.button}
             title={t('setting_logout')}
             onPress={handleLogout}
           />
         </View>
-        <View>
-          <RNButton title="Crash" onPress={() => crash(getCrashlytics())} />
-        </View>
-        <View style={{marginTop: 16, marginHorizontal: 16}}>
+        <View style={{ marginTop: 16, marginHorizontal: 16 }}>
           <RNButton
             title="Thanh toán qua MBLaos"
-            onPress={() => {
-              // Tạo token động cho mỗi phiên giao dịch (demo)
-              const token = `REF_${Date.now()}_${Math.floor(Math.random()*100000)}`;
-              const url = `mblaos://pay?reference=${token}`;
-              console.log('Opening URL:', url);
-              Linking.openURL(url).catch(() => {
-                console.log('MBLaos app is not installedd');
-                //Nếu app MBLaos chưa được cài đặt, chuyển hướng người dùng đến trang tải ứng dụng
-                Linking.openURL('https://play.google.com/store/apps/details?id=com.mblaos.mobilebanking');
-              });
-            }}
+            onPress={handlePaymentViaMBLaos}
           />
         </View>
 
@@ -209,6 +241,69 @@ const styles = StyleSheet.create({
   languageText: {
     fontSize: 16,
     color: colors.primaryHover,
+  },
+  // Face ID / Biometric Styles
+  biometricContainer: {
+    width: '100%',
+    backgroundColor: colors.light,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: colors.InputBg,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  biometricContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  biometricIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary + '20', // 20% opacity
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  biometricIcon: {
+    fontSize: 18,
+  },
+  biometricTextContainer: {
+    flex: 1,
+  },
+  biometricTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.dark,
+    marginBottom: 4,
+  },
+  biometricDescription: {
+    fontSize: 13,
+    color: colors.smallText,
+  },
+  switchContainer: {
+    marginLeft: 8,
+  },
+  biometricSwitch: {
+    width: 48,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  switchKnob: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.light,
+    alignSelf: 'flex-end',
   },
   modalContainer: {
     flex: 1,

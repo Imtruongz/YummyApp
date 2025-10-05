@@ -203,7 +203,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
     <SafeAreaView style={styles.container}>
       <HomeHeader 
         mode="back" 
-        title={viewedUser?.username || t('profile', 'Profile')} 
+        title=''
         showGoBack={true}
         showNotification={false}
       />
@@ -272,9 +272,6 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
             height={120}
             textSize={16}
           />
-          <Text style={styles.emptySubtext}>
-            {t('empty_profile_message', 'This user hasn\'t shared any recipes yet')}
-          </Text>
         </View>
       ) : (
         <FlatList
