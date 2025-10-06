@@ -200,7 +200,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             onPress={handleLoginWithFacebook}
           >
             <Image
-              source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png' }}
+              source={require('../../assets/fb.png')}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>{t('login_with_facebook')}</Text>

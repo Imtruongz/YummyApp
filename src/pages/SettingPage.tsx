@@ -71,28 +71,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
     }
   };
 
-  const handlePaymentViaMBLaos = async () => {
-    try {
-      const response = await api.post('/payment/create-session', {
-        amount: 75000,
-        description: 'Thanh toán đơn hàng YummyApp từ Setting',
-        merchantName: 'YummyFood',
-      });
-
-      const data = response.data;
-
-      if (data.success && data.token) {
-        const url = `mblaos://pay?token=${data.token}`;
-        console.log('Opening URL with dynamic token:', url);
-        await Linking.openURL(url);
-      } else {
-        console.log('Không thể tạo token động');
-      }
-    } catch (error) {
-      console.error('Error opening MBLaos app:', error);
-    }
-  };
-
   return (
     <PaperProvider>
       <SafeAreaView style={styles.container}>
@@ -152,8 +130,13 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
         </View>
         <View style={{ marginTop: 16, marginHorizontal: 16 }}>
           <RNButton
-            title="Thanh toán qua MBLaos"
-            onPress={handlePaymentViaMBLaos}
+            title="Vào màn PaymentScreen"
+            onPress={() => navigation.navigate('PaymentScreen', {
+              amount: 150000,
+              phoneNumber: '0987654321',
+              serviceType: 'Thanh toán dịch vụ',
+              serviceProvider: 'YummyApp'
+            })}
           />
         </View>
 

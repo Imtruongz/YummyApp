@@ -26,4 +26,10 @@ export type RootStackParamList = {
   };
   OnBoarding: undefined;
   ChangePasswordPage: undefined;
+  PaymentScreen: {
+    amount?: number;
+    phoneNumber?: string;
+    serviceType?: string;
+    serviceProvider?: string;
+  };
 };
