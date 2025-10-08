@@ -13,7 +13,7 @@ const Loading = () => {
       </View>
       <View style={styles.body2}>
         <CustomTitle style={styles.title} title={t('loading')} />
-        <ActivityIndicator size={52}  style={styles.loading} />
+        <ActivityIndicator size={32}  style={styles.loading} />
       </View>
     </View>
   );

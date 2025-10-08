@@ -37,6 +37,12 @@ export type HomeStack = {
     userId: string;
   };
   NotificationsScreen: undefined;
+  PaymentScreen: {
+    amount?: number;
+    phoneNumber?: string;
+    serviceType?: string;
+    serviceProvider?: string;
+  };
 }
 
 export type ProfileStack = {

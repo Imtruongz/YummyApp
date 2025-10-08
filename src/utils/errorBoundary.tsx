@@ -1,7 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import crashlytics from '@react-native-firebase/crashlytics';
-import { logError } from './crashlytics';
 import color from './color';
 
 interface Props {
@@ -44,7 +42,6 @@ class ErrorBoundary extends Component<Props, State> {
       attributes.component_stack = errorInfo.componentStack.toString();
     }
     
-    logError(error, attributes);
   }
 
   resetError = (): void => {

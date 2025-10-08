@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ const MaterialCommunityIcons = require('react-native-vector-icons/MaterialCommun
 import { MMKV } from 'react-native-mmkv';
 import colors from '../utils/color';
 // import { ZaloPayLogo, BIDVLogo, CoinIcon } from '../components/icons/PaymentIcons';
+import HomeHeader from '../components/HomeHeader';
 
 import api from '../api/config'
 
@@ -41,6 +42,17 @@ const storage = new MMKV();
 
 const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const { amount = 20000, phoneNumber = '0363704403', serviceType = 'Nạp ĐT', serviceProvider = 'Viettel' } = route.params || {};
+  
+  useLayoutEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: { display: 'none' },
+    });
+    return () => {
+      navigation.getParent()?.setOptions({
+        tabBarStyle: undefined,
+      });
+    };
+  }, [navigation]);
   
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
     {
@@ -162,23 +174,20 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#0055ff" barStyle="light-content" />
+      <HomeHeader 
+        mode="back" 
+        title="Xác nhận giao dịch" 
+        showGoBack={true} 
+        showNotification={false} 
+      />
       
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <IoniconsIcon name="chevron-back" size={28} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Xác nhận giao dịch</Text>
-      </View>
-
       {/* Payment Card */}
             <View style={styles.paymentCard}>
         <View style={styles.serviceIconContainer}>
           {serviceType.toLowerCase().includes('dịch vụ') ? (
-            <IoniconsIcon name="cart-outline" size={30} color="#0055ff" />
+            <IoniconsIcon name="cart-outline" size={30} color={colors.primary} />
           ) : (
-            <IoniconsIcon name="phone-portrait-outline" size={30} color="#0055ff" />
+            <IoniconsIcon name="phone-portrait-outline" size={30} color={colors.primary} />
           )}
         </View>
         <Text style={styles.serviceTitle}>{serviceType}</Text>
@@ -236,7 +245,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
       {/* Info Message */}
       <View style={styles.infoMessageCard}>
-        <IoniconsIcon name="information-circle" size={24} color="#0055ff" />
+        <IoniconsIcon name="information-circle" size={24} color={colors.primary} />
         <View style={styles.infoMessageContent}>
           <Text style={styles.infoMessageText}>
             Chi tiêu thoải mái hơn khi chọn mua trước trả sau đến 37 ngày.
@@ -267,28 +276,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f6fa',
   },
-  header: {
-    height: 56,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#0055ff',
-    paddingHorizontal: 16,
-  },
-  backButton: {
-    padding: 4,
-  },
-  headerTitle: {
-    flex: 1,
-    fontSize: 20,
-    color: '#ffffff',
-    fontWeight: '600',
-    textAlign: 'center',
-    marginRight: 30,
-  },
   paymentCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.light,
     marginHorizontal: 16,
-    marginTop: -16,
+    marginTop: 16,
     borderRadius: 12,
     padding: 16,
     elevation: 4,
@@ -302,7 +293,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#e6f0ff',
+    backgroundColor: colors.primary + '20', // 20% opacity của màu primary
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -341,7 +332,7 @@ const styles = StyleSheet.create({
   },
   discountCard: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.light,
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -379,10 +370,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#0055ff',
+    borderColor: colors.primary,
   },
   discountButtonText: {
-    color: '#0055ff',
+    color: colors.primary,
     fontWeight: '600',
   },
   paymentMethodsSection: {
@@ -401,7 +392,7 @@ const styles = StyleSheet.create({
     color: '#0d1117',
   },
   viewAllText: {
-    color: '#0055ff',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -412,15 +403,15 @@ const styles = StyleSheet.create({
     width: 160,
     height: 70,
     marginRight: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.light,
     borderRadius: 8,
     padding: 12,
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: colors.InputBg,
   },
   paymentMethodCardSelected: {
-    borderColor: '#0055ff',
+    borderColor: colors.primary,
     borderWidth: 2,
   },
   paymentMethodContent: {
@@ -447,13 +438,13 @@ const styles = StyleSheet.create({
     width: 18,
     height: 18,
     borderRadius: 9,
-    backgroundColor: '#0055ff',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   infoMessageCard: {
     flexDirection: 'row',
-    backgroundColor: '#e6f0ff',
+    backgroundColor: colors.primary + '15', // 15% opacity của màu primary
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -471,7 +462,7 @@ const styles = StyleSheet.create({
   },
   infoMessageAction: {
     fontSize: 15,
-    color: '#0055ff',
+    color: colors.primary,
     fontWeight: '600',
     marginTop: 4,
   },
@@ -480,7 +471,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.light,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     elevation: 8,
@@ -504,7 +495,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   confirmButton: {
-    backgroundColor: '#1cc865',
+    backgroundColor: colors.primary,
     height: 48,
     paddingHorizontal: 24,
     borderRadius: 24,

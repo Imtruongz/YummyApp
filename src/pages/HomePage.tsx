@@ -43,6 +43,7 @@ import Toast from 'react-native-toast-message';
 const storage = new MMKV();
 
 import HomeHeader from '../components/HomeHeader';
+import { NetworkInfo } from 'react-native-network-info';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
@@ -97,10 +98,10 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header fixed trên cùng */}
-      <HomeHeader 
+      <HomeHeader
         mode="home"
-        avatar={user?.avatar} 
-        username={user?.username} 
+        avatar={user?.avatar}
+        username={user?.username}
         greetingMessage={message}
         showNotification={true}
       />

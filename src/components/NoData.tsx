@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 import colors from '../utils/color';
 
 type NoDataProps = {
@@ -31,7 +31,7 @@ const NoData: React.FC<NoDataProps> = ({
   return (
     <View style={styles.container}>
       <View style={circleStyle}>
-        <MaterialCommunityIcons name='database-off' size={120} color={colors.primary} />
+        <MaterialIcons name='no-food' size={120} color={colors.primary} />
       </View>
 
       <Text style={[styles.text, { fontSize: textSize, color: colors.dark }]}>

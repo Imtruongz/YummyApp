@@ -141,8 +141,8 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const loadData = useCallback(async () => {
     try {
       await Promise.all([
-        dispatch(getFoodByIdAPI({userId, isViewMode: true})),
-        dispatch(getUserByIdAPI({userId, isViewMode: true}))
+        dispatch(getFoodByIdAPI({ userId, isViewMode: true })),
+        dispatch(getUserByIdAPI({ userId, isViewMode: true }))
       ]);
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -201,8 +201,8 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader 
-        mode="back" 
+      <HomeHeader
+        mode="back"
         title=''
         showGoBack={true}
         showNotification={false}
@@ -220,12 +220,14 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
               image={viewedUser?.avatar || imgUrl.defaultAvatar}
             />
           </View>
-          <Text style={styles.username}>{viewedUser?.username}</Text>
-          {viewedUser?.description && (
-            <Text style={styles.bio} numberOfLines={2}>
-              {viewedUser.description}
-            </Text>
-          )}
+          <View style={styles.infoBlock3}>
+            <Text style={styles.username}>{viewedUser?.username}</Text>
+            {viewedUser?.description && (
+              <Text style={styles.bio} numberOfLines={2}>
+                {viewedUser.description}
+              </Text>
+            )}
+          </View>
         </View>
 
         {/* Stats Section */}
@@ -244,23 +246,40 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
           />
         </View>
 
-        {/* Action Button */}
-        {userId !== currentUserId && (
+        <View style={styles.handleFlDnt}>
+          {/* Action Button */}
+          {userId !== currentUserId && (
+            <TouchableOpacity
+              style={[styles.followButton, isFollowing ? { backgroundColor: colors.gray } : {}]}
+              onPress={handleFollowPress}
+              activeOpacity={0.8}
+              disabled={followLoading}
+            >
+              <Text style={styles.followButtonText}>
+                {followLoading
+                  ? t('loading', 'Đang xử lý...')
+                  : isFollowing
+                    ? t('profile_unfollow_btn', 'Unfollow')
+                    : t('profile_follow_btn', 'Follow')}
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[styles.followButton, isFollowing ? { backgroundColor: colors.gray } : {}]}
-            onPress={handleFollowPress}
+            onPress={() => navigation.navigate('PaymentScreen', {
+              amount: 150000,
+              phoneNumber: '0987654321',
+              serviceType: 'Thanh toán dịch vụ',
+              serviceProvider: 'YummyApp'
+            })}
             activeOpacity={0.8}
             disabled={followLoading}
           >
             <Text style={styles.followButtonText}>
-              {followLoading
-                ? t('loading', 'Đang xử lý...')
-                : isFollowing
-                  ? t('profile_unfollow_btn', 'Unfollow')
-                  : t('profile_follow_btn', 'Follow')}
+              Donate
             </Text>
           </TouchableOpacity>
-        )}
+        </View>
       </View>
 
       {/* Content Section */}
@@ -320,6 +339,8 @@ const styles = StyleSheet.create({
   avatarSection: {
     alignItems: 'center',
     marginBottom: 20,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
   },
   avatarContainer: {
     marginBottom: 12,
@@ -473,6 +494,7 @@ const styles = StyleSheet.create({
   },
   infoBlock3: {
     paddingHorizontal: 12,
+    alignItems: 'flex-start',
   },
   infoItem: {
     justifyContent: 'center',
@@ -567,5 +589,11 @@ const styles = StyleSheet.create({
   title2: {
     fontSize: 12,
     color: colors.smallText,
+  },
+  handleFlDnt: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
   },
 });

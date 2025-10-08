@@ -24,8 +24,6 @@ import { AuthContext } from '../contexts/AuthContext';
 import '../languages/i18n';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
-import { withCrashlyticsMonitoring } from '../components/withCrashlyticsMonitoring';
-import { getCrashlytics, crash } from '@react-native-firebase/crashlytics/lib/modular';
 import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
 import api from '../api/config'
 const EntypoIcon = require('react-native-vector-icons/Entypo').default;
@@ -100,7 +98,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
           <TouchableOpacity
             style={styles.biometricContainer}
             activeOpacity={0.7}
-            onPress={() => crash(getCrashlytics())}>
+            >
             <View style={styles.biometricContent}>
               <View style={styles.biometricIconContainer}>
                 <EntypoIcon name="fingerprint" size={24} color={colors.primary} />
@@ -128,18 +126,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             onPress={handleLogout}
           />
         </View>
-        <View style={{ marginTop: 16, marginHorizontal: 16 }}>
-          <RNButton
-            title="Vào màn PaymentScreen"
-            onPress={() => navigation.navigate('PaymentScreen', {
-              amount: 150000,
-              phoneNumber: '0987654321',
-              serviceType: 'Thanh toán dịch vụ',
-              serviceProvider: 'YummyApp'
-            })}
-          />
-        </View>
-
         <Portal>
           <Dialog visible={dialogVisible} onDismiss={hideDialog}>
             <Dialog.Title>{t('setting_logout')}</Dialog.Title>
@@ -185,7 +171,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   );
 };
 
-export default withCrashlyticsMonitoring(SettingPage, 'ProfileScreen');
+export default SettingPage;
 
 const styles = StyleSheet.create({
   container: {
