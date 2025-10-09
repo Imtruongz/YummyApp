@@ -1,11 +1,7 @@
-import color from '../utils/color';
-
 import {
-  Image,
   StyleSheet,
-  View,
-  TouchableOpacity,
   ScrollView,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Dialog from 'react-native-dialog';
@@ -14,11 +10,10 @@ import {RootState} from '../redux/store';
 import {food} from '../redux/slices/food/types';
 
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import colors from '../utils/color';
 
 import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
-import Typography from './customize/Typography';
+import FoodItemCard from './FoodItemCard';
 
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
@@ -83,8 +78,9 @@ const FirstRoute = () => {
     <>
       <ScrollView contentContainerStyle={styles.container}>
         {Array.isArray(userFoodList) && userFoodList.map(item => (
-          <TouchableOpacity
+          <FoodItemCard
             key={item.foodId}
+            item={item}
             onLongPress={() => showDialog(item)}
             onPress={() => {
               navigation.navigate('RecipeDetailPage', {
@@ -92,18 +88,8 @@ const FirstRoute = () => {
                 userId: item.userId,
               });
             }}
-            style={styles.itemContainer}>
-            {/* Top img */}
-            <Image style={styles.img} source={{uri: item.foodThumbnail}} />
-            {/* Bottom info */}
-            <View style={styles.titleItemLeft}>
-              <Typography
-                title={item.foodName}
-                fontSize={14}
-                numberOfLines={2}
-              />
-            </View>
-          </TouchableOpacity>
+            containerStyle={{ width: '47%' }}
+          />
         ))}
       </ScrollView>
       <Dialog.Container visible={visible}>
@@ -128,29 +114,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 14,
     padding: 12,
-  },
-  itemContainer: {
-    width: '47%',
-    height: 160,
-    backgroundColor: colors.light,
-    borderRadius: 15,
-    gap: 8,
-    shadowColor: color.dark,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  titleItemLeft: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    width: 'auto',
-    height: 100,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    resizeMode: 'cover',
   },
   title: {
     fontSize: 16,

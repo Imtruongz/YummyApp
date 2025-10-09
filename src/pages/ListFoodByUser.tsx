@@ -8,7 +8,6 @@ import {
   FlatList,
   Dimensions,
   RefreshControl,
-  Alert,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -26,7 +25,6 @@ import {
   countFollowersAPI,
   countFollowingAPI
 } from '../redux/slices/follow/followThunk';
-// ...existing code...
 import { resetViewedUser } from '../redux/slices/auth/authSlice';
 import { resetViewedUserFoodList } from '../redux/slices/food/foodSlice';
 
@@ -34,11 +32,9 @@ import colors from '../utils/color.ts';
 import imgUrl from '../utils/urlImg.ts';
 import HomeHeader from '../components/HomeHeader';
 import CustomAvatar from '../components/customize/Avatar.tsx';
-import CustomTitle from '../components/customize/Title.tsx';
-import CustomButton from '../components/customize/CustomButton.tsx';
-import Typography from '../components/customize/Typography.tsx';
 import Loading from '../components/Loading.tsx';
 import NoData from '../components/NoData';
+import FoodItemCard from '../components/FoodItemCard';
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
@@ -48,42 +44,12 @@ interface InfoItemProps {
   label: string;
 }
 
-interface FoodItemProps {
-  item: {
-    foodId: string;
-    foodName: string;
-    foodThumbnail: string;
-    userId: string;
-  };
-  onPress: (foodId: string, userId: string) => void;
-}
-
 // Component Stats Card
 const StatsCard: React.FC<InfoItemProps> = ({ number, label }) => (
   <View style={styles.statsCard}>
     <Text style={styles.statsNumber}>{number}</Text>
     <Text style={styles.statsLabel}>{label}</Text>
   </View>
-);
-
-// Component Food Item Card
-const FoodItemCard: React.FC<FoodItemProps> = ({ item, onPress }) => (
-  <TouchableOpacity
-    style={styles.foodCard}
-    onPress={() => onPress(item.foodId, item.userId)}
-    activeOpacity={0.8}
-  >
-    <Image
-      source={{ uri: item.foodThumbnail }}
-      style={styles.foodImage}
-      resizeMode="cover"
-    />
-    <View style={styles.foodInfo}>
-      <Text style={styles.foodName} numberOfLines={2}>
-        {item.foodName}
-      </Text>
-    </View>
-  </TouchableOpacity>
 );
 
 const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
@@ -194,7 +160,11 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const hasNoData = !viewedUserFoodList || viewedUserFoodList.length === 0;
 
   const renderFoodItem = ({ item }: { item: any }) => (
-    <FoodItemCard item={item} onPress={handleFoodPress} />
+    <FoodItemCard 
+      containerStyle={{ width: cardWidth, margin: 4 }}
+      item={item} 
+      onPress={() => handleFoodPress(item.foodId, item.userId)}
+    />
   );
 
   return (
@@ -438,36 +408,6 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 24,
   },
-
-  // Food Card
-  foodCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    margin: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 4,
-    overflow: 'hidden',
-  },
-  foodImage: {
-    width: '100%',
-    height: 120,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-  },
-  foodInfo: {
-    padding: 12,
-  },
-  foodName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1a1a1a',
-    lineHeight: 18,
-  },
-
-  // Legacy styles (keeping for compatibility)
   infoContainer: {
     paddingVertical: 12,
     justifyContent: 'flex-start',
@@ -560,29 +500,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 14,
     padding: 12,
-  },
-  itemContainer: {
-    width: '47%',
-    height: 160,
-    backgroundColor: colors.light,
-    borderRadius: 15,
-    gap: 8,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  titleItemLeft: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  img: {
-    width: 'auto',
-    height: 100,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    resizeMode: 'cover',
   },
   title2: {
     fontSize: 12,

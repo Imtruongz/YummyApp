@@ -248,7 +248,16 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           </ImageBackground>
 
           <View style={styles.body}>
-            <TouchableOpacity style={styles.infoContainer}>
+            <TouchableOpacity 
+              style={styles.infoContainer}
+              onPress={() => {
+                if (selectedFood?.userId) {
+                  navigation.navigate('ListFoodByUserPage', {
+                    userId: selectedFood.userId
+                  });
+                }
+              }}
+            >
               <CustomAvatar
                 width={60}
                 height={60}
