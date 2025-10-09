@@ -1,11 +1,11 @@
+import { isValidEmail, isValidPassword } from './regexPatterns';
+
 export const verifyEmail = (email: string) => {
-  // Email regex
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+  return isValidEmail(email);
 };
 
 export const verifyPassword = (password: string) => {
-  return password.length > 6;
+  return isValidPassword(password);
 };
 
 export const verifyConfirmPassword = (

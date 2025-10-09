@@ -94,7 +94,14 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   const homeRoute = state.routes.find((r: any) => r.name === 'HomeNavigator');
   if (homeRoute && homeRoute.state && homeRoute.state.routes) {
     const nested = homeRoute.state.routes[homeRoute.state.index];
-    if (nested && (nested.name === 'RecipeDetailPage' || nested.name === 'AddFoodPage' || nested.name === 'ListFoodByCategoriesPage' || nested.name === 'ListFoodByUserPage' || nested.name === 'ListFoodPage')) {
+    if (nested && (
+      nested.name === 'RecipeDetailPage' ||
+      nested.name === 'AddFoodPage' ||
+      nested.name === 'ListFoodByCategoriesPage' ||
+      nested.name === 'ListFoodByUserPage' ||
+      nested.name === 'ListFoodPage' ||
+      nested.name === 'PaymentScreen'
+    )) {
       hideTabBar = true;
     }
   }
@@ -102,7 +109,11 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   const settingRoute = state.routes.find((r: any) => r.name === 'SettingNavigator');
   if (settingRoute && settingRoute.state && settingRoute.state.routes) {
     const nested = settingRoute.state.routes[settingRoute.state.index];
-    if (nested && (nested.name === 'SettingProfilePage' || nested.name === 'ChangePasswordPage')) {
+    if (nested && (
+      nested.name === 'SettingProfilePage' ||
+      nested.name === 'ChangePasswordPage' ||
+      nested.name === 'PaymentScreen'
+    )) {
       hideTabBar = true;
     }
   }

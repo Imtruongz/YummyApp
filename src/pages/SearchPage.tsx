@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import HomeHeader from '../components/HomeHeader';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk';
+import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 // Bỏ SUGGESTIONS cứng, sẽ lấy từ category
 import { useTranslation } from 'react-i18next';
 import api from '../api/config';
@@ -51,11 +52,11 @@ const SearchPage = () => {
     if (text.trim() === '') {
       setResults(allFoods);
     } else {
-      const lower = text.toLowerCase();
+      // Sử dụng hàm từ regexPatterns để tìm kiếm không phân biệt hoa thường
       setResults(
         allFoods.filter(f =>
-          f.foodName.toLowerCase().includes(lower) ||
-          (f.foodDescription && f.foodDescription.toLowerCase().includes(lower))
+          containsTextCaseInsensitive(f.foodName, text) ||
+          (f.foodDescription && containsTextCaseInsensitive(f.foodDescription, text))
         )
       );
     }

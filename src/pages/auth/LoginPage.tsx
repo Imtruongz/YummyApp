@@ -17,7 +17,7 @@ import CustomTextFooter from '../../components/customize/CustomTextFooter';
 import CustomAuthHeader from '../../components/customize/CustomAuthHeader';
 
 import color from '../../utils/color';
-import img from '../../utils/urlImg';
+import { URLS, FacebookIcon } from '../../utils/assets';
 import { verifyEmail, verifyPassword } from '../../utils/validate';
 import { useAppDispatch } from '../../redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '../../redux/slices/auth/authThunk';
@@ -149,7 +149,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
         {/* Title */}
-        <CustomAuthHeader img={img.Yummy} />
+        <CustomAuthHeader img={URLS.Yummy} />
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
@@ -189,7 +189,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
           // onPress={handleLoginWithGoogle}
           >
             <Image
-              source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+              source={{ uri: URLS.GoogleLogo }}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>{t('login_with_google')}</Text>
@@ -200,7 +200,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
             onPress={handleLoginWithFacebook}
           >
             <Image
-              source={require('../../assets/fb.png')}
+              source={FacebookIcon}
               style={styles.googleIcon}
             />
             <Text style={styles.googleButtonText}>{t('login_with_facebook')}</Text>

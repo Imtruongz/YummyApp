@@ -16,6 +16,7 @@ import colors from '../utils/color';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
 import {RootState} from '../redux/store.ts';
+import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 
 import {RootStackParamList} from '../../android/types/StackNavType.ts';
 
@@ -44,7 +45,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredCategoryFoodList = categoryFoodList?.filter(
-    item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood
+    item => containsTextCaseInsensitive(item.foodName, searchQuery) // Sử dụng hàm từ regexPatterns
   );
 
   useEffect(() => {

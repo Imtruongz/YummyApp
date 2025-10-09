@@ -96,6 +96,28 @@
     "recipe_detail_comment": "Bình luận",
     "recipe_detail_see_all": "Xem tất cả",
     "recipe_detail_comment_placeholder": "Nhập bình luận của bạn",
-    "recipe_detail_more_food": "Thêm món ăn khác"  
+    "recipe_detail_more_food": "Thêm món ăn khác",
+
+    "payment_title": "Ủng hộ người sáng tạo",
+    "payment_confirm_transaction": "Xác nhận giao dịch",
+    "payment_amount": "Số tiền ủng hộ",
+    "payment_enter_amount": "Nhập số tiền...",
+    "payment_payment_methods": "Phương thức thanh toán",
+    "payment_view_all": "Xem tất cả",
+    "payment_confirm": "Xác nhận",
+    "payment_payment_error": "Lỗi thanh toán",
+    "payment_enter_valid_amount": "Vui lòng nhập số tiền hợp lệ để ủng hộ",
+    "payment_confirm_donate": "Xác nhận ủng hộ",
+    "payment_confirm_message": "Bạn có chắc muốn ủng hộ {{amount}} cho người dùng này bằng {{method}}?",
+    "payment_success": "Ủng hộ thành công",
+    "payment_success_message": "Bạn đã ủng hộ thành công {{amount}} cho người dùng này bằng {{method}}",
+    "payment_cancel": "Hủy",
+    "payment_credit_message": "Chi tiêu thoải mái hơn khi chọn mua trước trả sau đến 37 ngày.",
+    "payment_choose_now": "Chọn ngay",
+    "payment_select_payment_method": "Vui lòng chọn phương thức thanh toán",
+    "payment_general_error": "Đã xảy ra lỗi trong quá trình xử lý thanh toán. Vui lòng thử lại.",
+    "payment_method_not_integrated": "Thanh toán qua {{method}} chưa được tích hợp. Đây là bản giả lập.",
+    "payment_simulation_notice": "Chế độ giả lập",
+    "demo": "Demo"
   }
   

@@ -106,7 +106,28 @@
     "recipe_detail_comment": "Comment",
     "recipe_detail_see_all": "See All",
     "recipe_detail_comment_placeholder": "Enter your comment",
-    "recipe_detail_more_food": "More Foods"
+    "recipe_detail_more_food": "More Foods",
 
+    "payment_title": "Donate to Creator",
+    "payment_confirm_transaction": "Confirm Transaction",
+    "payment_amount": "Donation Amount",
+    "payment_enter_amount": "Enter amount...",
+    "payment_payment_methods": "Payment Methods",
+    "payment_view_all": "View All",
+    "payment_confirm": "Confirm",
+    "payment_payment_error": "Payment Error",
+    "payment_enter_valid_amount": "Please enter a valid amount to donate",
+    "payment_confirm_donate": "Confirm Donation",
+    "payment_confirm_message": "Are you sure you want to donate {{amount}} to this user using {{method}}?",
+    "payment_success": "Donation Successful",
+    "payment_success_message": "You have successfully donated {{amount}} to this user using {{method}}",
+    "payment_cancel": "Cancel",
+    "payment_credit_message": "Spend more freely with buy now pay later up to 37 days.",
+    "payment_choose_now": "Choose Now",
+    "payment_select_payment_method": "Please select a payment method",
+    "payment_general_error": "An error occurred during payment processing. Please try again.",
+    "payment_method_not_integrated": "Payment with {{method}} is not integrated yet. This is a simulation.",
+    "payment_simulation_notice": "Simulation Mode",
+    "demo": "Demo"
 }
   

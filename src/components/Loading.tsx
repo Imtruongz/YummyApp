@@ -3,13 +3,14 @@ import React from 'react';
 import colors from '../utils/color';
 import CustomTitle from './customize/Title';
 import { useTranslation } from 'react-i18next';
+import { LoadingImage } from '../utils/assets';
 
 const Loading = () => {
   const { t, i18n } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.body}>
-        <Image source={require('../assets/loading.png')} />
+        <Image source={LoadingImage} />
       </View>
       <View style={styles.body2}>
         <CustomTitle style={styles.title} title={t('loading')} />

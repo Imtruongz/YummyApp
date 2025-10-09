@@ -16,6 +16,7 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
+import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import HomeHeader from '../components/HomeHeader';
@@ -34,7 +35,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredFoodList = foodList?.filter(
-    item => item.foodName.toLowerCase().includes(searchQuery.toLowerCase()), // Lọc theo nameFood
+    item => containsTextCaseInsensitive(item.foodName, searchQuery) // Sử dụng hàm từ regexPatterns
   );
 
   useEffect(() => {

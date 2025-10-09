@@ -1,3 +1,5 @@
+import { DATE_DMY_REGEX, isValidDateDMY } from './regexPatterns';
+
 /**
  * Định dạng chỉ ngày (Date)
  * @param dateString Chuỗi ngày tháng từ API (ISO 8601 format)
@@ -30,4 +32,16 @@ export const formatDateTime = (
     hour: '2-digit',
     minute: '2-digit',
   });
+};
+
+/**
+ * Xác thực và phân tích chuỗi ngày dạng DD/MM/YYYY
+ * @param dateString Chuỗi ngày theo định dạng DD/MM/YYYY
+ * @returns Date object nếu chuỗi hợp lệ, null nếu không hợp lệ
+ */
+export const parseDateDMY = (dateString: string): Date | null => {
+  if (!isValidDateDMY(dateString)) return null;
+  
+  const [day, month, year] = dateString.split('/').map(Number);
+  return new Date(year, month - 1, day);
 };

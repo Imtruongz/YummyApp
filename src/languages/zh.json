@@ -96,6 +96,23 @@
     "recipe_detail_comment": "评论",
     "recipe_detail_see_all": "查看全部",
     "recipe_detail_comment_placeholder": "输入您的评论",
-    "recipe_detail_more_food": "更多食品"
+    "recipe_detail_more_food": "更多食品",
+
+    "payment_title": "捐赠给创作者",
+    "payment_confirm_transaction": "确认交易",
+    "payment_amount": "捐赠金额",
+    "payment_enter_amount": "输入金额...",
+    "payment_payment_methods": "支付方式",
+    "payment_view_all": "查看全部",
+    "payment_confirm": "确认",
+    "payment_payment_error": "支付错误",
+    "payment_enter_valid_amount": "请输入有效的捐赠金额",
+    "payment_confirm_donate": "确认捐赠",
+    "payment_confirm_message": "您确定要通过{{method}}向该用户捐赠{{amount}}吗？",
+    "payment_success": "捐赠成功",
+    "payment_success_message": "您已成功通过{{method}}向该用户捐赠{{amount}}",
+    "payment_cancel": "取消",
+    "payment_credit_message": "选择先购买后付款，最多可延长37天，让您的消费更轻松。",
+    "payment_choose_now": "立即选择"
   }
   

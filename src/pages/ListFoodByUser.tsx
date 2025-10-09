@@ -104,8 +104,6 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const isFollowing = followInfo.isFollowing ?? false;
   const followLoading = followInfo.loading ?? false;
 
-  // Lấy userId hiện tại từ local storage (MMKV hoặc AsyncStorage tuỳ app)
-  // Giả sử đã có sẵn userId hiện tại trong localStorage
   const [currentUserId, setCurrentUserId] = useState<string>('');
   useEffect(() => {
     try {
@@ -265,10 +263,10 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            style={[styles.followButton, isFollowing ? { backgroundColor: colors.gray } : {}]}
+            style={styles.followButton}
             onPress={() => navigation.navigate('PaymentScreen', {
-              amount: 150000,
-              phoneNumber: '0987654321',
+              amount: 0,
+              userId: userId,
               serviceType: 'Thanh toán dịch vụ',
               serviceProvider: 'YummyApp'
             })}

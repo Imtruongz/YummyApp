@@ -38,6 +38,7 @@ export type HomeStack = {
   };
   NotificationsScreen: undefined;
   PaymentScreen: {
+    userId: string;
     amount?: number;
     phoneNumber?: string;
     serviceType?: string;
