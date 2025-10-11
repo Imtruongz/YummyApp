@@ -14,13 +14,15 @@ import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { useNotification } from '../contexts/NotificationContext';
+import ConfirmationModal from './common/ConfirmationModal';
+import { useTranslation } from 'react-i18next';
 
 import CustomTitle from './customize/Title';
 import colors from '../utils/color';
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
 import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
-import Dialog from 'react-native-dialog';
 import Typography from './customize/Typography';
 import {useNavigation} from '@react-navigation/native';
 import NoData from './NoData';
@@ -30,6 +32,7 @@ const storage = new MMKV();
 const SecondRoute = () => {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t } = useTranslation();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
   const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
     (state: RootState) => state.favorite,
@@ -57,6 +60,8 @@ const SecondRoute = () => {
     setVisible(false);
   };
 
+  const { showNotification } = useNotification();
+
   const handleDeleteFavorite = async () => {
     if (currentFavoriteId && userId) {
       try {
@@ -66,17 +71,20 @@ const SecondRoute = () => {
             favoriteFoodId: currentFavoriteId,
           }),
         ).unwrap();
-        Toast.show({
+        showNotification({
           type: 'success',
-          text1: 'Đã xóa khỏi danh sách yêu thích',
-          visibilityTime: 2000,
+          title: t('success_title'),
+          message: t('delete_favorite_success_message'),
+          duration: 3000,
         });
       } catch (error) {
-        Toast.show({
+        showNotification({
           type: 'error',
-          text1: 'Lỗi',
-          text2: 'Không thể xóa khỏi danh sách yêu thích!',
-          visibilityTime: 2000,
+          title: t('error_title'),
+          message: t('delete_favorite_error_message'),
+          duration: 4000,
+          actionText: t('try_again_button'),
+          onAction: () => handleDeleteFavorite(),
         });
       } finally {
         setVisible(false);
@@ -141,14 +149,16 @@ const SecondRoute = () => {
           );
         })}
       </ScrollView>
-      <Dialog.Container visible={visible}>
-        <Dialog.Title>Xóa mục yêu thích</Dialog.Title>
-        <Dialog.Description>
-          Bạn có muốn xóa khỏi danh sách yêu thích? Bạn không thể hoàn tác hành động này.
-        </Dialog.Description>
-        <Dialog.Button label="Hủy" onPress={handleCancel} />
-        <Dialog.Button label="Xóa" onPress={handleDeleteFavorite} />
-      </Dialog.Container>
+      <ConfirmationModal
+        visible={visible}
+        title={t('delete_favorite_title')}
+        message={t('delete_favorite_confirmation_message')}
+        type="warning"
+        onClose={handleCancel}
+        onConfirm={handleDeleteFavorite}
+        confirmText={t('delete_button')}
+        cancelText={t('cancel_button')}
+      />
     </>
   );
 };

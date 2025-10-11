@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Alert,
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
@@ -13,6 +12,8 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
+import { useNotification } from '../contexts/NotificationContext';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -33,10 +34,12 @@ interface BankInfo {
 
 const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const { showNotification } = useNotification();
   const [bankAccount, setBankAccount] = useState<BankInfo | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isBankModalVisible, setIsBankModalVisible] = useState<boolean>(false);
+  const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState<boolean>(false);
   
   // Form state
   const [bankName, setBankName] = useState<string>('');
@@ -89,11 +92,12 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       setIsLoading(false);
     } catch (error) {
       console.error('Error fetching bank account:', error);
-      Alert.alert(
-        t('error'),
-        t('failed_to_load_bank_account'),
-        [{ text: "OK" }]
-      );
+      showNotification({
+        type: 'error',
+        title: t('error'),
+        message: t('failed_to_load_bank_accounts'),
+        duration: 3000,
+      });
       setIsLoading(false);
     }
   };
@@ -116,19 +120,21 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         setBankAccount(response.data.data);
         setIsEditing(false);
         
-        Alert.alert(
-          t('success'),
-          t('bank_account_saved_successfully'),
-          [{ text: "OK" }]
-        );
+        showNotification({
+          type: 'success',
+          title: t('success'),
+          message: t('bank_account_added_successfully'),
+          duration: 3000,
+        });
       }
     } catch (error) {
       console.error('Error saving bank account:', error);
-      Alert.alert(
-        t('error'),
-        t('failed_to_save_bank_account'),
-        [{ text: "OK" }]
-      );
+      showNotification({
+        type: 'error',
+        title: t('error'),
+        message: t('failed_to_add_bank_account'),
+        duration: 3000,
+      });
     }
   };
   
@@ -143,43 +149,35 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
   };
   
   const handleDeleteAccount = () => {
-    Alert.alert(
-      t('confirm_delete'),
-      t('confirm_delete_bank_account'),
-      [
-        {
-          text: t('cancel'),
-          style: "cancel"
-        },
-        {
-          text: t('delete'),
-          style: "destructive",
-          onPress: async () => {
-            try {
-              // Gọi API để xóa tài khoản
-              const response = await api.delete('/bank-accounts');
-              
-              if (response.data.success) {
-                setBankAccount(null);
-                
-                Alert.alert(
-                  t('success'),
-                  t('bank_account_deleted_successfully'),
-                  [{ text: "OK" }]
-                );
-              }
-            } catch (error) {
-              console.error('Error deleting bank account:', error);
-              Alert.alert(
-                t('error'),
-                t('failed_to_delete_bank_account'),
-                [{ text: "OK" }]
-              );
-            }
-          }
-        }
-      ]
-    );
+    setIsConfirmDeleteVisible(true);
+  };
+  
+  const confirmDeleteAccount = async () => {
+    try {
+      // Gọi API để xóa tài khoản
+      const response = await api.delete('/bank-accounts');
+      
+      if (response.data.success) {
+        setBankAccount(null);
+        
+        showNotification({
+          type: 'success',
+          title: t('success'),
+          message: t('bank_account_deleted_successfully'),
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error('Error deleting bank account:', error);
+      showNotification({
+        type: 'error',
+        title: t('error'),
+        message: t('failed_to_delete_bank_account'),
+        duration: 3000,
+      });
+    } finally {
+      setIsConfirmDeleteVisible(false);
+    }
   };
   
   const resetForm = () => {
@@ -231,29 +229,34 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('bank_name')}</Text>
-          <View style={styles.inputContainer}>
+          <TouchableOpacity 
+            style={styles.selectBankButton}
+            onPress={() => setIsBankModalVisible(true)}
+          >
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: bankName ? colors.dark : colors.gray }]}
               value={bankName}
-              onChangeText={setBankName}
               placeholder={t('select_or_enter_bank_name')}
+              editable={false}
+              pointerEvents="none"
             />
-            <TouchableOpacity
-              style={styles.dropdownButton}
-              onPress={() => setIsBankModalVisible(true)}
-            >
-              <IoniconsIcon name="chevron-down" size={20} color={colors.primary} />
-            </TouchableOpacity>
-          </View>
+            <IoniconsIcon 
+              name="chevron-down" 
+              size={20} 
+              color={colors.primary}
+              style={styles.selectIcon} 
+            />
+          </TouchableOpacity>
         </View>
         
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('bank_code')}</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: bankCode ? colors.dark : colors.gray, backgroundColor: '#F5F7FA' }]}
             value={bankCode}
-            onChangeText={setBankCode}
             placeholder="MB, BIDV, VCB..."
+            editable={false}
+            pointerEvents="none"
           />
         </View>
         
@@ -421,6 +424,18 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       
       {/* Render bank selection modal */}
       {renderBankSelectionModal()}
+      
+      {/* Confirmation Modal for delete */}
+      <ConfirmationModal
+        visible={isConfirmDeleteVisible}
+        title={t('confirm_delete')}
+        message={t('confirm_delete_bank_account')}
+        type="warning"
+        onClose={() => setIsConfirmDeleteVisible(false)}
+        onConfirm={confirmDeleteAccount}
+        confirmText={t('delete')}
+        cancelText={t('cancel')}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -683,6 +698,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.dark,
     fontWeight: '500',
+  },
+  selectBankButton: {
+    width: '100%',
+    position: 'relative',
+  },
+  selectIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 13,
   },
 });
 

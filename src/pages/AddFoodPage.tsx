@@ -173,13 +173,21 @@ const AddFoodPage = ({ navigation }: any) => {
         visibilityTime: 2000,
       });
 
-      await dispatch(getAllFoodAPI());
+      // Chỉ gọi một API để tránh trùng lặp dữ liệu
       await dispatch(getFoodByIdAPI({ userId: userId }));
+      
+      // Reset form state
       setFormData(initialState);
       setIngredients(['']);
       setSteps(['']);
       setErrorForm(null);
       setOriginalImageUri('');
+      
+      // Chuyển về màn hình Home
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'HomeNavigator' }],
+      });
     } catch (error: any) {
       setErrorForm(error?.data?.errors || {general: 'Something went wrong!'});
     }

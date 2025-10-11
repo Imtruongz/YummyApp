@@ -143,6 +143,22 @@
     "confirm_delete_bank_account": "Bạn có chắc muốn xóa tài khoản ngân hàng này?",
     "delete": "Xóa",
     "cancel": "Hủy",
-    "save": "Lưu"
+    "save": "Lưu",
+    "bank_account_deleted_successfully": "Đã xóa tài khoản ngân hàng thành công",
+    "failed_to_delete_bank_account": "Không thể xóa tài khoản ngân hàng",
+    
+    "delete_recipe_title": "Xóa công thức",
+    "delete_recipe_confirmation_message": "Bạn có muốn xóa công thức này? Bạn không thể hoàn tác hành động này.",
+    "delete_favorite_title": "Xóa mục yêu thích",
+    "delete_favorite_confirmation_message": "Bạn có muốn xóa khỏi danh sách yêu thích? Bạn không thể hoàn tác hành động này.",
+    "delete_button": "Xóa",
+    "cancel_button": "Hủy",
+    "success_title": "Thành công",
+    "error_title": "Lỗi",
+    "delete_recipe_success_message": "Công thức đã được xóa thành công",
+    "delete_recipe_error_message": "Không thể xóa công thức! Vui lòng thử lại sau.",
+    "delete_favorite_success_message": "Đã xóa khỏi danh sách yêu thích",
+    "delete_favorite_error_message": "Không thể xóa khỏi danh sách yêu thích!",
+    "try_again_button": "Thử lại"
   }
   

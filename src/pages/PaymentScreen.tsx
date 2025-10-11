@@ -7,10 +7,11 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Alert,
   Linking,
   TextInput,
 } from 'react-native';
+import { useNotification } from '../contexts/NotificationContext';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 import { formatUSDCurrency, extractNumbersOnly } from '../utils/regexPatterns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -43,6 +44,11 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const [amount, setAmount] = useState<number>(initialAmount);
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
   const { t } = useTranslation();
+  const { showNotification } = useNotification();
+  
+  // State for confirmation modals
+  const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
@@ -110,80 +116,71 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const handleConfirmPayment = async () => {
     // Kiểm tra nếu amount là 0 hoặc không hợp lệ
     if (!amount || amount <= 0) {
-      Alert.alert(
-        t('payment_payment_error'),
-        t('payment_enter_valid_amount'),
-        [{ text: "OK" }]
-      );
+      showNotification({
+        title: t('payment_payment_error'),
+        message: t('payment_enter_valid_amount'),
+        type: 'error',
+      });
       return;
     }
 
     // Lấy phương thức thanh toán được chọn
     const selectedMethod = paymentMethods.find(method => method.selected);
     if (!selectedMethod) {
-      Alert.alert(
-        t('payment_payment_error'),
-        t('payment_select_payment_method'),
-        [{ text: "OK" }]
-      );
+      showNotification({
+        title: t('payment_payment_error'),
+        message: t('payment_select_payment_method'),
+        type: 'error',
+      });
       return;
     }
 
     const paymentMethodName = selectedMethod.name;
+    
+    // Save the selected method and show confirmation modal
+    setSelectedPaymentMethod(selectedMethod);
+    setShowPaymentConfirmation(true);
+  };
 
-    Alert.alert(
-      t('payment_confirm_donate'),
-      t('payment_confirm_message', { amount: formatMoney(amount), method: paymentMethodName }),
-      [
-        {
-          text: t('payment_cancel'),
-          style: "cancel"
-        },
-        {
-          text: t('payment_confirm'),
-          onPress: async () => {
-            try {
-              if (selectedMethod.integrated) {
-                const response = await api.post('/payment/create-session', {
-                  amount: amount,
-                  description: `Donate $${amount} cho người dùng qua YummyApp`,
-                  merchantName: 'YummyFood',
-                  receiverId: route.params.userId, // Thêm ID người nhận
-                });
+  const handleProcessPayment = async () => {
+    if (!selectedPaymentMethod) return;
+    
+    const paymentMethodName = selectedPaymentMethod.name;
+    
+    try {
+      if (selectedPaymentMethod.integrated) {
+        const response = await api.post('/payment/create-session', {
+          amount: amount,
+          description: `Donate $${amount} cho người dùng qua YummyApp`,
+          merchantName: 'YummyFood',
+          receiverId: route.params.userId, // Thêm ID người nhận
+        });
 
-                const data = response.data;
+        const data = response.data;
 
-                if (data.success && data.token) {
-                  const url = `mblaos://pay?token=${data.token}`;
-                  console.log('Opening URL with dynamic token:', url);
-                  await Linking.openURL(url);
-                  return;
-                } else {
-                  throw new Error('Không thể tạo token thanh toán');
-                }
-              } else {
-                Alert.alert(
-                  t('payment_simulation_notice'),
-                  t('payment_method_not_integrated', { method: paymentMethodName }),
-                  [
-                    {
-                      text: "OK",
-                    }
-                  ]
-                );
-              }
-            } catch (error) {
-              console.error('Lỗi khi thanh toán:', error);
-              Alert.alert(
-                t('payment_payment_error'),
-                t('payment_general_error'),
-                [{ text: "OK" }]
-              );
-            }
-          }
+        if (data.success && data.token) {
+          const url = `mblaos://pay?token=${data.token}`;
+          console.log('Opening URL with dynamic token:', url);
+          await Linking.openURL(url);
+          return;
+        } else {
+          throw new Error('Không thể tạo token thanh toán');
         }
-      ]
-    );
+      } else {
+        showNotification({
+          title: t('payment_simulation_notice'),
+          message: t('payment_method_not_integrated', { method: paymentMethodName }),
+          type: 'info'
+        });
+      }
+    } catch (error) {
+      console.error('Lỗi khi thanh toán:', error);
+      showNotification({
+        title: t('payment_payment_error'),
+        message: t('payment_general_error'),
+        type: 'error'
+      });
+    }
   };
 
   // Render icon based on type
@@ -330,6 +327,21 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           <Text style={styles.confirmButtonText}>{t('payment_confirm')}</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Payment Confirmation Modal */}
+      <ConfirmationModal
+        visible={showPaymentConfirmation}
+        title={t('payment_confirm_donate')}
+        message={t('payment_confirm_message', { 
+          amount: formatMoney(amount), 
+          method: selectedPaymentMethod?.name || '' 
+        })}
+        onClose={() => setShowPaymentConfirmation(false)}
+        onConfirm={handleProcessPayment}
+        confirmText={t('payment_confirm')}
+        cancelText={t('payment_cancel')}
+        type="warning"
+      />
     </SafeAreaView>
   );
 };

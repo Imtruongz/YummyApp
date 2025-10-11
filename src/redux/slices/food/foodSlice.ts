@@ -69,8 +69,17 @@ const foodSlice = createSlice({
       addFoodAPI.fulfilled,
       (state, action) => {
         if (action.payload) {
-          state.foodList.push(action.payload);
-          state.userFoodList.push(action.payload);
+          // Kiểm tra xem đã có trong danh sách chưa để tránh trùng lặp
+          const foodId = action.payload.foodId;
+          const foodExists = state.foodList.some(food => food.foodId === foodId);
+          if (!foodExists) {
+            state.foodList.push(action.payload);
+          }
+          
+          const userFoodExists = state.userFoodList.some(food => food.foodId === foodId);
+          if (!userFoodExists) {
+            state.userFoodList.push(action.payload);
+          }
         }
         state.isLoadingFood = false;
         state.isErrorFood = false;

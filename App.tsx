@@ -9,6 +9,7 @@ import { MMKV } from 'react-native-mmkv';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NotificationProvider } from './src/contexts/NotificationContext';
 
 import { useEffect } from 'react';
 import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
@@ -68,8 +69,10 @@ export default function App() {
             }
           }}>
             <Provider store={store}>
-              <NavigationRoot />
-              <Toast />
+              <NotificationProvider>
+                <NavigationRoot />
+                <Toast />
+              </NotificationProvider>
             </Provider>
           </AuthContext.Provider>
         </ErrorBoundary>

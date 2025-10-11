@@ -4,10 +4,12 @@ import {
   Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import Dialog from 'react-native-dialog';
 import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {food} from '../redux/slices/food/types';
+import { useNotification } from '../contexts/NotificationContext';
+import ConfirmationModal from './common/ConfirmationModal';
+import { useTranslation } from 'react-i18next';
 
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 
@@ -23,7 +25,8 @@ const storage = new MMKV();
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
-    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { t } = useTranslation();
   
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
   const [userId, setUserId] = useState(storage.getString('userId') || '');
@@ -39,21 +42,26 @@ const FirstRoute = () => {
     setVisible(false);
   };
 
+  const { showNotification } = useNotification();
+  
   const handleDelete = async () => {
     if (currentItem) {
       try {
         await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
-        Toast.show({
+        showNotification({
           type: 'success',
-          text1: 'Delete successfully',
-          visibilityTime: 2000,
+          title: t('success_title'),
+          message: t('delete_recipe_success_message'),
+          duration: 3000,
         });
       } catch (error) {
-        Toast.show({
+        showNotification({
           type: 'error',
-          text1: 'Error',
-          text2: 'Failed to delete food!',
-          visibilityTime: 2000,
+          title: t('error_title'),
+          message: t('delete_recipe_error_message'),
+          duration: 4000,
+          actionText: t('try_again_button'),
+          onAction: () => handleDelete(),
         });
       } finally {
         if (userId) {
@@ -92,14 +100,16 @@ const FirstRoute = () => {
           />
         ))}
       </ScrollView>
-      <Dialog.Container visible={visible}>
-        <Dialog.Title>Delete</Dialog.Title>
-        <Dialog.Description>
-          Do you want to delete? You cannot undo this action.
-        </Dialog.Description>
-        <Dialog.Button label="Cancel" onPress={handleCancel} />
-        <Dialog.Button label="Delete" onPress={handleDelete} />
-      </Dialog.Container>
+      <ConfirmationModal
+        visible={visible}
+        title={t('delete_recipe_title')}
+        message={t('delete_recipe_confirmation_message')}
+        type="warning"
+        onClose={handleCancel}
+        onConfirm={handleDelete}
+        confirmText={t('delete_button')}
+        cancelText={t('cancel_button')}
+      />
     </>
   );
 };
