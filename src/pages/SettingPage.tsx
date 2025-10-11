@@ -85,6 +85,11 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             navigation={navigation}
             targetScreen="ChangePasswordPage"
           />
+          <SettingButton
+            title={t('bank_accounts')}
+            navigation={navigation}
+            targetScreen="BankAccountScreen"
+          />
           <View style={styles.languageContainer}>
             <CustomTitle title={t('setting_language')} />
             <Pressable

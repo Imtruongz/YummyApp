@@ -112,7 +112,8 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
     if (nested && (
       nested.name === 'SettingProfilePage' ||
       nested.name === 'ChangePasswordPage' ||
-      nested.name === 'PaymentScreen'
+      nested.name === 'PaymentScreen' ||
+      nested.name === 'BankAccountScreen'
     )) {
       hideTabBar = true;
     }

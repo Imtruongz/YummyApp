@@ -148,6 +148,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
                   amount: amount,
                   description: `Donate $${amount} cho người dùng qua YummyApp`,
                   merchantName: 'YummyFood',
+                  receiverId: route.params.userId, // Thêm ID người nhận
                 });
 
                 const data = response.data;
@@ -312,7 +313,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           <Text style={styles.infoMessageText}>
             {t('payment_credit_message')}
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('BankAccountScreen')}>
             <Text style={styles.infoMessageAction}>{t('payment_choose_now')}</Text>
           </TouchableOpacity>
         </View>

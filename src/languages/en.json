@@ -128,6 +128,31 @@
     "payment_general_error": "An error occurred during payment processing. Please try again.",
     "payment_method_not_integrated": "Payment with {{method}} is not integrated yet. This is a simulation.",
     "payment_simulation_notice": "Simulation Mode",
-    "demo": "Demo"
+    "demo": "Demo",
+
+    "bank_accounts": "Bank Accounts",
+    "add_bank_account": "Add Bank Account",
+    "add_new_bank_account": "Add New Bank Account",
+    "bank_name": "Bank Name",
+    "bank_code": "Bank Code",
+    "account_number": "Account Number",
+    "account_name": "Account Name",
+    "account_name_placeholder": "ACCOUNT HOLDER NAME",
+    "select_or_enter_bank_name": "Select or enter bank name",
+    "select_bank": "Select Bank",
+    "default": "Default",
+    "set_default": "Set as default",
+    "success": "Success",
+    "error": "Error",
+    "bank_account_added_successfully": "Bank account added successfully",
+    "failed_to_add_bank_account": "Failed to add bank account",
+    "failed_to_load_bank_accounts": "Failed to load bank accounts",
+    "no_bank_accounts": "No Bank Accounts",
+    "add_bank_account_to_receive": "Add a bank account to receive payments",
+    "confirm_delete": "Confirm Delete",
+    "confirm_delete_bank_account": "Are you sure you want to delete this bank account?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save"
 }
   

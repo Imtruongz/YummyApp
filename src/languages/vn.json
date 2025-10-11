@@ -118,6 +118,31 @@
     "payment_general_error": "Đã xảy ra lỗi trong quá trình xử lý thanh toán. Vui lòng thử lại.",
     "payment_method_not_integrated": "Thanh toán qua {{method}} chưa được tích hợp. Đây là bản giả lập.",
     "payment_simulation_notice": "Chế độ giả lập",
-    "demo": "Demo"
+    "demo": "Demo",
+    
+    "bank_accounts": "Tài khoản ngân hàng",
+    "add_bank_account": "Thêm tài khoản ngân hàng",
+    "add_new_bank_account": "Thêm tài khoản ngân hàng mới",
+    "bank_name": "Tên ngân hàng",
+    "bank_code": "Mã ngân hàng",
+    "account_number": "Số tài khoản",
+    "account_name": "Tên chủ tài khoản",
+    "account_name_placeholder": "TÊN CHỦ TÀI KHOẢN",
+    "select_or_enter_bank_name": "Chọn hoặc nhập tên ngân hàng",
+    "select_bank": "Chọn ngân hàng",
+    "default": "Mặc định",
+    "set_default": "Đặt làm mặc định",
+    "success": "Thành công",
+    "error": "Lỗi",
+    "bank_account_added_successfully": "Thêm tài khoản ngân hàng thành công",
+    "failed_to_add_bank_account": "Không thể thêm tài khoản ngân hàng",
+    "failed_to_load_bank_accounts": "Không thể tải thông tin tài khoản ngân hàng",
+    "no_bank_accounts": "Không có tài khoản ngân hàng",
+    "add_bank_account_to_receive": "Thêm tài khoản ngân hàng để nhận thanh toán",
+    "confirm_delete": "Xác nhận xóa",
+    "confirm_delete_bank_account": "Bạn có chắc muốn xóa tài khoản ngân hàng này?",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "save": "Lưu"
   }
   

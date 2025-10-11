@@ -7,13 +7,31 @@ import { MMKV } from 'react-native-mmkv';
 import en from './en.json';
 import vn from './vn.json';
 import zh from './zh.json';
+import bankAccountEn from './bank_account_en.json';
+import bankAccountVi from './bank_account_vi.json';
+import bankAccountZh from './bank_account_zh.json';
 
 const storage = new MMKV();
 
 const resources = {
-  en: { translation: en },
-  vn: { translation: vn },
-  zh: { translation: zh},
+  en: { 
+    translation: {
+      ...en,
+      ...bankAccountEn
+    }
+  },
+  vn: { 
+    translation: {
+      ...vn,
+      ...bankAccountVi
+    }
+  },
+  zh: { 
+    translation: {
+      ...zh,
+      ...bankAccountZh
+    }
+  },
 };
 
 // Lấy ngôn ngữ đã lưu hoặc sử dụng ngôn ngữ mặc định của thiết bị

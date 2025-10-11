@@ -162,6 +162,13 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
                   numberOfLines={2}
                   ellipsizeMode="tail"
                 />
+                <Typography
+                  title={item.foodDescription}
+                  fontSize={14}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                  style={{ color: color.smallText }}
+                />
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <CustomAvatar
@@ -263,14 +270,14 @@ const styles = StyleSheet.create({
   titleItemLeft2: {
     padding: 14,
     justifyContent: 'flex-start',
-    gap: 14,
+    gap: 8,
     flex: 1,
     height: '100%',
     overflow: 'hidden',
   },
   img2: {
     width: 140,
-    height: 200,
+    height: 220,
     borderTopLeftRadius: 20,
     borderBottomLeftRadius: 20,
     resizeMode: 'cover',
@@ -286,7 +293,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: 300,
-    height: 200,
+    height: 220,
     margin: 10,
     borderRadius: 20,
     backgroundColor: color.light,

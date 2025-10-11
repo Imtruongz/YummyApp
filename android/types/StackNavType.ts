@@ -33,4 +33,5 @@ export type RootStackParamList = {
     serviceType?: string;
     serviceProvider?: string;
   };
+  BankAccountScreen: undefined;
 };
