@@ -31,7 +31,7 @@ const NoData: React.FC<NoDataProps> = ({
   return (
     <View style={styles.container}>
       <View style={circleStyle}>
-        <MaterialIcons name='no-food' size={120} color={colors.primary} />
+        <MaterialIcons name='no-food' size={120} color={colors.gray} />
       </View>
 
       <Text style={[styles.text, { fontSize: textSize, color: colors.dark }]}>

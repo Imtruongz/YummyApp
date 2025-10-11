@@ -13,6 +13,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import BannerSlider from '../components/customize/BannerSlider';
+import { getLocalBanners, Banner } from '../api/bannerService';
 
 
 const FeatherIcon = require('react-native-vector-icons/Feather').default;
@@ -57,6 +59,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   const { ListUser } = useAppSelector((state: RootState) => state.user);
   const { categoryList, isLoadingCategory } = useAppSelector((state: RootState) => state.categories);
   const [isLoading, setIsLoading] = useState(true);
+  const [banners, setBanners] = useState<Banner[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -68,6 +71,11 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
           dispatch(getAllUsers()),
           dispatch(getUserByIdAPI({ userId })),
         ]);
+        
+        // Lấy dữ liệu banner từ nguồn local (vì chưa có API server)
+        const bannerData = getLocalBanners();
+        console.log('Loaded local banners:', bannerData.length);
+        setBanners(bannerData);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
@@ -106,6 +114,29 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         showNotification={true}
       />
       <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Banner Slider */}
+        {banners.length > 0 && (
+          <View style={styles.bannerContainer}>
+            <BannerSlider
+              data={banners.map(banner => ({
+                id: banner.id,
+                image: banner.image,
+                title: banner.title,
+                description: banner.description,
+                link: banner.link
+              }))}
+              dotsPosition="outside" // Đặt dots bên ngoài banner
+              onBannerPress={(item) => {
+                // Xử lý khi banner được nhấn
+                if (item.link === '/explore') {
+                  navigation.navigate('ListFoodPage');
+                }
+                // Có thể thêm các điều hướng khác tùy vào link
+              }}
+            />
+          </View>
+        )}
+        
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title={t('home_popular_categories')} />
@@ -249,6 +280,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.light,
     paddingVertical: 12,
     paddingHorizontal: 14,
+  },
+  bannerContainer: {
+    width: '100%',
   },
   header1: {
     flexDirection: 'row',

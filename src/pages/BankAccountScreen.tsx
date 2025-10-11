@@ -10,6 +10,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -34,6 +36,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
   const [bankAccount, setBankAccount] = useState<BankInfo | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isBankModalVisible, setIsBankModalVisible] = useState<boolean>(false);
   
   // Form state
   const [bankName, setBankName] = useState<string>('');
@@ -237,25 +240,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             />
             <TouchableOpacity
               style={styles.dropdownButton}
-              onPress={() => {
-                Alert.alert(
-                  t('select_bank'),
-                  '',
-                  [
-                    ...bankList.map(bank => ({
-                      text: bank.name,
-                      onPress: () => {
-                        setBankName(bank.name);
-                        setBankCode(bank.code);
-                      }
-                    })),
-                    {
-                      text: t('cancel'),
-                      style: 'cancel',
-                    },
-                  ]
-                );
-              }}
+              onPress={() => setIsBankModalVisible(true)}
             >
               <IoniconsIcon name="chevron-down" size={20} color={colors.primary} />
             </TouchableOpacity>
@@ -323,6 +308,58 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     );
   };
   
+  // Render bank selection modal
+  const renderBankSelectionModal = () => {
+    return (
+      <Modal
+        visible={isBankModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setIsBankModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t('select_bank')}</Text>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setIsBankModalVisible(false)}
+              >
+                <IoniconsIcon name="close" size={24} color={colors.dark} />
+              </TouchableOpacity>
+            </View>
+            
+            <FlatList
+              data={bankList}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.bankOption}
+                  onPress={() => {
+                    setBankName(item.name);
+                    setBankCode(item.code);
+                    setIsBankModalVisible(false);
+                  }}
+                >
+                  <Text style={styles.bankOptionName}>{item.name}</Text>
+                  <Text style={styles.bankOptionCode}>{item.code}</Text>
+                </TouchableOpacity>
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+            />
+            
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={() => setIsBankModalVisible(false)}
+            >
+              <Text style={styles.modalCancelButtonText}>{t('cancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+  
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -362,8 +399,14 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
               <TouchableOpacity
                 style={styles.addButton}
                 onPress={() => {
-                  resetForm();
-                  setIsEditing(true);
+                  if (bankAccount) {
+                    // Nếu có tài khoản ngân hàng, điền thông tin vào form
+                    handleStartEdit();
+                  } else {
+                    // Nếu không có tài khoản, hiển thị form trống
+                    resetForm();
+                    setIsEditing(true);
+                  }
                 }}
               >
                 <AntDesignIcon name="plus" size={20} color={colors.light} />
@@ -375,6 +418,9 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           </>
         )}
       </ScrollView>
+      
+      {/* Render bank selection modal */}
+      {renderBankSelectionModal()}
     </KeyboardAvoidingView>
   );
 };
@@ -533,6 +579,7 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
     borderRadius: 8,
     paddingHorizontal: 12,
+    paddingRight: 40, // Thêm padding bên phải để tránh text bị đè lên icon
     fontSize: 15,
     color: colors.dark,
     flex: 1,
@@ -576,6 +623,66 @@ const styles = StyleSheet.create({
   },
   disabledButtonText: {
     color: '#94A3B8',
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end', // Modal hiển thị từ dưới lên
+  },
+  modalContainer: {
+    backgroundColor: colors.light,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 20,
+    maxHeight: '80%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.dark,
+  },
+  closeButton: {
+    padding: 5,
+  },
+  bankOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+  },
+  bankOptionName: {
+    fontSize: 16,
+    color: colors.dark,
+  },
+  bankOptionCode: {
+    fontSize: 14,
+    color: colors.smallText,
+    marginTop: 4,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#E2E8F0',
+  },
+  modalCancelButton: {
+    marginTop: 10,
+    marginHorizontal: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 8,
+  },
+  modalCancelButtonText: {
+    fontSize: 16,
+    color: colors.dark,
+    fontWeight: '500',
   },
 });
 
