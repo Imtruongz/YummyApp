@@ -164,6 +164,7 @@
     "failed_to_delete_bank_account": "Không thể xóa tài khoản ngân hàng",
     "recipient_bank_info": "Thông tin ngân hàng người nhận",
     "transfer_note": "Nội dung chuyển khoản",
+    "enter_transfer_note": "Nhập nội dung chuyển khoản",
     "no_recipient_bank_account": "Người dùng này chưa thiết lập tài khoản ngân hàng",
     "failed_to_load_bank_account": "Không thể tải thông tin tài khoản ngân hàng",
     
@@ -181,4 +182,3 @@
     "delete_favorite_error_message": "Không thể xóa khỏi danh sách yêu thích!",
     "try_again_button": "Thử lại"
   }
-  

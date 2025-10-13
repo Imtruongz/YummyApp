@@ -160,6 +160,7 @@
     "failed_to_delete_bank_account": "无法删除银行账户",
     "recipient_bank_info": "收款人银行信息",
     "transfer_note": "转账附言",
+    "enter_transfer_note": "输入转账附言",
     "no_recipient_bank_account": "该用户尚未设置银行账户",
     "payment_bank_transfer_success": "您的银行转账已记录。请通过您的银行应用完成交易。",
     "no_bank_account_title": "通知",
@@ -167,4 +168,3 @@
     "check_bank_account_error": "无法检查银行账户信息。请稍后再试。",
     "failed_to_load_bank_account": "无法加载银行账户信息"
   }
-  

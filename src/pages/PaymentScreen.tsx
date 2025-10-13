@@ -412,7 +412,16 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           </View>
           <View style={styles.bankInfoRow}>
             <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
-            <Text style={styles.bankInfoValue}>Donate</Text>
+            <View style={styles.transferInputContainer}>
+              <TextInput
+                style={styles.transferNoteInput}
+                placeholder={t('enter_transfer_note')}
+                placeholderTextColor="#aaa"
+                defaultValue={`Donate cho ${recipientUsername}`}
+                multiline={false}
+              />
+              <AntDesignIcon name="edit" size={16} color={colors.primary} style={styles.editIcon} />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -663,6 +672,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0d1117',
     fontWeight: '500',
+    maxWidth: 90, // Giới hạn chiều rộng tối đa để tránh che mất nút demo
   },
   paymentMethodBalance: {
     position: 'absolute',
@@ -765,6 +775,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#E0E0E0',
+    zIndex: 5, // Đảm bảo hiển thị trên các phần tử khác
   },
   notIntegratedText: {
     fontSize: 10,
@@ -842,6 +853,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     flex: 2,
     textAlign: 'right',
+  },
+  transferInputContainer: {
+    flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.InputBg,
+  },
+  transferNoteInput: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    flex: 1,
+    textAlign: 'right',
+    padding: 0,
+    marginRight: 5,
+  },
+  editIcon: {
+    marginLeft: 4,
+    padding: 2,
   },
   transferNote: {
     fontSize: 14,
