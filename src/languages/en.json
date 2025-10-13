@@ -190,5 +190,9 @@
     "delete_recipe_error_message": "Cannot delete recipe! Please try again later.",
     "delete_favorite_success_message": "Removed from favorites list",
     "delete_favorite_error_message": "Cannot remove from favorites list!",
-    "try_again_button": "Try Again"
+    "try_again_button": "Try Again",
+    "back_to_home": "Back to Home",
+    "amount": "Amount",
+    "transaction_code": "Transaction Code",
+    "payment_time": "Time"
 }

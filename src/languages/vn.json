@@ -180,5 +180,9 @@
     "delete_recipe_error_message": "Không thể xóa công thức! Vui lòng thử lại sau.",
     "delete_favorite_success_message": "Đã xóa khỏi danh sách yêu thích",
     "delete_favorite_error_message": "Không thể xóa khỏi danh sách yêu thích!",
-    "try_again_button": "Thử lại"
+    "try_again_button": "Thử lại",
+    "back_to_home": "Về trang chủ",
+    "amount": "Số tiền",
+    "transaction_code": "Mã giao dịch",
+    "payment_time": "Thời gian"
   }

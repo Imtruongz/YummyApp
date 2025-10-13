@@ -100,7 +100,8 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
       nested.name === 'ListFoodByCategoriesPage' ||
       nested.name === 'ListFoodByUserPage' ||
       nested.name === 'ListFoodPage' ||
-      nested.name === 'PaymentScreen'
+      nested.name === 'PaymentScreen' ||
+      nested.name === 'PaymentSuccessScreen' // Ẩn tab bar ở màn thành công
     )) {
       hideTabBar = true;
     }

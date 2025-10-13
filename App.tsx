@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import './src/languages/i18n'; // Import i18n trước
+import './src/languages/i18n';
 import { AuthContext } from './src/contexts/AuthContext';
 import NavigationRoot from './src/navigation/NavigationContainer';
 import { Provider } from 'react-redux';
 import { store } from './src/redux/store';
-// import Toast from 'react-native-toast-message';
 import { MMKV } from 'react-native-mmkv';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { PaperProvider } from 'react-native-paper';
@@ -26,7 +25,6 @@ export default function App() {
     const setupFCM = async () => {
       unsubscribe = await initFirebaseMessaging(
         async (token) => {
-          // Gửi token lên server nếu đã đăng nhập
           const accessToken = storage.getString('accessToken');
           if (accessToken) {
             try {

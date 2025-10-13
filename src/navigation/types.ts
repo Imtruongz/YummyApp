@@ -44,6 +44,7 @@ export type HomeStack = {
     serviceType?: string;
     serviceProvider?: string;
   };
+  PaymentSuccessScreen: undefined;
 }
 
 export type ProfileStack = {

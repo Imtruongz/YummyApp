@@ -10,6 +10,7 @@ import {
   Linking,
   TextInput,
   ActivityIndicator,
+  Button,
 } from 'react-native';
 import { useNotification } from '../contexts/NotificationContext';
 import ConfirmationModal from '../components/common/ConfirmationModal';
@@ -35,7 +36,7 @@ interface PaymentMethod {
   imagePath?: any;
   balance?: string;
   selected?: boolean;
-  integrated?: boolean; // Thêm trường đánh dấu phương thức đã được tích hợp
+  integrated?: boolean;
   cardNumber?: string;
   cardType?: string;
 }
@@ -54,7 +55,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const { t } = useTranslation();
   const { showNotification } = useNotification();
 
-  // State for confirmation modals
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [recipientBankAccount, setRecipientBankAccount] = useState<BankAccount | null>(null);
@@ -66,7 +66,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
   }, [navigation]);
 
-  // Lấy thông tin tài khoản ngân hàng của người nhận
   useEffect(() => {
     const fetchRecipientBankAccount = async () => {
       if (userId) {
@@ -77,7 +76,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             setRecipientUsername(userResponse.data.data.username || '');
           }
 
-          // Lấy thông tin tài khoản ngân hàng
           const response = await api.get(`bank-accounts/${userId}`);
           if (response.data && response.data.success && response.data.data) {
             console.log('[PaymentScreen] Fetched recipient bank account:', response.data.data);
@@ -90,10 +88,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             showNotification({
               type: 'warning',
               title: t('no_bank_account_title', 'Thông báo'),
-              message: t('no_bank_account_message', 'Người dùng này chưa cung cấp thông tin tài khoản ngân hàng nên không thể nhận donate.'),
+              message: t('no_bank_account_message'),
               duration: 3000,
             });
-            // Quay lại màn hình trước
             navigation.goBack();
           } else {
             showNotification({
@@ -118,14 +115,14 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       name: 'Ví Zalopay',
       iconType: 'custom',
       selected: false,
-      integrated: false // Chưa tích hợp
+      integrated: false
     },
     {
       id: 'mblaos',
       name: 'MBLaos',
       iconType: 'custom',
       selected: true,
-      integrated: true // Đã tích hợp
+      integrated: true 
     },
     {
       id: 'bank',
@@ -133,36 +130,33 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       iconType: 'materialcommunity',
       iconName: 'bank',
       iconColor: '#00a86b',
-      integrated: true // Đã tích hợp - hiển thị thông tin ngân hàng
+      integrated: true 
     },
     {
       id: 'bidv',
       name: 'BIDV',
       iconType: 'custom',
       cardType: 'BIDV',
-      integrated: false // Chưa tích hợp
+      integrated: false
     }
   ]);
 
-  // Sử dụng hàm từ regexPatterns thay vì định nghĩa lại
   const formatMoney = (amount: number) => {
     return formatUSDCurrency(amount);
   };
 
   const handleAmountChange = (text: string) => {
-    // Sử dụng hàm từ regexPatterns để chỉ lấy số
     const numericValue = extractNumbersOnly(text);
     setInputAmount(numericValue);
 
     if (numericValue) {
       setAmount(parseInt(numericValue, 10));
     } else {
-      setAmount(0); // Hoặc giá trị mặc định khác nếu input trống
+      setAmount(0);
     }
   };
 
   const handlePaymentMethodSelect = (id: string) => {
-    // Chỉ cập nhật UI để đánh dấu phương thức thanh toán được chọn
     const updatedMethods = paymentMethods.map(method => ({
       ...method,
       selected: method.id === id
@@ -171,7 +165,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   };
 
   const handleConfirmPayment = async () => {
-    // Kiểm tra nếu amount là 0 hoặc không hợp lệ
     if (!amount || amount <= 0) {
       showNotification({
         title: t('payment_payment_error'),
@@ -181,7 +174,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       return;
     }
 
-    // Lấy phương thức thanh toán được chọn
     const selectedMethod = paymentMethods.find(method => method.selected);
     if (!selectedMethod) {
       showNotification({
@@ -194,7 +186,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
     const paymentMethodName = selectedMethod.name;
 
-    // Save the selected method and show confirmation modal
     setSelectedPaymentMethod(selectedMethod);
     setShowPaymentConfirmation(true);
   };
@@ -207,7 +198,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     try {
       if (selectedPaymentMethod.integrated) {
         if (selectedPaymentMethod.id === 'bank') {
-          // Nếu là phương thức chuyển khoản ngân hàng
           if (!recipientBankAccount) {
             showNotification({
               title: t('payment_payment_error'),
@@ -217,7 +207,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             return;
           }
 
-          // Ghi nhận giao dịch vào hệ thống
           const response = await api.post('/payment/record-bank-transfer', {
             amount: amount,
             description: `Donate $${amount} cho ${recipientUsername} qua YummyApp`,
@@ -232,11 +221,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
               type: 'success'
             });
 
-            // Chuyển về màn hình trước
             navigation.goBack();
           }
         } else {
-          // Phương thức thanh toán khác (MBLaos)
           const response = await api.post('/payment/create-session', {
             amount: amount,
             description: `Donate $${amount} cho người dùng qua YummyApp`,
@@ -272,7 +259,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     }
   };
 
-  // Render icon based on type
   const renderIcon = (method: PaymentMethod) => {
     switch (method.iconType) {
       case 'ionicons':
@@ -410,6 +396,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
             <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountName}</Text>
           </View>
+          <Button title='testPaymentSuccessScreen' onPress={() => navigation.navigate('PaymentSuccessScreen')} />
           <View style={styles.bankInfoRow}>
             <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
             <View style={styles.transferInputContainer}>
@@ -542,7 +529,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: colors.primary + '20', // 20% opacity của màu primary
+    backgroundColor: colors.primary + '20',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -672,7 +659,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#0d1117',
     fontWeight: '500',
-    maxWidth: 90, // Giới hạn chiều rộng tối đa để tránh che mất nút demo
+    maxWidth: 90,
   },
   paymentMethodBalance: {
     position: 'absolute',
@@ -694,7 +681,7 @@ const styles = StyleSheet.create({
   },
   infoMessageCard: {
     flexDirection: 'row',
-    backgroundColor: colors.primary + '15', // 15% opacity của màu primary
+    backgroundColor: colors.primary + '15',
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 12,
@@ -775,7 +762,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 1,
     borderColor: '#E0E0E0',
-    zIndex: 5, // Đảm bảo hiển thị trên các phần tử khác
+    zIndex: 5,
   },
   notIntegratedText: {
     fontSize: 10,
@@ -787,7 +774,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
-  // Styles for bank account info section
   bankInfoSection: {
     backgroundColor: colors.light,
     marginHorizontal: 16,

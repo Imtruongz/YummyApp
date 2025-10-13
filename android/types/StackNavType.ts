@@ -34,4 +34,5 @@ export type RootStackParamList = {
     serviceProvider?: string;
   };
   BankAccountScreen: undefined;
+  PaymentSuccessScreen: undefined;
 };

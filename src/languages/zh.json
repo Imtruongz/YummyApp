@@ -166,5 +166,9 @@
     "no_bank_account_title": "通知",
     "no_bank_account_message": "该用户尚未提供银行账户信息，无法接收捐款。",
     "check_bank_account_error": "无法检查银行账户信息。请稍后再试。",
-    "failed_to_load_bank_account": "无法加载银行账户信息"
+    "failed_to_load_bank_account": "无法加载银行账户信息",
+    "back_to_home": "返回首页",
+    "amount": "金额",
+    "transaction_code": "交易码",
+    "payment_time": "时间"
   }
