@@ -23,6 +23,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import ConfirmationModal from '../components/common/ConfirmationModal';
 
 import '../languages/i18n';
+import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import api from '../api/config'
@@ -69,6 +70,12 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
     }
   };
 
+  const onPressCrashapp = () => {
+    // Crash app để test firebase crashlytics
+    crashlytics().crash();
+  }
+
+
   return (
       <SafeAreaView style={styles.container}>
         <HomeHeader mode="title" title={t('setting_settings_header')} showNotification={false} />
@@ -102,6 +109,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
           <TouchableOpacity
             style={styles.biometricContainer}
             activeOpacity={0.7}
+            onPress={onPressCrashapp}
             >
             <View style={styles.biometricContent}>
               <View style={styles.biometricIconContainer}>

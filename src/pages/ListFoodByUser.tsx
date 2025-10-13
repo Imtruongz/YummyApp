@@ -159,10 +159,16 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   // Kiểm tra thông tin ngân hàng của người dùng trước khi chuyển đến màn hình Donate
   const handleDonatePress = useCallback(async () => {
     try {
+      console.log('[ListFoodByUser] userId before checking bank account:', userId);
+      console.log('[ListFoodByUser] User info:', viewedUser);
+      
       // Kiểm tra xem người dùng đích có tài khoản ngân hàng hay không
-      const response = await api.get(`/bank-accounts/${userId}`);
+      // Loại bỏ dấu / ở đầu vì baseURL đã có /api
+      const response = await api.get(`bank-accounts/${userId}`);
+      console.log('[ListFoodByUser] Bank account check response:', response.data);
       
       if (response.data && response.data.success && response.data.data) {
+        console.log('[ListFoodByUser] Navigating to PaymentScreen with userId:', userId);
         // Nếu có thông tin ngân hàng, chuyển đến màn hình PaymentScreen
         navigation.navigate('PaymentScreen', {
           amount: 0,

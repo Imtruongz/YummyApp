@@ -53,7 +53,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
   const { t } = useTranslation();
   const { showNotification } = useNotification();
-  
+
   // State for confirmation modals
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
@@ -72,25 +72,37 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       if (userId) {
         setLoadingBankAccount(true);
         try {
-          // Lấy thông tin người dùng
-          const userResponse = await api.get(`/users/${userId}`);
+          const userResponse = await api.get(`users/getUserById/${userId}`);
           if (userResponse.data && userResponse.data.success) {
             setRecipientUsername(userResponse.data.data.username || '');
           }
 
           // Lấy thông tin tài khoản ngân hàng
-          const response = await api.get(`/bank-accounts/${userId}`);
+          const response = await api.get(`bank-accounts/${userId}`);
           if (response.data && response.data.success && response.data.data) {
+            console.log('[PaymentScreen] Fetched recipient bank account:', response.data.data);
             setRecipientBankAccount(response.data.data);
           }
-        } catch (error) {
-          console.error('Error fetching recipient bank account:', error);
-          showNotification({
-            type: 'error',
-            title: t('error'),
-            message: t('failed_to_load_bank_account'),
-            duration: 3000,
-          });
+        } catch (error: any) {
+          console.error('[PaymentScreen] Error fetching recipient bank account:', error);
+
+          if (error?.response?.status === 404) {
+            showNotification({
+              type: 'warning',
+              title: t('no_bank_account_title', 'Thông báo'),
+              message: t('no_bank_account_message', 'Người dùng này chưa cung cấp thông tin tài khoản ngân hàng nên không thể nhận donate.'),
+              duration: 3000,
+            });
+            // Quay lại màn hình trước
+            navigation.goBack();
+          } else {
+            showNotification({
+              type: 'error',
+              title: t('error'),
+              message: t('failed_to_load_bank_account'),
+              duration: 3000,
+            });
+          }
         } finally {
           setLoadingBankAccount(false);
         }
@@ -181,7 +193,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     }
 
     const paymentMethodName = selectedMethod.name;
-    
+
     // Save the selected method and show confirmation modal
     setSelectedPaymentMethod(selectedMethod);
     setShowPaymentConfirmation(true);
@@ -189,9 +201,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
   const handleProcessPayment = async () => {
     if (!selectedPaymentMethod) return;
-    
+
     const paymentMethodName = selectedPaymentMethod.name;
-    
+
     try {
       if (selectedPaymentMethod.integrated) {
         if (selectedPaymentMethod.id === 'bank') {
@@ -204,7 +216,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             });
             return;
           }
-          
+
           // Ghi nhận giao dịch vào hệ thống
           const response = await api.post('/payment/record-bank-transfer', {
             amount: amount,
@@ -212,14 +224,14 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             receiverId: userId,
             bankAccountInfo: recipientBankAccount
           });
-          
+
           if (response.data && response.data.success) {
             showNotification({
               title: t('payment_success'),
               message: t('payment_bank_transfer_success'),
               type: 'success'
             });
-            
+
             // Chuyển về màn hình trước
             navigation.goBack();
           }
@@ -294,146 +306,116 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
         showNotification={false}
       />
 
-      {/* Payment Card */}
-      <View style={styles.paymentCard}>
-        <View style={styles.serviceIconContainer}>
-          <IoniconsIcon name="heart-outline" size={30} color={colors.primary} />
-        </View>
-        <Text style={styles.serviceTitle}>{t('payment_title')}</Text>
-        <Text style={styles.phoneNumber}>{phoneNumber}</Text>
-      </View>
-
-      {/* Donation Amount Input Card */}
-      <View style={styles.donationCard}>
-        <View style={styles.donationTitleRow}>
-          <IoniconsIcon name="cash-outline" size={24} color={colors.primary} />
-          <Text style={styles.donationTitle}>{t('payment_amount')}</Text>
-        </View>
-        <View style={styles.amountInputContainer}>
-          <Text style={styles.currencyLabel}>$</Text>
-          <TextInput
-            style={styles.amountInput}
-            value={inputAmount}
-            onChangeText={handleAmountChange}
-            keyboardType="numeric"
-            placeholder={t('payment_enter_amount')}
-            placeholderTextColor="#aaa"
-          />
-        </View>
-        <View style={styles.quickAmountContainer}>
-          <TouchableOpacity
-            style={styles.quickAmountButton}
-            onPress={() => { setAmount(5); setInputAmount('5'); }}
-          >
-            <Text style={styles.quickAmountText}>$5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickAmountButton}
-            onPress={() => { setAmount(10); setInputAmount('10'); }}
-          >
-            <Text style={styles.quickAmountText}>$10</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.quickAmountButton}
-            onPress={() => { setAmount(20); setInputAmount('20'); }}
-          >
-            <Text style={styles.quickAmountText}>$20</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Payment Methods Section */}
-      <View style={styles.paymentMethodsSection}>
-        <View style={styles.paymentMethodsHeader}>
-          <Text style={styles.paymentMethodsTitle}>{t('payment_payment_methods')}</Text>
-          <TouchableOpacity>
-            <Text style={styles.viewAllText}>{t('payment_view_all')}</Text>
-          </TouchableOpacity>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
+        {/* Payment Card */}
+        <View style={styles.paymentCard}>
+          <View style={styles.serviceIconContainer}>
+            <IoniconsIcon name="heart-outline" size={30} color={colors.primary} />
+          </View>
+          <Text style={styles.serviceTitle}>{t('payment_title')}</Text>
+          <Text style={styles.phoneNumber}>{recipientBankAccount?.accountName}</Text>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paymentMethodsList}>
-          {paymentMethods.map((method) => (
+        <View style={styles.donationCard}>
+          <View style={styles.donationTitleRow}>
+            <IoniconsIcon name="cash-outline" size={24} color={colors.primary} />
+            <Text style={styles.donationTitle}>{t('payment_amount')}</Text>
+          </View>
+          <View style={styles.amountInputContainer}>
+            <Text style={styles.currencyLabel}>$</Text>
+            <TextInput
+              style={styles.amountInput}
+              value={inputAmount}
+              onChangeText={handleAmountChange}
+              keyboardType="numeric"
+              placeholder={t('payment_enter_amount')}
+              placeholderTextColor="#aaa"
+            />
+          </View>
+          <View style={styles.quickAmountContainer}>
             <TouchableOpacity
-              key={method.id}
-              style={[styles.paymentMethodCard, method.selected && styles.paymentMethodCardSelected]}
-              onPress={() => handlePaymentMethodSelect(method.id)}
+              style={styles.quickAmountButton}
+              onPress={() => { setAmount(5); setInputAmount('5'); }}
             >
-              <View style={styles.paymentMethodContent}>
-                {renderIcon(method)}
-                <Text style={styles.paymentMethodName}>{method.name}</Text>
-                {method.balance && (
-                  <Text style={styles.paymentMethodBalance}>{method.balance}</Text>
-                )}
-                {!method.integrated && (
-                  <View style={styles.notIntegratedBadge}>
-                    <Text style={styles.notIntegratedText}>{t('demo')}</Text>
+              <Text style={styles.quickAmountText}>$5</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.quickAmountButton}
+              onPress={() => { setAmount(10); setInputAmount('10'); }}
+            >
+              <Text style={styles.quickAmountText}>$10</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.quickAmountButton}
+              onPress={() => { setAmount(20); setInputAmount('20'); }}
+            >
+              <Text style={styles.quickAmountText}>$20</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Payment Methods Section */}
+        <View style={styles.paymentMethodsSection}>
+          <View style={styles.paymentMethodsHeader}>
+            <Text style={styles.paymentMethodsTitle}>{t('payment_payment_methods')}</Text>
+            <TouchableOpacity>
+              <Text style={styles.viewAllText}>{t('payment_view_all')}</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.paymentMethodsList}>
+            {paymentMethods.map((method) => (
+              <TouchableOpacity
+                key={method.id}
+                style={[styles.paymentMethodCard, method.selected && styles.paymentMethodCardSelected]}
+                onPress={() => handlePaymentMethodSelect(method.id)}
+              >
+                <View style={styles.paymentMethodContent}>
+                  {renderIcon(method)}
+                  <Text style={styles.paymentMethodName}>{method.name}</Text>
+                  {method.balance && (
+                    <Text style={styles.paymentMethodBalance}>{method.balance}</Text>
+                  )}
+                  {!method.integrated && (
+                    <View style={styles.notIntegratedBadge}>
+                      <Text style={styles.notIntegratedText}>{t('demo')}</Text>
+                    </View>
+                  )}
+                </View>
+                {method.selected && (
+                  <View style={styles.selectedCheckmark}>
+                    <AntDesignIcon name="check" size={16} color="#fff" />
                   </View>
                 )}
-              </View>
-              {method.selected && (
-                <View style={styles.selectedCheckmark}>
-                  <AntDesignIcon name="check" size={16} color="#fff" />
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-      {/* Recipient Bank Account Information - Show when "Bank Transfer" is selected */}
-      {selectedPaymentMethod?.id === 'bank' && (
-        <View style={styles.bankInfoSection}>
-          <View style={styles.bankInfoHeader}>
-            <IoniconsIcon name="card-outline" size={24} color={colors.primary} />
-            <Text style={styles.bankInfoTitle}>{t('recipient_bank_info')}</Text>
+        <View style={styles.bankInfoCard}>
+          <Text style={styles.recipientName}>{recipientUsername}</Text>
+          <View style={styles.bankInfoRow}>
+            <Text style={styles.bankInfoLabel}>{t('bank_name')}:</Text>
+            <Text style={styles.bankInfoValue}>{recipientBankAccount?.bankName}</Text>
           </View>
-          
-          {loadingBankAccount ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color={colors.primary} />
-              <Text style={styles.loadingText}>{t('loading')}</Text>
-            </View>
-          ) : recipientBankAccount ? (
-            <View style={styles.bankInfoCard}>
-              <Text style={styles.recipientName}>{recipientUsername}</Text>
-              <View style={styles.bankInfoRow}>
-                <Text style={styles.bankInfoLabel}>{t('bank_name')}:</Text>
-                <Text style={styles.bankInfoValue}>{recipientBankAccount.bankName}</Text>
-              </View>
-              <View style={styles.bankInfoRow}>
-                <Text style={styles.bankInfoLabel}>{t('bank_code')}:</Text>
-                <Text style={styles.bankInfoValue}>{recipientBankAccount.bankCode}</Text>
-              </View>
-              <View style={styles.bankInfoRow}>
-                <Text style={styles.bankInfoLabel}>{t('account_number')}:</Text>
-                <Text style={styles.bankInfoValue}>{recipientBankAccount.accountNumber}</Text>
-              </View>
-              <View style={styles.bankInfoRow}>
-                <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
-                <Text style={styles.bankInfoValue}>{recipientBankAccount.accountName}</Text>
-              </View>
-              <Text style={styles.transferNote}>{t('transfer_note')}: Donate-{recipientUsername}</Text>
-            </View>
-          ) : (
-            <View style={styles.noBankAccount}>
-              <Text style={styles.noBankAccountText}>{t('no_recipient_bank_account')}</Text>
-            </View>
-          )}
+          <View style={styles.bankInfoRow}>
+            <Text style={styles.bankInfoLabel}>{t('bank_code')}:</Text>
+            <Text style={styles.bankInfoValue}>{recipientBankAccount?.bankCode}</Text>
+          </View>
+          <View style={styles.bankInfoRow}>
+            <Text style={styles.bankInfoLabel}>{t('account_number')}:</Text>
+            <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountNumber}</Text>
+          </View>
+          <View style={styles.bankInfoRow}>
+            <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
+            <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountName}</Text>
+          </View>
+          <View style={styles.bankInfoRow}>
+            <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
+            <Text style={styles.bankInfoValue}>Donate</Text>
+          </View>
         </View>
-      )}
-
-      {/* Info Message */}
-      <View style={styles.infoMessageCard}>
-        <IoniconsIcon name="information-circle" size={24} color={colors.primary} />
-        <View style={styles.infoMessageContent}>
-          <Text style={styles.infoMessageText}>
-            {t('payment_credit_message')}
-          </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('BankAccountScreen')}>
-            <Text style={styles.infoMessageAction}>{t('payment_choose_now')}</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
 
       {/* Bottom Payment Button */}
       <View style={styles.bottomPaymentSection}>
@@ -451,9 +433,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       <ConfirmationModal
         visible={showPaymentConfirmation}
         title={t('payment_confirm_donate')}
-        message={t('payment_confirm_message', { 
-          amount: formatMoney(amount), 
-          method: selectedPaymentMethod?.name || '' 
+        message={t('payment_confirm_message', {
+          amount: formatMoney(amount),
+          method: selectedPaymentMethod?.name || ''
         })}
         onClose={() => setShowPaymentConfirmation(false)}
         onConfirm={handleProcessPayment}
