@@ -29,6 +29,18 @@
     "add_placeholder_steps": "步骤",
     "add_add_step": "添加步骤",
     "add_add_food_btn": "添加美食",
+    "add_validation_food_name": "请输入菜名",
+    "add_validation_image": "请为您的菜品选择一张图片",
+    "add_validation_category": "请选择一个分类",
+    "add_validation_description": "请输入描述",
+    "add_validation_cooking_time_number": "烹饪时间必须是数字",
+    "add_validation_ingredients": "至少需要一种食材",
+    "add_validation_steps": "至少需要一个烹饪步骤",
+    "add_validation_form_error": "请修正表单中的错误",
+    "add_success_message": "新美食添加成功！",
+    "add_error_message": "添加美食失败，请重试。",
+    "general_error": "出现错误！",
+    "reload": "重新加载",
   
     "profile_my_profile_header": "我的资料",
     "profile_posts": "帖子",
@@ -143,6 +155,16 @@
     "confirm_delete_bank_account": "您确定要删除此银行账户吗？",
     "delete": "删除",
     "cancel": "取消",
-    "save": "保存"
+    "save": "保存",
+    "bank_account_deleted_successfully": "银行账户删除成功",
+    "failed_to_delete_bank_account": "无法删除银行账户",
+    "recipient_bank_info": "收款人银行信息",
+    "transfer_note": "转账附言",
+    "no_recipient_bank_account": "该用户尚未设置银行账户",
+    "payment_bank_transfer_success": "您的银行转账已记录。请通过您的银行应用完成交易。",
+    "no_bank_account_title": "通知",
+    "no_bank_account_message": "该用户尚未提供银行账户信息，无法接收捐款。",
+    "check_bank_account_error": "无法检查银行账户信息。请稍后再试。",
+    "failed_to_load_bank_account": "无法加载银行账户信息"
   }
   

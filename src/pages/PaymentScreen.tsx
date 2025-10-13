@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   ScrollView,
   Linking,
   TextInput,
+  ActivityIndicator,
 } from 'react-native';
 import { useNotification } from '../contexts/NotificationContext';
 import ConfirmationModal from '../components/common/ConfirmationModal';
@@ -39,8 +40,15 @@ interface PaymentMethod {
   cardType?: string;
 }
 
+interface BankAccount {
+  bankName: string;
+  bankCode: string;
+  accountNumber: string;
+  accountName: string;
+}
+
 const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
-  const { amount: initialAmount = 5, phoneNumber = '0363704403', serviceType = 'Donate', serviceProvider = 'Yummy' } = route.params || {};
+  const { amount: initialAmount = 5, phoneNumber = '0363704403', serviceType = 'Donate', serviceProvider = 'Yummy', userId } = route.params || {};
   const [amount, setAmount] = useState<number>(initialAmount);
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
   const { t } = useTranslation();
@@ -49,11 +57,48 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   // State for confirmation modals
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
+  const [recipientBankAccount, setRecipientBankAccount] = useState<BankAccount | null>(null);
+  const [loadingBankAccount, setLoadingBankAccount] = useState<boolean>(false);
+  const [recipientUsername, setRecipientUsername] = useState<string>('');
 
   useLayoutEffect(() => {
     navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
     return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
   }, [navigation]);
+
+  // Lấy thông tin tài khoản ngân hàng của người nhận
+  useEffect(() => {
+    const fetchRecipientBankAccount = async () => {
+      if (userId) {
+        setLoadingBankAccount(true);
+        try {
+          // Lấy thông tin người dùng
+          const userResponse = await api.get(`/users/${userId}`);
+          if (userResponse.data && userResponse.data.success) {
+            setRecipientUsername(userResponse.data.data.username || '');
+          }
+
+          // Lấy thông tin tài khoản ngân hàng
+          const response = await api.get(`/bank-accounts/${userId}`);
+          if (response.data && response.data.success && response.data.data) {
+            setRecipientBankAccount(response.data.data);
+          }
+        } catch (error) {
+          console.error('Error fetching recipient bank account:', error);
+          showNotification({
+            type: 'error',
+            title: t('error'),
+            message: t('failed_to_load_bank_account'),
+            duration: 3000,
+          });
+        } finally {
+          setLoadingBankAccount(false);
+        }
+      }
+    };
+
+    fetchRecipientBankAccount();
+  }, [userId, t, showNotification]);
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
     {
@@ -72,11 +117,11 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     },
     {
       id: 'bank',
-      name: 'Tài khoản trả sau',
+      name: 'Chuyển khoản ngân hàng',
       iconType: 'materialcommunity',
       iconName: 'bank',
       iconColor: '#00a86b',
-      integrated: false // Chưa tích hợp
+      integrated: true // Đã tích hợp - hiển thị thông tin ngân hàng
     },
     {
       id: 'bidv',
@@ -149,22 +194,54 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     
     try {
       if (selectedPaymentMethod.integrated) {
-        const response = await api.post('/payment/create-session', {
-          amount: amount,
-          description: `Donate $${amount} cho người dùng qua YummyApp`,
-          merchantName: 'YummyFood',
-          receiverId: route.params.userId, // Thêm ID người nhận
-        });
-
-        const data = response.data;
-
-        if (data.success && data.token) {
-          const url = `mblaos://pay?token=${data.token}`;
-          console.log('Opening URL with dynamic token:', url);
-          await Linking.openURL(url);
-          return;
+        if (selectedPaymentMethod.id === 'bank') {
+          // Nếu là phương thức chuyển khoản ngân hàng
+          if (!recipientBankAccount) {
+            showNotification({
+              title: t('payment_payment_error'),
+              message: t('no_recipient_bank_account'),
+              type: 'error'
+            });
+            return;
+          }
+          
+          // Ghi nhận giao dịch vào hệ thống
+          const response = await api.post('/payment/record-bank-transfer', {
+            amount: amount,
+            description: `Donate $${amount} cho ${recipientUsername} qua YummyApp`,
+            receiverId: userId,
+            bankAccountInfo: recipientBankAccount
+          });
+          
+          if (response.data && response.data.success) {
+            showNotification({
+              title: t('payment_success'),
+              message: t('payment_bank_transfer_success'),
+              type: 'success'
+            });
+            
+            // Chuyển về màn hình trước
+            navigation.goBack();
+          }
         } else {
-          throw new Error('Không thể tạo token thanh toán');
+          // Phương thức thanh toán khác (MBLaos)
+          const response = await api.post('/payment/create-session', {
+            amount: amount,
+            description: `Donate $${amount} cho người dùng qua YummyApp`,
+            merchantName: 'YummyFood',
+            receiverId: userId,
+          });
+
+          const data = response.data;
+
+          if (data.success && data.token) {
+            const url = `mblaos://pay?token=${data.token}`;
+            console.log('Opening URL with dynamic token:', url);
+            await Linking.openURL(url);
+            return;
+          } else {
+            throw new Error('Không thể tạo token thanh toán');
+          }
         }
       } else {
         showNotification({
@@ -302,6 +379,48 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           ))}
         </ScrollView>
       </View>
+
+      {/* Recipient Bank Account Information - Show when "Bank Transfer" is selected */}
+      {selectedPaymentMethod?.id === 'bank' && (
+        <View style={styles.bankInfoSection}>
+          <View style={styles.bankInfoHeader}>
+            <IoniconsIcon name="card-outline" size={24} color={colors.primary} />
+            <Text style={styles.bankInfoTitle}>{t('recipient_bank_info')}</Text>
+          </View>
+          
+          {loadingBankAccount ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={colors.primary} />
+              <Text style={styles.loadingText}>{t('loading')}</Text>
+            </View>
+          ) : recipientBankAccount ? (
+            <View style={styles.bankInfoCard}>
+              <Text style={styles.recipientName}>{recipientUsername}</Text>
+              <View style={styles.bankInfoRow}>
+                <Text style={styles.bankInfoLabel}>{t('bank_name')}:</Text>
+                <Text style={styles.bankInfoValue}>{recipientBankAccount.bankName}</Text>
+              </View>
+              <View style={styles.bankInfoRow}>
+                <Text style={styles.bankInfoLabel}>{t('bank_code')}:</Text>
+                <Text style={styles.bankInfoValue}>{recipientBankAccount.bankCode}</Text>
+              </View>
+              <View style={styles.bankInfoRow}>
+                <Text style={styles.bankInfoLabel}>{t('account_number')}:</Text>
+                <Text style={styles.bankInfoValue}>{recipientBankAccount.accountNumber}</Text>
+              </View>
+              <View style={styles.bankInfoRow}>
+                <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
+                <Text style={styles.bankInfoValue}>{recipientBankAccount.accountName}</Text>
+              </View>
+              <Text style={styles.transferNote}>{t('transfer_note')}: Donate-{recipientUsername}</Text>
+            </View>
+          ) : (
+            <View style={styles.noBankAccount}>
+              <Text style={styles.noBankAccountText}>{t('no_recipient_bank_account')}</Text>
+            </View>
+          )}
+        </View>
+      )}
 
       {/* Info Message */}
       <View style={styles.infoMessageCard}>
@@ -674,6 +793,92 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+  },
+  // Styles for bank account info section
+  bankInfoSection: {
+    backgroundColor: colors.light,
+    marginHorizontal: 16,
+    marginTop: 16,
+    borderRadius: 12,
+    padding: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  bankInfoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  bankInfoTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#0d1117',
+    marginLeft: 8,
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    flexDirection: 'row',
+  },
+  loadingText: {
+    color: colors.gray,
+    marginLeft: 8,
+    fontSize: 14,
+  },
+  bankInfoCard: {
+    padding: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+  },
+  recipientName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.primary,
+    marginBottom: 12,
+  },
+  bankInfoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  bankInfoLabel: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+    flex: 1,
+  },
+  bankInfoValue: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '600',
+    flex: 2,
+    textAlign: 'right',
+  },
+  transferNote: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.primary,
+    marginTop: 12,
+    textAlign: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+    paddingTop: 8,
+  },
+  noBankAccount: {
+    padding: 16,
+    alignItems: 'center',
+  },
+  noBankAccountText: {
+    fontSize: 14,
+    color: colors.gray,
+    textAlign: 'center',
   },
 });
 

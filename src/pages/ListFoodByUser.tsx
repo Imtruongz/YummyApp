@@ -17,6 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { getUserByIdAPI } from '../redux/slices/auth/authThunk.ts';
 import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import { useAppSelector, useAppDispatch } from '../redux/hooks';
+import { useNotification } from '../contexts/NotificationContext';
+import api from '../api/config';
 import { RootState } from '../redux/store';
 import {
   isFollowingAPI,
@@ -60,6 +62,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const { userId } = route.params;
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const { showNotification } = useNotification();
 
 
   const { viewedUserFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
@@ -153,6 +156,47 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
     }
   }, [currentUserId, userId, isFollowing, dispatch]);
 
+  // Kiểm tra thông tin ngân hàng của người dùng trước khi chuyển đến màn hình Donate
+  const handleDonatePress = useCallback(async () => {
+    try {
+      // Kiểm tra xem người dùng đích có tài khoản ngân hàng hay không
+      const response = await api.get(`/bank-accounts/${userId}`);
+      
+      if (response.data && response.data.success && response.data.data) {
+        // Nếu có thông tin ngân hàng, chuyển đến màn hình PaymentScreen
+        navigation.navigate('PaymentScreen', {
+          amount: 0,
+          userId: userId,
+          serviceType: 'Thanh toán dịch vụ',
+          serviceProvider: 'YummyApp'
+        });
+      } else {
+        // Nếu không có thông tin ngân hàng, hiển thị thông báo
+        showNotification({
+          type: 'warning',
+          title: t('no_bank_account_title', 'Thông báo'),
+          message: t('no_bank_account_message'),
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      console.log('Error checking bank account:', error);
+      
+      // Nếu lỗi 404 (người dùng chưa có tài khoản ngân hàng), chỉ hiển thị thông báo thông tin
+      if (error?.response?.status === 404) {
+        showNotification({
+          type: 'warning',
+          title: t('no_bank_account_title', 'Thông báo'),
+          message: t('no_bank_account_message'),
+          duration: 3000,
+        });
+      } else {
+        // Các lỗi khác không hiện thông báo, chỉ log ra console
+        console.error('Unexpected error when checking bank account:', error);
+      }
+    }
+  }, [userId, navigation, showNotification, t]);
+
   if (isLoadingFood || isLoadingUser) {
     return <Loading />;
   }
@@ -234,12 +278,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
           )}
           <TouchableOpacity
             style={styles.followButton}
-            onPress={() => navigation.navigate('PaymentScreen', {
-              amount: 0,
-              userId: userId,
-              serviceType: 'Thanh toán dịch vụ',
-              serviceProvider: 'YummyApp'
-            })}
+            onPress={() => handleDonatePress()}
             activeOpacity={0.8}
             disabled={followLoading}
           >

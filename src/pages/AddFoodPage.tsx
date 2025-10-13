@@ -156,20 +156,85 @@ const AddFoodPage = ({ navigation }: any) => {
     }
   };
 
+  const validateForm = () => {
+    const errors: {[key: string]: string} = {};
+    
+    // Kiểm tra tên món ăn
+    if (!formData.foodName.trim()) {
+      errors.foodName = t('add_validation_food_name');
+    }
+    
+    // Kiểm tra hình ảnh món ăn
+    if (!formData.foodThumbnail || !originalImageUri) {
+      errors.foodThumbnail = t('add_validation_image');
+    }
+    
+    // Kiểm tra danh mục món ăn
+    if (!formData.categoryId) {
+      errors.categoryId = t('add_validation_category');
+    }
+    
+    // Kiểm tra mô tả món ăn
+    if (!formData.foodDescription.trim()) {
+      errors.foodDescription = t('add_validation_description');
+    }
+    
+    // Kiểm tra thời gian nấu ăn (không bắt buộc, nhưng nếu có thì phải là số)
+    if (formData.CookingTime && isNaN(Number(formData.CookingTime))) {
+      errors.CookingTime = t('add_validation_cooking_time_number');
+    }
+    
+    // Kiểm tra nguyên liệu
+    const validIngredients = ingredients.filter(item => item.trim() !== '');
+    if (validIngredients.length === 0) {
+      errors.ingredients = t('add_validation_ingredients');
+    }
+    
+    // Kiểm tra các bước nấu
+    const validSteps = steps.filter(item => item.trim() !== '');
+    if (validSteps.length === 0) {
+      errors.steps = t('add_validation_steps');
+    }
+    
+    return { isValid: Object.keys(errors).length === 0, errors };
+  };
+
   const handleSubmit = async () => {
+    // Validate form trước khi gửi
+    const { isValid, errors } = validateForm();
+    if (!isValid) {
+      setErrorForm(errors);
+      
+      // Hiển thị thông báo lỗi
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: t('error'),
+        text2: t('add_validation_form_error'),
+        visibilityTime: 3000,
+      });
+      
+      return;
+    }
+    
+    // Lọc bỏ nguyên liệu và các bước rỗng
+    const filteredIngredients = ingredients.filter(item => item.trim() !== '');
+    const filteredSteps = steps.filter(item => item.trim() !== '');
+    
     const updatedFormData = {
       ...formData,
       userId: userId,
-      foodIngredients: ingredients,
-      foodSteps: steps,
+      foodIngredients: filteredIngredients,
+      foodSteps: filteredSteps,
     };
+    
     try {
       await dispatch(addFoodAPI(updatedFormData)).unwrap();
       Toast.show({
         type: 'success',
         position: 'top',
-        text1: 'Success',
-        text2: 'New food added successfully!',
+        text1: t('success'),
+        text2: t('add_success_message'),
         visibilityTime: 2000,
       });
 
@@ -189,7 +254,16 @@ const AddFoodPage = ({ navigation }: any) => {
         routes: [{ name: 'HomeNavigator' }],
       });
     } catch (error: any) {
-      setErrorForm(error?.data?.errors || {general: 'Something went wrong!'});
+      console.error('Error adding food:', error);
+      setErrorForm(error?.data?.errors || {general: t('general_error')});
+      
+      Toast.show({
+        type: 'error',
+        position: 'top',
+        text1: t('error'),
+        text2: t('add_error_message'),
+        visibilityTime: 3000,
+      });
     }
   };
 
@@ -249,58 +323,90 @@ const AddFoodPage = ({ navigation }: any) => {
 
         <View style={styles.foodcategoryContainer}>
           <CustomTitle title={t('add_category')} />
-          <SelectDropdown
-            data={categoryList}
-            onSelect={selectedItem => {
-              console.log(selectedItem.categoryId);
-              setFormData(prev => ({
-                ...prev,
-                categoryId: selectedItem.categoryId,
-              }));
-            }}
-            renderButton={(selectedItem, isOpened) => {
-              return (
-                <View style={styles.dropdownButtonStyle}>
-                  <Text style={styles.dropdownButtonTxtStyle}>
-                    {(selectedItem && selectedItem.categoryName) ||
-                      t('add_category')}
-                  </Text>
-                  {React.createElement(Icon, {
-                    name: isOpened ? 'chevron-up' : 'chevron-down',
-                    style: styles.dropdownButtonArrowStyle,
-                  })}
-                </View>
-              );
-            }}
-            renderItem={(item, isSelected) => {
-              return (
-                <View
-                  style={{
-                    ...styles.dropdownItemStyle,
-                    ...(isSelected && {backgroundColor: '#D2D9DF'}),
-                  }}>
-                  <Text style={styles.dropdownItemTxtStyle}>
-                    {item.categoryName}
-                  </Text>
-                </View>
-              );
-            }}
-            showsVerticalScrollIndicator={false}
-            dropdownStyle={styles.dropdownMenuStyle}
-          />
+          <View>
+            <SelectDropdown
+              data={categoryList}
+              onSelect={selectedItem => {
+                console.log(selectedItem.categoryId);
+                setFormData(prev => ({
+                  ...prev,
+                  categoryId: selectedItem.categoryId,
+                }));
+                // Xóa lỗi khi người dùng chọn danh mục
+                if (errorForm?.categoryId) {
+                  const newErrorForm = {...errorForm};
+                  delete newErrorForm.categoryId;
+                  setErrorForm(newErrorForm);
+                }
+              }}
+              renderButton={(selectedItem, isOpened) => {
+                return (
+                  <View style={[
+                    styles.dropdownButtonStyle,
+                    errorForm?.categoryId ? styles.inputError : {}
+                  ]}>
+                    <Text style={styles.dropdownButtonTxtStyle}>
+                      {(selectedItem && selectedItem.categoryName) ||
+                        t('add_category')}
+                    </Text>
+                    {React.createElement(Icon, {
+                      name: isOpened ? 'chevron-up' : 'chevron-down',
+                      style: styles.dropdownButtonArrowStyle,
+                    })}
+                  </View>
+                );
+              }}
+              renderItem={(item, isSelected) => {
+                return (
+                  <View
+                    style={{
+                      ...styles.dropdownItemStyle,
+                      ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                    }}>
+                    <Text style={styles.dropdownItemTxtStyle}>
+                      {item.categoryName}
+                    </Text>
+                  </View>
+                );
+              }}
+              showsVerticalScrollIndicator={false}
+              dropdownStyle={styles.dropdownMenuStyle}
+            />
+            {errorForm?.categoryId && (
+              <Text style={[styles.errorText, {textAlign: 'right'}]}>
+                {errorForm.categoryId}
+              </Text>
+            )}
+          </View>
         </View>
 
         <View style={styles.foodcategoryContainer}>
           <CustomTitle title={t('add_cooking_time')} />
-          <TextInput
-            style={styles.cookingTimeTextInput}
-            keyboardType="numeric"
-            placeholder={t('add_cooking_time')}
-            value={formData.CookingTime}
-            onChangeText={text =>
-              setFormData(prev => ({...prev, CookingTime: text}))
-            }
-          />
+          <View>
+            <TextInput
+              style={[
+                styles.cookingTimeTextInput,
+                errorForm?.CookingTime ? styles.inputError : {}
+              ]}
+              keyboardType="numeric"
+              placeholder={t('add_cooking_time')}
+              value={formData.CookingTime}
+              onChangeText={text => {
+                setFormData(prev => ({...prev, CookingTime: text}));
+                // Xóa lỗi khi người dùng nhập thời gian nấu
+                if (errorForm?.CookingTime) {
+                  const newErrorForm = {...errorForm};
+                  delete newErrorForm.CookingTime;
+                  setErrorForm(newErrorForm);
+                }
+              }}
+            />
+            {errorForm?.CookingTime && (
+              <Text style={[styles.errorText, {textAlign: 'right'}]}>
+                {errorForm.CookingTime}
+              </Text>
+            )}
+          </View>
         </View>
 
         <View style={styles.container2}>
@@ -308,20 +414,40 @@ const AddFoodPage = ({ navigation }: any) => {
           {ingredients.map((ingredient, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
               <TextInput
-                style={styles.ISTextInput}
+                style={[
+                  styles.ISTextInput, 
+                  errorForm?.ingredients && !ingredient.trim() ? styles.inputError : {}
+                ]}
                 placeholder={`${t('add_placeholder_ingredients')} ${index + 1}`}
                 value={ingredient}
-                onChangeText={text => handleIngredientChange(text, index)}
+                onChangeText={text => {
+                  handleIngredientChange(text, index);
+                  // Xóa lỗi khi người dùng nhập nguyên liệu
+                  if (errorForm?.ingredients && text.trim()) {
+                    const newErrorForm = {...errorForm};
+                    delete newErrorForm.ingredients;
+                    setErrorForm(newErrorForm);
+                  }
+                }}
               />
-              <Pressable onPress={() => handleRemoveIngredient(index)}>
+              <Pressable 
+                onPress={() => handleRemoveIngredient(index)}
+                disabled={ingredients.length === 1} // Không cho phép xóa khi chỉ còn 1 phần tử
+              >
                 {React.createElement(AntDesignIcon, {
-                  style: styles.icon,
+                  style: [
+                    styles.icon, 
+                    ingredients.length === 1 ? {opacity: 0.5} : {}
+                  ],
                   name: 'minus',
                   size: 22,
                 })}
               </Pressable>
             </View>
           ))}
+          {errorForm?.ingredients && (
+            <Text style={styles.errorText}>{errorForm.ingredients}</Text>
+          )}
           <CustomButton
             style={styles.addIngredient}
             title={t('add_add_ingredient')}
@@ -334,20 +460,40 @@ const AddFoodPage = ({ navigation }: any) => {
           {steps.map((step, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
               <TextInput
-                style={styles.ISTextInput}
+                style={[
+                  styles.ISTextInput,
+                  errorForm?.steps && !step.trim() ? styles.inputError : {}
+                ]}
                 placeholder={`${t('add_placeholder_steps')} ${index + 1}`}
                 value={step}
-                onChangeText={text => handleStepChange(text, index)}
+                onChangeText={text => {
+                  handleStepChange(text, index);
+                  // Xóa lỗi khi người dùng nhập bước nấu
+                  if (errorForm?.steps && text.trim()) {
+                    const newErrorForm = {...errorForm};
+                    delete newErrorForm.steps;
+                    setErrorForm(newErrorForm);
+                  }
+                }}
               />
-              <Pressable onPress={() => handleRemoveStep(index)}>
+              <Pressable 
+                onPress={() => handleRemoveStep(index)}
+                disabled={steps.length === 1} // Không cho phép xóa khi chỉ còn 1 phần tử
+              >
                 {React.createElement(AntDesignIcon, {
-                  style: styles.icon,
+                  style: [
+                    styles.icon,
+                    steps.length === 1 ? {opacity: 0.5} : {}
+                  ],
                   name: 'minus',
                   size: 22,
                 })}
               </Pressable>
             </View>
           ))}
+          {errorForm?.steps && (
+            <Text style={styles.errorText}>{errorForm.steps}</Text>
+          )}
           <CustomButton
             style={styles.addIngredient}
             title={t('add_add_step')}
@@ -356,6 +502,13 @@ const AddFoodPage = ({ navigation }: any) => {
         </View>
       </ScrollView>
 
+      {/* Hiển thị lỗi chung nếu có */}
+      {errorForm?.general && (
+        <View style={styles.generalErrorContainer}>
+          <Text style={styles.generalErrorText}>{errorForm.general}</Text>
+        </View>
+      )}
+        
       <View style={styles.buttons}>
         <CustomButton title={t('add_add_food_btn')} onPress={handleSubmit} />
       </View>
@@ -435,6 +588,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
   },
+  inputError: {
+    borderWidth: 1,
+    borderColor: 'red',
+  },
   addIngredient: {
     width: 127,
     backgroundColor: colors.secondary,
@@ -494,5 +651,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: '#151E26',
+  },
+  generalErrorContainer: {
+    marginHorizontal: 18,
+    marginBottom: 10,
+    padding: 10,
+    backgroundColor: '#ffeeee',
+    borderRadius: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: 'red',
+  },
+  generalErrorText: {
+    color: 'red',
+    fontSize: 14,
   },
 });

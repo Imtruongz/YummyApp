@@ -20,11 +20,11 @@ import { LoginManager } from 'react-native-fbsdk-next';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../contexts/AuthContext';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 
 import '../languages/i18n';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
-import { Dialog, Portal, PaperProvider, Button } from 'react-native-paper'; // Import các thành phần cần thiết
 import api from '../api/config'
 const EntypoIcon = require('react-native-vector-icons/Entypo').default;
 
@@ -70,7 +70,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   };
 
   return (
-    <PaperProvider>
       <SafeAreaView style={styles.container}>
         <HomeHeader mode="title" title={t('setting_settings_header')} showNotification={false} />
         <View style={styles.accountContainer}>
@@ -131,21 +130,16 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             onPress={handleLogout}
           />
         </View>
-        <Portal>
-          <Dialog visible={dialogVisible} onDismiss={hideDialog}>
-            <Dialog.Title>{t('setting_logout')}</Dialog.Title>
-            <Dialog.Content>
-              <Text>{t('setting_logout_content')}</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button textColor={colors.primary} onPress={hideDialog}>{t('Cancel')}</Button>
-              <Button textColor={colors.primary} onPress={() => {
-                hideDialog();
-                logout();
-              }}>{t('OK')}</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
+        <ConfirmationModal
+          visible={dialogVisible}
+          title={t('setting_logout')}
+          message={t('setting_logout_content')}
+          type="warning"
+          onClose={hideDialog}
+          onConfirm={logout}
+          confirmText={t('OK')}
+          cancelText={t('Cancel')}
+        />
 
         <Modal
           visible={languageModalVisible}
@@ -172,7 +166,6 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
         </Modal>
 
       </SafeAreaView>
-    </PaperProvider>
   );
 };
 

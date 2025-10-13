@@ -16,7 +16,6 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
-import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import HomeHeader from '../components/HomeHeader';
@@ -33,21 +32,27 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
 
   const {foodList, isLoadingFood} = useAppSelector(state => state.food);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredFoodList = foodList?.filter(
-    item => containsTextCaseInsensitive(item.foodName, searchQuery) // Sử dụng hàm từ regexPatterns
-  );
-
+  
+  // Log để debug trạng thái foodList - HOOK NÀY PHẢI Ở TRƯỚC CÁC EARLY RETURNS
   useEffect(() => {
+    console.log('ListFoodPage - foodList updated:', 
+      foodList ? `${foodList.length} items` : 'no data');
+  }, [foodList]);
+  
+  // Bỏ logic lọc dữ liệu, hiển thị toàn bộ foodList
+  useEffect(() => {
+    // Log để debug
+    console.log('ListFoodPage - Dispatching getAllFoodAPI');
     dispatch(getAllFoodAPI());
   }, [dispatch]);
 
   if (isLoadingFood) {
+    console.log('ListFoodPage - Loading state');
     return <Loading />;
   }
 
-  // Kiểm tra dữ liệu trống
-  const hasNoData = !filteredFoodList || filteredFoodList.length === 0;
+  // Kiểm tra dữ liệu trống - sử dụng foodList thay vì filteredFoodList
+  const hasNoData = !foodList || foodList.length === 0;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,15 +69,31 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
       />
       
       {hasNoData ? (
-        <NoData 
-          message={searchQuery ? t('list_can_not_find') : t('list_nodata')} 
-          width={120}
-          height={120}
-          textSize={16}
-        />
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <NoData 
+            message={t('list_nodata')}
+            width={120}
+            height={120}
+            textSize={16}
+          />
+          <TouchableOpacity 
+            style={{
+              marginTop: 20, 
+              backgroundColor: colors.primary, 
+              paddingVertical: 10, 
+              paddingHorizontal: 20, 
+              borderRadius: 8
+            }}
+            onPress={() => {
+              console.log('Manually refreshing data');
+              dispatch(getAllFoodAPI());
+            }}>
+            <Text style={{color: 'white'}}>{t('reload')}</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <ScrollView contentContainerStyle={styles.container2}>
-          {filteredFoodList?.map(item => (
+          {foodList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}
