@@ -1,8 +1,9 @@
 import React, { useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import colors from '../utils/color';
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
+import LinearGradient from 'react-native-linear-gradient';
 
 const PaymentSuccessScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
@@ -17,69 +18,87 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.successCircle}>
-       <MaterialIcons name="done" size={70} color={colors.success} />
+    <LinearGradient
+      colors={[colors.primary, colors.primaryHover, '#fff']}
+      locations={[0, 0.2, 1]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={styles.gradientBg}
+    >
+      <View style={styles.container}>
+        <View style={styles.successCircle}>
+          <View style={styles.checkIconWrapper}>
+            <MaterialIcons name="done" size={60} color={colors.success} />
+          </View>
+        </View>
+        <Text style={styles.title}>{t('payment_success_title')}</Text>
+        <Text style={styles.message}>{t('payment_success_static_message')}</Text>
+        <View style={styles.detailBox}>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>{t('amount')}</Text>
+            <Text style={styles.detailValue}>500,000đ</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>{t('transaction_code')}</Text>
+            <Text style={styles.detailValue}>#123456789</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>{t('payment_time')}</Text>
+            <Text style={styles.detailValue}>13/10/2025, 14:30</Text>
+          </View>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={handleGoHome}>
+          <Text style={styles.buttonText}>{t('back_to_home')}</Text>
+        </TouchableOpacity>
       </View>
-      <Text style={styles.title}>{t('payment_success_title')}</Text>
-      <Text style={styles.message}>{t('payment_success_message')}</Text>
-      <View style={styles.detailBox}>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>{t('amount')}</Text>
-          <Text style={styles.detailValue}>500,000đ</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>{t('transaction_code')}</Text>
-          <Text style={styles.detailValue}>#123456789</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>{t('payment_time')}</Text>
-          <Text style={styles.detailValue}>13/10/2025, 14:30</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleGoHome}>
-        <Text style={styles.buttonText}>{t('back_to_home')}</Text>
-      </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  gradientBg: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   successCircle: {
-    backgroundColor: '#e6f9f0',
+    backgroundColor: '#fbe7c6', // vàng nhạt
     borderRadius: 80,
     width: 120,
     height: 120,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 28,
-    shadowColor: colors.success,
+    borderWidth: 6,
+    borderColor: '#fff',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 8,
     elevation: 6,
   },
-  successIcon: {
-    width: 70,
-    height: 70,
+  checkIconWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: colors.light,
     marginBottom: 12,
     textAlign: 'center',
   },
   message: {
     fontSize: 16,
-    color: '#333',
+    color: colors.light,
     marginBottom: 32,
     textAlign: 'center',
   },

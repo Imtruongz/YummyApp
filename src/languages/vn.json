@@ -122,7 +122,7 @@
     "payment_confirm_donate": "Xác nhận ủng hộ",
     "payment_confirm_message": "Bạn có chắc muốn ủng hộ {{amount}} cho người dùng này bằng {{method}}?",
     "payment_success": "Ủng hộ thành công",
-    "payment_success_message": "Bạn đã ủng hộ thành công {{amount}} cho người dùng này bằng {{method}}",
+    "payment_success_static_message": "Cảm ơn bạn đã ủng hộ!",
     "payment_bank_transfer_success": "Bạn đã ghi nhận chuyển khoản thành công. Vui lòng hoàn tất giao dịch qua ứng dụng ngân hàng của bạn.",
     "no_bank_account_title": "Thông báo",
     "no_bank_account_message": "Người dùng này chưa cung cấp thông tin tài khoản ngân hàng nên không thể nhận donate.",
@@ -184,5 +184,7 @@
     "back_to_home": "Về trang chủ",
     "amount": "Số tiền",
     "transaction_code": "Mã giao dịch",
-    "payment_time": "Thời gian"
+    "payment_time": "Thời gian",
+    "payment_success_title": "Thanh toán thành công!",
+    "payment_success_message": "Cảm ơn bạn đã ủng hộ!"
   }

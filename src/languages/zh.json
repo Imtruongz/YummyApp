@@ -122,7 +122,7 @@
     "payment_confirm_donate": "确认捐赠",
     "payment_confirm_message": "您确定要通过{{method}}向该用户捐赠{{amount}}吗？",
     "payment_success": "捐赠成功",
-    "payment_success_message": "您已成功通过{{method}}向该用户捐赠{{amount}}",
+    "payment_success_static_message": "感谢您的支持！",
     "payment_cancel": "取消",
     "payment_credit_message": "选择先购买后付款，最多可延长37天，让您的消费更轻松。",
     "payment_choose_now": "立即选择",
@@ -170,5 +170,7 @@
     "back_to_home": "返回首页",
     "amount": "金额",
     "transaction_code": "交易码",
-    "payment_time": "时间"
+    "payment_time": "时间",
+    "payment_success_title": "支付成功！",
+    "payment_success_message": "感谢您的支持！"
   }
