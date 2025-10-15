@@ -102,7 +102,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
         routes: [{name: 'LoginPage'}],
       });
     } catch (exception) {
-      console.error('Error clearing accessToken', exception);
+      console.log('Error clearing accessToken', exception);
     }
   };
 

@@ -10,12 +10,12 @@ export const getAllFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response.data || response.data.length === 0) {
-        console.error('No data returned from the server for getAllFoodAPI');
+        console.log('No data returned from the server for getAllFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.error(
+      console.log(
         'Error from getAllFoodAPI',
         error.message,
         'Response data error from getAllFoodAPI',
@@ -59,7 +59,7 @@ export const addFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response || !response.data) {
-        console.error('No data returned from the server for addFoodAPI');
+        console.log('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
@@ -80,12 +80,12 @@ export const deleteFoodAPI = createAsyncThunk(
     try {
       const response = await api.delete(`/foods/delete/${foodId}`);
       if (!response || !response.data) {
-        console.error('No data returned from the server for deleteFoodAPI');
+        console.log('No data returned from the server for deleteFoodAPI');
         return foodId;
       }
       return foodId;
     } catch (error: any) {
-      console.error('Error deleting food:', error.message);
+      console.log('Error deleting food:', error.message);
       return rejectWithValue(error.response?.data || 'Failed to delete food');
     }
   },
@@ -99,7 +99,7 @@ export const getDetailFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response || !response.data) {
-        console.error('No data returned from the server for addFoodAPI');
+        console.log('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
@@ -120,7 +120,7 @@ export const getFoodByCategoryAPI = createAsyncThunk(
         },
       );
       if (!response || !response.data) {
-        console.error(
+        console.log(
           'No data returned from the server for getFoodByCategoryAPI',
         );
         return thunkAPI.rejectWithValue('No data returned from the server');

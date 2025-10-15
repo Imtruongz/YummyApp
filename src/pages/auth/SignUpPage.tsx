@@ -86,7 +86,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         setErrorMessage('Registration failed. Please try again.');
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.log('Registration error:', error);
       setIsErrorMessage(true);
       setErrorMessage('An error occurred during registration.');
     }

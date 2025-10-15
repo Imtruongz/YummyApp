@@ -11,7 +11,7 @@ const Thumnail = () => {
       const response = await handleGetRandomFood();
       setRandomFood(response.meals[0]);
     } catch (error) {
-      console.error('Failed to fetch categories', error);
+      console.log('Failed to fetch categories', error);
     }
   };
 

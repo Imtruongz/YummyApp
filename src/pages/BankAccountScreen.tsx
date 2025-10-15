@@ -91,7 +91,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       }
       setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching bank account:', error);
+      console.log('Error fetching bank account:', error);
       showNotification({
         type: 'error',
         title: t('error'),
@@ -128,7 +128,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         });
       }
     } catch (error) {
-      console.error('Error saving bank account:', error);
+      console.log('Error saving bank account:', error);
       showNotification({
         type: 'error',
         title: t('error'),
@@ -168,7 +168,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         });
       }
     } catch (error) {
-      console.error('Error deleting bank account:', error);
+      console.log('Error deleting bank account:', error);
       showNotification({
         type: 'error',
         title: t('error'),

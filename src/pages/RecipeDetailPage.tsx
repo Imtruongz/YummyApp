@@ -104,7 +104,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         dispatch(getAllCommentFromFoodIdAPI(foodId)); // Refresh comments list
         console.log('Comment deleted successfully');
       } catch (error) {
-        console.error('Failed to delete comment:', error);
+        console.log('Failed to delete comment:', error);
       }
     }
   };
@@ -187,7 +187,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
       setCommentText('');
       await dispatch(getAllCommentFromFoodIdAPI(foodId));
     } catch (error) {
-      console.error('Lỗi khi gửi comment:', error);
+      console.log('Lỗi khi gửi comment:', error);
       setCommentError('Failed to add the comment. Please try again.');
     } finally {
       setIsAddingComment(false);

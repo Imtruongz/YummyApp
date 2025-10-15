@@ -66,7 +66,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
       storage.delete('userId');
       signOut();
     } catch (exception) {
-      console.error('Error during logout:', exception);
+      console.log('Error during logout:', exception);
     }
   };
 

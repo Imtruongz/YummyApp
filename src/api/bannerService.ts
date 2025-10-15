@@ -19,7 +19,7 @@ export const getAllActiveBanners = async (): Promise<Banner[]> => {
     const response = await axiosInstance.get('/banners/active');
     return response.data.data;
   } catch (error) {
-    console.error('Error fetching banners:', error);
+    console.log('Error fetching banners:', error);
     return [];
   }
 };

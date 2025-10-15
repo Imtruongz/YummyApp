@@ -77,7 +77,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         console.log('Loaded local banners:', bannerData.length);
         setBanners(bannerData);
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.log('Error loading data:', error);
       } finally {
         setIsLoading(false);
       }

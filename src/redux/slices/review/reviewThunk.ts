@@ -14,7 +14,7 @@ export const addCommentToFoodAPI = createAsyncThunk(
         },
       );
       if (!response || !response.data) {
-        console.error(
+        console.log(
           'No data returned from the server for addCommentToFoodAPI',
         );
         return thunkAPI.rejectWithValue('No data returned from the server');
@@ -22,7 +22,7 @@ export const addCommentToFoodAPI = createAsyncThunk(
       console.log('Data from addCommentToFoodAPI:', response.data);
       return response.data;
     } catch (error: any) {
-      console.error(
+      console.log(
         'Error from addCommentToFoodAPI',
         error.message,
         'Response data error from addCommentToFoodAPI',
@@ -47,7 +47,7 @@ export const getAllCommentFromFoodIdAPI = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      console.error('Error from getAllCommentFromFoodIdAPI', error.message);
+      console.log('Error from getAllCommentFromFoodIdAPI', error.message);
       return thunkAPI.rejectWithValue(
         error.response?.data || 'Unexpected error occurred',
       );
@@ -67,7 +67,7 @@ export const deleteCommentAPI = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      console.error('Error from deleteCommentAPI', error.message.data);
+      console.log('Error from deleteCommentAPI', error.message.data);
       return thunkAPI.rejectWithValue(
         error.response?.data || 'Unexpected error occurred',
       );

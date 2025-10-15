@@ -112,7 +112,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
         dispatch(getUserByIdAPI({ userId, isViewMode: true }))
       ]);
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.log('Error loading user data:', error);
     }
   }, [dispatch, userId]);
 
@@ -198,7 +198,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
         });
       } else {
         // Các lỗi khác không hiện thông báo, chỉ log ra console
-        console.error('Unexpected error when checking bank account:', error);
+        console.log('Unexpected error when checking bank account:', error);
       }
     }
   }, [userId, navigation, showNotification, t]);

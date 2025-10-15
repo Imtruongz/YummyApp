@@ -82,7 +82,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             setRecipientBankAccount(response.data.data);
           }
         } catch (error: any) {
-          console.error('[PaymentScreen] Error fetching recipient bank account:', error);
+          console.log('[PaymentScreen] Error fetching recipient bank account:', error);
 
           if (error?.response?.status === 404) {
             showNotification({
@@ -250,7 +250,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
         });
       }
     } catch (error) {
-      console.error('Lỗi khi thanh toán:', error);
+      console.log('Lỗi khi thanh toán:', error);
       showNotification({
         title: t('payment_payment_error'),
         message: t('payment_general_error'),

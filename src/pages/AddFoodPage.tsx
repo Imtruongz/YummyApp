@@ -61,11 +61,11 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
       const base64Data = await RNFS.readFile(uri, 'base64');
       return `data:image/jpeg;base64,${base64Data}`;
     } else {
-      console.error('Unsupported URI format');
+      console.log('Unsupported URI format');
       return '';
     }
   } catch (error) {
-    console.error('Error converting image to base64:', error);
+    console.log('Error converting image to base64:', error);
     return '';
   }
 };
@@ -254,7 +254,7 @@ const AddFoodPage = ({ navigation }: any) => {
         routes: [{ name: 'HomeNavigator' }],
       });
     } catch (error: any) {
-      console.error('Error adding food:', error);
+      console.log('Error adding food:', error);
       setErrorForm(error?.data?.errors || {general: t('general_error')});
       
       Toast.show({
