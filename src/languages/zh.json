@@ -108,7 +108,15 @@
     "recipe_detail_comment": "评论",
     "recipe_detail_see_all": "查看全部",
     "recipe_detail_comment_placeholder": "输入您的评论",
-    "recipe_detail_more_food": "更多食品",
+
+  "recipe_detail_more_food": "更多食品",
+  "recipe_detail_delete_comment_title": "删除评论",
+  "recipe_detail_delete_comment_message": "您确定要删除此评论吗？此操作无法撤销。",
+  "recipe_detail_not_authorized_title": "无权限",
+  "recipe_detail_not_authorized_message": "您无权删除此评论！",
+  "delete": "删除",
+  "cancel": "取消",
+  "ok": "确定",
 
     "payment_title": "捐赠给创作者",
     "payment_confirm_transaction": "确认交易",

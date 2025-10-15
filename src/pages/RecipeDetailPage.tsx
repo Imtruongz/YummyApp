@@ -29,7 +29,7 @@ import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {getDetailFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
 import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
-import Dialog from 'react-native-dialog';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import {formatDate, formatDateTime} from '../utils/formatDate'; // Đường dẫn tới file bạn vừa tạo
 
 import {
@@ -197,6 +197,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
+    setIsInitialLoading(true);
     const loadInitialData = async () => {
       try {
         await Promise.all([
@@ -209,7 +210,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         setIsInitialLoading(false);
       }
     };
-    
     loadInitialData();
   }, [dispatch, foodId, myUserId, userId]);
 
@@ -461,25 +461,18 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           {commentError && <Text>{commentError}</Text>}
         </ScrollView>
       </SafeAreaView>
-      <Dialog.Container visible={visible}>
-        <Dialog.Title>{dialogTitle}</Dialog.Title>
-        {dialogTitle === 'Hidden' ? (
-          <>
-            <Dialog.Description>
-              You are not authorized to delete this comment!
-            </Dialog.Description>
-            <Dialog.Button label="OK" onPress={handleCancel} />
-          </>
-        ) : (
-          <>
-            <Dialog.Description>
-              Do you want to delete this comment? This action cannot be undone.
-            </Dialog.Description>
-            <Dialog.Button label="Cancel" onPress={handleCancel} />
-            <Dialog.Button label="Delete" onPress={handleDelete} />
-          </>
-        )}
-      </Dialog.Container>
+      <ConfirmationModal
+        visible={visible}
+        title={dialogTitle === 'Hidden' ? t('recipe_detail_not_authorized_title') : t('recipe_detail_delete_comment_title')}
+        message={dialogTitle === 'Hidden'
+          ? t('recipe_detail_not_authorized_message')
+          : t('recipe_detail_delete_comment_message')}
+        type={dialogTitle === 'Hidden' ? 'warning' : 'error'}
+        onClose={handleCancel}
+        onConfirm={dialogTitle === 'Hidden' ? handleCancel : handleDelete}
+        confirmText={dialogTitle === 'Hidden' ? t('ok') : t('delete')}
+        cancelText={dialogTitle === 'Hidden' ? undefined : t('cancel')}
+      />
     </>
   );
 };

@@ -20,6 +20,7 @@ import OverlayBadge from '../components/customize/OverlayBadge.tsx';
 import HomeHeader from '../components/HomeHeader';
 import {useTranslation} from 'react-i18next';
 import RNFS from 'react-native-fs';
+import {useNavigation} from '@react-navigation/native';
 
 import {MMKV} from 'react-native-mmkv';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -50,6 +51,7 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
 const SettingProfilePage = () => {
   const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
+  const navigation = useNavigation();
   const [username, setusername] = useState('');
   const [avatar, setavatar] = useState('');
   const [description, setdescription] = useState('');
@@ -81,7 +83,7 @@ const SettingProfilePage = () => {
         console.log('Camera permission denied');
       }
     } catch (err) {
-      console.warn(err);
+      console.log(err);
     }
   };
 
@@ -110,6 +112,7 @@ const SettingProfilePage = () => {
           text1: 'Successfully Updated',
           text2: 'Your profile has been updated.',
         });
+        navigation.goBack();
       }
     } catch (err: any) {
       Toast.show({
@@ -129,9 +132,9 @@ const SettingProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader 
-        mode="back" 
-        title={t('edit_profile_header')} 
+      <HomeHeader
+        mode="back"
+        title={t('edit_profile_header')}
         showGoBack={true}
         showNotification={false}
       />
@@ -149,7 +152,8 @@ const SettingProfilePage = () => {
         <CustomInput
           value={username}
           onChangeText={setusername}
-          placeholder={t('edit_profile_input_name')}      />
+          placeholder={t('edit_profile_input_name')}
+        />
         <CustomInput placeholder={user?.email} isDisabled={false} />
         <CustomInput
           value={description}
@@ -157,7 +161,10 @@ const SettingProfilePage = () => {
           placeholder={t('edit_profile_input_description')}
           isDisabled={true}
         />
-        <CustomButton onPress={handleUpdateAccount} title={t('edit_profile_btn_save')} />
+        <CustomButton
+          onPress={handleUpdateAccount}
+          title={t('edit_profile_btn_save')}
+        />
         <CustomButton title={t('edit_profile_btn_cancel')} />
       </View>
     </SafeAreaView>

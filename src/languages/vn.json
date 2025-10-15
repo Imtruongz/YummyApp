@@ -108,7 +108,15 @@
     "recipe_detail_comment": "Bình luận",
     "recipe_detail_see_all": "Xem tất cả",
     "recipe_detail_comment_placeholder": "Nhập bình luận của bạn",
-    "recipe_detail_more_food": "Thêm món ăn khác",
+
+  "recipe_detail_more_food": "Xem thêm các món ăn khác",
+  "recipe_detail_delete_comment_title": "Xóa bình luận",
+  "recipe_detail_delete_comment_message": "Bạn có muốn xóa bình luận này? Hành động này không thể hoàn tác.",
+  "recipe_detail_not_authorized_title": "Không có quyền",
+  "recipe_detail_not_authorized_message": "Bạn không có quyền xóa bình luận này!",
+  "delete": "Xóa",
+  "cancel": "Hủy",
+  "ok": "OK",
 
     "payment_title": "Ủng hộ người sáng tạo",
     "payment_confirm_transaction": "Xác nhận giao dịch",
