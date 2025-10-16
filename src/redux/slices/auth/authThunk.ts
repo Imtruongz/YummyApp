@@ -11,7 +11,7 @@ export const userLoginAPI = createAsyncThunk(
         return response.data;
       }
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, 'Data', error.response?.data);
+      console.log('Errorrrr:', error.message, 'Code:', error.code, 'Config:', error.config, 'Request:', error.request, 'Response:', error.response, 'Data:', error.response?.data, 'Stack:', error.stack);
       return rejectWithValue(error.response?.data);
     }
   },

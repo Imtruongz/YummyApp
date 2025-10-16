@@ -29,7 +29,7 @@ export const getLocalBanners = (): Banner[] => {
   return [
     {
       id: '1',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1',
+      image: 'https://live.staticflickr.com/65535/54859180885_808e89c97b.jpg',
       title: 'Món ăn đặc sắc',
       description: 'Khám phá các món ăn từ đầu bếp hàng đầu',
       isActive: true,
@@ -37,7 +37,7 @@ export const getLocalBanners = (): Banner[] => {
     },
     {
       id: '2',
-      image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe',
+      image: 'https://live.staticflickr.com/65535/54858019382_027cdaa582.jpg',
       title: 'Công thức mới mỗi ngày',
       description: 'Cập nhật công thức nấu ăn độc đáo hàng ngày',
       isActive: true,
@@ -45,7 +45,7 @@ export const getLocalBanners = (): Banner[] => {
     },
     {
       id: '3',
-      image: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327',
+      image: 'https://live.staticflickr.com/65535/54859180930_2efab3e629.jpg',
       title: 'Ẩm thực địa phương',
       description: 'Khám phá hương vị đặc trưng từng vùng miền',
       isActive: true,
@@ -53,7 +53,7 @@ export const getLocalBanners = (): Banner[] => {
     },
     {
       id: '4',
-      image: 'https://images.unsplash.com/photo-1496412705862-e0088f16f791',
+      image: 'https://live.staticflickr.com/65535/54859180905_9143095db0.jpg',
       title: 'Món tráng miệng ngọt ngào',
       description: 'Tận hưởng các món tráng miệng tuyệt hảo',
       isActive: true,

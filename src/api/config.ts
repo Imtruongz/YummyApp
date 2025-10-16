@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { MMKV } from 'react-native-mmkv';
 
-const API_URL = `http://192.168.0.101:4040/api`;
+const API_URL = `http://192.168.0.102:4040/api`;
 
 const storage = new MMKV();
 
