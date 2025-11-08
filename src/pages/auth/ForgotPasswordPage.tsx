@@ -16,8 +16,8 @@ import { useTranslation } from 'react-i18next';
 
 import CustomInput from '../../components/customize/CustomInput.tsx';
 import CustomButton from '../../components/customize/CustomButton.tsx';
-import CustomTextFooter from '../../components/customize/CustomTextFooter.tsx';
-import CustomAuthHeader from '../../components/customize/CustomAuthHeader.tsx';
+import AuthFooter from './component/AuthFooter.tsx';
+import AuthHeader from './component/AuthHeader.tsx';
 
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}
@@ -52,7 +52,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         {/* Title */}
-        <CustomAuthHeader img={img.Yummy} />
+        <AuthHeader img={img.Yummy} />
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
@@ -66,11 +66,11 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
             <Text style={styles.sentEmailMessage}>{errorMessage}</Text>
           )}
           <CustomButton title={t('login_send_mail')} onPress={handleResetPassword} />
-          <CustomTextFooter
+          <AuthFooter
             content="Back to"
             navigateTo="Login"
             navigation={navigation}
-            targetScreen="LoginPage"
+            targetScreen="LoginScreen"
           />
         </View>
       </SafeAreaView>

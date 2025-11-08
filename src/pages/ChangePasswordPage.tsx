@@ -99,7 +99,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
       console.log('Access Token removed', storage.getString('accessToken'));
       navigation.reset({
         index: 0,
-        routes: [{name: 'LoginPage'}],
+        routes: [{name: 'LoginScreen'}],
       });
     } catch (exception) {
       console.log('Error clearing accessToken', exception);

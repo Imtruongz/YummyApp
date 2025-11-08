@@ -1,6 +1,6 @@
 export type RootStackParamList = {
   // auth, user page
-  LoginPage: undefined;
+  LoginScreen: undefined;
   SignUpPage: undefined;
   ForgotPasswordPage: undefined;
   changePasswordPage: undefined;

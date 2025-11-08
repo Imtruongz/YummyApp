@@ -13,8 +13,8 @@ import React, { useState, useContext } from 'react';
 //Customm components
 import CustomButton from '../../components/customize/CustomButton';
 import CustomInput from '../../components/customize/CustomInput';
-import CustomTextFooter from '../../components/customize/CustomTextFooter';
-import CustomAuthHeader from '../../components/customize/CustomAuthHeader';
+import AuthFooter from './component/AuthFooter';
+import AuthHeader from './component/AuthHeader';
 
 import color from '../../utils/color';
 import { URLS, FacebookIcon } from '../../utils/assets';
@@ -25,9 +25,6 @@ import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
-const fbAppId = '1178286763959143'
-Settings.setAppID(fbAppId)
-
 import { MMKV } from 'react-native-mmkv';
 import messaging from '@react-native-firebase/messaging';
 import { updateFcmTokenApi } from '../../api/updateFcmTokenApi';
@@ -35,11 +32,13 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 
 const storage = new MMKV();
+const fbAppId = '1178286763959143'
+Settings.setAppID(fbAppId)
 
-interface LoginPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'LoginPage'> { }
+interface LoginScreenProps
+  extends NativeStackScreenProps<RootStackParamList, 'LoginScreen'> { }
 
-const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
@@ -149,7 +148,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
         {/* Title */}
-        <CustomAuthHeader img={URLS.Yummy} />
+        <AuthHeader img={URLS.Yummy} />
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
@@ -186,17 +185,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.googleButton}
-          // onPress={handleLoginWithGoogle}
-          >
-            <Image
-              source={{ uri: URLS.GoogleLogo }}
-              style={styles.googleIcon}
-            />
-            <Text style={styles.googleButtonText}>{t('login_with_google')}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.googleButton}
             onPress={handleLoginWithFacebook}
           >
             <Image
@@ -208,13 +196,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ navigation }) => {
         </View>
         {/* Footer */}
         <View style={styles.footer}>
-          <CustomTextFooter
+          <AuthFooter
             content={t('login_register')}
             navigateTo={t('login_register_btn')}
             navigation={navigation}
             targetScreen="SignUpPage"
           />
-          <CustomTextFooter
+          <AuthFooter
             navigateTo={t('login_forgot_pw')}
             navigation={navigation}
             targetScreen="ForgotPasswordPage"
@@ -290,4 +278,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+export default LoginScreen;

@@ -10,8 +10,8 @@ import React, {useState} from 'react';
 
 import CustomButton from '../../components/customize/CustomButton.tsx';
 import CustomInput from '../../components/customize/CustomInput.tsx';
-import CustomTextFooter from '../../components/customize/CustomTextFooter.tsx';
-import CustomAuthHeader from '../../components/customize/CustomAuthHeader.tsx';
+import AuthFooter from './component/AuthFooter.tsx';
+import AuthHeader from './component/AuthHeader.tsx';
 
 import {
   verifyEmail,
@@ -80,7 +80,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
           text1: 'Sign up successfully',
           text2: 'Please check your email to verify your account',
         });
-        navigation.navigate('LoginPage');
+        navigation.navigate('LoginScreen');
       } else {
         setIsErrorMessage(true);
         setErrorMessage('Registration failed. Please try again.');
@@ -96,7 +96,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         {/* Title */}
-        <CustomAuthHeader img={img.Yummy} />
+        <AuthHeader img={img.Yummy} />
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
@@ -149,11 +149,11 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         </View>
         {/* Footer */}
         <View style={styles.footer}>
-          <CustomTextFooter
+          <AuthFooter
             content={t('login_already_accounted')}
             navigateTo={t('login_btn')}
             navigation={navigation}
-            targetScreen="LoginPage"
+            targetScreen="LoginScreen"
           />
         </View>
       </SafeAreaView>

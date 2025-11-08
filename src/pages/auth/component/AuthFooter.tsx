@@ -1,6 +1,6 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import colors from '../../utils/color';
+import colors from '../../../utils/color';
 
 interface TextFooterProps {
   content?: string;

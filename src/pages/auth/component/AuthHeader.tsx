@@ -1,12 +1,12 @@
 import {Image, StyleSheet, View} from 'react-native';
 import React from 'react';
 
-interface CustomAuthHeaderProps {
+interface AuthHeaderProps {
     style?: object;
     img: string;
 }
 
-const CustomAuthHeader: React.FC<CustomAuthHeaderProps> = ({img, style}) => {
+const AuthHeader: React.FC<AuthHeaderProps> = ({img, style}) => {
   return (
     <View style={[styles.header, style]}>
       <Image style={[styles.imgStyle, style]} source={{uri: img}} />
@@ -14,7 +14,7 @@ const CustomAuthHeader: React.FC<CustomAuthHeaderProps> = ({img, style}) => {
   );
 };
 
-export default CustomAuthHeader;
+export default AuthHeader;
 
 const styles = StyleSheet.create({
   header: {

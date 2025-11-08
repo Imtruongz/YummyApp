@@ -396,7 +396,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
             <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountName}</Text>
           </View>
-          <Button title='testPaymentSuccessScreen' onPress={() => navigation.navigate('PaymentSuccessScreen')} />
+          {/* <Button title='testPaymentSuccessScreen' onPress={() => navigation.navigate('PaymentSuccessScreen')} /> */}
           <View style={styles.bankInfoRow}>
             <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
             <View style={styles.transferInputContainer}>
