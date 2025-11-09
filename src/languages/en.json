@@ -1,4 +1,10 @@
 {
+    "ai_assistant_welcome": "Hello! I'm your AI cooking assistant. Do you have any cooking questions?",
+    "ai_assistant_placeholder": "Type your cooking question...",
+    "ai_assistant_send": "Send",
+    "ai_assistant_error": "Error",
+    "ai_assistant_error_response": "Failed to get response",
+    "ai_assistant_title": "Yummy AI Assistant",
     "tab_home": "Home",
     "tab_profile": "Profile",
     "tab_add": "Add",

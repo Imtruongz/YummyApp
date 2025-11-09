@@ -14,6 +14,8 @@ export const NoAvatar = require('../assets/noAvatar.jpg');
 export const NoImage = require('../assets/noImg.png');
 export const LoadingImage = require('../assets/loading.png');
 
+export const YummyDrag = require('../assets/yummydrag.png');
+
 // Remote URLs for images
 export const URLS = {
   Yummy: 'https://live.staticflickr.com/65535/54226294342_25e8f7cce9_c.jpg',
@@ -33,4 +35,5 @@ export default {
   NoImage,
   LoadingImage,
   URLS,
+  YummyDrag,
 };

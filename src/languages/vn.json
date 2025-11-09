@@ -1,4 +1,10 @@
 {
+  "ai_assistant_welcome": "Xin chào! Tôi là trợ lý nấu ăn AI. Bạn có câu hỏi gì về nấu ăn không?",
+  "ai_assistant_placeholder": "Nhập câu hỏi về nấu ăn của bạn...",
+  "ai_assistant_send": "Gửi",
+  "ai_assistant_error": "Lỗi",
+  "ai_assistant_error_response": "Không thể nhận được phản hồi",
+  "ai_assistant_title": "Trợ lý AI Yummy",
   "tab_home": "Trang chủ",
   "tab_profile": "Cá nhân",
   "tab_add": "Thêm",

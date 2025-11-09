@@ -35,4 +35,5 @@ export type RootStackParamList = {
   };
   BankAccountScreen: undefined;
   PaymentSuccessScreen: undefined;
+  YummyAIScreen: undefined;
 };

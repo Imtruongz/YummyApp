@@ -10,6 +10,7 @@ import ListFoodByCategoriesPage from '../pages/ListFoodByCategoriesPage';
 import NotificationsScreen from '../pages/NotificationsScreen';
 import PaymentScreen from '../pages/PaymentScreen';
 import PaymentSuccessScreen from '../pages/PaymentSuccessScreen';
+import YummyAIScreen from '../pages/YummyAIScreen';
 
 const HomeNavigator = () => {
   const Stack = createNativeStackNavigator<HomeStack>();
@@ -22,6 +23,7 @@ const HomeNavigator = () => {
       <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
       <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
       <Stack.Screen name="ListFoodPage" component={ListFoodPage} />
+      <Stack.Screen name="YummyAIScreen" component={YummyAIScreen} />
       <Stack.Screen name="ListFoodByUserPage" component={ListFoodByUser} />
       <Stack.Screen name="ListFoodByCategoriesPage" component={ListFoodByCategoriesPage} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />

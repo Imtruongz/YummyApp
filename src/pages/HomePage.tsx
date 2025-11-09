@@ -46,6 +46,7 @@ const storage = new MMKV();
 
 import HomeHeader from '../components/HomeHeader';
 import { NetworkInfo } from 'react-native-network-info';
+import DraggableFloatingButton from '../components/DraggableFloatingButton';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
@@ -261,6 +262,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         {/* Khoảng trống tránh bị BottomTab che */}
         <View style={{ height: 80 }} />
       </ScrollView>
+      <DraggableFloatingButton 
+        onPress={() => navigation.navigate('YummyAIScreen')}
+      />
     </SafeAreaView>
   );
 };
@@ -353,5 +357,21 @@ const styles = StyleSheet.create({
   seeAll: {
     fontSize: 14,
     color: color.primary,
+  },
+  aiButtonContainer: {
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  aiButton: {
+    backgroundColor: color.primary,
+    padding: 12,
+    borderRadius: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  aiButtonText: {
+    color: color.white,
   },
 });

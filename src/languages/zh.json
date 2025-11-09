@@ -1,4 +1,10 @@
 {
+  "ai_assistant_welcome": "你好！我是你的AI烹饪助手。你有什么烹饪问题吗？",
+  "ai_assistant_placeholder": "输入你的烹饪问题...",
+  "ai_assistant_send": "发送",
+  "ai_assistant_error": "错误",
+  "ai_assistant_error_response": "无法获取回应",
+  "ai_assistant_title": "Yummy AI 助手",
   "tab_home": "首页",
   "tab_profile": "个人",
   "tab_add": "添加",
