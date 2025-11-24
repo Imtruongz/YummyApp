@@ -16,12 +16,13 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
 import colors from '../utils/color';
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import HomeHeader from '../components/HomeHeader';
 import NoData from '../components/NoData';
 import Loading from '../components/Loading';
 import {useTranslation} from 'react-i18next';
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 interface ListFoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}
@@ -55,7 +56,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const hasNoData = !foodList || foodList.length === 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
       <HomeHeader 
         mode="back" 
         title={t('add_category')} 
@@ -116,7 +117,7 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
                 <Text style={styles.title2}>{item.userDetail.username}</Text>
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-                  <AntDesignIcon name="star" size={20} color={colors.primary} />
+                  <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
                   <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
                     (4.0)
                   </Text>

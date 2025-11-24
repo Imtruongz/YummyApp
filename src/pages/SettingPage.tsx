@@ -27,6 +27,8 @@ import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
 import api from '../api/config'
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 const EntypoIcon = require('react-native-vector-icons/Entypo').default;
 
 const storage = new MMKV();
@@ -77,7 +79,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
 
 
   return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <HomeHeader mode="title" title={t('setting_settings_header')} showNotification={false} />
         <View style={styles.accountContainer}>
           <CustomTitle style={styles.title} title={t('setting_account')} />
@@ -113,7 +115,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             >
             <View style={styles.biometricContent}>
               <View style={styles.biometricIconContainer}>
-                <EntypoIcon name="fingerprint" size={24} color={colors.primary} />
+                <IconSvg xml={ImagesSvg.icTouchID} width={32} height={32} color='black' />
               </View>
               <View style={styles.biometricTextContainer}>
                 <Text style={styles.biometricTitle}>{t('setting_faceid')}</Text>

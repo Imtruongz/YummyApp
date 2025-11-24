@@ -17,7 +17,6 @@ import BannerSlider from '../components/customize/BannerSlider';
 import { getLocalBanners, Banner } from '../api/bannerService';
 
 
-const FeatherIcon = require('react-native-vector-icons/Feather').default;
 const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 
 import color from '../utils/color';
@@ -47,6 +46,8 @@ const storage = new MMKV();
 import HomeHeader from '../components/HomeHeader';
 import { NetworkInfo } from 'react-native-network-info';
 import DraggableFloatingButton from '../components/DraggableFloatingButton';
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
@@ -90,11 +91,11 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
     if (currentTime < 12) {
-      return <Greeting iconName="sun-o" title={t('goodMorning')} />;
+      return <Greeting iconName={ImagesSvg.icSun} title={t('goodMorning')} />;
     } else if (currentTime < 18) {
-      return <Greeting iconName="sun-o" title={t('goodAfternoon')} />;
+      return <Greeting iconName={ImagesSvg.icSun} title={t('goodAfternoon')} />;
     } else {
-      return <Greeting iconName="moon-o" title={t('goodEvening')} />;
+      return <Greeting iconName={ImagesSvg.icMoon} title={t('goodEvening')} />;
     }
   };
 
@@ -105,7 +106,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   const message = greetingMessage();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       {/* Header fixed trên cùng */}
       <HomeHeader
         mode="home"
@@ -126,18 +127,16 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
                 description: banner.description,
                 link: banner.link
               }))}
-              dotsPosition="outside" // Đặt dots bên ngoài banner
+              dotsPosition="outside"
               onBannerPress={(item) => {
-                // Xử lý khi banner được nhấn
                 if (item.link === '/explore') {
                   navigation.navigate('ListFoodPage');
                 }
-                // Có thể thêm các điều hướng khác tùy vào link
               }}
             />
           </View>
         )}
-        
+
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title={t('home_popular_categories')} />
@@ -217,12 +216,9 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
                   />
                 </View>
               </View>
-              <MaterialIcons
-                name="favorite-border"
-                size={24}
-                color={color.dark}
-                style={styles.favoriteIcon}
-              />
+              <View style={styles.favoriteIcon}>
+                <IconSvg xml={ImagesSvg.icHeart} width={16} height={16} color='black' />
+              </View>
             </Pressable>
           )}
         />
@@ -262,7 +258,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         {/* Khoảng trống tránh bị BottomTab che */}
         <View style={{ height: 80 }} />
       </ScrollView>
-      <DraggableFloatingButton 
+      <DraggableFloatingButton
         onPress={() => navigation.navigate('YummyAIScreen')}
       />
     </SafeAreaView>

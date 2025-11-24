@@ -131,7 +131,7 @@ const SettingProfilePage = () => {
   }, [dispatch, user?.username, user?.description, user?.avatar]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader
         mode="back"
         title={t('edit_profile_header')}

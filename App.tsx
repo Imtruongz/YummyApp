@@ -55,7 +55,7 @@ export default function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
+    // <SafeAreaProvider>
       <PaperProvider>
         <ErrorBoundary>
           <AuthContext.Provider value={{
@@ -75,6 +75,6 @@ export default function App() {
           </AuthContext.Provider>
         </ErrorBoundary>
       </PaperProvider>
-    </SafeAreaProvider>
+    // </SafeAreaProvider>
   );
 }

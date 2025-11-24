@@ -1420,7 +1420,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-network-info (5.2.1):
+  - react-native-network-info (5.2.2):
     - React
   - react-native-pager-view (6.9.1):
     - DoubleConversion
@@ -1443,7 +1443,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context (5.6.1):
+  - react-native-safe-area-context (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1456,8 +1456,8 @@ PODS:
     - React-featureflags
     - React-graphics
     - React-ImageManager
-    - react-native-safe-area-context/common (= 5.6.1)
-    - react-native-safe-area-context/fabric (= 5.6.1)
+    - react-native-safe-area-context/common (= 5.6.2)
+    - react-native-safe-area-context/fabric (= 5.6.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-rendererdebug
@@ -1466,7 +1466,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/common (5.6.1):
+  - react-native-safe-area-context/common (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1487,7 +1487,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.1):
+  - react-native-safe-area-context/fabric (5.6.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1834,7 +1834,7 @@ PODS:
     - RNFBApp
   - RNFS (2.20.0):
     - React-Core
-  - RNLocalize (3.5.4):
+  - RNLocalize (3.6.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1855,7 +1855,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (4.17.1):
+  - RNScreens (4.18.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1876,9 +1876,9 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNScreens/common (= 4.17.1)
+    - RNScreens/common (= 4.18.0)
     - Yoga
-  - RNScreens/common (4.17.1):
+  - RNScreens/common (4.18.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1894,6 +1894,49 @@ PODS:
     - React-NativeModulesApple
     - React-RCTFabric
     - React-RCTImage
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNSVG (15.15.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNSVG/common (= 15.15.0)
+    - Yoga
+  - RNSVG/common (15.15.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
     - React-rendererdebug
     - React-utils
     - ReactCodegen
@@ -1988,6 +2031,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNLocalize (from `../node_modules/react-native-localize`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2177,6 +2221,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-localize"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2244,9 +2290,9 @@ SPEC CHECKSUMS:
   react-native-fbsdk-next: 1baeeacf0ecdeb839cca16ca75cb16a9bbbf8e03
   react-native-image-picker: 23cd9b24becdf3c888bbb272f9acc024aa09418c
   react-native-mmkv: efe5dea8850f233af616cb7213633de45ef5735b
-  react-native-network-info: d1290ffc0bd0709e11436f5b8d7f605dcc5c4530
+  react-native-network-info: 253a54a48dc8f9ef5abb7a8effdfdef8abd7d875
   react-native-pager-view: ecf048a3937a7d6ea0ad17674198d9d3c225240a
-  react-native-safe-area-context: 98b67a0b5d0bfc2bf5d465e1fe85d7d2f2ee318f
+  react-native-safe-area-context: 4a867695ce0b837b7fedc90c5629d4322be4222f
   react-native-webview: de5205a97121427588aff27de2ddea4cc9fc0a19
   React-nativeconfig: 75658bde8f977492f668e94ae8eb9c0dfef7ed94
   React-NativeModulesApple: 1bd9fa09c40204ac489acbe7da239efa4aa47244
@@ -2281,8 +2327,9 @@ SPEC CHECKSUMS:
   RNFBCrashlytics: 262f9ddd700a7f0142f0945b98e265983bed9fec
   RNFBMessaging: 8678e074c4ea9886d6fa83884dfa953967044ac8
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNLocalize: 4e184b64e15ec56d9b0969b52823b594694754eb
-  RNScreens: 4d9aada108bafcdcdb7873910ba72655a30707a0
+  RNLocalize: 8b2335fce314155cc15f03530e68b0bf228a2612
+  RNScreens: 6fccc0cccca74cac6db36944aa4298f11ae465b5
+  RNSVG: eef05878c931ff954a388b87aa98340a7470f666
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: fdc0542faa3ba87e56f2030b3f3f2e21bc3ba01c
 

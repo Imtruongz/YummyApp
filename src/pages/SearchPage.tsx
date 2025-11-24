@@ -88,7 +88,7 @@ const SearchPage = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader mode="search" title={t('tab_search') || 'Tìm kiếm'} showNotification={false} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.searchContainer}>

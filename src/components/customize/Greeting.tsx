@@ -1,8 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import colors from '../../utils/color';
+import IconSvg from '../IconSvg';
 
 interface GreetingProps {
   iconName: string;
@@ -12,7 +11,7 @@ interface GreetingProps {
 const Greeting: React.FC<GreetingProps> = ({iconName, title}) => {
   return (
     <View style={styles.container}>
-      <FontAwesomeIcon name={iconName} size={16} color={colors.dark} />
+      <IconSvg xml={iconName} width={16} height={16} color={colors.dark} />
       <Text style={styles.text}>{title}</Text>
     </View>
   );

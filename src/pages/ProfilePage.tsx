@@ -142,7 +142,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader mode="profile" title={t('profile_my_profile_header')} showNotification={false} />
       <View style={styles.infoContainer}>
         {isErrorUser ? (

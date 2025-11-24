@@ -1,14 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, StatusBar, Text } from 'react-native';
+import { View, StyleSheet, StatusBar, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar } from 'react-native-paper';
 import Typography from './customize/Typography';
 import { IconButton } from 'react-native-paper';
 import color from '../utils/color';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import imgURL from '../utils/urlImg';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppSelector } from '../redux/hooks';
+import IconSvg from './IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 type RootStackParamList = {
   NotificationsScreen: { userId: string | undefined };
@@ -23,7 +26,7 @@ interface HomeHeaderProps {
   avatar?: string;
   username?: string;
   greetingMessage?: React.ReactNode;
-  
+
   // Props chung
   mode?: HeaderMode;
   title?: string;
@@ -33,10 +36,10 @@ interface HomeHeaderProps {
   onGoBack?: () => void;
 }
 
-const HomeHeader: React.FC<HomeHeaderProps> = ({ 
-  avatar, 
-  username, 
-  greetingMessage, 
+const HomeHeader: React.FC<HomeHeaderProps> = ({
+  avatar,
+  username,
+  greetingMessage,
   mode = 'home',
   title,
   showNotification = true,
@@ -46,6 +49,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
 }) => {
   const navigation = useNavigation<HomeHeaderNavigationProp>();
   const user = useAppSelector(state => state.auth.user);
+  const insets = useSafeAreaInsets();
 
   const handleNotificationPress = () => {
     if (onNotificationPress) {
@@ -82,7 +86,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
             </View>
           </View>
         );
-      
+
       case 'title':
       case 'search':
       case 'profile':
@@ -97,42 +101,31 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
             />
           </View>
         );
-      
+
       default:
         return null;
     }
   };
 
   return (
-    <SafeAreaView style={{ backgroundColor: color.primaryHover }}>
+    <View style={{ backgroundColor: color.primaryHover }}>
       <StatusBar backgroundColor={color.primaryHover} barStyle="light-content" />
-      <View style={[styles.headerContainer, { paddingHorizontal: showGoBack ? 0 : 16 }]}>
+      <View style={[styles.headerContainer, { paddingHorizontal: showGoBack ? 0 : 16, paddingTop: insets.top || 12 }]}>
         <View style={styles.leftContainer}>
           {showGoBack && (
-            <IconButton 
-              icon="arrow-left" 
-              size={24} 
-              iconColor={color.dark} 
-              onPress={handleGoBack}
-              style={styles.goBackButton}
-            />
+            <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}><IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color='black' /></TouchableOpacity>
           )}
           {renderLeftContent()}
         </View>
         <View style={styles.rightContainer}>
           {showNotification ? (
-            <IconButton 
-              icon="bell" 
-              size={24} 
-              iconColor={color.dark} 
-              onPress={handleNotificationPress} 
-            />
+            <TouchableOpacity onPress={handleNotificationPress} ><IconSvg xml={ImagesSvg.imageNotification} width={100} height={30} color='white' /></TouchableOpacity>
           ) : (
             <View style={styles.placeholderButton} />
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -160,7 +153,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   goBackButton: {
-    marginRight: 8,
+    marginHorizontal: 16,
+
   },
   rightContainer: {
     width: 42, // Cố định width để luôn có space cho notification button

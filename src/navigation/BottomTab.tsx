@@ -1,12 +1,7 @@
-// Component rỗng cho AddFood tab
-const AddFoodTabScreen = () => null;
-
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
 const Icon = require('react-native-vector-icons/AntDesign').default;
-const IonIcon = require('react-native-vector-icons/Ionicons').default;
 import colors from '../utils/color';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
@@ -14,10 +9,11 @@ import { MainStackParamList } from './types.ts';
 import AddFoodPage from '../pages/AddFoodPage.tsx';
 import SearchPage from '../pages/SearchPage.tsx';
 import SettingNavigator from './SettingNavigator';
+import IconSvg from '../components/IconSvg.tsx';
+import { ImagesSvg } from '../utils/ImageSvg.tsx';
 
 const BottomTab = () => {
   const Tab = createBottomTabNavigator<MainStackParamList>();
-  const { t } = useTranslation();
   return (
     <Tab.Navigator
       tabBar={props => <CustomTabBar {...props} />}
@@ -29,9 +25,9 @@ const BottomTab = () => {
         name="HomeNavigator"
         component={HomeNavigator}
         options={{
-          tabBarLabel: t('tab_home'),
-          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
-            <Icon name="home" color={focused ? colors.primary : color} size={26} />
+          tabBarLabel: '',
+          tabBarIcon: () => (
+            <IconSvg xml={ImagesSvg.icHome} width={100} height={30} color='black' />
           ),
         }}
       />
@@ -39,9 +35,9 @@ const BottomTab = () => {
         name="SearchPage"
         component={SearchPage}
         options={{
-          tabBarLabel: t('tab_search'),
-          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
-            <IonIcon name="search-outline" color={focused ? colors.primary : color} size={26} />
+          tabBarLabel: '',
+          tabBarIcon: () => (
+            <IconSvg xml={ImagesSvg.icSearch} width={100} height={30} color='black' />
           ),
         }}
       />
@@ -50,10 +46,8 @@ const BottomTab = () => {
         component={AddFoodPage}
         options={{
           tabBarLabel: '',
-          tabBarIcon: ({ focused }: { focused: boolean }) => (
-            <View style={[styles.fabContainer, focused && styles.fabFocused]}>
-              <Icon name="plus" color="#fff" size={32} />
-            </View>
+          tabBarIcon: () => (
+            <View />
           ),
         }}
         listeners={({ navigation }: any) => ({
@@ -67,9 +61,9 @@ const BottomTab = () => {
         name="ProfileNavigator"
         component={ProfileNavigator}
         options={{
-          tabBarLabel: t('tab_profile'),
-          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
-            <Icon name="user" color={focused ? colors.primary : color} size={26} />
+          tabBarLabel: '',
+          tabBarIcon: () => (
+            <IconSvg xml={ImagesSvg.icUser} width={23} height={27} color='black' />
           ),
         }}
       />
@@ -77,9 +71,9 @@ const BottomTab = () => {
         name="SettingNavigator"
         component={SettingNavigator}
         options={{
-          tabBarLabel: t('tab_setting'),
-          tabBarIcon: ({ color, focused }: { color: string; focused: boolean }) => (
-            <Icon name="setting" color={focused ? colors.primary : color} size={26} />
+          tabBarLabel: '',
+          tabBarIcon: () => (
+            <IconSvg xml={ImagesSvg.icGear} width={32} height={32} color='black' />
           ),
         }}
       />
@@ -172,7 +166,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
               activeOpacity={0.8}
             >
               <View style={styles.fabContainer}>
-                <Icon name="plus" color="#fff" size={28} />
+                <IconSvg xml={ImagesSvg.icPlus} width={32} height={32} color='white' />
               </View>
             </TouchableOpacity>
           );
@@ -206,14 +200,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    height: 52,
+    height: 64,
     alignItems: 'center',
     justifyContent: 'space-around',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
+    shadowColor: colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
     shadowRadius: 8,
-    elevation: 10,
+    elevation: 5,
     position: 'absolute',
     left: 0,
     right: 0,

@@ -10,27 +10,23 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import React, {useEffect, useState, useLayoutEffect} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 const FontAwesomeIcons = require('react-native-vector-icons/FontAwesome').default;
-const FontAwesome6Icons = require('react-native-vector-icons/FontAwesome6').default;
-const FontistoIcon = require('react-native-vector-icons/Fontisto').default;
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store';
-import {getDetailFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { RootState } from '../redux/store';
+import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
 import ConfirmationModal from '../components/common/ConfirmationModal';
-import {formatDate, formatDateTime} from '../utils/formatDate'; // Đường dẫn tới file bạn vừa tạo
+import { formatDate, formatDateTime } from '../utils/formatDate'; // Đường dẫn tới file bạn vừa tạo
 
 import {
   getAllCommentFromFoodIdAPI,
@@ -39,16 +35,18 @@ import {
 } from '../redux/slices/review/reviewThunk';
 
 import Loading from '../components/Loading';
-import {review} from '../redux/slices/review/types';
-import {MMKV} from 'react-native-mmkv';
+import { review } from '../redux/slices/review/types';
+import { MMKV } from 'react-native-mmkv';
 import Typography from '../components/customize/Typography';
 import Toast from 'react-native-toast-message';
-import {addFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
+import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
 import { useTranslation } from 'react-i18next';
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> {}
+  extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> { }
 
 const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   route,
@@ -64,7 +62,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
       });
     };
   }, [navigation]);
-  const {foodId, userId} = route.params;
+  const { foodId, userId } = route.params;
   const myUserId = storage.getString('userId') || '';
   const [showstrInstructions, setShowstrInstructions] = useState(false);
   const [commentText, setCommentText] = useState('');
@@ -145,13 +143,13 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   };
 
   const dispatch = useAppDispatch();
-  const {selectedFood, userFoodList, isLoadingFood} = useAppSelector(
+  const { selectedFood, userFoodList, isLoadingFood } = useAppSelector(
     (state: RootState) => state.food,
   );
 
-  const {foodReviewList, isLoadingReview} = useAppSelector((state: RootState) => state.review);
+  const { foodReviewList, isLoadingReview } = useAppSelector((state: RootState) => state.review);
 
-  const {user, isLoadingUser} = useAppSelector((state: RootState) => state.auth);
+  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
 
   const [iconColor, setIconColor] = useState<string>(colors.light);
 
@@ -203,8 +201,8 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         await Promise.all([
           dispatch(getDetailFoodAPI(foodId)),
           dispatch(getAllCommentFromFoodIdAPI(foodId)),
-          dispatch(getUserByIdAPI({userId: myUserId})),
-          dispatch(getFoodByIdAPI({userId, isViewMode: true}))
+          dispatch(getUserByIdAPI({ userId: myUserId })),
+          dispatch(getFoodByIdAPI({ userId, isViewMode: true }))
         ]);
       } finally {
         setIsInitialLoading(false);
@@ -220,26 +218,24 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   return (
     <>
       <SafeAreaView style={styles.container}>
-        <AntDesignIcon
-          name="arrowleft"
-          size={24}
-          style={[styles.arrowLeftIcon, {backgroundColor: iconColor}]}
-          color={colors.dark}
+        <TouchableOpacity
+          style={[styles.arrowLeftIcon, { backgroundColor: iconColor }]}
           onPress={() => {
             navigation.goBack();
           }}
-        />
-        <MaterialIcons
-          name="favorite-border"
-          size={24}
-          color={colors.dark}
-          style={[styles.favoriteIcon, {backgroundColor: iconColor}]}
+        >
+          <IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color='black' />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.favoriteIcon, { backgroundColor: iconColor }]}
           onPress={handleAddFavoriteFood}
-        />
+        >
+          <IconSvg xml={ImagesSvg.icHeart} width={24} height={24} color='black' />
+        </TouchableOpacity>
         <ScrollView onScroll={handleScroll} scrollEventThrottle={16}>
           <ImageBackground
             style={styles.imgContainer}
-            source={{uri: selectedFood?.foodThumbnail}}>
+            source={{ uri: selectedFood?.foodThumbnail }}>
             <LinearGradient
               colors={['rgba(0, 0, 0, 0.1)', 'rgba(0, 0, 0, 0.9)']}
               style={styles.linearGradient}>
@@ -248,7 +244,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           </ImageBackground>
 
           <View style={styles.body}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.infoContainer}
               onPress={() => {
                 if (selectedFood?.userId) {
@@ -275,7 +271,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
             </TouchableOpacity>
             <View style={styles.achivementContainer}>
               <View style={styles.achivementItem}>
-                <AntDesignIcon name="star" size={20} color={colors.primary} />
+                <IconSvg xml={ImagesSvg.icStar} width={20} height={20} color={colors.primary} />
                 <Typography
                   title="4.0"
                   color={colors.smallText}
@@ -283,11 +279,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 />
               </View>
               <View style={styles.achivementItem}>
-                <AntDesignIcon
-                  name="clockcircleo"
-                  size={20}
-                  color={colors.primary}
-                />
+                <IconSvg xml={ImagesSvg.icTime} width={20} height={20} color={colors.primary} />
                 <Typography
                   title={selectedFood?.CookingTime}
                   color={colors.smallText}
@@ -295,7 +287,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 />
               </View>
               <View style={styles.achivementItem}>
-                <FontistoIcon name="date" size={20} color={colors.primary} />
+                <IconSvg xml={ImagesSvg.icDate} width={20} height={20} color={colors.primary} />
                 <Typography
                   title={formatDate(selectedFood?.createdAt)}
                   color={colors.smallText}
@@ -306,7 +298,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
             <CustomTitle title={t('recipe_detail_description')} />
             {selectedFood?.foodDescription &&
-            selectedFood?.foodDescription.length > 150 ? (
+              selectedFood?.foodDescription.length > 150 ? (
               <>
                 {showstrInstructions ? (
                   <Text>{selectedFood?.foodDescription}</Text>
@@ -368,11 +360,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                     <Text>{item.reviewText}</Text>
                   </View>
                 </View>
-                <FontAwesome6Icons
-                  name="ellipsis-vertical"
-                  size={20}
-                  color={colors.primary}
-                />
+                <IconSvg xml={ImagesSvg.icEllipsis} width={20} height={20} color={colors.primary} />
               </TouchableOpacity>
             ))}
             <View style={styles.commentInput}>
@@ -396,12 +384,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   <ActivityIndicator size="small" color={colors.primary} />
                 </View>
               ) : (
-                <FontAwesomeIcons
-                  name="send"
-                  size={24}
-                  color={colors.primary}
-                  onPress={handleAddComment}
-                />
+                <TouchableOpacity onPress={handleAddComment}><IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.primary} /></TouchableOpacity>
               )}
             </View>
             <CustomTitle title={t('recipe_detail_more_food')} />
@@ -410,7 +393,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               horizontal
               showsHorizontalScrollIndicator={true}
               keyExtractor={item => item.foodId}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
                   key={item.foodId}
                   style={styles.itemContainer}
@@ -423,7 +406,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   {/* Top img */}
                   <Image
                     style={styles.img2}
-                    source={{uri: item.foodThumbnail}}
+                    source={{ uri: item.foodThumbnail }}
                   />
                   {/* Bottom info */}
                   <View style={styles.titleItemLeft}>
@@ -442,11 +425,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                         alignItems: 'center',
                         gap: 8,
                       }}>
-                      <AntDesignIcon
-                        name="star"
-                        size={20}
-                        color={colors.primary}
-                      />
+                      <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
 
                       <Typography
                         title="4.0"
@@ -487,7 +466,7 @@ const styles = StyleSheet.create({
 
   arrowLeftIcon: {
     position: 'absolute',
-    top: 12,
+    top: 42,
     left: 22,
     zIndex: 1,
     backgroundColor: colors.light,
@@ -496,7 +475,7 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     position: 'absolute',
-    top: 12,
+    top: 42,
     right: 22,
     zIndex: 1,
     backgroundColor: colors.light,
@@ -605,7 +584,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     gap: 8,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
@@ -640,7 +619,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingRight: 12,
+    paddingRight: 22,
     marginBottom: 8,
     width: '100%',
   },
@@ -651,5 +630,5 @@ const styles = StyleSheet.create({
     gap: 10,
     width: '100%',
   },
-  foodReviewListItem2: {maxWidth: '80%'},
+  foodReviewListItem2: { maxWidth: '80%' },
 });

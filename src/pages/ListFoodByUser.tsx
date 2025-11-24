@@ -218,7 +218,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader
         mode="back"
         title=''

@@ -1,6 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import IconSvg from '../IconSvg';
+import { ImagesSvg } from '../../utils/ImageSvg';
 
 interface SettingButtonProps {
   navigation?: any;
@@ -33,7 +34,7 @@ const SettingButton: React.FC<SettingButtonProps> = ({
       onPress={onPress || defaultOnPress}
     >
       <Text style={[styles.text, style]}>{title}</Text>
-      <AntDesignIcon name="right" size={20} />
+      <IconSvg xml={ImagesSvg.iconArrowRight} width={16} height={16} color='black' />
     </TouchableOpacity>
   );
 };

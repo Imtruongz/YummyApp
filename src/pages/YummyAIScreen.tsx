@@ -10,6 +10,7 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Typography from '../components/customize/Typography';
 import { aiApi } from '../api/aiApi';
@@ -20,6 +21,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 import { YummyDrag } from '../utils/assets';
 import { Image } from 'react-native';
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 const MaterialIcon = require('react-native-vector-icons/MaterialIcons').default;
 
 type Message = {
@@ -103,12 +106,13 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   );
 
   return (
-    <KeyboardAvoidingView 
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-    >
-      <HomeHeader
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+      <KeyboardAvoidingView 
+        style={{flex: 1}}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      >
+        <HomeHeader
         mode="back"
         title={t('ai_assistant_title')}
         showNotification={false}
@@ -142,11 +146,13 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
             style={styles.sendButton}
             onPress={handleSend}
             disabled={!input.trim()}>
-            <MaterialIcon name="send" size={24} color={colors.white} />
+            <IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.white} />
+            
           </TouchableOpacity>
         )}
       </View>
     </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

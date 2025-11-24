@@ -11,7 +11,6 @@ import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 import colors from '../utils/color';
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
@@ -24,6 +23,8 @@ import CustomTitle from '../components/customize/Title.tsx';
 import Loading from '../components/Loading.tsx';
 import NoData from '../components/NoData';
 import {useTranslation} from 'react-i18next';
+import IconSvg from '../components/IconSvg.tsx';
+import { ImagesSvg } from '../utils/ImageSvg.tsx';
 
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
@@ -66,7 +67,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
       <HomeHeader 
         mode="back" 
         title={t('add_category')} 
@@ -129,7 +130,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
                 <Text style={styles.title2}>{item.userDetail?.username}</Text>
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
-                  <AntDesignIcon name="star" size={20} color={colors.primary} />
+                  <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
                   <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
                     (4.0)
                   </Text>
