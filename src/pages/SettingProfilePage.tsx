@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import color from '../utils/color';
@@ -138,35 +140,58 @@ const SettingProfilePage = () => {
         showGoBack={true}
         showNotification={false}
       />
-      <View style={styles.body}>
-        {isLoadingUser ? (
-          <ActivityIndicator size="large" color={color.primary} />
-        ) : isErrorUser ? (
-          <Text>Something went wronggg</Text>
-        ) : (
-          <OverlayBadge
-            imageUrl={avatar || img.defaultAvatar}
-            onEditPress={() => requestCameraPermission()}
-          />
-        )}
-        <CustomInput
-          value={username}
-          onChangeText={setusername}
-          placeholder={t('edit_profile_input_name')}
-        />
-        <CustomInput placeholder={user?.email} isDisabled={false} />
-        <CustomInput
-          value={description}
-          onChangeText={setdescription}
-          placeholder={t('edit_profile_input_description')}
-          isDisabled={true}
-        />
-        <CustomButton
-          onPress={handleUpdateAccount}
-          title={t('edit_profile_btn_save')}
-        />
-        <CustomButton title={t('edit_profile_btn_cancel')} />
-      </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.body}>
+          {isLoadingUser ? (
+            <ActivityIndicator size="large" color={color.primary} />
+          ) : isErrorUser ? (
+            <Text>Something went wronggg</Text>
+          ) : (
+            <View style={styles.avatarContainer}>
+              <OverlayBadge
+                imageUrl={avatar || img.defaultAvatar}
+                onEditPress={() => requestCameraPermission()}
+              />
+            </View>
+          )}
+          <View style={styles.formRow}>
+            <Text style={styles.label}>Name</Text>
+            <CustomInput
+              value={username}
+              onChangeText={setusername}
+              placeholder={t('edit_profile_input_name')}
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.formRow}>
+            <Text style={styles.label}>Email</Text>
+            <CustomInput
+              value={user?.email}
+              isDisabled={false}
+              style={styles.input}
+            />
+          </View>
+          <View style={styles.formRow}>
+            <Text style={styles.label}>Bio</Text>
+            <CustomInput
+              value={description}
+              onChangeText={setdescription}
+              placeholder={t('edit_profile_input_description')}
+              isDisabled={true}
+              style={styles.input}
+            />
+          </View>
+          {/* Thêm các trường khác nếu cần */}
+          <View style={styles.buttonRow}>
+            <CustomButton
+              onPress={handleUpdateAccount}
+              title={t('edit_profile_btn_save')}
+              style={styles.saveBtn}
+            />
+            <CustomButton title={t('edit_profile_btn_cancel')} style={styles.cancelBtn} isCancel={true} />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </SafeAreaView>
   );
 };
@@ -185,9 +210,61 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   body: {
-    padding: 12,
-    gap: 14,
-    justifyContent: 'center',
+    padding: 18,
+    gap: 22,
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+  },
+  formRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    backgroundColor: color.light,
+  },
+  label: {
+    fontSize: 15,
+    color: color.smallText,
+    width: 110,
+    fontWeight: '400',
+    letterSpacing: 0.2,
+  },
+  input: {
+    flex: 1,
+    marginLeft: 12,
+    fontSize: 16,
+    backgroundColor: '#F7F8FA',
+    borderWidth: 1,
+    borderColor: color.InputBg,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  buttonRow: {
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    gap: 12,
+  },
+  saveBtn: {
+    backgroundColor: color.primary,
+    borderRadius: 10,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    elevation: 2,
+  },
+  cancelBtn: {
+    backgroundColor: '#F7F8FA',
+    borderRadius: 10,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: color.InputBg,
+    color: color.dark,
   },
 });

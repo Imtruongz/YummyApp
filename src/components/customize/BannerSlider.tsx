@@ -100,8 +100,7 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
         {data.map((_, index) => (
           <View
             key={index}
-            style={[
-              styles.dot,
+            style={[ styles.dot,
               {
                 backgroundColor: activeIndex === index ? activeDotColor : dotColor,
                 width: activeIndex === index ? 20 : 8,
@@ -203,14 +202,13 @@ const styles = StyleSheet.create({
     width: 8,
     borderRadius: 4,
     marginHorizontal: 4,
+    
   },
   textOverlay: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    padding: 15,
-    paddingBottom: 18,
     height: '50%', // Gradient sẽ chiếm 50% chiều cao ảnh, từ dưới lên
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
@@ -221,10 +219,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 5,
+    marginHorizontal: 10,
   },
   description: {
     color: '#fff',
     fontSize: 14,
+    marginBottom: 12,
+    marginHorizontal: 10,
   },
 });
 

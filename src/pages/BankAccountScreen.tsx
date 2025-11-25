@@ -20,8 +20,9 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 import HomeHeader from '../components/HomeHeader';
 import colors from '../utils/color';
 import api from '../api/config';
-const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
+
 
 type BankAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'BankAccountScreen'>;
 
@@ -213,7 +214,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             style={[styles.actionButton, styles.deleteButton]} 
             onPress={handleDeleteAccount}
           >
-            <IoniconsIcon name="trash-outline" size={18} color="#FF3B30" />
+            <IconSvg xml={ImagesSvg.icTrash} width={22} height={22} color="#FF3B30" />
           </TouchableOpacity>
         </View>
       </View>
@@ -240,12 +241,9 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
               editable={false}
               pointerEvents="none"
             />
-            <IoniconsIcon 
-              name="chevron-down" 
-              size={20} 
-              color={colors.primary}
-              style={styles.selectIcon} 
-            />
+            <View style={styles.selectIcon} >
+              <IconSvg xml={ImagesSvg.iconArrowDown} width={18} height={18} color={colors.dark}/>
+            </View>
           </TouchableOpacity>
         </View>
         
@@ -289,7 +287,6 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           >
             <Text style={styles.cancelButtonText}>{t('cancel')}</Text>
           </TouchableOpacity>
-          
           <TouchableOpacity
             style={[
               styles.formButton, 
@@ -324,12 +321,6 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('select_bank')}</Text>
-              <TouchableOpacity 
-                style={styles.closeButton}
-                onPress={() => setIsBankModalVisible(false)}
-              >
-                <IoniconsIcon name="close" size={24} color={colors.dark} />
-              </TouchableOpacity>
             </View>
             
             <FlatList
@@ -357,6 +348,11 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             >
               <Text style={styles.modalCancelButtonText}>{t('cancel')}</Text>
             </TouchableOpacity>
+            {/* <CustomButton
+              title="Close"
+              onPress={() => setIsBankModalVisible(false)}
+              style={{ marginTop: 10 }}
+            /> */}
           </View>
         </View>
       </Modal>
@@ -384,7 +380,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           <>
             {!bankAccount && !isEditing ? (
               <View style={styles.emptyContainer}>
-                <IoniconsIcon name="wallet-outline" size={60} color={colors.gray} />
+                {/* <IoniconsIcon name="wallet-outline" size={60} color={colors.gray} /> */}
                 <Text style={styles.emptyText}>{t('no_bank_account')}</Text>
                 <Text style={styles.emptySubText}>{t('add_bank_account_to_receive')}</Text>
               </View>
@@ -412,7 +408,6 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
                   }
                 }}
               >
-                <AntDesignIcon name="plus" size={20} color={colors.light} />
                 <Text style={styles.addButtonText}>
                   {bankAccount ? t('edit_bank_account') : t('add_bank_account')}
                 </Text>
@@ -516,7 +511,7 @@ const styles = StyleSheet.create({
   },
   accountNumber: {
     fontSize: 14,
-    color: colors.gray,
+    color: colors.secondary,
     marginBottom: 4,
   },
   accountName: {
@@ -623,7 +618,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   cancelButtonText: {
-    color: colors.gray,
+    color: colors.primaryText,
     fontWeight: '500',
   },
   saveButton: {
@@ -656,8 +651,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E2E8F0',
   },

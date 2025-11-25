@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 import colors from '../utils/color';
+import IconSvg from './IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 type NoDataProps = {
   message?: string;
@@ -31,7 +32,7 @@ const NoData: React.FC<NoDataProps> = ({
   return (
     <View style={styles.container}>
       <View style={circleStyle}>
-        <MaterialIcons name='no-food' size={120} color={colors.gray} />
+        <IconSvg xml={ImagesSvg.icNoData} width={120} height={120} color={colors.gray} />
       </View>
 
       <Text style={[styles.text, { fontSize: textSize, color: colors.dark }]}>

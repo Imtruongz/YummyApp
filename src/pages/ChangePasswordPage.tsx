@@ -1,6 +1,7 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
 import CustomInput from '../components/customize/CustomInput.tsx';
+import { ImagesSvg } from '../utils/ImageSvg';
 import {changePasswordAPI} from '../redux/slices/auth/authThunk';
 import {useAppDispatch} from '../redux/hooks';
 import CustomButton from '../components/customize/CustomButton.tsx';
@@ -122,7 +123,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
           secureTextEntry={!showOldPassword}
           showIcon={true}
           onPressIcon={handleShowOldPassword}
-          iconName={showOldPassword ? 'eye' : 'eyeo'}
+           iconXml={showOldPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isOldPasswordValid && (
           <Text style={{color: 'red', fontSize: 12}}>
@@ -136,7 +137,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
           showIcon={true}
           onChangeText={setNewPassword}
           onPressIcon={handleShowNewPassword}
-          iconName={showNewPassword ? 'eye' : 'eyeo'}
+          iconXml={showNewPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isNewPasswordValid && (
           <Text style={{color: 'red', fontSize: 12}}>Password invalid</Text>
@@ -148,7 +149,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
           secureTextEntry={!showConfirmPassword}
           showIcon={true}
           onPressIcon={handleShowConfirmPassword}
-          iconName={showConfirmPassword ? 'eye' : 'eyeo'}
+          iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isConfirmPasswordValid && (
           <Text style={{color: 'red', fontSize: 12}}>

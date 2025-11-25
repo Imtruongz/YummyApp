@@ -15,13 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import BannerSlider from '../components/customize/BannerSlider';
 import { getLocalBanners, Banner } from '../api/bannerService';
-
-
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
-
 import color from '../utils/color';
 import imgURL from '../utils/urlImg';
-import CustomButton from '../components/customize/CustomButton';
 import CustomTitle from '../components/customize/Title';
 import Typography from '../components/customize/Typography';
 import CustomFoodItem from '../components/customize/FoodItem';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, StyleSheet, TouchableOpacity, Text, Platform } from 'react-native';
-const Icon = require('react-native-vector-icons/AntDesign').default;
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import colors from '../utils/color';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
@@ -26,8 +25,8 @@ const BottomTab = () => {
         component={HomeNavigator}
         options={{
           tabBarLabel: '',
-          tabBarIcon: () => (
-            <IconSvg xml={ImagesSvg.icHome} width={100} height={30} color='black' />
+          tabBarIcon: ({color}) => (
+            <IconSvg xml={ImagesSvg.icHome} width={100} height={30} color={color} />
           ),
         }}
       />
@@ -36,8 +35,8 @@ const BottomTab = () => {
         component={SearchPage}
         options={{
           tabBarLabel: '',
-          tabBarIcon: () => (
-            <IconSvg xml={ImagesSvg.icSearch} width={100} height={30} color='black' />
+          tabBarIcon: ({color}) => (
+            <IconSvg xml={ImagesSvg.icSearch} width={100} height={30} color={color} />
           ),
         }}
       />
@@ -62,8 +61,8 @@ const BottomTab = () => {
         component={ProfileNavigator}
         options={{
           tabBarLabel: '',
-          tabBarIcon: () => (
-            <IconSvg xml={ImagesSvg.icUser} width={23} height={27} color='black' />
+          tabBarIcon: ({color}) => (
+            <IconSvg xml={ImagesSvg.icUser} width={23} height={27} color={color} />
           ),
         }}
       />
@@ -72,8 +71,8 @@ const BottomTab = () => {
         component={SettingNavigator}
         options={{
           tabBarLabel: '',
-          tabBarIcon: () => (
-            <IconSvg xml={ImagesSvg.icGear} width={32} height={32} color='black' />
+          tabBarIcon: ({color}) => (
+            <IconSvg xml={ImagesSvg.icGear} width={32} height={32} color={color} />
           ),
         }}
       />

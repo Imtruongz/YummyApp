@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import colors from '../../utils/color';
+import IconSvg from '../IconSvg';
+import { ImagesSvg } from '../../utils/ImageSvg';
 
 interface OverlayBadgeProps {
   imageUrl: string;
@@ -14,7 +15,7 @@ const OverlayBadge: React.FC<OverlayBadgeProps> = ({imageUrl, onEditPress}) => {
         <Image source={{uri: imageUrl}} style={styles.avatar} />
       </View>
       <TouchableOpacity style={styles.editBadge} onPress={onEditPress}>
-        <AntDesignIcon name="edit" size={20} color="#FFF" />
+        <IconSvg xml={ImagesSvg.icEdit} width={16} height={16} color='white' />
       </TouchableOpacity>
     </View>
   );
@@ -24,6 +25,12 @@ const styles = StyleSheet.create({
   container2: {
     width: 100,
     height: 100,
+    borderRadius: 50,
+    shadowColor: colors.dark,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
   container: {
     position: 'relative',
@@ -42,7 +49,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     right: 0,
-    backgroundColor: 'green',
+    backgroundColor: colors.white,
     borderRadius: 50,
     width: 30,
     height: 30,

@@ -25,13 +25,16 @@ export default TextFooter;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    marginBottom: 12,
     gap: 8,
   },
   textNavigate: {
     color: colors.primary,
     fontWeight: 'bold',
+    fontSize: 15,
   },
   text: {
     color: colors.dark,
+    fontSize: 15,
   },
 });

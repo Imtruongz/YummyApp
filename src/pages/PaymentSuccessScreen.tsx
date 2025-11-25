@@ -2,7 +2,6 @@ import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import colors from '../utils/color';
-const MaterialIcons = require('react-native-vector-icons/MaterialIcons').default;
 import LinearGradient from 'react-native-linear-gradient';
 
 const PaymentSuccessScreen = ({ navigation }: any) => {
@@ -28,7 +27,7 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
       <View style={styles.container}>
         <View style={styles.successCircle}>
           <View style={styles.checkIconWrapper}>
-            <MaterialIcons name="done" size={60} color={colors.success} />
+            {/* <MaterialIcons name="done" size={60} color={colors.success} /> */}
           </View>
         </View>
         <Text style={styles.title}>{t('payment_success_title')}</Text>

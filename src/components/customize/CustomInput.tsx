@@ -1,6 +1,9 @@
 import {StyleSheet, TextInput, View} from 'react-native';
 import React from 'react';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import IconSvg from '../IconSvg';
+import { TouchableOpacity } from 'react-native';
+import { ImagesSvg } from '../../utils/ImageSvg';
+import colors from '../../utils/color';
 
 interface CustomInputProps {
   value?: string;
@@ -9,7 +12,7 @@ interface CustomInputProps {
   onChangeText?: (text: string) => void;
   showIcon?: boolean;
   onPressIcon?: () => void;
-  iconName?: string;
+  iconXml?: string;
   iconOnLeft?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
@@ -24,7 +27,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   onChangeText,
   showIcon = false,
   onPressIcon,
-  iconName = 'eye',
+  iconXml,
   iconOnLeft = false,
   multiline = false,
   numberOfLines = 1,
@@ -33,13 +36,15 @@ const CustomInput: React.FC<CustomInputProps> = ({
 }) => {
   return (
     <View style={[styles.container, style]}>
-      {iconOnLeft && showIcon && (
-        <AntDesignIcon
-          onPress={onPressIcon}
-          name={iconName}
-          size={24}
-          style={styles.icon}
-        />
+      {iconOnLeft && showIcon && iconXml && (
+        <TouchableOpacity onPress={onPressIcon} style={styles.icon}>
+          <IconSvg
+            xml={iconXml}
+            width={24}
+            height={24}
+            color={colors.dark}
+          />
+        </TouchableOpacity>
       )}
       <TextInput
         value={value}
@@ -47,17 +52,20 @@ const CustomInput: React.FC<CustomInputProps> = ({
         onChangeText={onChangeText}
         style={styles.input}
         placeholder={placeholder}
+        placeholderTextColor={'#888'}
         multiline={multiline}
         numberOfLines={numberOfLines}
         editable={isDisabled}
       />
-      {!iconOnLeft && showIcon && (
-        <AntDesignIcon
-          onPress={onPressIcon}
-          name={iconName}
-          size={24}
-          style={styles.icon}
-        />
+      {!iconOnLeft && showIcon && iconXml && (
+        <TouchableOpacity onPress={onPressIcon} style={styles.icon}>
+          <IconSvg
+            xml={iconXml}
+            width={24}
+            height={24}
+            color={'#141ED2'}
+          />
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -69,15 +77,30 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: 'grey',
     width: '90%',
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.gray,
+    shadowColor: colors.dark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+    marginVertical: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 2,
   },
   input: {
     flex: 1,
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    fontSize: 16,
+    color: colors.dark,
+    backgroundColor: 'transparent',
   },
   icon: {
-    padding: 10,
+    padding: 6,
+    marginLeft: 4,
   },
 });

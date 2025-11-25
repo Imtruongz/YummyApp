@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react';
 import {
   View,
-  ScrollView,
   StyleSheet,
   ActivityIndicator,
-  TextInput,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -23,7 +21,7 @@ import { YummyDrag } from '../utils/assets';
 import { Image } from 'react-native';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
-const MaterialIcon = require('react-native-vector-icons/MaterialIcons').default;
+import CustomInput from '../components/customize/CustomInput';
 
 type Message = {
   id: string;
@@ -85,9 +83,9 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     ]}>
       {!item.isUser && (
         <View style={styles.aiAvatar}>
-          <Image 
-            source={YummyDrag} 
-            style={{ width: 36, height: 36}}
+          <Image
+            source={YummyDrag}
+            style={{ width: 36, height: 36 }}
             resizeMode="contain"
           />
         </View>
@@ -107,51 +105,50 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <KeyboardAvoidingView 
-        style={{flex: 1}}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <HomeHeader
-        mode="back"
-        title={t('ai_assistant_title')}
-        showNotification={false}
-        showGoBack={true}
-      />
-      
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={item => item.id}
-        style={styles.messageList}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-        onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
-      />
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={[styles.input, { maxHeight: 100 }]}
-          placeholder={t('ai_assistant_placeholder')}
-          value={input}
-          onChangeText={setInput}
-          multiline
+          mode="back"
+          title={t('ai_assistant_title')}
+          showNotification={false}
+          showGoBack={true}
         />
-        {loading ? (
-          <View style={styles.loadingButton}>
-            <ActivityIndicator size="small" color={colors.white} />
-          </View>
-        ) : (
-          <TouchableOpacity
-            style={styles.sendButton}
-            onPress={handleSend}
-            disabled={!input.trim()}>
-            <IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.white} />
-            
-          </TouchableOpacity>
-        )}
-      </View>
-    </KeyboardAvoidingView>
+
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={item => item.id}
+          style={styles.messageList}
+          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
+        />
+
+        <View style={styles.inputContainer}>
+          <CustomInput
+            style={[styles.input, { maxHeight: 100 }]}
+            placeholder={t('ai_assistant_placeholder')}
+            value={input}
+            onChangeText={setInput}
+            multiline
+          />
+          {loading ? (
+            <View style={styles.loadingButton}>
+              <ActivityIndicator size="small" color={colors.white} />
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.sendButton}
+              onPress={handleSend}
+              disabled={!input.trim()}>
+              <IconSvg xml={ImagesSvg.icSend} width={36} height={36} color={colors.primary} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -207,11 +204,12 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     flexDirection: 'row',
-    padding: 16,
-    alignItems: 'flex-end',
+    padding: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderTopWidth: 1,
     borderTopColor: colors.gray,
-    backgroundColor: colors.white,
+    backgroundColor: colors.light,
   },
   input: {
     flex: 1,
@@ -224,10 +222,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   sendButton: {
-    backgroundColor: colors.primary,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    backgroundColor: colors.white,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
   },

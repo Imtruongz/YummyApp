@@ -26,10 +26,8 @@ import '../languages/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
-import api from '../api/config'
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
-const EntypoIcon = require('react-native-vector-icons/Entypo').default;
 
 const storage = new MMKV();
 interface SettingPageProps
@@ -98,16 +96,14 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
             navigation={navigation}
             targetScreen="BankAccountScreen"
           />
-          <View style={styles.languageContainer}>
+          <Pressable style={styles.languageContainer} onPress={() => setLanguageModalVisible(true)}>
             <CustomTitle title={t('setting_language')} />
-            <Pressable
-              onPress={() => setLanguageModalVisible(true)}
-              style={styles.languageButton}>
+            <View style={styles.languageButton}>
               <Text style={styles.languageText}>
                 {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
               </Text>
-            </Pressable>
-          </View>
+            </View>
+          </Pressable>
           <TouchableOpacity
             style={styles.biometricContainer}
             activeOpacity={0.7}
@@ -295,9 +291,10 @@ const styles = StyleSheet.create({
     maxHeight: 300,
   },
   modalItem: {
-    paddingVertical: 12,
+    paddingVertical: 22,
     borderBottomWidth: 1,
     borderBottomColor: colors.InputBg,
+    paddingHorizontal: 8,
   },
   modalItemText: {
     fontSize: 16,

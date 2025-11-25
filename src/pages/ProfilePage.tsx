@@ -2,7 +2,6 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  ActivityIndicator,
   Text,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
@@ -27,7 +26,6 @@ import HomeHeader from '../components/HomeHeader';
 import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {RootState} from '../redux/store';
@@ -202,6 +200,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingHorizontal: 22,
     paddingVertical: 12,
+    backgroundColor: colors.light,
   },
   myInfoContainer: {
     flexDirection: 'column',

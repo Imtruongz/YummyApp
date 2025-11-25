@@ -119,7 +119,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
         </View>
         <View style={styles.rightContainer}>
           {showNotification ? (
-            <TouchableOpacity onPress={handleNotificationPress} ><IconSvg xml={ImagesSvg.imageNotification} width={100} height={30} color='white' /></TouchableOpacity>
+            <TouchableOpacity onPress={handleNotificationPress} ><IconSvg xml={ImagesSvg.imageNotification} width={100} height={30} color='black' /></TouchableOpacity>
           ) : (
             <View style={styles.placeholderButton} />
           )}
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   goBackButton: {
-    marginHorizontal: 16,
-
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   rightContainer: {
     width: 42, // Cố định width để luôn có space cho notification button

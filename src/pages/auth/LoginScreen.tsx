@@ -30,6 +30,7 @@ import messaging from '@react-native-firebase/messaging';
 import { updateFcmTokenApi } from '../../api/updateFcmTokenApi';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { ImagesSvg } from '../../utils/ImageSvg';
 
 const storage = new MMKV();
 const fbAppId = '1178286763959143'
@@ -166,7 +167,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             onChangeText={setPassword}
             showIcon={true}
             onPressIcon={handleShowPassword}
-            iconName={showPassword ? 'eye' : 'eyeo'}
+            iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
           {isPasswordValid ? null : (
             <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
@@ -174,7 +175,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           {isErrorMessage ? (
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
-          <CustomButton title={t('login_btn')} onPress={handleLoginWithEmail} />
+          <CustomButton title={t('login_btn')} onPress={handleLoginWithEmail} fontSize={16} />
 
           {/* Nút đăng nhập bằng Google */}
           <View style={styles.orContainer}>
@@ -223,17 +224,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     gap: 14,
-    
   },
   footer: {
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  imgStyle: {
-    width: 200,
-    height: 100,
-    resizeMode: 'contain',
   },
   errorMessage: {
     color: color.danger,

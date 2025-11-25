@@ -18,7 +18,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
-const FontAwesomeIcons = require('react-native-vector-icons/FontAwesome').default;
 import CustomAvatar from '../components/customize/Avatar';
 import img from '../utils/urlImg';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';

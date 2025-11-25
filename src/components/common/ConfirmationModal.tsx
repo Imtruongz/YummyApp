@@ -10,10 +10,6 @@ import {
   Platform
 } from 'react-native';
 import colors from '../../utils/color';
-
-// Icons import
-const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;
-
 export interface ConfirmationModalProps {
   visible: boolean;
   title: string;
