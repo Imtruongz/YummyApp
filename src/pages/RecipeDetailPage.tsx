@@ -11,37 +11,34 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
-
-import colors from '../utils/color';
-import CustomTitle from '../components/customize/Title';
-import CustomAvatar from '../components/customize/Avatar';
-import img from '../utils/urlImg';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { RootState } from '../redux/store';
-import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
-import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
-import ConfirmationModal from '../components/common/ConfirmationModal';
-import { formatDate, formatDateTime } from '../utils/formatDate'; // Đường dẫn tới file bạn vừa tạo
-
+import { MMKV } from 'react-native-mmkv';
 import {
   getAllCommentFromFoodIdAPI,
   addCommentToFoodAPI,
   deleteCommentAPI,
 } from '../redux/slices/review/reviewThunk';
-
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import img from '../utils/urlImg';
+import colors from '../utils/color';
+import { RootState } from '../redux/store';
 import Loading from '../components/Loading';
-import { review } from '../redux/slices/review/types';
-import { MMKV } from 'react-native-mmkv';
-import Typography from '../components/customize/Typography';
 import Toast from 'react-native-toast-message';
-import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
 import { useTranslation } from 'react-i18next';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
+import CustomTitle from '../components/customize/Title';
+import CustomAvatar from '../components/customize/Avatar';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
+import ConfirmationModal from '../components/common/ConfirmationModal';
+import { formatDate, formatDateTime } from '../utils/formatDate';
+import { review } from '../redux/slices/review/types';
+import Typography from '../components/customize/Typography';
+import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
+import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
@@ -76,15 +73,11 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const showDialog = (item: review) => {
     setCurrentItem(item);
     if (item.userId !== myUserId) {
-      // Nếu không có quyền, hiển thị Dialog "Hidden"
       setDialogTitle('Hidden');
       setVisible(true);
-      console.log('Check myuserId', myUserId, 'and userComment', item.userId);
     } else {
-      // Nếu có quyền, hiển thị Dialog "Delete"
       setDialogTitle('Delete');
       setVisible(true);
-      console.log('Check myuserId', myUserId, 'and userComment', item.userId);
     }
   };
   const handleCancel = () => {
@@ -99,7 +92,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
       try {
         await dispatch(deleteCommentAPI(currentItem.reviewId)); // Call delete thunk
         dispatch(getAllCommentFromFoodIdAPI(foodId)); // Refresh comments list
-        console.log('Comment deleted successfully');
       } catch (error) {
         console.log('Failed to delete comment:', error);
       }
@@ -172,7 +164,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     dispatch(getAllCommentFromFoodIdAPI(foodId));
 
     try {
-      console.log('Gửi comment:', { foodId, userId: myUserId, reviewText: commentText.trim() });
       const result = await dispatch(
         addCommentToFoodAPI({
           foodId: foodId,
@@ -180,11 +171,9 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           reviewText: commentText.trim(),
         }),
       );
-      console.log('Kết quả trả về:', result);
       setCommentText('');
       await dispatch(getAllCommentFromFoodIdAPI(foodId));
     } catch (error) {
-      console.log('Lỗi khi gửi comment:', error);
       setCommentError('Failed to add the comment. Please try again.');
     } finally {
       setIsAddingComment(false);
@@ -216,7 +205,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['left', 'right']}>
         <TouchableOpacity
           style={[styles.arrowLeftIcon, { backgroundColor: iconColor }]}
           onPress={() => {
@@ -415,9 +404,6 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                       style={styles.title}
                       title={item.foodName}
                     />
-                    {/* <Text style={styles.title2}>
-                      {item.userDetail.username}
-                    </Text> */}
                     <View
                       style={{
                         flexDirection: 'row',

@@ -67,7 +67,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
 
   return (
-    <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={styles.container}  edges={['left', 'right']}>
       <HomeHeader 
         mode="back" 
         title={t('add_category')} 

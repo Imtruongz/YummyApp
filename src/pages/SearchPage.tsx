@@ -7,9 +7,10 @@ import HomeHeader from '../components/HomeHeader';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk';
 import { containsTextCaseInsensitive } from '../utils/regexPatterns';
-// Bỏ SUGGESTIONS cứng, sẽ lấy từ category
 import { useTranslation } from 'react-i18next';
 import api from '../api/config';
+import colors from '../utils/color';
+import CustomInput from '../components/customize/CustomInput';
 
 const SearchPage = () => {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ const SearchPage = () => {
   const [results, setResults] = useState<FoodResult[]>([]);
   const { categoryFoodList, isLoadingFood } = useAppSelector(state => state.food);
   const [isCategorySearch, setIsCategorySearch] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<{id: string, name: string} | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<{ id: string, name: string } | null>(null);
 
   useEffect(() => {
     const fetchFoods = async () => {
@@ -52,7 +53,6 @@ const SearchPage = () => {
     if (text.trim() === '') {
       setResults(allFoods);
     } else {
-      // Sử dụng hàm từ regexPatterns để tìm kiếm không phân biệt hoa thường
       setResults(
         allFoods.filter(f =>
           containsTextCaseInsensitive(f.foodName, text) ||
@@ -62,11 +62,10 @@ const SearchPage = () => {
     }
   };
 
-  // Khi bấm vào category chip
   const handleCategorySearch = (categoryId: string, categoryName: string) => {
     setQuery('');
     setIsCategorySearch(true);
-    setSelectedCategory({id: categoryId, name: categoryName});
+    setSelectedCategory({ id: categoryId, name: categoryName });
     dispatch(getFoodByCategoryAPI(categoryId));
   };
 
@@ -92,14 +91,12 @@ const SearchPage = () => {
       <HomeHeader mode="search" title={t('tab_search') || 'Tìm kiếm'} showNotification={false} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.searchContainer}>
-          <TextInput
+          <CustomInput
             style={styles.input}
             placeholder={t('search') || 'Nhập tên món ăn...'}
             value={query}
             onChangeText={handleSearch}
-            clearButtonMode="while-editing"
           />
-          {/* Tag category đang chọn */}
           {isCategorySearch && selectedCategory && (
             <View style={styles.selectedCategoryTagContainer}>
               <View style={styles.selectedCategoryTag}>
@@ -114,9 +111,11 @@ const SearchPage = () => {
             <View style={styles.suggestionContainer}>
               <Text style={styles.suggestionTitle}>{t('search_suggestion_title')}</Text>
               {isLoadingCategory ? (
-                <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                  <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
+                </View>
               ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{paddingVertical: 8}}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 8 }}>
                   {categoryList.map(cat => (
                     <TouchableOpacity
                       key={cat.categoryId}
@@ -162,9 +161,6 @@ const SearchPage = () => {
   );
 }
 
-
-
-
 const styles = StyleSheet.create({
   selectedCategoryTagContainer: {
     flexDirection: 'row',
@@ -191,13 +187,13 @@ const styles = StyleSheet.create({
   },
   clearTagText: {
     fontSize: 18,
-    color: '#888',
+    color: colors.dark,
     fontWeight: 'bold',
     marginTop: -2,
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
   },
   searchContainer: {
     flex: 1,
@@ -205,8 +201,9 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   input: {
+    width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.gray,
     borderRadius: 8,
     padding: 10,
     fontSize: 16,
@@ -222,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#444',
+    color: colors.primaryText,
     marginLeft: 4,
   },
   suggestionChip: {
@@ -235,7 +232,7 @@ const styles = StyleSheet.create({
     borderColor: '#e0e0e0',
   },
   suggestionText: {
-    color: '#333',
+    color: colors.primaryText,
     fontSize: 15,
   },
   item: {
@@ -245,10 +242,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 12,
     padding: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+    borderWidth: 0.5,
+    borderColor: '#e0e0e0',
   },
   image: {
     width: 60,
@@ -263,16 +258,16 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#222',
+    color: colors.primaryText,
   },
   desc: {
     fontSize: 13,
-    color: '#666',
+    color: colors.smallText,
     marginTop: 2,
   },
   empty: {
     textAlign: 'center',
-    color: '#888',
+    color: colors.dark,
     marginTop: 32,
     fontSize: 16,
   },

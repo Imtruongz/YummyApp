@@ -7,7 +7,6 @@ import { store } from './src/redux/store';
 import { MMKV } from 'react-native-mmkv';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { PaperProvider } from 'react-native-paper';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NotificationProvider } from './src/contexts/NotificationContext';
 
 import { useEffect } from 'react';
@@ -55,7 +54,6 @@ export default function App() {
   }, []);
 
   return (
-    // <SafeAreaProvider>
       <PaperProvider>
         <ErrorBoundary>
           <AuthContext.Provider value={{
@@ -75,6 +73,5 @@ export default function App() {
           </AuthContext.Provider>
         </ErrorBoundary>
       </PaperProvider>
-    // </SafeAreaProvider>
   );
 }

@@ -4,11 +4,7 @@ import {
   Dimensions,
   Text,
 } from 'react-native';
-import React, {useState, useEffect} from 'react';
-
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
 import {
   TabView,
   SceneMap,
@@ -17,29 +13,27 @@ import {
   NavigationState,
   Route,
 } from 'react-native-tab-view';
-
+import { MMKV } from 'react-native-mmkv';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import colors from '../utils/color';
+import imgUrl from '../utils/urlImg';
+import { RootState } from '../redux/store';
 import CustomAvatar from '../components/customize/Avatar';
 import CustomTitle from '../components/customize/Title';
-import ProfileSkeleton from '../components/skeleton/ProfileSkeleton';
 import HomeHeader from '../components/HomeHeader';
-
-import imgUrl from '../utils/urlImg';
 import FirstRoute from '../components/FirstRoute';
 import SecondRoute from '../components/SecondRoute';
-
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store';
-import colors from '../utils/color';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
+import Typography from '../components/customize/Typography';
+import ProfileSkeleton from '../components/skeleton/ProfileSkeleton';
 import { countFollowersAPI, countFollowingAPI } from '../redux/slices/follow/followThunk';
 
-import {MMKV} from 'react-native-mmkv';
-import Typography from '../components/customize/Typography';
-import {useTranslation} from 'react-i18next';
-
 const storage = new MMKV();
-
-const initialLayout = {width: Dimensions.get('window').width};
+const initialLayout = { width: Dimensions.get('window').width };
 
 interface InfoItemProps {
   number: number | string;
@@ -47,40 +41,40 @@ interface InfoItemProps {
 }
 
 import { TouchableOpacity } from 'react-native';
-const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({number, label, onPress}) => (
+const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({ number, label, onPress }) => (
   onPress ? (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.7}
-      style={[styles.infoItem, styles.infoItemTouchable]}
-      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
+      style={styles.infoItem}
     >
       <Typography
         title={number === undefined || number === null ? '0' : String(number)}
         fontSize={16}
+        fontWeight='700'
       />
-      <Typography title={label} fontSize={13} />
+      <Typography title={label} fontSize={14} />
     </TouchableOpacity>
   ) : (
     <View style={styles.infoItem}>
-      <Typography title={number === undefined || number === null ? '0' : String(number)} fontSize={14} />
-      <Typography title={label} fontSize={13} />
+      <Typography title={number === undefined || number === null ? '0' : String(number)} fontSize={16} fontWeight='700' />
+      <Typography title={label} fontSize={14} />
     </View>
   )
 );
 
 interface ProfilePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> {}
+  extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> { }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
-  const {t} = useTranslation();
+const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    {key: 'first', title: t('profile_your_posts')},
-    {key: 'second', title: t('profile_your_favorites')},
+    { key: 'first', title: t('profile_your_posts') },
+    { key: 'second', title: t('profile_your_favorites') },
   ]);
 
   const renderScene = SceneMap({
@@ -89,16 +83,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   });
 
   useEffect(() => {
-    // Cập nhật các tiêu đề tab mỗi khi ngôn ngữ thay đổi
     setRoutes([
-      {key: 'first', title: t('profile_your_posts')},
-      {key: 'second', title: t('profile_your_favorites')},
+      { key: 'first', title: t('profile_your_posts') },
+      { key: 'second', title: t('profile_your_favorites') },
     ]);
-  }, [t]); // Đảm bảo rằng nó được cập nhật khi 't' thay đổi
+  }, [t]);
 
-
-  const {user, isLoadingUser, isErrorUser} = useAppSelector((state: RootState) => state.auth);
-  const {userFoodList} = useAppSelector((state: RootState) => state.food);
+  const { user, isLoadingUser, isErrorUser } = useAppSelector((state: RootState) => state.auth);
+  const { userFoodList } = useAppSelector((state: RootState) => state.food);
   const followInfo = useAppSelector((state: RootState) => state.follow.byUserId[userId] || {});
   const followerCount = followInfo.followerCount ?? 0;
   const followingCount = followInfo.followingCount ?? 0;
@@ -106,21 +98,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
   console.log('ProfilePage - followerCount:', followerCount, 'followingCount:', followingCount);
 
   const renderTabBar = (
-    props: SceneRendererProps & {navigationState: NavigationState<Route>},
+    props: SceneRendererProps & { navigationState: NavigationState<Route> },
   ) => (
     <TabBar
       {...props}
-      indicatorStyle={{backgroundColor: colors.primaryHover}}
-      style={{backgroundColor: colors.light}}
+      indicatorStyle={{ backgroundColor: colors.primaryHover }}
+      style={{ backgroundColor: colors.light }}
       activeColor={colors.primaryHover}
       inactiveColor={colors.dark}
     />
   );
 
-
   useEffect(() => {
     if (userId) {
-      dispatch(getUserByIdAPI({userId}));
+      dispatch(getUserByIdAPI({ userId }));
       dispatch(countFollowersAPI(userId));
       dispatch(countFollowingAPI(userId));
     }
@@ -177,7 +168,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({navigation}) => {
         )}
       </View>
       <TabView
-        navigationState={{index, routes}}
+        navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={initialLayout}
@@ -213,21 +204,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 24,
+    marginBottom: 12,
   },
   myInfo3: {
     justifyContent: 'space-around',
     alignItems: 'center',
     flexDirection: 'row',
-    gap: 4,
   },
   infoItem: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    minWidth: 64,
-  },
-  infoItemTouchable: {
-    borderRadius: 10,
+    marginRight: 12,
   },
   avatar: {
     width: 80,
@@ -239,9 +227,6 @@ const styles = StyleSheet.create({
   tabVIewContainer: {
     flex: 1,
     backgroundColor: colors.light,
-  },
-  icon: {
-    padding: 12,
   },
   title: {
     padding: 12,

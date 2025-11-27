@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useLayoutEffect} from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
   Image,
   PermissionsAndroid,
@@ -6,34 +6,29 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { RootState } from '../redux/store';
 import CustomButton from '../components/customize/CustomButton';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import imgURL from '../utils/urlImg';
 import HomeHeader from '../components/HomeHeader';
 import SelectDropdown from 'react-native-select-dropdown';
-import {addFoodAPI} from '../redux/slices/food/foodThunk';
-import {getAllCategoriesAPI} from '../redux/slices/category/categoryThunk';
-import {foodPayload} from '../redux/slices/food/types';
-
-const Icon = require('react-native-vector-icons/MaterialCommunityIcons').default;
-const AntDesignIcon = require('react-native-vector-icons/AntDesign').default;
-
+import { addFoodAPI } from '../redux/slices/food/foodThunk';
+import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
+import { foodPayload } from '../redux/slices/food/types';
 import colors from '../utils/color';
 import CustomTitle from '../components/customize/Title';
-import {SafeAreaView} from 'react-native-safe-area-context';
-
-import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import {getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-import {NativeModules} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import RNFS from 'react-native-fs';
-import {MMKV} from 'react-native-mmkv';
-import {useTranslation} from 'react-i18next';
+import { MMKV } from 'react-native-mmkv';
+import { useTranslation } from 'react-i18next';
+import IconSvg from '../components/IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
+import CustomInput from '../components/customize/CustomInput';
 
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';
@@ -57,11 +52,9 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
       const base64Data = await RNFS.readFile(uri, 'base64');
       return `data:image/jpeg;base64,${base64Data}`;
     } else if (uri.startsWith('content://')) {
-      console.log('Need to handle content:// URI');
       const base64Data = await RNFS.readFile(uri, 'base64');
       return `data:image/jpeg;base64,${base64Data}`;
     } else {
-      console.log('Unsupported URI format');
       return '';
     }
   } catch (error) {
@@ -71,7 +64,7 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
 };
 
 const AddFoodPage = ({ navigation }: any) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   useLayoutEffect(() => {
     navigation?.getParent?.()?.setOptions({
       tabBarStyle: { display: 'none' },
@@ -84,7 +77,7 @@ const AddFoodPage = ({ navigation }: any) => {
   }, [navigation]);
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<foodPayload>(initialState);
-  const [errorForm, setErrorForm] = useState<null | {[key: string]: string}>(
+  const [errorForm, setErrorForm] = useState<null | { [key: string]: string }>(
     null,
   );
 
@@ -92,7 +85,7 @@ const AddFoodPage = ({ navigation }: any) => {
   const [steps, setSteps] = useState<string[]>(['']);
   const [originalImageUri, setOriginalImageUri] = useState<string>('');
 
-  const {categoryList} = useAppSelector((state: RootState) => state.categories);
+  const { categoryList } = useAppSelector((state: RootState) => state.categories);
 
   const handleAddIngredient = () => {
     setIngredients([...ingredients, '']);
@@ -122,7 +115,6 @@ const AddFoodPage = ({ navigation }: any) => {
   // Fetch categories on mount
   useEffect(() => {
     dispatch(getAllCategoriesAPI());
-    console.log('getAllCategoriesAPI rendered successfully');
   }, [dispatch]);
 
   const requestCameraPermission = async () => {
@@ -157,45 +149,45 @@ const AddFoodPage = ({ navigation }: any) => {
   };
 
   const validateForm = () => {
-    const errors: {[key: string]: string} = {};
-    
+    const errors: { [key: string]: string } = {};
+
     // Kiểm tra tên món ăn
     if (!formData.foodName.trim()) {
       errors.foodName = t('add_validation_food_name');
     }
-    
+
     // Kiểm tra hình ảnh món ăn
     if (!formData.foodThumbnail || !originalImageUri) {
       errors.foodThumbnail = t('add_validation_image');
     }
-    
+
     // Kiểm tra danh mục món ăn
     if (!formData.categoryId) {
       errors.categoryId = t('add_validation_category');
     }
-    
+
     // Kiểm tra mô tả món ăn
     if (!formData.foodDescription.trim()) {
       errors.foodDescription = t('add_validation_description');
     }
-    
+
     // Kiểm tra thời gian nấu ăn (không bắt buộc, nhưng nếu có thì phải là số)
     if (formData.CookingTime && isNaN(Number(formData.CookingTime))) {
       errors.CookingTime = t('add_validation_cooking_time_number');
     }
-    
+
     // Kiểm tra nguyên liệu
     const validIngredients = ingredients.filter(item => item.trim() !== '');
     if (validIngredients.length === 0) {
       errors.ingredients = t('add_validation_ingredients');
     }
-    
+
     // Kiểm tra các bước nấu
     const validSteps = steps.filter(item => item.trim() !== '');
     if (validSteps.length === 0) {
       errors.steps = t('add_validation_steps');
     }
-    
+
     return { isValid: Object.keys(errors).length === 0, errors };
   };
 
@@ -204,7 +196,7 @@ const AddFoodPage = ({ navigation }: any) => {
     const { isValid, errors } = validateForm();
     if (!isValid) {
       setErrorForm(errors);
-      
+
       // Hiển thị thông báo lỗi
       Toast.show({
         type: 'error',
@@ -213,21 +205,21 @@ const AddFoodPage = ({ navigation }: any) => {
         text2: t('add_validation_form_error'),
         visibilityTime: 3000,
       });
-      
+
       return;
     }
-    
+
     // Lọc bỏ nguyên liệu và các bước rỗng
     const filteredIngredients = ingredients.filter(item => item.trim() !== '');
     const filteredSteps = steps.filter(item => item.trim() !== '');
-    
+
     const updatedFormData = {
       ...formData,
       userId: userId,
       foodIngredients: filteredIngredients,
       foodSteps: filteredSteps,
     };
-    
+
     try {
       await dispatch(addFoodAPI(updatedFormData)).unwrap();
       Toast.show({
@@ -240,14 +232,14 @@ const AddFoodPage = ({ navigation }: any) => {
 
       // Chỉ gọi một API để tránh trùng lặp dữ liệu
       await dispatch(getFoodByIdAPI({ userId: userId }));
-      
+
       // Reset form state
       setFormData(initialState);
       setIngredients(['']);
       setSteps(['']);
       setErrorForm(null);
       setOriginalImageUri('');
-      
+
       // Chuyển về màn hình Home
       navigation.reset({
         index: 0,
@@ -255,8 +247,8 @@ const AddFoodPage = ({ navigation }: any) => {
       });
     } catch (error: any) {
       console.log('Error adding food:', error);
-      setErrorForm(error?.data?.errors || {general: t('general_error')});
-      
+      setErrorForm(error?.data?.errors || { general: t('general_error') });
+
       Toast.show({
         type: 'error',
         position: 'top',
@@ -268,19 +260,19 @@ const AddFoodPage = ({ navigation }: any) => {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader 
-        mode="back" 
-        title={t('add_add_food_header')} 
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <HomeHeader
+        mode="back"
+        title={t('add_add_food_header')}
         showGoBack={true}
         showNotification={false}
       />
       <ScrollView>
-        <View style={styles.container2}>
+        <View style={styles.content}>
           <CustomTitle title={t('add_choose_image')} />
           <Pressable onPress={requestCameraPermission}>
             <Image
-              source={{uri: originalImageUri || imgURL.UndefineImg}}
+              source={{ uri: originalImageUri || imgURL.UndefineImg }}
               style={styles.imagePreview}
             />
           </Pressable>
@@ -289,31 +281,30 @@ const AddFoodPage = ({ navigation }: any) => {
           )}
         </View>
 
-        <View style={styles.container2}>
+        <View style={styles.content}>
           <CustomTitle title={t('add_food_name')} />
-          <TextInput
+          <CustomInput
             style={styles.foodNameTextInput}
-            placeholder={t('add_food_name')}
+            placeholder={t('add_placeholder_food_name')}
             value={formData.foodName}
             onChangeText={text =>
-              setFormData(prev => ({...prev, foodName: text}))
+              setFormData(prev => ({ ...prev, foodName: text }))
             }
           />
           {errorForm?.foodName && (
             <Text style={styles.errorText}>{errorForm.foodName}</Text>
           )}
         </View>
-
-        <View style={styles.container2}>
+        <View style={styles.content}>
           <CustomTitle title={t('add_description')} />
-          <TextInput
+          <CustomInput
             style={styles.foodDescriptionTextInput}
-            placeholder={t('add_description')}
+            placeholder={t('add_placeholder_description')}
             value={formData.foodDescription}
             numberOfLines={5}
             multiline={true}
             onChangeText={text =>
-              setFormData(prev => ({...prev, foodDescription: text}))
+              setFormData(prev => ({ ...prev, foodDescription: text }))
             }
           />
           {errorForm?.foodDescription && (
@@ -327,14 +318,13 @@ const AddFoodPage = ({ navigation }: any) => {
             <SelectDropdown
               data={categoryList}
               onSelect={selectedItem => {
-                console.log(selectedItem.categoryId);
                 setFormData(prev => ({
                   ...prev,
                   categoryId: selectedItem.categoryId,
                 }));
                 // Xóa lỗi khi người dùng chọn danh mục
                 if (errorForm?.categoryId) {
-                  const newErrorForm = {...errorForm};
+                  const newErrorForm = { ...errorForm };
                   delete newErrorForm.categoryId;
                   setErrorForm(newErrorForm);
                 }
@@ -349,10 +339,11 @@ const AddFoodPage = ({ navigation }: any) => {
                       {(selectedItem && selectedItem.categoryName) ||
                         t('add_category')}
                     </Text>
-                    {React.createElement(Icon, {
-                      name: isOpened ? 'chevron-up' : 'chevron-down',
-                      style: styles.dropdownButtonArrowStyle,
-                    })}
+                    {
+                      isOpened
+                        ? <IconSvg xml={ImagesSvg.iconArrowDown} width={20} height={20} color='black' />
+                        : <IconSvg xml={ImagesSvg.iconArrowRight} width={20} height={20} color='black' />
+                    }
                   </View>
                 );
               }}
@@ -361,7 +352,7 @@ const AddFoodPage = ({ navigation }: any) => {
                   <View
                     style={{
                       ...styles.dropdownItemStyle,
-                      ...(isSelected && {backgroundColor: '#D2D9DF'}),
+                      ...(isSelected && { backgroundColor: '#D2D9DF' }),
                     }}>
                     <Text style={styles.dropdownItemTxtStyle}>
                       {item.categoryName}
@@ -373,7 +364,7 @@ const AddFoodPage = ({ navigation }: any) => {
               dropdownStyle={styles.dropdownMenuStyle}
             />
             {errorForm?.categoryId && (
-              <Text style={[styles.errorText, {textAlign: 'right'}]}>
+              <Text style={[styles.errorText, { textAlign: 'right' }]}>
                 {errorForm.categoryId}
               </Text>
             )}
@@ -383,65 +374,55 @@ const AddFoodPage = ({ navigation }: any) => {
         <View style={styles.foodcategoryContainer}>
           <CustomTitle title={t('add_cooking_time')} />
           <View>
-            <TextInput
-              style={[
-                styles.cookingTimeTextInput,
-                errorForm?.CookingTime ? styles.inputError : {}
-              ]}
-              keyboardType="numeric"
+            <CustomInput style={[ styles.cookingTimeTextInput, errorForm?.CookingTime ? styles.inputError : {} ]}
               placeholder={t('add_cooking_time')}
               value={formData.CookingTime}
               onChangeText={text => {
-                setFormData(prev => ({...prev, CookingTime: text}));
-                // Xóa lỗi khi người dùng nhập thời gian nấu
+                setFormData(prev => ({ ...prev, CookingTime: text }));
                 if (errorForm?.CookingTime) {
-                  const newErrorForm = {...errorForm};
+                  const newErrorForm = { ...errorForm };
                   delete newErrorForm.CookingTime;
                   setErrorForm(newErrorForm);
                 }
               }}
             />
             {errorForm?.CookingTime && (
-              <Text style={[styles.errorText, {textAlign: 'right'}]}>
+              <Text style={[styles.errorText, { textAlign: 'right' }]}>
                 {errorForm.CookingTime}
               </Text>
             )}
           </View>
         </View>
 
-        <View style={styles.container2}>
+        <View style={styles.content}>
           <CustomTitle title={t('add_ingredients')} />
           {ingredients.map((ingredient, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
-              <TextInput
-                style={[
-                  styles.ISTextInput, 
-                  errorForm?.ingredients && !ingredient.trim() ? styles.inputError : {}
-                ]}
+              <CustomInput
+                style={[styles.ISTextInput, errorForm?.ingredients && !ingredient.trim() ? styles.inputError : {}]}
                 placeholder={`${t('add_placeholder_ingredients')} ${index + 1}`}
                 value={ingredient}
                 onChangeText={text => {
                   handleIngredientChange(text, index);
-                  // Xóa lỗi khi người dùng nhập nguyên liệu
                   if (errorForm?.ingredients && text.trim()) {
-                    const newErrorForm = {...errorForm};
+                    const newErrorForm = { ...errorForm };
                     delete newErrorForm.ingredients;
                     setErrorForm(newErrorForm);
                   }
                 }}
               />
-              <Pressable 
+              <Pressable
                 onPress={() => handleRemoveIngredient(index)}
                 disabled={ingredients.length === 1} // Không cho phép xóa khi chỉ còn 1 phần tử
               >
-                {React.createElement(AntDesignIcon, {
-                  style: [
-                    styles.icon, 
-                    ingredients.length === 1 ? {opacity: 0.5} : {}
-                  ],
-                  name: 'minus',
-                  size: 22,
-                })}
+                <View style={styles.icon}>
+                  <IconSvg
+                    xml={ImagesSvg.icMinus}
+                    width={22}
+                    height={22}
+                    color={colors.primary}
+                  />
+                </View>
               </Pressable>
             </View>
           ))}
@@ -449,45 +430,40 @@ const AddFoodPage = ({ navigation }: any) => {
             <Text style={styles.errorText}>{errorForm.ingredients}</Text>
           )}
           <CustomButton
-            style={styles.addIngredient}
             title={t('add_add_ingredient')}
             onPress={handleAddIngredient}
           />
         </View>
 
-        <View style={styles.container2}>
+        <View style={styles.content}>
           <CustomTitle title={t('add_steps')} />
           {steps.map((step, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
-              <TextInput
-                style={[
-                  styles.ISTextInput,
-                  errorForm?.steps && !step.trim() ? styles.inputError : {}
-                ]}
+              <CustomInput style={[ styles.ISTextInput, errorForm?.steps && !step.trim() ? styles.inputError : {} ]}
                 placeholder={`${t('add_placeholder_steps')} ${index + 1}`}
                 value={step}
                 onChangeText={text => {
                   handleStepChange(text, index);
                   // Xóa lỗi khi người dùng nhập bước nấu
                   if (errorForm?.steps && text.trim()) {
-                    const newErrorForm = {...errorForm};
+                    const newErrorForm = { ...errorForm };
                     delete newErrorForm.steps;
                     setErrorForm(newErrorForm);
                   }
                 }}
               />
-              <Pressable 
+              <Pressable
                 onPress={() => handleRemoveStep(index)}
                 disabled={steps.length === 1} // Không cho phép xóa khi chỉ còn 1 phần tử
               >
-                {React.createElement(AntDesignIcon, {
-                  style: [
-                    styles.icon,
-                    steps.length === 1 ? {opacity: 0.5} : {}
-                  ],
-                  name: 'minus',
-                  size: 22,
-                })}
+                <View style={styles.icon}>
+                  <IconSvg
+                    xml={ImagesSvg.icMinus}
+                    width={22}
+                    height={22}
+                    color={colors.primary}
+                  />
+                </View>
               </Pressable>
             </View>
           ))}
@@ -495,7 +471,6 @@ const AddFoodPage = ({ navigation }: any) => {
             <Text style={styles.errorText}>{errorForm.steps}</Text>
           )}
           <CustomButton
-            style={styles.addIngredient}
             title={t('add_add_step')}
             onPress={handleAddStep}
           />
@@ -508,7 +483,7 @@ const AddFoodPage = ({ navigation }: any) => {
           <Text style={styles.generalErrorText}>{errorForm.general}</Text>
         </View>
       )}
-        
+
       <View style={styles.buttons}>
         <CustomButton title={t('add_add_food_btn')} onPress={handleSubmit} />
       </View>
@@ -523,26 +498,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-  container2: {
+  content: {
     marginHorizontal: 18,
     marginVertical: 12,
     gap: 10,
   },
   imagePreview: {
-    width: 327,
     height: 180,
     borderRadius: 12,
     resizeMode: 'cover',
   },
   foodNameTextInput: {
-    width: 327,
+    width: '100%',
     height: 53,
     backgroundColor: colors.InputBg,
     borderRadius: 12,
     padding: 16,
   },
   foodDescriptionTextInput: {
-    width: 327,
+    width: '100%',
     height: 123,
     backgroundColor: colors.InputBg,
     borderRadius: 12,
@@ -569,7 +543,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   ISTextInput: {
-    width: 280,
+    width: '80%',
     height: 53,
     backgroundColor: colors.InputBg,
     borderRadius: 12,
@@ -579,7 +553,6 @@ const styles = StyleSheet.create({
   icon: {
     padding: 2,
     borderRadius: 16,
-    color: colors.primary,
     borderWidth: 1,
     borderColor: colors.primary,
   },
@@ -591,11 +564,6 @@ const styles = StyleSheet.create({
   inputError: {
     borderWidth: 1,
     borderColor: 'red',
-  },
-  addIngredient: {
-    width: 127,
-    backgroundColor: colors.secondary,
-    marginHorizontal: 18,
   },
   buttons: {
     flexDirection: 'row',
