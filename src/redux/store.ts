@@ -11,6 +11,7 @@ import reviewSlice from './slices/review/reviewSlice';
 import favoriteSlice from './slices/favorite/favoriteSlice';
 import followSlice from './slices/follow/followSlice';
 import notificationSlice from './slices/notification/notificationSlice';
+import chatHistorySlice from './slices/chatHistory/chatHistorySlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     favorite: favoriteSlice,
     follow: followSlice,
     notification: notificationSlice,
+    chatHistory: chatHistorySlice,
   },
 });
 

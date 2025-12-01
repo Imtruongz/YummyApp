@@ -10,6 +10,8 @@ export interface food {
   CookingTime: string;
   createdAt: string;
   updated_at: string;
+  averageRating?: number;
+  totalRatings?: number;
   userDetail: {
     userId: string;
     username: string;

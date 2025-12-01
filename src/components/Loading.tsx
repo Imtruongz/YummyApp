@@ -1,20 +1,26 @@
-import {StyleSheet, View, ActivityIndicator, Image} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import colors from '../utils/color';
 import CustomTitle from './customize/Title';
 import { useTranslation } from 'react-i18next';
-import { LoadingImage } from '../utils/assets';
+import IconSvg from './IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
+import CustomLoadingSpinner from './CustomLoadingSpinner';
 
 const Loading = () => {
   const { t, i18n } = useTranslation();
   return (
     <View style={styles.container}>
       <View style={styles.body}>
-        <Image source={LoadingImage} />
+        <IconSvg xml={ImagesSvg.icChef} width={64} height={64} color={colors.primary} />
       </View>
       <View style={styles.body2}>
         <CustomTitle style={styles.title} title={t('loading')} />
-        <ActivityIndicator size={32}  style={styles.loading} />
+        <CustomLoadingSpinner
+          size={50}
+          color={colors.light}
+          style={styles.loading}
+        />
       </View>
     </View>
   );
@@ -38,7 +44,6 @@ const styles = StyleSheet.create({
   },
   body2: {
     marginTop: 10,
-
     justifyContent: 'center',
     alignItems: 'center',
     width: '50%',

@@ -173,5 +173,31 @@
   "transaction_code": "交易码",
   "payment_time": "时间",
   "payment_success_title": "支付成功！",
-  "payment_success_message": "感谢您的支持！"
+  "payment_success_message": "感谢您的支持！",
+  "ai_action_recipe": "推荐食谱",
+  "ai_action_technique": "烹饪技巧",
+  "ai_action_nutrition": "营养信息",
+  "ai_action_tips": "烹饪建议",
+  "chatHistory": {
+    "title": "聊天历史",
+    "noChats": "还没有对话",
+    "noChatMessage": "开始新的聊天以保存您的对话",
+    "saveChatTitle": "保存对话",
+    "enterChatTitle": "输入此聊天的标题（可选）",
+    "deleteConfirm": "删除对话",
+    "deleteMessage": "您确定要删除此对话吗？此操作无法撤销。",
+    "saveSuccess": "聊天已保存",
+    "saveError": "无法保存聊天",
+    "autoSaved": "您的对话已自动保存",
+    "yesterday": "昨天",
+    "noResults": "未找到结果",
+    "searchPlaceholder": "搜索对话...",
+    "chats": "个对话",
+    "createdAt": "创建于",
+    "messages": "条消息",
+    "updateTitleError": "无法更新标题",
+    "loadError": "无法加载对话",
+    "noMessages": "还没有消息",
+    "autoTitle": "对话已成功保存"
+  }
 }

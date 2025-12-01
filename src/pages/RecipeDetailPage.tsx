@@ -18,6 +18,9 @@ import {
   getAllCommentFromFoodIdAPI,
   addCommentToFoodAPI,
   deleteCommentAPI,
+  getAverageRatingAPI,
+  addOrUpdateRatingAPI,
+  getUserRatingAPI,
 } from '../redux/slices/review/reviewThunk';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -39,6 +42,8 @@ import { review } from '../redux/slices/review/types';
 import Typography from '../components/customize/Typography';
 import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
 import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+import RatingInput from '../components/RatingInput';
+import CustomInput from '../components/customize/CustomInput';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps
@@ -66,19 +71,21 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   const [commentError, setCommentError] = useState<string | null>(null);
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<review | null>(null);
+  const [averageRating, setAverageRating] = useState<number>(0);
+  const [totalRatings, setTotalRatings] = useState<number>(0);
+  const [userRating, setUserRating] = useState<number>(0);
 
   const [dialogTitle, setDialogTitle] = useState('');
   const { t, i18n } = useTranslation();
 
   const showDialog = (item: review) => {
     setCurrentItem(item);
-    if (item.userId !== myUserId) {
-      setDialogTitle('Hidden');
-      setVisible(true);
-    } else {
+    // Chỉ hiển thị modal nếu bình luận là của chính user
+    if (item.userId === myUserId) {
       setDialogTitle('Delete');
       setVisible(true);
     }
+    // Nếu không phải của user thì không làm gì cả
   };
   const handleCancel = () => {
     if (currentItem) {
@@ -90,10 +97,24 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     setVisible(false);
     if (currentItem) {
       try {
-        await dispatch(deleteCommentAPI(currentItem.reviewId)); // Call delete thunk
-        dispatch(getAllCommentFromFoodIdAPI(foodId)); // Refresh comments list
+        await dispatch(deleteCommentAPI(currentItem.reviewId)).unwrap();
+        // Refresh comments list sau khi xóa
+        await dispatch(getAllCommentFromFoodIdAPI(foodId));
+        
+        Toast.show({
+          type: 'success',
+          text1: 'Thành công',
+          text2: 'Bình luận đã được xóa',
+          visibilityTime: 2000,
+        });
       } catch (error) {
         console.log('Failed to delete comment:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Lỗi',
+          text2: 'Không thể xóa bình luận, vui lòng thử lại',
+          visibilityTime: 2000,
+        });
       }
     }
   };
@@ -162,7 +183,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     setCommentError(null);
     setIsAddingComment(true);
     dispatch(getAllCommentFromFoodIdAPI(foodId));
-
+    setAverageRating
     try {
       const result = await dispatch(
         addCommentToFoodAPI({
@@ -180,6 +201,44 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
     }
   };
 
+  const handleRatingChange = async (rating: number) => {
+    try {
+      await dispatch(
+        addOrUpdateRatingAPI({
+          foodId: foodId,
+          userId: myUserId,
+          rating: rating,
+        }),
+      ).unwrap();
+
+      setUserRating(rating);
+
+      // Refresh average rating
+      try {
+        const ratingResult = await dispatch(getAverageRatingAPI(foodId)).unwrap();
+        setAverageRating(ratingResult.averageRating || 0);
+        setTotalRatings(ratingResult.totalRatings || 0);
+      } catch (error) {
+        console.log('Error fetching updated rating:', error);
+      }
+
+      Toast.show({
+        type: 'success',
+        text1: 'Thành công',
+        text2: `Cảm ơn bạn đã đánh giá ${rating} sao!`,
+        visibilityTime: 2000,
+      });
+    } catch (error: any) {
+      console.log('Error updating rating:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể cập nhật đánh giá, vui lòng thử lại sau',
+        visibilityTime: 2000,
+      });
+    }
+  };
+
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   useEffect(() => {
@@ -192,6 +251,26 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
           dispatch(getUserByIdAPI({ userId: myUserId })),
           dispatch(getFoodByIdAPI({ userId, isViewMode: true }))
         ]);
+
+        // Fetch rating data
+        try {
+          const ratingResult = await dispatch(getAverageRatingAPI(foodId)).unwrap();
+          setAverageRating(ratingResult.averageRating || 0);
+          setTotalRatings(ratingResult.totalRatings || 0);
+        } catch (error) {
+          console.log('Error fetching average rating:', error);
+        }
+
+        // Fetch user's rating for this food
+        if (myUserId) {
+          try {
+            const userRatingResult = await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
+            setUserRating(userRatingResult?.rating || 0);
+          } catch (error) {
+            console.log('Error fetching user rating:', error);
+            setUserRating(0);
+          }
+        }
       } finally {
         setIsInitialLoading(false);
       }
@@ -261,7 +340,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               <View style={styles.achivementItem}>
                 <IconSvg xml={ImagesSvg.icStar} width={20} height={20} color={colors.primary} />
                 <Typography
-                  title="4.0"
+                  title={`${averageRating.toFixed(1)} (${totalRatings})`}
                   color={colors.smallText}
                   fontSize={12}
                 />
@@ -284,7 +363,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               </View>
             </View>
 
-            <CustomTitle title={t('recipe_detail_description')} />
+            <CustomTitle title={t('recipe_detail_description')} style={{ marginTop: 10 }} />
             {selectedFood?.foodDescription &&
               selectedFood?.foodDescription.length > 150 ? (
               <>
@@ -306,18 +385,24 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
               <Text>{selectedFood?.foodDescription}</Text>
             )}
 
-            <CustomTitle title={t('recipe_detail_ingredient')} />
+            <CustomTitle title={t('recipe_detail_ingredient')} style={{ marginTop: 20 }} />
             {selectedFood?.foodIngredients.map((ingredient, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {ingredient}
               </Text>
             ))}
-            <CustomTitle title={t('recipe_detail_step')} />
+            <CustomTitle title={t('recipe_detail_step')} style={{ marginTop: 20 }} />
             {selectedFood?.foodSteps.map((step, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {step}
               </Text>
             ))}
+            <CustomTitle title={'Đánh giá của bạn'} style={{ marginTop: 20 }} />
+            <RatingInput
+              rating={userRating}
+              onRatingChange={handleRatingChange}
+            />
+
             <TouchableOpacity style={styles.titleContainer}>
               <CustomTitle title={t('recipe_detail_comment')} />
               <CustomTitle style={styles.seeAll} title="See all" />
@@ -358,22 +443,15 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                 borderRadius={20}
                 image={user?.avatar || img.defaultAvatar}
               />
-              <TextInput
+              <CustomInput
                 style={styles.foodNameStyle2}
                 placeholder={t('recipe_detail_comment_placeholder')}
                 value={commentText}
                 onChangeText={setCommentText}
                 multiline={true}
                 numberOfLines={3}
-                editable={!isAddingComment}
               />
-              {isAddingComment ? (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator size="small" color={colors.primary} />
-                </View>
-              ) : (
-                <TouchableOpacity onPress={handleAddComment}><IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.primary} /></TouchableOpacity>
-              )}
+              <TouchableOpacity onPress={handleAddComment}><IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.primary} /></TouchableOpacity>
             </View>
             <CustomTitle title={t('recipe_detail_more_food')} />
             <FlatList
@@ -413,7 +491,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                       <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
 
                       <Typography
-                        title="4.0"
+                        title={`${averageRating.toFixed(1)} (${totalRatings})`}
                         color={colors.smallText}
                       />
                     </View>
@@ -526,7 +604,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   foodNameStyle2: {
-    width: 220,
+    width: '70%',
     height: 60,
     backgroundColor: colors.InputBg,
     borderRadius: 12,

@@ -186,5 +186,31 @@
   "transaction_code": "Mã giao dịch",
   "payment_time": "Thời gian",
   "payment_success_title": "Thanh toán thành công!",
-  "payment_success_message": "Cảm ơn bạn đã ủng hộ!"
+  "payment_success_message": "Cảm ơn bạn đã ủng hộ!",
+  "ai_action_recipe": "Gợi ý công thức",
+  "ai_action_technique": "Kỹ thuật nấu ăn",
+  "ai_action_nutrition": "Dinh dưỡng",
+  "ai_action_tips": "Mẹo nấu ăn",
+  "chatHistory": {
+    "title": "Lịch sử trò chuyện",
+    "noChats": "Chưa có cuộc trò chuyện nào",
+    "noChatMessage": "Bắt đầu một cuộc trò chuyện mới để lưu lịch sử",
+    "saveChatTitle": "Lưu cuộc trò chuyện",
+    "enterChatTitle": "Nhập tiêu đề cuộc trò chuyện (tùy chọn)",
+    "deleteConfirm": "Xóa cuộc trò chuyện",
+    "deleteMessage": "Bạn có chắc chắn muốn xóa cuộc trò chuyện này? Hành động này không thể được hoàn tác.",
+    "saveSuccess": "Cuộc trò chuyện đã được lưu",
+    "saveError": "Không thể lưu cuộc trò chuyện",
+    "autoSaved": "Cuộc trò chuyện của bạn đã được tự động lưu",
+    "yesterday": "Hôm qua",
+    "noResults": "Không tìm thấy kết quả",
+    "searchPlaceholder": "Tìm kiếm cuộc trò chuyện...",
+    "chats": "cuộc trò chuyện",
+    "createdAt": "Tạo vào",
+    "messages": "tin nhắn",
+    "updateTitleError": "Không thể cập nhật tiêu đề",
+    "loadError": "Không thể tải cuộc trò chuyện",
+    "noMessages": "Không có tin nhắn",
+    "autoTitle": "Cuộc trò chuyện được lưu thành công"
+  }
 }

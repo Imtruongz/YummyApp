@@ -7,9 +7,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   FlatList,
+  Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 import Typography from '../components/customize/Typography';
 import { aiApi } from '../api/aiApi';
 import Toast from 'react-native-toast-message';
@@ -22,6 +24,10 @@ import { Image } from 'react-native';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
 import CustomInput from '../components/customize/CustomInput';
+import QuickActionButtons from '../components/QuickActionButtons';
+import SaveChatModal from '../components/SaveChatModal';
+import { saveChatAPI } from '../redux/slices/chatHistory/chatHistoryThunk';
+import { AppDispatch } from '../redux/store';
 
 type Message = {
   id: string;
@@ -33,6 +39,7 @@ type YummyAIScreenProps = NativeStackScreenProps<RootStackParamList, 'YummyAIScr
 
 const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -42,6 +49,8 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
   const handleSend = async () => {
@@ -65,6 +74,13 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         isUser: false,
       };
       setMessages(prev => [...prev, aiMessage]);
+      
+      // Auto-save chat if there are more than 2 messages (welcome + at least 1 exchange)
+      setTimeout(() => {
+        if (messages.length >= 3) {
+          autoSaveChat([...messages, userMessage, aiMessage]);
+        }
+      }, 500);
     } catch (error: any) {
       Toast.show({
         type: 'error',
@@ -75,6 +91,131 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       setLoading(false);
     }
   };
+
+  const autoSaveChat = async (chatMessages: Message[]) => {
+    try {
+      const messagesToSave = chatMessages
+        .filter(msg => msg.id !== '1') // Filter out welcome message
+        .map(msg => ({
+          text: msg.text,
+          isUser: msg.isUser,
+        }));
+
+      if (messagesToSave.length === 0) return;
+
+      setSavingChat(true);
+      await dispatch(
+        saveChatAPI({
+          messages: messagesToSave,
+          title: '', // Let backend auto-generate title from first user message
+        })
+      ).unwrap();
+      setSavingChat(false);
+      
+      // Silent auto-save - don't show toast to avoid interruption
+    } catch (error: any) {
+      setSavingChat(false);
+      console.log('Auto-save error:', error);
+      // Silent fail - don't interrupt user experience
+    }
+  };
+
+  const handleSaveChat = async (title: string) => {
+    try {
+      setSavingChat(true);
+      const messagesToSave = messages
+        .filter(msg => msg.id !== '1') // Filter out welcome message
+        .map(msg => ({
+          text: msg.text,
+          isUser: msg.isUser,
+        }));
+
+      await dispatch(
+        saveChatAPI({
+          messages: messagesToSave,
+          title: title,
+        })
+      ).unwrap();
+
+      setSavingChat(false);
+      setShowSaveModal(false);
+
+      Toast.show({
+        type: 'success',
+        text1: t('chatHistory.saveSuccess') || 'Chat saved',
+        text2: title || t('chatHistory.autoTitle') || 'Conversation saved successfully',
+      });
+    } catch (error: any) {
+      setSavingChat(false);
+      Toast.show({
+        type: 'error',
+        text1: t('common.error') || 'Error',
+        text2: error?.message || t('chatHistory.saveError') || 'Failed to save chat',
+      });
+    }
+  };
+
+  const handleQuickAction = (message: string) => {
+    setInput(message);
+    setTimeout(() => {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        text: message,
+        isUser: true,
+      };
+
+      setMessages(prev => [...prev, userMessage]);
+      setInput('');
+      setLoading(true);
+
+      (async () => {
+        try {
+          const response = await aiApi.askCookingQuestion(message);
+          const aiMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            text: response.answer,
+            isUser: false,
+          };
+          setMessages(prev => [...prev, aiMessage]);
+        } catch (error: any) {
+          Toast.show({
+            type: 'error',
+            text1: t('ai_assistant_error'),
+            text2: error.message || t('ai_assistant_error_response'),
+          });
+        } finally {
+          setLoading(false);
+        }
+      })();
+    }, 100);
+  };
+
+  const quickActions = [
+    {
+      id: '1',
+      label: t('ai_action_recipe') || 'Gợi ý công thức',
+      icon: '🍳',
+      action: () => handleQuickAction('Hãy gợi ý cho tôi một công thức nấu ăn ngon và dễ làm'),
+    },
+    {
+      id: '2',
+      label: t('ai_action_technique') || 'Kỹ thuật nấu ăn',
+      icon: '👨‍🍳',
+      action: () => handleQuickAction('Hãy chia sẻ một kỹ thuật nấu ăn quan trọng'),
+    },
+    {
+      id: '3',
+      label: t('ai_action_nutrition') || 'Dinh dưỡng',
+      icon: '🥗',
+      action: () => handleQuickAction('Cho tôi biết về giá trị dinh dưỡng của các loại thực phẩm'),
+    },
+    {
+      id: '4',
+      label: t('ai_action_tips') || 'Mẹo nấu ăn',
+      icon: '💡',
+      action: () => handleQuickAction('Chia sẻ một mẹo nấu ăn hữu ích'),
+    },
+  ];
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={[
@@ -110,12 +251,23 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <HomeHeader
-          mode="back"
-          title={t('ai_assistant_title')}
-          showNotification={false}
-          showGoBack={true}
-        />
+        <View style={styles.headerWithButtons}>
+          <HomeHeader
+            mode="back"
+            title={t('ai_assistant_title')}
+            showNotification={false}
+            showGoBack={true}
+          />
+          {messages.length > 1 && (
+            <TouchableOpacity
+              style={styles.saveHeaderButton}
+              onPress={() => setShowSaveModal(true)}
+              disabled={loading || savingChat}
+            >
+              <Text style={styles.saveButtonText}>💾</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
         <FlatList
           ref={flatListRef}
@@ -125,6 +277,11 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
           style={styles.messageList}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
           onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          ListFooterComponent={
+            messages.length === 1 ? (
+              <QuickActionButtons actions={quickActions} />
+            ) : null
+          }
         />
 
         <View style={styles.inputContainer}>
@@ -149,6 +306,14 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
           )}
         </View>
       </KeyboardAvoidingView>
+
+      {/* Save Chat Modal */}
+      <SaveChatModal
+        visible={showSaveModal}
+        isLoading={savingChat}
+        onSave={handleSaveChat}
+        onCancel={() => setShowSaveModal(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -157,6 +322,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.light,
+  },
+  headerWithButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  saveHeaderButton: {
+    paddingRight: 16,
+    paddingVertical: 8,
+  },
+  saveButtonText: {
+    fontSize: 20,
   },
   messageList: {
     flex: 1,
