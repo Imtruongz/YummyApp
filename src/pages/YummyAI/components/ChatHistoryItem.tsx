@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-
-const Ionicons = require('react-native-vector-icons/Ionicons').default;
+import IconSvg from '../../../components/IconSvg';
+import { ImagesSvg } from '../../../utils/ImageSvg';
+import ConfirmationModal from '../../../components/common/ConfirmationModal';
 
 interface ChatHistoryItemProps {
   conversationId: string;
@@ -28,6 +28,7 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   isDeleting = false,
 }) => {
   const { t } = useTranslation();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const formatDate = (dateString: string) => {
     try {
@@ -63,23 +64,12 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      t('chatHistory.deleteConfirm') || 'Delete Conversation',
-      t('chatHistory.deleteMessage') ||
-        'Are you sure you want to delete this conversation? This action cannot be undone.',
-      [
-        {
-          text: t('cancel') || 'Cancel',
-          onPress: () => {},
-          style: 'cancel',
-        },
-        {
-          text: t('common.delete') || 'Delete',
-          onPress: onDelete,
-          style: 'destructive',
-        },
-      ]
-    );
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    setShowDeleteModal(false);
+    await onDelete();
   };
 
   return (
@@ -95,7 +85,6 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
           </Text>
           <Text style={styles.date}>{formatDate(createdAt)}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={20} color="#999" />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -104,11 +93,25 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
         disabled={isDeleting}
       >
         {isDeleting ? (
-          <Ionicons name="hourglass" size={18} color="#FF6B6B" />
+          <IconSvg xml={ImagesSvg.icMenu} width={18} height={18} color="#FF6B6B" />
         ) : (
-          <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
+          <IconSvg xml={ImagesSvg.icTrash} width={18} height={18} color="#FF6B6B" />
         )}
       </TouchableOpacity>
+
+      <ConfirmationModal
+        visible={showDeleteModal}
+        title={t('chatHistory.deleteConfirm') || 'Delete Conversation'}
+        message={
+          t('chatHistory.deleteMessage') ||
+          'Are you sure you want to delete this conversation? This action cannot be undone.'
+        }
+        type="warning"
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDelete}
+        confirmText={t('delete') || 'Delete'}
+        cancelText={t('cancel') || 'Cancel'}
+      />
     </View>
   );
 };

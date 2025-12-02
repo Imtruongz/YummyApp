@@ -46,6 +46,7 @@ export type HomeStack = {
   };
   PaymentSuccessScreen: undefined;
   YummyAIScreen: undefined;
+  ChatHistory: undefined;
 }
 
 export type ProfileStack = {

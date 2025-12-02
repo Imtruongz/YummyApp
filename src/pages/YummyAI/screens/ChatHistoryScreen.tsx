@@ -6,24 +6,27 @@ import {
   FlatList,
   TouchableOpacity,
   TextInput,
-  SafeAreaView,
   Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-const Ionicons = require('react-native-vector-icons/Ionicons').default;
-import { RootState, AppDispatch } from '../redux/store';
+import { RootState, AppDispatch } from '../../../redux/store';
 import {
   getUserConversationsAPI,
   deleteConversationAPI,
-} from '../redux/slices/chatHistory/chatHistoryThunk';
+} from '../../../redux/slices/chatHistory/chatHistoryThunk';
 import {
   resetConversations,
   clearCurrentConversation,
-} from '../redux/slices/chatHistory/chatHistorySlice';
+} from '../../../redux/slices/chatHistory/chatHistorySlice';
 import ChatHistoryItem from '../components/ChatHistoryItem';
-import CustomLoadingSpinner from '../components/CustomLoadingSpinner';
+import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
+import HomeHeader from '../../../components/HomeHeader';
+import IconSvg from '../../../components/IconSvg';
+import { ImagesSvg } from '../../../utils/ImageSvg';
+import colors from '../../../utils/color';
 
 interface ChatHistoryScreenProps {
   navigation: any;
@@ -72,6 +75,10 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
     navigation.navigate('ChatDetail', { conversationId });
   };
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   const handleDeleteConversation = async (conversationId: string) => {
     setDeletingId(conversationId);
     try {
@@ -88,7 +95,7 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <Ionicons name="chatbubbles-outline" size={64} color="#ddd" />
+      {/* <Ionicons name="chatbubbles-outline" size={64} color="#ddd" /> */}
       <Text style={styles.emptyTitle}>
         {t('chatHistory.noChats') || 'No conversations yet'}
       </Text>
@@ -109,18 +116,23 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+      <HomeHeader
+        mode="back"
+        title={t('chatHistory.title') || 'Chat History'}
+        showNotification={false}
+        showGoBack={true}
+        onGoBack={handleGoBack}
+      />
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {t('chatHistory.title') || 'Chat History'}
-        </Text>
         <Text style={styles.chatCount}>
           {totalCount} {t('chatHistory.chats') || 'chats'}
         </Text>
       </View>
 
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={18} color="#999" />
+        <IconSvg xml={ImagesSvg.icSearch} width={18} height={18} color={colors.dark} />
+        
         <TextInput
           style={styles.searchInput}
           placeholder={
@@ -132,7 +144,7 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
         />
         {searchText !== '' && (
           <TouchableOpacity onPress={() => setSearchText('')}>
-            <Ionicons name="close-circle" size={18} color="#999" />
+            <IconSvg xml={ImagesSvg.icClose} width={18} height={18}/>
           </TouchableOpacity>
         )}
       </View>

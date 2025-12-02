@@ -1,8 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import ChatHistoryScreen from '../pages/ChatHistoryScreen';
-import ChatDetailScreen from '../pages/ChatDetailScreen';
+import ChatHistoryScreen from '../pages/YummyAI/screens/ChatHistoryScreen';
+import ChatDetailScreen from '../pages/YummyAI/screens/ChatDetailScreen';
 
 const Stack = createNativeStackNavigator();
 

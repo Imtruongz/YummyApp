@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, ScrollView, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import colors from '../utils/color';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+import colors from '../../../utils/color';
+import IconSvg from '../../../components/IconSvg';
+import { ImagesSvg } from '../../../utils/ImageSvg';
 
 interface QuickAction {
   id: string;

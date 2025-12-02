@@ -32,8 +32,10 @@ interface HomeHeaderProps {
   title?: string;
   showNotification?: boolean;
   showGoBack?: boolean;
+  showMenuButton?: boolean;
   onNotificationPress?: () => void;
   onGoBack?: () => void;
+  onMenuPress?: () => void;
 }
 
 const HomeHeader: React.FC<HomeHeaderProps> = ({
@@ -44,8 +46,10 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   title,
   showNotification = true,
   showGoBack = false,
+  showMenuButton = false,
   onNotificationPress,
-  onGoBack
+  onGoBack,
+  onMenuPress
 }) => {
   const navigation = useNavigation<HomeHeaderNavigationProp>();
   const user = useAppSelector(state => state.auth.user);
@@ -110,10 +114,15 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   return (
     <View style={{ backgroundColor: color.primaryHover }}>
       <StatusBar backgroundColor={color.primaryHover} barStyle="light-content" />
-      <View style={[styles.headerContainer, { paddingHorizontal: showGoBack ? 0 : 16, paddingTop: insets.top || 12 }]}>
+      <View style={[styles.headerContainer, { paddingHorizontal: showGoBack || showMenuButton ? 0 : 16, paddingTop: insets.top || 12 }]}>
         <View style={styles.leftContainer}>
-          {showGoBack && (
+          {showGoBack && !showMenuButton && (
             <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}><IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color='black' /></TouchableOpacity>
+          )}
+          {showMenuButton && (
+            <TouchableOpacity style={styles.menuButton} onPress={onMenuPress}>
+              <IconSvg xml={ImagesSvg.icOptions} width={24} height={24} color='black' />
+            </TouchableOpacity>
           )}
           {renderLeftContent()}
         </View>
@@ -153,6 +162,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   goBackButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  menuButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
   },

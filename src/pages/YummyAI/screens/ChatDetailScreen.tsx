@@ -5,22 +5,24 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
   Alert,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-const Ionicons = require('react-native-vector-icons/Ionicons').default;
-import { RootState, AppDispatch } from '../redux/store';
+import { RootState, AppDispatch } from '../../../redux/store';
 import {
   getConversationDetailAPI,
   updateConversationTitleAPI,
-} from '../redux/slices/chatHistory/chatHistoryThunk';
-import CustomLoadingSpinner from '../components/CustomLoadingSpinner';
+} from '../../../redux/slices/chatHistory/chatHistoryThunk';
+import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
+import IconSvg from '../../../components/IconSvg';
+import { ImagesSvg } from '../../../utils/ImageSvg';
+import colors from '../../../utils/color';
 
 interface ChatDetailScreenProps {
   navigation: any;
@@ -142,7 +144,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
 
   if (isLoading && !currentConversation) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <View style={styles.loadingContainer}>
           <CustomLoadingSpinner size={40} color="#FF6B6B" />
         </View>
@@ -152,9 +154,9 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
 
   if (!currentConversation) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle-outline" size={48} color="#FF6B6B" />
+          <IconSvg xml={ImagesSvg.icWarning} width={48} height={48} color={colors.dark} />
           <Text style={styles.errorText}>
             {t('chatHistory.loadError') || 'Failed to load conversation'}
           </Text>
@@ -164,7 +166,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
@@ -175,7 +177,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
             onPress={() => navigation.goBack()}
             style={styles.backButton}
           >
-            <Ionicons name="chevron-back" size={24} color="#333" />
+            <IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color={colors.dark} />
           </TouchableOpacity>
 
           {editingTitle ? (
@@ -195,14 +197,14 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
                 {isSaving ? (
                   <CustomLoadingSpinner size={16} color="#FF6B6B" />
                 ) : (
-                  <Ionicons name="checkmark" size={18} color="#FF6B6B" />
+                  <IconSvg xml={ImagesSvg.icSuccess} width={26} height={26} color={colors.dark} />
                 )}
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleCancel}
                 disabled={isSaving}
               >
-                <Ionicons name="close" size={18} color="#999" />
+                <IconSvg xml={ImagesSvg.icClose} width={28} height={28}/>
               </TouchableOpacity>
             </View>
           ) : (
@@ -214,12 +216,10 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
                 onPress={handleEditTitle}
                 style={styles.editButton}
               >
-                <Ionicons name="pencil-outline" size={16} color="#FF6B6B" />
+                <IconSvg xml={ImagesSvg.icEdit} width={28} height={28} color={colors.dark} />
               </TouchableOpacity>
             </View>
           )}
-
-          <View style={styles.headerRight} />
         </View>
 
         {/* Messages */}
@@ -277,10 +277,12 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.primary,
     paddingHorizontal: 12,
     paddingVertical: 12,
+    paddingTop: 48,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },

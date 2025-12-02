@@ -8,26 +8,28 @@ import {
   Platform,
   FlatList,
   Text,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import Typography from '../components/customize/Typography';
-import { aiApi } from '../api/aiApi';
 import Toast from 'react-native-toast-message';
-import colors from '../utils/color';
-import HomeHeader from '../components/HomeHeader';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
-import { YummyDrag } from '../utils/assets';
-import { Image } from 'react-native';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import CustomInput from '../components/customize/CustomInput';
-import QuickActionButtons from '../components/QuickActionButtons';
+
+import { aiApi } from '../../../api/aiApi';
+import colors from '../../../utils/color';
+import { YummyDrag } from '../../../utils/assets';
+import { ImagesSvg } from '../../../utils/ImageSvg';
+import { RootStackParamList } from '../../../../android/types/StackNavType';
+import { saveChatAPI } from '../../../redux/slices/chatHistory/chatHistoryThunk';
+import { AppDispatch } from '../../../redux/store';
+
+import Typography from '../../../components/customize/Typography';
 import SaveChatModal from '../components/SaveChatModal';
-import { saveChatAPI } from '../redux/slices/chatHistory/chatHistoryThunk';
-import { AppDispatch } from '../redux/store';
+import HomeHeader from '../../../components/HomeHeader';
+import IconSvg from '../../../components/IconSvg';
+import CustomInput from '../../../components/customize/CustomInput';
+import QuickActionButtons from '../components/QuickActionButtons';
 
 type Message = {
   id: string;
@@ -47,6 +49,10 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       isUser: false,
     }
   ]);
+
+  const handleMenuPress = () => {
+    (navigation as any).push('ChatHistory');
+  };
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -257,6 +263,8 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
             title={t('ai_assistant_title')}
             showNotification={false}
             showGoBack={true}
+            showMenuButton={true}
+            onMenuPress={handleMenuPress}
           />
           {messages.length > 1 && (
             <TouchableOpacity
