@@ -77,7 +77,7 @@ const SaveChatModal: React.FC<SaveChatModalProps> = ({
               disabled={isLoading}
             >
               <Text style={styles.cancelButtonText}>
-                {t('common.cancel') || 'Cancel'}
+                {t('cancel') || 'Cancel'}
               </Text>
             </TouchableOpacity>
 
@@ -90,7 +90,7 @@ const SaveChatModal: React.FC<SaveChatModalProps> = ({
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
                 <Text style={styles.saveButtonText}>
-                  {t('common.save') || 'Save'}
+                  {t('save') || 'Save'}
                 </Text>
               )}
             </TouchableOpacity>

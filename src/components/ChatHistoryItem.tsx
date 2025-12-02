@@ -69,7 +69,7 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
         'Are you sure you want to delete this conversation? This action cannot be undone.',
       [
         {
-          text: t('common.cancel') || 'Cancel',
+          text: t('cancel') || 'Cancel',
           onPress: () => {},
           style: 'cancel',
         },

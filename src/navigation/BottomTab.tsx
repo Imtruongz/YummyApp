@@ -4,7 +4,6 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import colors from '../utils/color';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
-import ChatHistoryNavigator from './ChatHistoryNavigator.tsx';
 import { MainStackParamList } from './types.ts';
 import AddFoodPage from '../pages/AddFoodPage.tsx';
 import SearchPage from '../pages/SearchPage.tsx';
@@ -56,16 +55,6 @@ const BottomTab = () => {
             navigation.navigate('AddFoodPage');
           },
         })}
-      />
-      <Tab.Screen
-        name="ChatHistoryNavigator"
-        component={ChatHistoryNavigator}
-        options={{
-          tabBarLabel: '',
-          tabBarIcon: ({color}) => (
-            <IconSvg xml={ImagesSvg.icSend} width={23} height={27} color={color} />
-          ),
-        }}
       />
       <Tab.Screen
         name="ProfileNavigator"
@@ -137,14 +126,6 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
       nested.name === 'ListFoodPage' ||
       nested.name === 'FollowersFollowingListScreen'
     )) {
-      hideTabBar = true;
-    }
-  }
-  // Kiểm tra trong ChatHistoryNavigator
-  const chatRoute = state.routes.find((r: any) => r.name === 'ChatHistoryNavigator');
-  if (chatRoute && chatRoute.state && chatRoute.state.routes) {
-    const nested = chatRoute.state.routes[chatRoute.state.index];
-    if (nested && nested.name === 'ChatDetail') {
       hideTabBar = true;
     }
   }
