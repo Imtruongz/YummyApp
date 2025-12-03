@@ -13,7 +13,13 @@ const IconSvg: React.FC<IconSvgProps> = ({ xml, width = 24, height = 24, color }
   if (color) {
     // Thay thế tất cả fill="#..." thành fill="{color}" hoặc fill="color"
     svg = svg.replace(/fill="#[0-9a-fA-F]{3,6}"/g, `fill="${color}"`);
-    svg = svg.replace('{color}', color);
+    // Thay thế tất cả stroke="#..." thành stroke="{color}"
+    svg = svg.replace(/stroke="#[0-9a-fA-F]{3,6}"/g, `stroke="${color}"`);
+    // Thay thế tất cả {color} placeholder
+    svg = svg.replace(/{color}/g, color);
+  } else {
+    // Nếu không có color, loại bỏ {color} từ SVG
+    svg = svg.replace(/{color}/g, '#000');
   }
   return <SvgXml xml={svg} width={width} height={height} />;
 };

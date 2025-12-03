@@ -87,8 +87,8 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
     } catch (error: any) {
       setIsSaving(false);
       Alert.alert(
-        t('common.error') || 'Error',
-        error?.message || t('chatHistory.updateTitleError') || 'Failed to update title'
+        t('common.error'),
+        error?.message || t('chatHistory.updateTitleError')
       );
     }
   };
@@ -158,7 +158,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
         <View style={styles.errorContainer}>
           <IconSvg xml={ImagesSvg.icWarning} width={48} height={48} color={colors.dark} />
           <Text style={styles.errorText}>
-            {t('chatHistory.loadError') || 'Failed to load conversation'}
+            {t('chatHistory.loadError')}
           </Text>
         </View>
       </SafeAreaView>
@@ -233,7 +233,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
           ListEmptyComponent={
             <View style={styles.emptyMessagesContainer}>
               <Text style={styles.emptyText}>
-                {t('chatHistory.noMessages') || 'No messages yet'}
+                {t('chatHistory.noMessages')}
               </Text>
             </View>
           }
@@ -242,11 +242,11 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
         {/* Info Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
-            {t('chatHistory.createdAt') || 'Created'} {' '}
+            {t('chatHistory.createdAt')}
             {new Date(currentConversation.createdAt).toLocaleDateString()}
           </Text>
           <Text style={styles.footerText}>
-            {currentConversation.messages.length} {t('chatHistory.messages') || 'messages'}
+            {currentConversation.messages.length} {t('chatHistory.messages')}
           </Text>
         </View>
       </KeyboardAvoidingView>

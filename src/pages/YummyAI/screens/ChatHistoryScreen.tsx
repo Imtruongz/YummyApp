@@ -87,8 +87,8 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
     } catch (error: any) {
       setDeletingId(null);
       Alert.alert(
-        t('common.error') || 'Error',
-        error?.message || t('chatHistory.deleteError') || 'Failed to delete conversation'
+        t('common.error'),
+        error?.message || t('chatHistory.deleteError')
       );
     }
   };
@@ -97,11 +97,10 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
     <View style={styles.emptyContainer}>
       {/* <Ionicons name="chatbubbles-outline" size={64} color="#ddd" /> */}
       <Text style={styles.emptyTitle}>
-        {t('chatHistory.noChats') || 'No conversations yet'}
+        {t('chatHistory.noChats')}
       </Text>
       <Text style={styles.emptySubtitle}>
-        {t('chatHistory.noChatMessage') ||
-          'Start a new chat to save your conversations'}
+        {t('chatHistory.noChatMessage')}
       </Text>
     </View>
   );
@@ -119,14 +118,14 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader
         mode="back"
-        title={t('chatHistory.title') || 'Chat History'}
+        title={t('chatHistory.title')}
         showNotification={false}
         showGoBack={true}
         onGoBack={handleGoBack}
       />
       <View style={styles.header}>
         <Text style={styles.chatCount}>
-          {totalCount} {t('chatHistory.chats') || 'chats'}
+          {totalCount} {t('chatHistory.chats')}
         </Text>
       </View>
 
@@ -135,9 +134,7 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
         
         <TextInput
           style={styles.searchInput}
-          placeholder={
-            t('chatHistory.searchPlaceholder') || 'Search conversations...'
-          }
+          placeholder={t('chatHistory.searchPlaceholder')}
           value={searchText}
           onChangeText={setSearchText}
           placeholderTextColor="#999"
@@ -154,7 +151,7 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
       ) : filteredConversations.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyTitle}>
-            {t('chatHistory.noResults') || 'No results found'}
+            {t('chatHistory.noResults')}
           </Text>
         </View>
       ) : (

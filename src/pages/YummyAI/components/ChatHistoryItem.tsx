@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import IconSvg from '../../../components/IconSvg';
 import { ImagesSvg } from '../../../utils/ImageSvg';
 import ConfirmationModal from '../../../components/common/ConfirmationModal';
+import { ActivityIndicator } from 'react-native-paper';
 
 interface ChatHistoryItemProps {
   conversationId: string;
@@ -51,7 +52,7 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
           minute: '2-digit',
         });
       } else if (dateOnly.getTime() === yesterdayOnly.getTime()) {
-        return t('chatHistory.yesterday') || 'Yesterday';
+        return t('chatHistory.yesterday');
       } else {
         return date.toLocaleDateString([], {
           month: 'short',
@@ -93,7 +94,7 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
         disabled={isDeleting}
       >
         {isDeleting ? (
-          <IconSvg xml={ImagesSvg.icMenu} width={18} height={18} color="#FF6B6B" />
+          <ActivityIndicator size="small"/>
         ) : (
           <IconSvg xml={ImagesSvg.icTrash} width={18} height={18} color="#FF6B6B" />
         )}
@@ -101,16 +102,13 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
 
       <ConfirmationModal
         visible={showDeleteModal}
-        title={t('chatHistory.deleteConfirm') || 'Delete Conversation'}
-        message={
-          t('chatHistory.deleteMessage') ||
-          'Are you sure you want to delete this conversation? This action cannot be undone.'
-        }
+        title={t('chatHistory.deleteConfirm')}
+        message={t('chatHistory.deleteMessage') }
         type="warning"
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleConfirmDelete}
-        confirmText={t('delete') || 'Delete'}
-        cancelText={t('cancel') || 'Cancel'}
+        confirmText={t('delete')}
+        cancelText={t('cancel')}
       />
     </View>
   );

@@ -30,6 +30,7 @@ import HomeHeader from '../../../components/HomeHeader';
 import IconSvg from '../../../components/IconSvg';
 import CustomInput from '../../../components/customize/CustomInput';
 import QuickActionButtons from '../components/QuickActionButtons';
+import { MenuOption } from '../../../components/DropdownMenu';
 
 type Message = {
   id: string;
@@ -50,14 +51,55 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     }
   ]);
 
-  const handleMenuPress = () => {
-    (navigation as any).push('ChatHistory');
-  };
+  const menuOptions: MenuOption[] = [
+    // {
+    //   id: 'save-chat',
+    //   label: t('save'),
+    //   icon: '💾',
+    //   onPress: () => {
+    //     setShowSaveModal(true);
+    //   },
+    // },
+    {
+      id: 'chat-history',
+      label: t('chatHistory.title'),
+      icon: '📋',
+      onPress: () => {
+        (navigation as any).push('ChatHistory');
+      },
+    },
+  ];
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+
+  const handleGoBack = async () => {
+    // Save chat if there are messages beyond welcome message
+    if (messages.length >= 3) {
+      try {
+        const messagesToSave = messages
+          .filter(msg => msg.id !== '1')
+          .map(msg => ({
+            text: msg.text,
+            isUser: msg.isUser,
+          }));
+
+        await dispatch(
+          saveChatAPI({
+            messages: messagesToSave,
+            title: '',
+          })
+        ).unwrap();
+
+        console.log('Chat saved on goback');
+      } catch (error: any) {
+        console.log('Save error:', error);
+      }
+    }
+    navigation.goBack();
+  };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -80,13 +122,6 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         isUser: false,
       };
       setMessages(prev => [...prev, aiMessage]);
-      
-      // Auto-save chat if there are more than 2 messages (welcome + at least 1 exchange)
-      setTimeout(() => {
-        if (messages.length >= 3) {
-          autoSaveChat([...messages, userMessage, aiMessage]);
-        }
-      }, 500);
     } catch (error: any) {
       Toast.show({
         type: 'error',
@@ -95,34 +130,6 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const autoSaveChat = async (chatMessages: Message[]) => {
-    try {
-      const messagesToSave = chatMessages
-        .filter(msg => msg.id !== '1') // Filter out welcome message
-        .map(msg => ({
-          text: msg.text,
-          isUser: msg.isUser,
-        }));
-
-      if (messagesToSave.length === 0) return;
-
-      setSavingChat(true);
-      await dispatch(
-        saveChatAPI({
-          messages: messagesToSave,
-          title: '', // Let backend auto-generate title from first user message
-        })
-      ).unwrap();
-      setSavingChat(false);
-      
-      // Silent auto-save - don't show toast to avoid interruption
-    } catch (error: any) {
-      setSavingChat(false);
-      console.log('Auto-save error:', error);
-      // Silent fail - don't interrupt user experience
     }
   };
 
@@ -148,15 +155,15 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       Toast.show({
         type: 'success',
-        text1: t('chatHistory.saveSuccess') || 'Chat saved',
-        text2: title || t('chatHistory.autoTitle') || 'Conversation saved successfully',
+        text1: t('chatHistory.saveSuccess'),
+        text2: title || t('chatHistory.autoTitle'),
       });
     } catch (error: any) {
       setSavingChat(false);
       Toast.show({
         type: 'error',
-        text1: t('common.error') || 'Error',
-        text2: error?.message || t('chatHistory.saveError') || 'Failed to save chat',
+        text1: t('common.error'),
+        text2: error?.message || t('chatHistory.saveError'),
       });
     }
   };
@@ -199,25 +206,25 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const quickActions = [
     {
       id: '1',
-      label: t('ai_action_recipe') || 'Gợi ý công thức',
+      label: t('ai_action_recipe'),
       icon: '🍳',
       action: () => handleQuickAction('Hãy gợi ý cho tôi một công thức nấu ăn ngon và dễ làm'),
     },
     {
       id: '2',
-      label: t('ai_action_technique') || 'Kỹ thuật nấu ăn',
+      label: t('ai_action_technique'),
       icon: '👨‍🍳',
       action: () => handleQuickAction('Hãy chia sẻ một kỹ thuật nấu ăn quan trọng'),
     },
     {
       id: '3',
-      label: t('ai_action_nutrition') || 'Dinh dưỡng',
+      label: t('ai_action_nutrition'),
       icon: '🥗',
       action: () => handleQuickAction('Cho tôi biết về giá trị dinh dưỡng của các loại thực phẩm'),
     },
     {
       id: '4',
-      label: t('ai_action_tips') || 'Mẹo nấu ăn',
+      label: t('ai_action_tips'),
       icon: '💡',
       action: () => handleQuickAction('Chia sẻ một mẹo nấu ăn hữu ích'),
     },
@@ -257,26 +264,15 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
-        <View style={styles.headerWithButtons}>
-          <HomeHeader
-            mode="back"
-            title={t('ai_assistant_title')}
-            showNotification={false}
-            showGoBack={true}
-            showMenuButton={true}
-            onMenuPress={handleMenuPress}
-          />
-          {messages.length > 1 && (
-            <TouchableOpacity
-              style={styles.saveHeaderButton}
-              onPress={() => setShowSaveModal(true)}
-              disabled={loading || savingChat}
-            >
-              <Text style={styles.saveButtonText}>💾</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-
+        <HomeHeader
+          mode="back"
+          title={t('ai_assistant_title')}
+          showNotification={false}
+          showGoBack={true}
+          showMenuButton={true}
+          menuOptions={menuOptions}
+          onGoBack={handleGoBack}
+        />
         <FlatList
           ref={flatListRef}
           data={messages}

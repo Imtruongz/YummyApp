@@ -51,15 +51,12 @@ const SaveChatModal: React.FC<SaveChatModalProps> = ({
       <View style={styles.overlay}>
         <View style={styles.container}>
           <Text style={styles.title}>
-            {t('chatHistory.saveChatTitle') || 'Save Conversation'}
+            {t('chatHistory.saveChatTitle')}
           </Text>
 
           <TextInput
             style={styles.input}
-            placeholder={
-              t('chatHistory.enterChatTitle') ||
-              'Enter a title for this chat (optional)'
-            }
+            placeholder={t('chatHistory.enterChatTitle')}
             value={title}
             onChangeText={setTitle}
             editable={!isLoading}
@@ -77,7 +74,7 @@ const SaveChatModal: React.FC<SaveChatModalProps> = ({
               disabled={isLoading}
             >
               <Text style={styles.cancelButtonText}>
-                {t('cancel') || 'Cancel'}
+                {t('cancel')}
               </Text>
             </TouchableOpacity>
 
@@ -90,7 +87,7 @@ const SaveChatModal: React.FC<SaveChatModalProps> = ({
                 <ActivityIndicator color="#fff" size="small" />
               ) : (
                 <Text style={styles.saveButtonText}>
-                  {t('save') || 'Save'}
+                  {t('save')}
                 </Text>
               )}
             </TouchableOpacity>
