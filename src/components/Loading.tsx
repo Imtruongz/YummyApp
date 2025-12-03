@@ -1,11 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import colors from '../utils/color';
-import CustomTitle from './Title';
 import { useTranslation } from 'react-i18next';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import CustomLoadingSpinner from './CustomLoadingSpinner';
+import {IconSvg, CustomTitle, CustomLoadingSpinner } from '@/components'
+import {colors, ImagesSvg} from '@/utils';
 
 const Loading = () => {
   const { t, i18n } = useTranslation();

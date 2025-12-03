@@ -1,49 +1,23 @@
-import {
-  FlatList,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import BannerSlider from '../components/BannerSlider';
-import { getLocalBanners, Banner } from '../api/bannerService';
-import color from '../utils/color';
-import imgURL from '../utils/urlImg';
-import CustomTitle from '../components/Title';
-import Typography from '../components/Typography';
-import CustomFoodItem from '../components/FoodItem';
-import CustomAvatar from '../components/Avatar';
-import Greeting from '../components/Greeting';
-import HomeSkeleton from '../components/HomeSkeleton';
-
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { RootState } from '../redux/store';
-//asyncThunk
-import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
-import { getAllFoodAPI } from '../redux/slices/food/foodThunk';
-import { getAllUsers } from '../redux/slices/auth/authThunk';
-import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
-import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
-
 import { MMKV } from 'react-native-mmkv';
-import img from '../utils/urlImg';
-import Toast from 'react-native-toast-message';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+
+import { getLocalBanners, Banner } from '@/api/bannerService';
+import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CustomFoodItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
+import {img, colors, ImagesSvg} from '@/utils'
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { RootState } from '@/redux/store';
+import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
+import { getAllFoodAPI } from '@/redux/slices/food/foodThunk';
+import { getAllUsers } from '@/redux/slices/auth/authThunk';
+import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
+
 const storage = new MMKV();
-
-import HomeHeader from '../components/HomeHeader';
-import { NetworkInfo } from 'react-native-network-info';
-import DraggableFloatingButton from '../components/DraggableFloatingButton';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-
 interface HomePageProps
   extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
 
@@ -193,7 +167,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
                   fontSize={14}
                   numberOfLines={2}
                   ellipsizeMode="tail"
-                  style={{ color: color.smallText }}
+                  style={{ color: colors.smallText }}
                 />
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -201,7 +175,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
                     width={30}
                     height={30}
                     borderRadius={15}
-                    image={item.userDetail?.avatar || imgURL.defaultAvatar}
+                    image={item.userDetail?.avatar || img.defaultAvatar}
                   />
                   <Typography
                     title={item.userDetail?.username}
@@ -265,24 +239,10 @@ export default HomePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
-  },
-  headerContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: color.light,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+    backgroundColor: colors.light,
   },
   bannerContainer: {
     width: '100%',
-  },
-  header1: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
   },
   titleContainer: {
     flexDirection: 'row',
@@ -311,22 +271,13 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     resizeMode: 'cover',
   },
-  addFoodBtn: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: color.primary,
-  },
   itemContainer: {
     width: 300,
     height: 220,
     margin: 10,
     borderRadius: 20,
-    backgroundColor: color.light,
-    shadowColor: color.dark,
+    backgroundColor: colors.light,
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.12,
     shadowRadius: 10,
@@ -347,22 +298,6 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: color.primary,
-  },
-  aiButtonContainer: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-  },
-  aiButton: {
-    backgroundColor: color.primary,
-    padding: 12,
-    borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  aiButtonText: {
-    color: color.white,
+    color: colors.primary,
   },
 });

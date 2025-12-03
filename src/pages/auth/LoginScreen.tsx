@@ -1,36 +1,22 @@
-import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-} from 'react-native';
 import React, { useState, useContext } from 'react';
-
-//Customm components
-import CustomButton from '../../components/CustomButton';
-import CustomInput from '../../components/CustomInput';
-import AuthFooter from './component/AuthFooter';
-import AuthHeader from './component/AuthHeader';
-
-import color from '../../utils/color';
-import { URLS, FacebookIcon } from '../../utils/assets';
-import { verifyEmail, verifyPassword } from '../../utils/validate';
-import { useAppDispatch } from '../../redux/hooks';
-import { userLoginAPI, facebookLoginAPI } from '../../redux/slices/auth/authThunk';
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOpacity, Image, ScrollView,} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { MMKV } from 'react-native-mmkv';
+import messaging from '@react-native-firebase/messaging';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
-import { MMKV } from 'react-native-mmkv';
-import messaging from '@react-native-firebase/messaging';
-import { updateFcmTokenApi } from '../../api/updateFcmTokenApi';
-import { AuthContext } from '../../contexts/AuthContext';
-import { useTranslation } from 'react-i18next';
-import { ImagesSvg } from '../../utils/ImageSvg';
+import { CustomInput, CustomButton } from '@/components'
+import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword } from '@/utils';
+
+import { useAppDispatch } from '@/redux/hooks';
+import { userLoginAPI, facebookLoginAPI } from '@/redux/slices/auth/authThunk';
+
+import { updateFcmTokenApi } from '@/api/updateFcmTokenApi';
+import { AuthContext } from '@/contexts/AuthContext';
+import AuthFooter from './component/AuthFooter';
+import AuthHeader from './component/AuthHeader';
 
 const storage = new MMKV();
 const fbAppId = '1178286763959143'
@@ -216,7 +202,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   body: {
     flex: 4,
@@ -231,7 +217,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorMessage: {
-    color: color.danger,
+    color: colors.danger,
   },
   orContainer: {
     flexDirection: 'row',

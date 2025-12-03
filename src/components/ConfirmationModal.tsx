@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Modal, 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet,
-  Animated,
-  Dimensions,
-  Platform
-} from 'react-native';
-import colors from '../utils/color';
+import {  Modal,  View,  Text,  TouchableOpacity,  StyleSheet, Animated, Dimensions} from 'react-native';
+import {colors} from '@/utils';
 export interface ConfirmationModalProps {
   visible: boolean;
   title: string;
@@ -148,11 +139,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.white,
     width: width - 80,
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -212,7 +203,7 @@ const styles = StyleSheet.create({
   },
   confirmButtonText: {
     fontSize: 16,
-    color: '#fff',
+    color: colors.white,
     fontWeight: '600',
   }
 });

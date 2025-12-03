@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+import {ImagesSvg} from '@/utils';
+import {IconSvg} from '@/components';
 
 interface SettingButtonProps {
   navigation?: any;

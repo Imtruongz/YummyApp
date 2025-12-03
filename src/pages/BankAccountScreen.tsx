@@ -1,28 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  Modal,
-  FlatList,
-} from 'react-native';
-import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from '../components/ConfirmationModal';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Modal, FlatList} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import HomeHeader from '../components/HomeHeader';
-import colors from '../utils/color';
-import api from '../api/config';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
 
+import api from '@/api/config';
+import { useNotification } from '@/contexts/NotificationContext';
+import { HomeHeader, IconSvg, ConfirmationModal } from '@/components'
+import { colors, ImagesSvg} from '@/utils'
 
 type BankAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'BankAccountScreen'>;
 
@@ -497,18 +482,6 @@ const styles = StyleSheet.create({
     color: colors.dark,
     flex: 1,
   },
-  defaultBadge: {
-    backgroundColor: colors.primary + '20',
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginLeft: 8,
-  },
-  defaultText: {
-    fontSize: 12,
-    color: colors.primary,
-    fontWeight: '500',
-  },
   accountNumber: {
     fontSize: 14,
     color: colors.secondary,
@@ -577,11 +550,6 @@ const styles = StyleSheet.create({
     color: colors.dark,
     marginBottom: 8,
   },
-  inputContainer: {
-    position: 'relative',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   input: {
     height: 46,
     backgroundColor: '#F5F7FA',
@@ -593,11 +561,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: colors.dark,
     flex: 1,
-  },
-  dropdownButton: {
-    position: 'absolute',
-    right: 10,
-    padding: 5,
   },
   formActions: {
     flexDirection: 'row',
@@ -660,9 +623,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: colors.dark,
-  },
-  closeButton: {
-    padding: 5,
   },
   bankOption: {
     paddingHorizontal: 16,

@@ -1,8 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import colors from '../utils/color';
-import IconSvg from './IconSvg';
-
+import {colors} from '@/utils';
+import { IconSvg } from '@/components'
 interface GreetingProps {
   iconName: string;
   title?: string;
@@ -17,6 +16,7 @@ const Greeting: React.FC<GreetingProps> = ({iconName, title}) => {
   );
 };
 
+export { Greeting };
 export default Greeting;
 
 const styles = StyleSheet.create({

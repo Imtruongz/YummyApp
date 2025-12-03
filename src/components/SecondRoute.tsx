@@ -1,31 +1,18 @@
-import {
-  FlatList,
-  Image,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  ScrollView,
-  ActivityIndicator,
-} from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-
-import {useAppSelector, useAppDispatch} from '../redux/hooks';
-import {RootState} from '../redux/store';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from './ConfirmationModal';
 import { useTranslation } from 'react-i18next';
-
-import CustomTitle from './Title';
-import colors from '../utils/color';
-import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
 import {MMKV} from 'react-native-mmkv';
-import Toast from 'react-native-toast-message';
-import Typography from './Typography';
 import {useNavigation} from '@react-navigation/native';
-import NoData from './NoData';
+
+import {useAppSelector, useAppDispatch} from '@/redux/hooks';
+import {RootState} from '@/redux/store';
+
+import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
+import { useNotification } from '@/contexts/NotificationContext';
+import { Typography, NoData, ConfirmationModal } from '@/components'
+import {colors} from '@/utils';
 
 const storage = new MMKV();
 

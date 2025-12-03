@@ -1,31 +1,21 @@
-import {
-  ActivityIndicator,
-  PermissionsAndroid,
-  StyleSheet,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import color from '../utils/color';
-import {launchImageLibrary} from 'react-native-image-picker';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {RootState} from '../redux/store.ts';
-import Toast from 'react-native-toast-message';
-import img from '../utils/urlImg.ts';
-import CustomInput from '../components/CustomInput.tsx';
-import CustomButton from '../components/CustomButton.tsx';
-import {userUpdateAPI} from '../redux/slices/auth/authThunk.ts';
-import {getUserByIdAPI} from '../redux/slices/auth/authThunk.ts';
-import OverlayBadge from '../components/OverlayBadge.tsx';
-import HomeHeader from '../components/HomeHeader';
+import { ActivityIndicator, PermissionsAndroid, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import RNFS from 'react-native-fs';
 import {useNavigation} from '@react-navigation/native';
-
 import {MMKV} from 'react-native-mmkv';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {launchImageLibrary} from 'react-native-image-picker';
+import Toast from 'react-native-toast-message';
+
+import {useAppDispatch, useAppSelector} from '@/redux/hooks';
+import {RootState} from '@/redux/store.ts';
+import {userUpdateAPI} from '@/redux/slices/auth/authThunk.ts';
+import {getUserByIdAPI} from '@/redux/slices/auth/authThunk.ts';
+
+import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
+import { img, colors} from '@/utils'
+
 const storage = new MMKV();
 
 const userId = storage.getString('userId') || '';
@@ -143,7 +133,7 @@ const SettingProfilePage = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.body}>
           {isLoadingUser ? (
-            <ActivityIndicator size="large" color={color.primary} />
+            <ActivityIndicator size="large" color={colors.primary} />
           ) : isErrorUser ? (
             <Text>Something went wronggg</Text>
           ) : (
@@ -201,11 +191,11 @@ export default SettingProfilePage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   title: {
     fontWeight: 'bold',
-    borderBottomColor: color.dark,
+    borderBottomColor: colors.dark,
     borderBottomWidth: 1,
     width: '100%',
   },
@@ -220,11 +210,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 10,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   label: {
     fontSize: 15,
-    color: color.smallText,
+    color: colors.smallText,
     width: 110,
     fontWeight: '400',
     letterSpacing: 0.2,
@@ -235,7 +225,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     backgroundColor: '#F7F8FA',
     borderWidth: 1,
-    borderColor: color.InputBg,
+    borderColor: colors.InputBg,
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -252,7 +242,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   saveBtn: {
-    backgroundColor: color.primary,
+    backgroundColor: colors.primary,
     borderRadius: 10,
     paddingHorizontal: 24,
     paddingVertical: 10,
@@ -264,7 +254,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderWidth: 1,
-    borderColor: color.InputBg,
-    color: color.dark,
+    borderColor: colors.InputBg,
+    color: colors.dark,
   },
 });

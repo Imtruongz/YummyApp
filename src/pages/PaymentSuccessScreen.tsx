@@ -1,7 +1,7 @@
 import React, { useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import colors from '../utils/color';
+import {colors} from '@/utils';
 import LinearGradient from 'react-native-linear-gradient';
 
 const PaymentSuccessScreen = ({ navigation }: any) => {

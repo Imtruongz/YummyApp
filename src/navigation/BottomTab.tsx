@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import colors from '../utils/color';
+import {colors} from '@/utils';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
 import { MainStackParamList } from './types.ts';

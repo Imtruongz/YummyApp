@@ -1,6 +1,6 @@
 import {Image, StyleSheet} from 'react-native';
 import React from 'react';
-import colors from '../utils/color';
+import {colors} from '@/utils';
 
 interface CustomAvatarProps {
   image?: string;

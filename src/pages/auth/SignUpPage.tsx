@@ -1,31 +1,18 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-  SafeAreaView
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView} from 'react-native';
 import React, {useState} from 'react';
+import Toast from 'react-native-toast-message';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
+import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
-import CustomButton from '../../components/CustomButton.tsx';
-import CustomInput from '../../components/CustomInput.tsx';
+import { CustomInput, CustomButton } from '@/components'
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img} from '@/utils';
+
+import {useAppDispatch} from '@/redux/hooks.ts';
+import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
+
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
-
-import {
-  verifyEmail,
-  verifyPassword,
-  verifyConfirmPassword,
-} from '../../utils/validate.ts';
-import Toast from 'react-native-toast-message';
-import color from '../../utils/color.ts';
-import img from '../../utils/urlImg.ts';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../android/types/StackNavType.ts';
-import {useAppDispatch} from '../../redux/hooks.ts';
-import {userRegisterAPI} from '../../redux/slices/auth/authThunk.ts';
-import { useTranslation } from 'react-i18next';
 
 interface SignUpPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
@@ -163,7 +150,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   body: {
     flex: 4,
@@ -180,7 +167,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   errorMessage: {
-    color: color.danger,
+    color: colors.danger,
   },
 });
 

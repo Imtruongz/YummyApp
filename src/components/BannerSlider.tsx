@@ -1,18 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  TouchableOpacity,
-  Text,
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
-} from 'react-native';
+import { View, Image, StyleSheet, Dimensions, FlatList, TouchableOpacity, Text, ViewStyle, ImageStyle, TextStyle,} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import color from '../utils/color';
+import {colors} from '@/utils';
 
 const { width } = Dimensions.get('window');
 
@@ -43,8 +32,8 @@ const BannerSlider: React.FC<BannerSliderProps> = ({
   data,
   autoPlay = true,
   autoPlayInterval = 3000,
-  dotColor = color.smallText,
-  activeDotColor = color.primary,
+  dotColor = colors.smallText,
+  activeDotColor = colors.primary,
   containerStyle,
   imageStyle,
   textOverlay = true,

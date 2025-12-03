@@ -2,8 +2,7 @@ import {StyleSheet, TextInput, View} from 'react-native';
 import React from 'react';
 import IconSvg from './IconSvg';
 import { TouchableOpacity } from 'react-native';
-import { ImagesSvg } from '../utils/ImageSvg';
-import colors from '../utils/color';
+import {colors} from '@/utils';
 
 interface CustomInputProps {
   value?: string;

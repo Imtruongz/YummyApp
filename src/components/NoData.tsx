@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import colors from '../utils/color';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+
+import { IconSvg } from '@/components'
+import {colors, ImagesSvg} from '@/utils';
 
 type NoDataProps = {
   message?: string;

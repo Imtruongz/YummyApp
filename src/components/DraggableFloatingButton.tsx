@@ -1,17 +1,7 @@
 import React, { useRef } from 'react';
-import {
-  Animated,
-  PanResponder,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Platform,
-  Image,
-  Text,
-} from 'react-native';
-import colors from '../utils/color';
+import { Animated, PanResponder, StyleSheet, Dimensions, TouchableOpacity, Platform, Image, Text} from 'react-native';
+import {colors, YummyDrag} from '@/utils';
 import { MMKV } from 'react-native-mmkv';
-import { YummyDrag } from '../utils/assets';
 
 const storage = new MMKV();
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');

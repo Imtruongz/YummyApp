@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Modal, 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet,
-  Animated,
-  Dimensions,
-  Platform
-} from 'react-native';
-import colors from '../utils/color';
+import {  Modal,  View,  Text,  TouchableOpacity,  StyleSheet, Animated, Dimensions, Platform} from 'react-native';
+import {colors} from '@/utils';
 
 // Icons import
 const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;

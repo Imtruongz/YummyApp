@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import colors from '../utils/color';
+import { IconSvg } from '@/components'
+import {colors, ImagesSvg} from '@/utils';
 
 interface RatingInputProps {
   rating: number;

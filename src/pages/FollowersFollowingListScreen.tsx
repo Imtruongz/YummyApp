@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { getFollowersAPI, getFollowingAPI } from '../redux/slices/follow/followThunk';
 import { useTranslation } from 'react-i18next';
-import colors from '../utils/color.ts';
-import imgUrl from '../utils/urlImg.ts';
-import HomeHeader from '../components/HomeHeader';
-import CustomAvatar from '../components/Avatar.tsx';
 
+import { HomeHeader, CustomAvatar } from '@/components'
+import {img, colors} from '@/utils'
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { getFollowersAPI, getFollowingAPI } from '@/redux/slices/follow/followThunk';
 interface UserItemProps {
   user: {
     userId: string;
@@ -25,7 +24,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress }) => (
       width={48}
       height={48}
       borderRadius={24}
-      image={user.avatar || imgUrl.defaultAvatar}
+      image={user.avatar || img.defaultAvatar}
     />
     <View style={styles.userInfo}>
       <Text style={styles.username}>{user.username}</Text>

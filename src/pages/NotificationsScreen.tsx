@@ -1,13 +1,13 @@
 
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchNotifications } from '../redux/slices/notification/notificationThunk';
-import HomeHeader from '../components/HomeHeader';
 import { useTranslation } from 'react-i18next';
 import { useRoute } from '@react-navigation/native';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { setNotifications, setLoading, setError } from '../redux/slices/notification/notificationSlice';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { fetchNotifications } from '@/redux/slices/notification/notificationThunk';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { HomeHeader } from '@/components';
 
 const NotificationsScreen = () => {
   const route = useRoute();

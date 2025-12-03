@@ -1,33 +1,18 @@
 import React, { useContext, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Pressable,
-  Modal,
-  FlatList,
-  TouchableOpacity,
-  Button as RNButton, // Để tránh trùng lặp với 'Button' của paper
-  Linking,
-} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, Button as RNButton} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import CustomTitle from '../components/Title';
-import SettingButton from '../components/SettingButton';
-import colors from '../utils/color';
-import HomeHeader from '../components/HomeHeader';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AuthContext } from '../contexts/AuthContext';
-import ConfirmationModal from '../components/ConfirmationModal';
-
 import '../languages/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../languages/i18n';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+
+import { AuthContext } from '@/contexts/AuthContext';
+import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
+import { colors, ImagesSvg} from '@/utils'
 
 const storage = new MMKV();
 interface SettingPageProps
@@ -215,7 +200,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.primaryHover,
   },
-  // Face ID / Biometric Styles
   biometricContainer: {
     width: '100%',
     backgroundColor: colors.light,
@@ -243,9 +227,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
-  },
-  biometricIcon: {
-    fontSize: 18,
   },
   biometricTextContainer: {
     flex: 1,

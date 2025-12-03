@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-import { useTranslation } from 'react-i18next';
-import IconSvg from '../../../components/IconSvg';
-import { ImagesSvg } from '../../../utils/ImageSvg';
-import ConfirmationModal from '../../../components/ConfirmationModal';
+import { View, Text, TouchableOpacity, StyleSheet,} from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-
+import { useTranslation } from 'react-i18next';
+import { ImagesSvg } from '@/utils';
+import {ConfirmationModal , IconSvg } from '@/components';
 interface ChatHistoryItemProps {
   conversationId: string;
   title: string;

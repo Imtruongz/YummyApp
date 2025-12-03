@@ -1,31 +1,16 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../android/types/StackNavType.ts';
+import {useTranslation} from 'react-i18next';
 
-import colors from '../utils/color';
+import { HomeHeader, CustomTitle, IconSvg, Loading, NoData } from '@/components'
+import {colors, ImagesSvg} from '@/utils'
+
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
 import {RootState} from '../redux/store.ts';
-
-import {RootStackParamList} from '../../android/types/StackNavType.ts';
-
-import HomeHeader from '../components/HomeHeader';
-import CustomTitle from '../components/Title.tsx';
-import Loading from '../components/Loading.tsx';
-import NoData from '../components/NoData';
-import {useTranslation} from 'react-i18next';
-import IconSvg from '../components/IconSvg.tsx';
-import { ImagesSvg } from '../utils/ImageSvg.tsx';
-
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
     RootStackParamList,
@@ -149,11 +134,6 @@ export default ListFoodByCategoriesPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  titleHeader: {
-    padding: 12,
-    fontSize: 22,
-    fontWeight: 'bold',
   },
   inputHeader: {
     width: '90%',

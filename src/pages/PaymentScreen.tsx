@@ -1,30 +1,16 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Linking,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from '../components/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
-import { formatUSDCurrency, extractNumbersOnly } from '../utils/regexPatterns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import colors from '../utils/color';
-import HomeHeader from '../components/HomeHeader';
-import api from '../api/config';
-import { BIDVLogo, MBLogo, ZaloPayLogo } from '../utils/assets';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import CustomButton from '../components/CustomButton';
+
+import api from '@/api/config';
+import { useNotification } from '@/contexts/NotificationContext';
+import ConfirmationModal from '@/components/ConfirmationModal';
+
+import { CustomButton, HomeHeader, IconSvg } from '@/components'
+import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo } from '@/utils'
 
 type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
 interface PaymentMethod {

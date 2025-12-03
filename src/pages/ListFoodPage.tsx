@@ -1,28 +1,16 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
 import React, {useEffect, useState} from 'react';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import CustomTitle from '../components/Title';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../android/types/StackNavType';
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {getAllFoodAPI} from '../redux/slices/food/foodThunk';
-import colors from '../utils/color';
 
-import HomeHeader from '../components/HomeHeader';
-import NoData from '../components/NoData';
-import Loading from '../components/Loading';
-import {useTranslation} from 'react-i18next';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+import {useAppDispatch, useAppSelector} from '@/redux/hooks';
+import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
+
+import { HomeHeader, CustomTitle, IconSvg, NoData, Loading } from '@/components'
+import { colors, ImagesSvg} from '@/utils'
 
 interface ListFoodPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodPage'> {}

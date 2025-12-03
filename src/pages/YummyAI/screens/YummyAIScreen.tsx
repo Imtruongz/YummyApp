@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../../android/types/StackNavType';
 
 import { aiApi } from '@/api/aiApi';
 import { YummyDrag, ImagesSvg, colors } from '@/utils'
-import { RootStackParamList } from '../../../../android/types/StackNavType';
 import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 

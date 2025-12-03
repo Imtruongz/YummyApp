@@ -1,12 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Animated,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
-import colors from '../utils/color';
-
+import { View, Animated, StyleSheet, ViewStyle} from 'react-native';
+import {colors} from '@/utils';
 interface CustomLoadingSpinnerProps {
   size?: number;
   color?: string;

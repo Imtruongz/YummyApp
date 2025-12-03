@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, Text, Modal, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import { useTranslation } from 'react-i18next';
-
 interface SaveChatModalProps {
   visible: boolean;
   isLoading: boolean;

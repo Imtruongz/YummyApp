@@ -1,17 +1,7 @@
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Text,
-  ViewStyle,
-  ImageStyle,
-  TextStyle,
-  StyleProp,
-} from 'react-native';
-import Typography from './Typography';
-import colors from '../utils/color';
+import { Image, StyleSheet, View, TouchableOpacity, ViewStyle, ImageStyle, StyleProp} from 'react-native';
+import { Typography } from '@/components'
+import {colors} from '@/utils';
 
 interface FoodItemProps {
   item: {

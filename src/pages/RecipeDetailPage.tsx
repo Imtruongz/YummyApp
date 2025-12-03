@@ -1,51 +1,25 @@
-import {
-  FlatList,
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ActivityIndicator,
-} from 'react-native';
 import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType';
+import Toast from 'react-native-toast-message';
+import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { MMKV } from 'react-native-mmkv';
-import {
-  getAllCommentFromFoodIdAPI,
-  addCommentToFoodAPI,
-  deleteCommentAPI,
-  getAverageRatingAPI,
-  addOrUpdateRatingAPI,
-  getUserRatingAPI,
-} from '../redux/slices/review/reviewThunk';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
-import img from '../utils/urlImg';
-import colors from '../utils/color';
-import { RootState } from '../redux/store';
-import Loading from '../components/Loading';
-import Toast from 'react-native-toast-message';
-import { useTranslation } from 'react-i18next';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import CustomTitle from '../components/Title';
-import CustomAvatar from '../components/Avatar';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
-import ConfirmationModal from '../components/ConfirmationModal';
-import { formatDate, formatDateTime } from '../utils/formatDate';
-import { review } from '../redux/slices/review/types';
-import Typography from '../components/Typography';
-import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
-import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
-import RatingInput from '../components/RatingInput';
-import CustomInput from '../components/CustomInput';
-const storage = new MMKV();
 
+import { getAllCommentFromFoodIdAPI, addCommentToFoodAPI, deleteCommentAPI, getAverageRatingAPI, addOrUpdateRatingAPI, getUserRatingAPI} from '@/redux/slices/review/reviewThunk';
+import { RootState } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
+import { review } from '@/redux/slices/review/types';
+import { addFavoriteFoodAPI } from '@/redux/slices/favorite/favoriteThunk';
+import { getDetailFoodAPI, getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
+
+import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
+import {img, colors, ImagesSvg, formatDate, formatDateTime} from '@/utils'
+
+const storage = new MMKV();
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> { }
 
@@ -526,7 +500,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-
   arrowLeftIcon: {
     position: 'absolute',
     top: 42,
@@ -558,7 +531,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-
   body: {
     gap: 10,
     padding: 18,
@@ -581,7 +553,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     gap: 12,
   },
-
   achivementContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -634,12 +605,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
-  loadingContainer: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   itemContainer: {
     width: 180,
     height: 180,
@@ -670,13 +635,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  title2: {
-    fontSize: 12,
-    color: colors.smallText,
-  },
-  userNameDetail: {
-    fontSize: 12,
   },
   foodReviewListContainer: {
     flexDirection: 'row',

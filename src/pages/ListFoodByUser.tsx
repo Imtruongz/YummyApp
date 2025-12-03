@@ -1,42 +1,22 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  FlatList,
-  Dimensions,
-  RefreshControl,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { getUserByIdAPI } from '../redux/slices/auth/authThunk.ts';
-import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
-import { useAppSelector, useAppDispatch } from '../redux/hooks';
-import { useNotification } from '../contexts/NotificationContext';
-import api from '../api/config';
-import { RootState } from '../redux/store';
-import {
-  isFollowingAPI,
-  followUserAPI,
-  unfollowUserAPI,
-  countFollowersAPI,
-  countFollowingAPI
-} from '../redux/slices/follow/followThunk';
-import { resetViewedUser } from '../redux/slices/auth/authSlice';
-import { resetViewedUserFoodList } from '../redux/slices/food/foodSlice';
+import api from '@/api/config';
+import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
+import { getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { useNotification } from '@/contexts/NotificationContext';
+import { RootState } from '@/redux/store';
+import { isFollowingAPI, followUserAPI, unfollowUserAPI, countFollowersAPI, countFollowingAPI} from '@/redux/slices/follow/followThunk';
+import { resetViewedUser } from '@/redux/slices/auth/authSlice';
+import { resetViewedUserFoodList } from '@/redux/slices/food/foodSlice';
 
-import colors from '../utils/color.ts';
-import imgUrl from '../utils/urlImg.ts';
-import HomeHeader from '../components/HomeHeader';
-import CustomAvatar from '../components/Avatar.tsx';
-import Loading from '../components/Loading.tsx';
-import NoData from '../components/NoData';
-import FoodItemCard from '../components/FoodItemCard';
+import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
+import {img, colors} from '@/utils'
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
@@ -235,7 +215,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
               width={100}
               height={100}
               borderRadius={50}
-              image={viewedUser?.avatar || imgUrl.defaultAvatar}
+              image={viewedUser?.avatar || img.defaultAvatar}
             />
           </View>
           <View style={styles.infoBlock3}>

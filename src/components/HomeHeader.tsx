@@ -1,18 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, StatusBar, Text, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-paper';
-import Typography from './Typography';
-import { IconButton } from 'react-native-paper';
-import color from '../utils/color';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import imgURL from '../utils/urlImg';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAppSelector } from '../redux/hooks';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import DropdownMenu, { MenuOption } from './DropdownMenu';
+import { useAppSelector } from '@/redux/hooks';
+
+import { Typography, DropdownMenu, MenuOption, IconSvg } from '@/components'
+import {colors, img, ImagesSvg} from '@/utils';
 
 type RootStackParamList = {
   NotificationsScreen: { userId: string | undefined };
@@ -81,7 +76,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
           <View style={styles.header1}>
             <Avatar.Image
               size={42}
-              source={{ uri: avatar || imgURL.defaultAvatar }}
+              source={{ uri: avatar || img.defaultAvatar }}
             />
             <View>
               {greetingMessage}
@@ -104,7 +99,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
               title={title}
               fontSize={20}
               fontWeight='700'
-              color={color.dark}
+              color={colors.dark}
             />
           </View>
         );
@@ -115,8 +110,8 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   };
 
   return (
-    <View style={{ backgroundColor: color.primaryHover }}>
-      <StatusBar backgroundColor={color.primaryHover} barStyle="light-content" />
+    <View style={{ backgroundColor: colors.primaryHover }}>
+      <StatusBar backgroundColor={colors.primaryHover} barStyle="light-content" />
       <View style={[styles.headerContainer, { paddingHorizontal: showGoBack ? 0 : 16, paddingTop: insets.top || 12 }]}>
         <View style={styles.leftContainer}>
           {showGoBack && (
@@ -155,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 8,
-    backgroundColor: color.primaryHover,
+    backgroundColor: colors.primaryHover,
     minHeight: 46, // Cố định chiều cao tối thiểu
   },
   leftContainer: {

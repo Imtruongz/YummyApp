@@ -1,8 +1,7 @@
 import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import colors from '../utils/color';
-import IconSvg from './IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
+import { IconSvg } from '@/components'
+import {colors, ImagesSvg} from '@/utils';
 
 interface OverlayBadgeProps {
   imageUrl: string;

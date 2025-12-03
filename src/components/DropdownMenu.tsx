@@ -1,15 +1,7 @@
 import React, { useState, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  Animated,
-  Dimensions,
-} from 'react-native';
-import Typography from './Typography';
-import color from '../utils/color';
+import { StyleSheet, TouchableOpacity, Modal, FlatList, Animated, Dimensions} from 'react-native';
+import { Typography } from '@/components'
+import {colors} from '@/utils';
 
 export interface MenuOption {
   id: string;
@@ -105,7 +97,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
         title={item.label}
         fontSize={14}
         fontWeight="500"
-        color={item.isDestructive ? '#FF3B30' : color.dark}
+        color={item.isDestructive ? '#FF3B30' : colors.dark}
       />
     </TouchableOpacity>
   );
@@ -163,7 +155,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    backgroundColor: color.white,
+    backgroundColor: colors.white,
     borderRadius: 12,
     minWidth: 180,
     maxWidth: 250,

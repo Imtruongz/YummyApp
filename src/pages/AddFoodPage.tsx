@@ -1,34 +1,22 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import {
-  Image,
-  PermissionsAndroid,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import { RootState } from '../redux/store';
-import CustomButton from '../components/CustomButton';
+import { Image, PermissionsAndroid, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
-import imgURL from '../utils/urlImg';
-import HomeHeader from '../components/HomeHeader';
 import SelectDropdown from 'react-native-select-dropdown';
-import { addFoodAPI } from '../redux/slices/food/foodThunk';
-import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
-import { foodPayload } from '../redux/slices/food/types';
-import colors from '../utils/color';
-import CustomTitle from '../components/Title';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import RNFS from 'react-native-fs';
 import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
-import IconSvg from '../components/IconSvg';
-import { ImagesSvg } from '../utils/ImageSvg';
-import CustomInput from '../components/CustomInput';
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { RootState } from '@/redux/store';
+import { addFoodAPI } from '../redux/slices/food/foodThunk';
+import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
+import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
+import { foodPayload } from '../redux/slices/food/types';
+
+import { CustomButton, HomeHeader, CustomTitle, IconSvg, CustomInput } from '@/components'
+import {img, colors, ImagesSvg} from '@/utils'
 
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';
@@ -272,7 +260,7 @@ const AddFoodPage = ({ navigation }: any) => {
           <CustomTitle title={t('add_choose_image')} />
           <Pressable onPress={requestCameraPermission}>
             <Image
-              source={{ uri: originalImageUri || imgURL.UndefineImg }}
+              source={{ uri: originalImageUri || img.UndefineImg }}
               style={styles.imagePreview}
             />
           </Pressable>
@@ -596,9 +584,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     color: '#151E26',
-  },
-  dropdownButtonArrowStyle: {
-    fontSize: 22,
   },
   dropdownMenuStyle: {
     backgroundColor: '#E9ECEF',

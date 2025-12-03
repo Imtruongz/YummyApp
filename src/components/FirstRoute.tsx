@@ -1,25 +1,17 @@
-import {
-  StyleSheet,
-  ScrollView,
-  Image,
-} from 'react-native';
+import { StyleSheet, ScrollView} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {useAppSelector, useAppDispatch} from '../redux/hooks';
-import {RootState} from '../redux/store';
-import {food} from '../redux/slices/food/types';
-import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from './ConfirmationModal';
 import { useTranslation } from 'react-i18next';
-
-import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
-
 import {MMKV} from 'react-native-mmkv';
-import Toast from 'react-native-toast-message';
-import FoodItemCard from './FoodItemCard';
-
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../android/types/StackNavType';
+
+import {useAppSelector, useAppDispatch} from '@/redux/hooks';
+import {RootState} from '@/redux/store';
+import {food} from '@/redux/slices/food/types';
+import { useNotification } from '@/contexts/NotificationContext';
+import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
+import {ConfirmationModal, FoodItemCard} from '@/components'
 
 const storage = new MMKV();
 

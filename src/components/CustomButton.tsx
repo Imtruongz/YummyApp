@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import color from '../utils/color';
-import IconSvg from './IconSvg';
+import {colors} from '@/utils';
+import { IconSvg } from '@/components'
 
 interface CustomButtonProps {
   title?: string;
@@ -16,7 +16,7 @@ interface CustomButtonProps {
   isCancel?: boolean;
 }
 
-const customButton: React.FC<CustomButtonProps> = ({
+const CustomButton: React.FC<CustomButtonProps> = ({
   title,
   onPress,
   style,
@@ -35,7 +35,7 @@ const customButton: React.FC<CustomButtonProps> = ({
       disabled={disabled}>
       {isText && (
         <Text
-          style={[styles.text, fontSize ? { fontSize } : {}, { color: isCancel ? color.dark : styles.text.color }]}
+          style={[styles.text, fontSize ? { fontSize } : {}, { color: isCancel ? colors.dark : styles.text.color }]}
         >
           {title}
         </Text>
@@ -49,16 +49,16 @@ const styles = StyleSheet.create({
   btn: {
     width: '80%',
     height: 40,
-    backgroundColor: color.primary,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
   },
   text: {
-    color: color.white,
+    color: colors.white,
     fontWeight: 'bold',
   },
 });
 
-export { customButton };
-export default customButton;
+export { CustomButton };
+export default CustomButton;

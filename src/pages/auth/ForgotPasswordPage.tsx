@@ -5,9 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 import { colors, img } from '@/utils'
-
-import CustomInput from '../../components/CustomInput.tsx';
-import CustomButton from '../../components/CustomButton.tsx';
+import { CustomInput, CustomButton } from '@/components'
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
 

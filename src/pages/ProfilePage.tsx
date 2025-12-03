@@ -1,36 +1,19 @@
-import {
-  View,
-  StyleSheet,
-  Dimensions,
-  Text,
-} from 'react-native';
+import { View, StyleSheet, Dimensions, Text} from 'react-native';
 import React, { useState, useEffect } from 'react';
-import {
-  TabView,
-  SceneMap,
-  TabBar,
-  SceneRendererProps,
-  NavigationState,
-  Route,
-} from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar, SceneRendererProps, NavigationState, Route} from 'react-native-tab-view';
 import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import colors from '../utils/color';
-import imgUrl from '../utils/urlImg';
-import { RootState } from '../redux/store';
-import CustomAvatar from '../components/Avatar';
-import CustomTitle from '../components/Title';
-import HomeHeader from '../components/HomeHeader';
-import FirstRoute from '../components/FirstRoute';
-import SecondRoute from '../components/SecondRoute';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
-import Typography from '../components/Typography';
-import ProfileSkeleton from '../components/ProfileSkeleton';
-import { countFollowersAPI, countFollowingAPI } from '../redux/slices/follow/followThunk';
+
+import { RootState } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
+import { countFollowersAPI, countFollowingAPI } from '@/redux/slices/follow/followThunk';
+
+import { HomeHeader, CustomTitle, CustomAvatar, FirstRoute, SecondRoute, Typography, ProfileSkeleton } from '@/components'
+import {img, colors} from '@/utils'
 
 const storage = new MMKV();
 const initialLayout = { width: Dimensions.get('window').width };
@@ -143,7 +126,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
                 width={70}
                 height={70}
                 borderRadius={35}
-                image={user?.avatar || imgUrl.defaultAvatar}
+                image={user?.avatar || img.defaultAvatar}
               />
               <View style={styles.myInfo3}>
                 <InfoItem

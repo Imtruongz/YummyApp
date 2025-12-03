@@ -1,16 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, FlatList, ActivityIndicator, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppDispatch, useAppSelector } from '../redux/hooks';
-import HomeHeader from '../components/HomeHeader';
-import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
-import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk';
-import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 import { useTranslation } from 'react-i18next';
-import api from '../api/config';
-import colors from '../utils/color';
-import CustomInput from '../components/CustomInput';
+
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
+import { getFoodByCategoryAPI } from '@/redux/slices/food/foodThunk';
+
+import api from '@/api/config';
+import { HomeHeader, CustomInput } from '@/components'
+import { colors, containsTextCaseInsensitive} from '@/utils'
 
 const SearchPage = () => {
   const { t } = useTranslation();

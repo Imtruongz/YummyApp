@@ -1,24 +1,18 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
-import CustomInput from '../components/CustomInput.tsx';
-import { ImagesSvg } from '../utils/ImageSvg';
-import {changePasswordAPI} from '../redux/slices/auth/authThunk';
-import {useAppDispatch} from '../redux/hooks';
-import CustomButton from '../components/CustomButton.tsx';
-
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-
-import {MMKV} from 'react-native-mmkv';
-import colors from '../utils/color';
-import HomeHeader from '../components/HomeHeader';
-
-import {verifyPassword, verifyConfirmPassword} from '../utils/validate';
 import Toast from 'react-native-toast-message';
-import {RootStackParamList} from '../../android/types/StackNavType.ts';
 import {useTranslation} from 'react-i18next';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {MMKV} from 'react-native-mmkv';
+import {RootStackParamList} from '../../android/types/StackNavType.ts';
+
+import { CustomButton, HomeHeader, CustomInput } from '@/components'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword} from '@/utils'
+
+import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
+import {useAppDispatch} from '@/redux/hooks';
 
 const storage = new MMKV();
-
 const userId = storage.getString('userId') || '';
 
 interface ChangePasswordPageProps

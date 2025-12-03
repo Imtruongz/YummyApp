@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ScrollView, TouchableOpacity, StyleSheet, Text } from 'react-native';
-import colors from '../../../utils/color';
+import { colors } from '@/utils';
 
 interface QuickAction {
   id: string;
