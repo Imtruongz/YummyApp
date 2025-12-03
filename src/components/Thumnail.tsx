@@ -1,7 +1,7 @@
 import {ImageBackground, StyleSheet, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import color from '../../utils/color';
+import color from '../utils/color';
 
 const Thumnail = () => {
   const [randomFood, setRandomFood] = useState<any>(null);
@@ -33,6 +33,7 @@ const Thumnail = () => {
   );
 };
 
+export { Thumnail };
 export default Thumnail;
 
 const styles = StyleSheet.create({

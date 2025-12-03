@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, StatusBar, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar } from 'react-native-paper';
-import Typography from './customize/Typography';
+import Typography from './Typography';
 import { IconButton } from 'react-native-paper';
 import color from '../utils/color';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -192,4 +192,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { HomeHeader };
 export default HomeHeader;

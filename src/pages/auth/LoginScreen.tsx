@@ -11,8 +11,8 @@ import {
 import React, { useState, useContext } from 'react';
 
 //Customm components
-import CustomButton from '../../components/customize/CustomButton';
-import CustomInput from '../../components/customize/CustomInput';
+import CustomButton from '../../components/CustomButton';
+import CustomInput from '../../components/CustomInput';
 import AuthFooter from './component/AuthFooter';
 import AuthHeader from './component/AuthHeader';
 

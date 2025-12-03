@@ -10,7 +10,7 @@ import { containsTextCaseInsensitive } from '../utils/regexPatterns';
 import { useTranslation } from 'react-i18next';
 import api from '../api/config';
 import colors from '../utils/color';
-import CustomInput from '../components/customize/CustomInput';
+import CustomInput from '../components/CustomInput';
 
 const SearchPage = () => {
   const { t } = useTranslation();

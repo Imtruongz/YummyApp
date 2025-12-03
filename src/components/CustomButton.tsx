@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import color from '../../utils/color';
-import IconSvg from '../IconSvg';
+import color from '../utils/color';
+import IconSvg from './IconSvg';
 
 interface CustomButtonProps {
   title?: string;
@@ -60,4 +60,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { customButton };
 export default customButton;

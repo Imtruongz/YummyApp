@@ -1,10 +1,10 @@
 import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
-import CustomInput from '../components/customize/CustomInput.tsx';
+import CustomInput from '../components/CustomInput.tsx';
 import { ImagesSvg } from '../utils/ImageSvg';
 import {changePasswordAPI} from '../redux/slices/auth/authThunk';
 import {useAppDispatch} from '../redux/hooks';
-import CustomButton from '../components/customize/CustomButton.tsx';
+import CustomButton from '../components/CustomButton.tsx';
 
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 

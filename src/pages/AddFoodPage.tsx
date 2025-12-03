@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { RootState } from '../redux/store';
-import CustomButton from '../components/customize/CustomButton';
+import CustomButton from '../components/CustomButton';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import imgURL from '../utils/urlImg';
@@ -20,7 +20,7 @@ import { addFoodAPI } from '../redux/slices/food/foodThunk';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { foodPayload } from '../redux/slices/food/types';
 import colors from '../utils/color';
-import CustomTitle from '../components/customize/Title';
+import CustomTitle from '../components/Title';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import RNFS from 'react-native-fs';
@@ -28,7 +28,7 @@ import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
-import CustomInput from '../components/customize/CustomInput';
+import CustomInput from '../components/CustomInput';
 
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';

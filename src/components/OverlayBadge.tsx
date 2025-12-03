@@ -1,8 +1,8 @@
 import React from 'react';
 import {View, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import colors from '../../utils/color';
-import IconSvg from '../IconSvg';
-import { ImagesSvg } from '../../utils/ImageSvg';
+import colors from '../utils/color';
+import IconSvg from './IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 interface OverlayBadgeProps {
   imageUrl: string;
@@ -63,4 +63,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { OverlayBadge };
 export default OverlayBadge;

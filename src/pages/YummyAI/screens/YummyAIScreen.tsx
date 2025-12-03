@@ -1,36 +1,19 @@
 import React, { useState, useRef } from 'react';
-import {
-  View,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  FlatList,
-  Text,
-  Image,
-} from 'react-native';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, Platform, FlatList, Image} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { aiApi } from '../../../api/aiApi';
-import colors from '../../../utils/color';
-import { YummyDrag } from '../../../utils/assets';
-import { ImagesSvg } from '../../../utils/ImageSvg';
+import { aiApi } from '@/api/aiApi';
+import { YummyDrag, ImagesSvg, colors } from '@/utils'
 import { RootStackParamList } from '../../../../android/types/StackNavType';
-import { saveChatAPI } from '../../../redux/slices/chatHistory/chatHistoryThunk';
-import { AppDispatch } from '../../../redux/store';
+import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
+import { AppDispatch } from '@/redux/store';
 
-import Typography from '../../../components/customize/Typography';
-import SaveChatModal from '../components/SaveChatModal';
-import HomeHeader from '../../../components/HomeHeader';
-import IconSvg from '../../../components/IconSvg';
-import CustomInput from '../../../components/customize/CustomInput';
-import QuickActionButtons from '../components/QuickActionButtons';
-import { MenuOption } from '../../../components/DropdownMenu';
+import { SaveChatModal, QuickActionButtons } from '@/pages/YummyAI/components'
+import { IconSvg, HomeHeader, Typography, CustomInput, MenuOption } from '@/components';
 
 type Message = {
   id: string;
@@ -115,7 +98,18 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await aiApi.askCookingQuestion(userMessage.text);
+      // Build conversation history (exclude welcome message)
+      const conversationHistory = messages
+        .filter(msg => msg.id !== '1')
+        .map(msg => ({
+          role: msg.isUser ? 'user' : 'assistant',
+          content: msg.text,
+        }));
+
+      const response = await aiApi.askCookingQuestion(
+        userMessage.text,
+        conversationHistory
+      );
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: response.answer,
@@ -183,7 +177,18 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       (async () => {
         try {
-          const response = await aiApi.askCookingQuestion(message);
+          // Build conversation history (exclude welcome message)
+          const conversationHistory = messages
+            .filter(msg => msg.id !== '1')
+            .map(msg => ({
+              role: msg.isUser ? 'user' : 'assistant',
+              content: msg.text,
+            }));
+
+          const response = await aiApi.askCookingQuestion(
+            message,
+            conversationHistory
+          );
           const aiMessage: Message = {
             id: (Date.now() + 1).toString(),
             text: response.answer,

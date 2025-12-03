@@ -1,6 +1,6 @@
 import {Button, Image, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import color from '../../utils/color';
+import color from '../utils/color';
 
 interface CustomFoodItemProps {
   title?: string;
@@ -28,6 +28,7 @@ const CustomFoodItem: React.FC<CustomFoodItemProps> = ({
   );
 };
 
+export { CustomFoodItem };
 export default CustomFoodItem;
 
 const styles = StyleSheet.create({

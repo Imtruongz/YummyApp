@@ -167,4 +167,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { SaveChatModal };
 export default SaveChatModal;

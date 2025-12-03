@@ -57,4 +57,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { NoData };
 export default NoData;

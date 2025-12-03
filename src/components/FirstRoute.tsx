@@ -8,7 +8,7 @@ import {useAppSelector, useAppDispatch} from '../redux/hooks';
 import {RootState} from '../redux/store';
 import {food} from '../redux/slices/food/types';
 import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from './common/ConfirmationModal';
+import ConfirmationModal from './ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 
 import {deleteFoodAPI, getFoodByIdAPI} from '../redux/slices/food/foodThunk';
@@ -114,6 +114,7 @@ const FirstRoute = () => {
   );
 };
 
+export { FirstRoute };
 export default FirstRoute;
 
 const styles = StyleSheet.create({

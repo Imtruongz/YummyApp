@@ -71,4 +71,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { QuickActionButtons };
 export default QuickActionButtons;

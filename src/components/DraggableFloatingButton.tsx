@@ -127,4 +127,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { DraggableFloatingButton };
 export default DraggableFloatingButton;

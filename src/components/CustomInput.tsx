@@ -1,9 +1,9 @@
 import {StyleSheet, TextInput, View} from 'react-native';
 import React from 'react';
-import IconSvg from '../IconSvg';
+import IconSvg from './IconSvg';
 import { TouchableOpacity } from 'react-native';
-import { ImagesSvg } from '../../utils/ImageSvg';
-import colors from '../../utils/color';
+import { ImagesSvg } from '../utils/ImageSvg';
+import colors from '../utils/color';
 
 interface CustomInputProps {
   value?: string;
@@ -71,6 +71,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   );
 };
 
+export { CustomInput };
 export default CustomInput;
 
 const styles = StyleSheet.create({

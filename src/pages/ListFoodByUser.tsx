@@ -33,7 +33,7 @@ import { resetViewedUserFoodList } from '../redux/slices/food/foodSlice';
 import colors from '../utils/color.ts';
 import imgUrl from '../utils/urlImg.ts';
 import HomeHeader from '../components/HomeHeader';
-import CustomAvatar from '../components/customize/Avatar.tsx';
+import CustomAvatar from '../components/Avatar.tsx';
 import Loading from '../components/Loading.tsx';
 import NoData from '../components/NoData';
 import FoodItemCard from '../components/FoodItemCard';

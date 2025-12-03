@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from '../components/common/ConfirmationModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 import { formatUSDCurrency, extractNumbersOnly } from '../utils/regexPatterns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -24,7 +24,7 @@ import api from '../api/config';
 import { BIDVLogo, MBLogo, ZaloPayLogo } from '../utils/assets';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
-import CustomButton from '../components/customize/CustomButton';
+import CustomButton from '../components/CustomButton';
 
 type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
 interface PaymentMethod {

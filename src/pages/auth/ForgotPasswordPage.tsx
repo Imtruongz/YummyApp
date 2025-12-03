@@ -1,21 +1,13 @@
-import {
-  Keyboard,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  SafeAreaView
-} from 'react-native';
 import React, {useState} from 'react';
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, SafeAreaView} from 'react-native';
 
+import { useTranslation } from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
-import color from '../../utils/color.ts';
-import img from '../../utils/urlImg.ts';
-import { useTranslation } from 'react-i18next';
+import { colors, img } from '@/utils'
 
-import CustomInput from '../../components/customize/CustomInput.tsx';
-import CustomButton from '../../components/customize/CustomButton.tsx';
+import CustomInput from '../../components/CustomInput.tsx';
+import CustomButton from '../../components/CustomButton.tsx';
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
 
@@ -80,7 +72,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: color.light,
+    backgroundColor: colors.light,
   },
   body: {
     flex: 4,
@@ -90,10 +82,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   errorMessage: {
-    color: color.danger,
+    color: colors.danger,
   },
   sentEmailMessage: {
-    color: color.success,
+    color: colors.success,
   },
 });
 

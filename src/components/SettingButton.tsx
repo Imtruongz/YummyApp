@@ -1,7 +1,7 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import IconSvg from '../IconSvg';
-import { ImagesSvg } from '../../utils/ImageSvg';
+import IconSvg from './IconSvg';
+import { ImagesSvg } from '../utils/ImageSvg';
 
 interface SettingButtonProps {
   navigation?: any;
@@ -39,6 +39,7 @@ const SettingButton: React.FC<SettingButtonProps> = ({
   );
 };
 
+export { SettingButton };
 export default SettingButton;
 
 const styles = StyleSheet.create({

@@ -15,15 +15,15 @@ import {RootState} from '../redux/store';
 import {RootStackParamList} from '../../android/types/StackNavType';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from './common/ConfirmationModal';
+import ConfirmationModal from './ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 
-import CustomTitle from './customize/Title';
+import CustomTitle from './Title';
 import colors from '../utils/color';
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '../redux/slices/favorite/favoriteThunk';
 import {MMKV} from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
-import Typography from './customize/Typography';
+import Typography from './Typography';
 import {useNavigation} from '@react-navigation/native';
 import NoData from './NoData';
 
@@ -163,6 +163,7 @@ const SecondRoute = () => {
   );
 };
 
+export { SecondRoute };
 export default SecondRoute;
 
 const styles = StyleSheet.create({

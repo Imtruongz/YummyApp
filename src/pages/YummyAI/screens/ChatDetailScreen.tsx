@@ -14,16 +14,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, AppDispatch } from '../../../redux/store';
-import {
-  getConversationDetailAPI,
-  updateConversationTitleAPI,
-} from '../../../redux/slices/chatHistory/chatHistoryThunk';
-import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
-import IconSvg from '../../../components/IconSvg';
-import { ImagesSvg } from '../../../utils/ImageSvg';
-import colors from '../../../utils/color';
-
+import { RootState, AppDispatch } from '@/redux/store';
+import { getConversationDetailAPI, updateConversationTitleAPI,} from '@/redux/slices/chatHistory/chatHistoryThunk';
+import { ImagesSvg, colors } from '@/utils'
+import { IconSvg, CustomLoadingSpinner } from '@/components'
 interface ChatDetailScreenProps {
   navigation: any;
   route: any;

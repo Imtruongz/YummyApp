@@ -1,6 +1,6 @@
 import {Image, StyleSheet} from 'react-native';
 import React from 'react';
-import colors from '../../utils/color';
+import colors from '../utils/color';
 
 interface CustomAvatarProps {
   image?: string;
@@ -29,7 +29,7 @@ const CustomAvatar: React.FC<CustomAvatarProps> = ({
     </>
   );
 };
-
+export { CustomAvatar };
 export default CustomAvatar;
 
 const styles = StyleSheet.create({

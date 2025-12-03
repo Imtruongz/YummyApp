@@ -9,27 +9,33 @@ import {
   Dimensions,
   Platform
 } from 'react-native';
-import colors from '../../utils/color';
-export interface ConfirmationModalProps {
+import colors from '../utils/color';
+
+// Icons import
+const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;
+
+export interface NotificationModalProps {
   visible: boolean;
   title: string;
   message: string;
-  type?: 'warning' | 'info' | 'error' | 'success';
+  type?: 'success' | 'error' | 'warning' | 'info';
+  duration?: number; // Thời gian tự động đóng (ms), 0 = không tự đóng
   onClose: () => void;
-  onConfirm: () => void;
-  confirmText?: string;
-  cancelText?: string;
+  onAction?: () => void;
+  actionText?: string;
+  showCloseButton?: boolean;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const NotificationModal: React.FC<NotificationModalProps> = ({
   visible,
   title,
   message,
-  type = 'warning',
+  type = 'info',
+  duration = 3000,
   onClose,
-  onConfirm,
-  confirmText = 'Xác nhận',
-  cancelText = 'Hủy'
+  onAction,
+  actionText,
+  showCloseButton = true
 }) => {
   const [animation] = useState(new Animated.Value(0));
   
@@ -40,6 +46,15 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
         useNativeDriver: true,
         friction: 8
       }).start();
+      
+      // Tự động đóng nếu duration > 0
+      if (duration > 0) {
+        const timer = setTimeout(() => {
+          handleClose();
+        }, duration);
+        
+        return () => clearTimeout(timer);
+      }
     } else {
       Animated.timing(animation, {
         toValue: 0,
@@ -57,14 +72,9 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
     }).start(() => onClose());
   };
   
-  const scale = animation.interpolate({
+  const translateY = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0.9, 1]
-  });
-  
-  const opacity = animation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 1]
+    outputRange: [-100, 0]
   });
   
   // Xác định màu sắc dựa trên loại thông báo
@@ -102,36 +112,37 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           style={[
             styles.modalContent, 
             { 
-              transform: [{ scale }],
-              opacity
+              backgroundColor: getBackgroundColor(),
+              transform: [{ translateY }] 
             }
           ]}
         >
-          <View style={styles.headerContainer}>
+          <View style={styles.iconContainer}>
+            <IoniconsIcon name={getIcon()} size={28} color="#fff" />
+          </View>
+          
+          <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>
-          </View>
-          
-          <View style={styles.messageContainer}>
             <Text style={styles.message}>{message}</Text>
+            
+            {onAction && actionText && (
+              <TouchableOpacity 
+                style={styles.actionButton}
+                onPress={() => {
+                  onAction();
+                  handleClose();
+                }}
+              >
+                <Text style={styles.actionText}>{actionText}</Text>
+              </TouchableOpacity>
+            )}
           </View>
           
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity 
-              style={[styles.button, styles.cancelButton]} 
-              onPress={handleClose}
-            >
-              <Text style={styles.cancelButtonText}>{cancelText}</Text>
+          {showCloseButton && (
+            <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+              <IoniconsIcon name="close" size={20} color="#fff" />
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.button, styles.confirmButton, { backgroundColor: getBackgroundColor() }]} 
-              onPress={() => {
-                onConfirm();
-                handleClose();
-              }}
-            >
-              <Text style={styles.confirmButtonText}>{confirmText}</Text>
-            </TouchableOpacity>
-          </View>
+          )}
         </Animated.View>
       </View>
     </Modal>
@@ -143,78 +154,59 @@ const { width } = Dimensions.get('window');
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'transparent',
+    paddingTop: Platform.OS === 'ios' ? 40 : 10
   },
   modalContent: {
-    backgroundColor: '#fff',
-    width: width - 80,
-    borderRadius: 16,
-    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: width - 40,
+    marginTop: 20,
+    padding: 16,
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
   },
-  headerContainer: {
-    alignItems: 'center',
-    paddingTop: 20,
-    paddingBottom: 10,
-  },
   iconContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
+    marginRight: 12,
+  },
+  textContainer: {
+    flex: 1,
   },
   title: {
-    fontSize: 18,
+    color: '#fff',
     fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-  },
-  messageContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    alignItems: 'center',
+    fontSize: 16,
+    marginBottom: 4,
   },
   message: {
-    fontSize: 15,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
+    color: '#fff',
+    fontSize: 14,
+    opacity: 0.9,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+  closeButton: {
+    padding: 5,
+    marginLeft: 8,
   },
-  button: {
-    flex: 1,
-    paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
+  actionButton: {
+    marginTop: 8,
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 4,
   },
-  cancelButton: {
-    borderRightWidth: 1,
-    borderRightColor: '#eee',
-  },
-  confirmButton: {
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    color: '#666',
-    fontWeight: '600',
-  },
-  confirmButtonText: {
-    fontSize: 16,
+  actionText: {
     color: '#fff',
     fontWeight: '600',
+    fontSize: 12,
   }
 });
 
-export default ConfirmationModal;
+export { NotificationModal };
+export default NotificationModal;

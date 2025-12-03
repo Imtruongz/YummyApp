@@ -12,7 +12,7 @@ import {
   TextStyle,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import color from '../../utils/color';
+import color from '../utils/color';
 
 const { width } = Dimensions.get('window');
 
@@ -229,4 +229,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { BannerSlider };
 export default BannerSlider;

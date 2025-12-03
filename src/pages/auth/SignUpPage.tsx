@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 
-import CustomButton from '../../components/customize/CustomButton.tsx';
-import CustomInput from '../../components/customize/CustomInput.tsx';
+import CustomButton from '../../components/CustomButton.tsx';
+import CustomInput from '../../components/CustomInput.tsx';
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
 

@@ -32,4 +32,5 @@ const colors: Colors = {
   white: '#FFFFFF',
 };
 
+export { colors };
 export default colors;

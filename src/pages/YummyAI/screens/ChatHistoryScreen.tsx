@@ -8,25 +8,16 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { RootState, AppDispatch } from '../../../redux/store';
-import {
-  getUserConversationsAPI,
-  deleteConversationAPI,
-} from '../../../redux/slices/chatHistory/chatHistoryThunk';
-import {
-  resetConversations,
-  clearCurrentConversation,
-} from '../../../redux/slices/chatHistory/chatHistorySlice';
-import ChatHistoryItem from '../components/ChatHistoryItem';
-import CustomLoadingSpinner from '../../../components/CustomLoadingSpinner';
-import HomeHeader from '../../../components/HomeHeader';
-import IconSvg from '../../../components/IconSvg';
-import { ImagesSvg } from '../../../utils/ImageSvg';
-import colors from '../../../utils/color';
+import { ImagesSvg, colors } from '@/utils'
+import { RootState, AppDispatch } from '@/redux/store';
+import { resetConversations} from '@/redux/slices/chatHistory/chatHistorySlice';
+import ChatHistoryItem from '@/pages/YummyAI/components/ChatHistoryItem';
+import { getUserConversationsAPI, deleteConversationAPI} from '@/redux/slices/chatHistory/chatHistoryThunk';
+import { IconSvg, HomeHeader, CustomLoadingSpinner } from '@/components'
 
 interface ChatHistoryScreenProps {
   navigation: any;

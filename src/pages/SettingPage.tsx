@@ -12,15 +12,15 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import CustomTitle from '../components/customize/Title';
-import SettingButton from '../components/customize/SettingButton';
+import CustomTitle from '../components/Title';
+import SettingButton from '../components/SettingButton';
 import colors from '../utils/color';
 import HomeHeader from '../components/HomeHeader';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AuthContext } from '../contexts/AuthContext';
-import ConfirmationModal from '../components/common/ConfirmationModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 import '../languages/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';

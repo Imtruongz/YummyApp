@@ -13,9 +13,12 @@ export const aiApi = {
   },
 
   // Hỏi đáp về nấu ăn
-  askCookingQuestion: async (question: string) => {
+  askCookingQuestion: async (question: string, conversationHistory?: Array<{ role: string; content: string }>) => {
     try {
-      const response = await api.post('/ai/ask-question', { question });
+      const response = await api.post('/ai/ask-question', { 
+        question,
+        conversationHistory: conversationHistory || []
+      });
       return response.data;
     } catch (error: any) {
       console.error('Error asking cooking question:', error.message);

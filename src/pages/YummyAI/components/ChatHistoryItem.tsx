@@ -8,7 +8,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import IconSvg from '../../../components/IconSvg';
 import { ImagesSvg } from '../../../utils/ImageSvg';
-import ConfirmationModal from '../../../components/common/ConfirmationModal';
+import ConfirmationModal from '../../../components/ConfirmationModal';
 import { ActivityIndicator } from 'react-native-paper';
 
 interface ChatHistoryItemProps {
@@ -150,4 +150,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { ChatHistoryItem };
 export default ChatHistoryItem;

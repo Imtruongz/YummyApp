@@ -24,4 +24,5 @@ const IconSvg: React.FC<IconSvgProps> = ({ xml, width = 24, height = 24, color }
   return <SvgXml xml={svg} width={width} height={height} />;
 };
 
+export { IconSvg };
 export default IconSvg;

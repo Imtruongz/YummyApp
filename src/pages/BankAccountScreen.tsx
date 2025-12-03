@@ -13,7 +13,7 @@ import {
   FlatList,
 } from 'react-native';
 import { useNotification } from '../contexts/NotificationContext';
-import ConfirmationModal from '../components/common/ConfirmationModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';

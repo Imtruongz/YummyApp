@@ -63,4 +63,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { RatingInput };
 export default RatingInput;

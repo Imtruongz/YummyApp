@@ -1,6 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
 import React from 'react';
-import { FONTS, FONT_SIZES, TYPOGRAPHY_PRESETS, APP_TYPOGRAPHY } from '../../utils/fonts';
+import { FONTS, FONT_SIZES, TYPOGRAPHY_PRESETS, APP_TYPOGRAPHY } from '../utils/fonts';
 
 interface Props {
   title: string | undefined | number;
@@ -68,6 +68,7 @@ const Typography: React.FC<Props> = ({
   );
 };
 
+export { Typography };
 export default Typography;
 
 const styles = StyleSheet.create({

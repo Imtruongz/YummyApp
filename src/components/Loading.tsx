@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import colors from '../utils/color';
-import CustomTitle from './customize/Title';
+import CustomTitle from './Title';
 import { useTranslation } from 'react-i18next';
 import IconSvg from './IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
@@ -26,6 +26,7 @@ const Loading = () => {
   );
 };
 
+export { Loading };
 export default Loading;
 
 const styles = StyleSheet.create({

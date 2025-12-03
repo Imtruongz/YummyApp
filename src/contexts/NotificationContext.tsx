@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import NotificationModal, { NotificationModalProps } from '../components/common/NotificationModal';
+import NotificationModal, { NotificationModalProps } from '../components/NotificationModal';
 
 interface NotificationContextProps {
   showNotification: (options: Omit<NotificationModalProps, 'visible' | 'onClose'>) => void;

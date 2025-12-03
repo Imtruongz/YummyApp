@@ -75,4 +75,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { CustomLoadingSpinner };
 export default CustomLoadingSpinner;

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import colors from '../utils/color.ts';
 import imgUrl from '../utils/urlImg.ts';
 import HomeHeader from '../components/HomeHeader';
-import CustomAvatar from '../components/customize/Avatar.tsx';
+import CustomAvatar from '../components/Avatar.tsx';
 
 interface UserItemProps {
   user: {

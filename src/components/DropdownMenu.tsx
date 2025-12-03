@@ -8,7 +8,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import Typography from './customize/Typography';
+import Typography from './Typography';
 import color from '../utils/color';
 
 export interface MenuOption {
@@ -195,4 +195,5 @@ const styles = StyleSheet.create({
   },
 });
 
+export { DropdownMenu };
 export default DropdownMenu;

@@ -32,18 +32,18 @@ import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 import IconSvg from '../components/IconSvg';
 import { ImagesSvg } from '../utils/ImageSvg';
-import CustomTitle from '../components/customize/Title';
-import CustomAvatar from '../components/customize/Avatar';
+import CustomTitle from '../components/Title';
+import CustomAvatar from '../components/Avatar';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { getUserByIdAPI } from '../redux/slices/auth/authThunk';
-import ConfirmationModal from '../components/common/ConfirmationModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 import { formatDate, formatDateTime } from '../utils/formatDate';
 import { review } from '../redux/slices/review/types';
-import Typography from '../components/customize/Typography';
+import Typography from '../components/Typography';
 import { addFavoriteFoodAPI } from '../redux/slices/favorite/favoriteThunk';
 import { getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import RatingInput from '../components/RatingInput';
-import CustomInput from '../components/customize/CustomInput';
+import CustomInput from '../components/CustomInput';
 const storage = new MMKV();
 
 interface RecipeDetailPageProps

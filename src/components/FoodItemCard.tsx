@@ -10,7 +10,7 @@ import {
   TextStyle,
   StyleProp,
 } from 'react-native';
-import Typography from './customize/Typography';
+import Typography from './Typography';
 import colors from '../utils/color';
 
 interface FoodItemProps {
@@ -72,6 +72,7 @@ const FoodItemCard: React.FC<FoodItemProps> = ({
   );
 };
 
+export { FoodItemCard };
 export default FoodItemCard;
 
 const styles = StyleSheet.create({
