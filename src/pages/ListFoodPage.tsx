@@ -8,6 +8,7 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
+import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, Loading } from '@/components'
 import { colors, ImagesSvg} from '@/utils'
@@ -19,7 +20,8 @@ const ListFoodPage: React.FC<ListFoodPageProps> = ({navigation}) => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
 
-  const {foodList, isLoadingFood} = useAppSelector(state => state.food);
+  const foodList = useAppSelector(selectFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Log để debug trạng thái foodList - HOOK NÀY PHẢI Ở TRƯỚC CÁC EARLY RETURNS

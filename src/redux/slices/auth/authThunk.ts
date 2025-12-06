@@ -11,7 +11,6 @@ export const userLoginAPI = createAsyncThunk(
         return response.data;
       }
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, 'Code:', error.code, 'Config:', error.config, 'Request:', error.request, 'Response:', error.response, 'Data:', error.response?.data, 'Stack:', error.stack);
       return rejectWithValue(error.response?.data);
     }
   },
@@ -20,13 +19,10 @@ export const userLoginAPI = createAsyncThunk(
 export const userRegisterAPI = createAsyncThunk(
   'auth/userRegisterAPI',
   async (payload: RegisterPayload, {rejectWithValue}) => {
-    console.log('Payload:', payload);
-
     try {
       const response = await api.post('/users/register', payload);
       return response.data;
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, 'Data', error.response?.data);
       return rejectWithValue(error.response.data);
     }
   },
@@ -39,7 +35,6 @@ export const userUpdateAPI = createAsyncThunk(
       const response = await api.patch<User>('/users/update', payload);
       return response.data;
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, 'Data', error.response?.data);
       return rejectWithValue(error.response.data);
     }
   },
@@ -52,7 +47,6 @@ export const changePasswordAPI = createAsyncThunk(
       const response = await api.patch<User>('/users/changePassword', payload);
       return response.data;
     } catch (error: any) {
-      console.log('Error from changePasswordAPI:', error.message, 'Data', error.response?.data);
       return rejectWithValue(error.response.data);
     }
   },
@@ -65,7 +59,6 @@ export const userDeleteAPI = createAsyncThunk(
       const response = await api.delete('/users/delete');
       return response.data;
     } catch (error: any) {
-      console.log('Errorrrr:', error.message, 'Data', error.response?.data);
       return rejectWithValue(error.response.data);
     }
   },
@@ -81,12 +74,6 @@ export const getUserByIdAPI = createAsyncThunk(
         isViewMode
       };
     } catch (error: any) {
-      console.log(
-        'Error in getUserByIdAPI:',
-        error.message,
-        'Data',
-        error.response?.data,
-      );
       return rejectWithValue(error.response.data);
     }
   },
@@ -99,12 +86,6 @@ export const getAllUsers = createAsyncThunk(
       const response = await api.get('/users/getAll');
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Error in getAllUsers:',
-        error.message,
-        'Data',
-        error.response?.data,
-      );
       return rejectWithValue(error.response.data);
     }
   },

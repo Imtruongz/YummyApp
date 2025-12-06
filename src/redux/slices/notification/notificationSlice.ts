@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Notification, NotificationState } from './types';
 import { fetchNotifications } from './notificationThunk';
+import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: NotificationState = {
   list: [],
@@ -32,20 +33,12 @@ const notificationSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder
-      .addCase(fetchNotifications.pending, state => {
-        state.isLoading = true;
-        state.isError = false;
-      })
-      .addCase(fetchNotifications.fulfilled, (state, action: PayloadAction<Notification[]>) => {
+    createAsyncThunkHandler(builder, fetchNotifications, {
+      loadingKey: 'isLoading',
+      onFulfilled: (state, action: PayloadAction<Notification[]>) => {
         state.list = action.payload;
-        state.isLoading = false;
-        state.isError = false;
-      })
-      .addCase(fetchNotifications.rejected, state => {
-        state.isLoading = false;
-        state.isError = true;
-      });
+      },
+    });
   }
 });
 

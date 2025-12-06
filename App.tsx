@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
-import './src/languages/i18n';
-import { AuthContext } from './src/contexts/AuthContext';
-import NavigationRoot from './src/navigation/NavigationContainer';
+import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { store } from './src/redux/store';
 import { MMKV } from 'react-native-mmkv';
-import ErrorBoundary from './src/utils/errorBoundary';
-import { PaperProvider } from 'react-native-paper';
-import { NotificationProvider } from './src/contexts/NotificationContext';
-
-import { useEffect } from 'react';
-import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
 import Toast from 'react-native-toast-message';
+import { PaperProvider } from 'react-native-paper';
+import './src/languages/i18n';
+import { store } from './src/redux/store';
+import ErrorBoundary from './src/utils/errorBoundary';
+import { AuthContext } from './src/contexts/AuthContext';
 import { updateFcmTokenApi } from './src/api/updateFcmTokenApi';
+import NavigationRoot from './src/navigation/NavigationContainer';
+import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
+import { NotificationProvider } from './src/contexts/NotificationContext';
 
 const storage = new MMKV();
 
@@ -28,12 +26,9 @@ export default function App() {
           if (accessToken) {
             try {
               await updateFcmTokenApi(token, accessToken);
-              console.log('FCM Token sent to server:', token);
             } catch (err) {
               console.log('Failed to send FCM token to server:', err);
             }
-          } else {
-            console.log('FCM Token (not logged in):', token);
           }
         },
         (remoteMessage) => {
@@ -43,7 +38,6 @@ export default function App() {
             text2: remoteMessage.notification?.body || '',
             visibilityTime: 4000,
           });
-          console.log('FCM Notification:', remoteMessage);
         }
       );
     };

@@ -11,11 +11,19 @@ import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, 
 import {img, colors, ImagesSvg} from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { RootState } from '@/redux/store';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
 import { getAllFoodAPI } from '@/redux/slices/food/foodThunk';
 import { getAllUsers } from '@/redux/slices/auth/authThunk';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
+import { 
+  selectFoodList, 
+  selectIsLoadingFood,
+  selectUser,
+  selectIsLoadingUser,
+  selectListUser,
+  selectCategoryList,
+  selectIsLoadingCategory,
+} from '@/redux/selectors';
 
 const storage = new MMKV();
 interface HomePageProps
@@ -25,10 +33,14 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
-  const { foodList, isLoadingFood } = useAppSelector(state => state.food);
-  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
-  const { ListUser } = useAppSelector((state: RootState) => state.user);
-  const { categoryList, isLoadingCategory } = useAppSelector((state: RootState) => state.categories);
+  
+  const foodList = useAppSelector(selectFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
+  const user = useAppSelector(selectUser);
+  const isLoadingUser = useAppSelector(selectIsLoadingUser);
+  const ListUser = useAppSelector(selectListUser);
+  const categoryList = useAppSelector(selectCategoryList);
+  const isLoadingCategory = useAppSelector(selectIsLoadingCategory);
   const [isLoading, setIsLoading] = useState(true);
   const [banners, setBanners] = useState<Banner[]>([]);
 

@@ -10,10 +10,16 @@ import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
 import { getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useNotification } from '@/contexts/NotificationContext';
-import { RootState } from '@/redux/store';
 import { isFollowingAPI, followUserAPI, unfollowUserAPI, countFollowersAPI, countFollowingAPI} from '@/redux/slices/follow/followThunk';
 import { resetViewedUser } from '@/redux/slices/auth/authSlice';
 import { resetViewedUserFoodList } from '@/redux/slices/food/foodSlice';
+import {
+  selectViewedUserFoodList,
+  selectIsLoadingFood,
+  selectViewedUser,
+  selectIsLoadingUser,
+  selectUserFollowInfo,
+} from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
 import {img, colors} from '@/utils'
@@ -44,10 +50,11 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   const [refreshing, setRefreshing] = useState(false);
   const { showNotification } = useNotification();
 
-
-  const { viewedUserFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
-  const { viewedUser, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
-  const followInfo = useAppSelector((state: RootState) => state.follow.byUserId[userId] || {});
+  const viewedUserFoodList = useAppSelector(selectViewedUserFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
+  const viewedUser = useAppSelector(selectViewedUser);
+  const isLoadingUser = useAppSelector(selectIsLoadingUser);
+  const followInfo = useAppSelector(selectUserFollowInfo(userId)) || {};
   const followerCount = followInfo.followerCount ?? 0;
   const followingCount = followInfo.followingCount ?? 0;
   const isFollowing = followInfo.isFollowing ?? false;

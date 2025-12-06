@@ -4,10 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-import { RootState, AppDispatch } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { getConversationDetailAPI, updateConversationTitleAPI,} from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { ImagesSvg, colors } from '@/utils'
 import { IconSvg, CustomLoadingSpinner } from '@/components'
+import {
+  selectCurrentConversation,
+  selectIsLoadingChat,
+} from '@/redux/selectors';
+
 interface ChatDetailScreenProps {
   navigation: any;
   route: any;
@@ -20,9 +25,8 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
   const { t } = useTranslation();
   const { conversationId } = route.params;
   const dispatch = useDispatch<AppDispatch>();
-  const { currentConversation, isLoading } = useSelector(
-    (state: RootState) => state.chatHistory
-  );
+  const currentConversation = useSelector(selectCurrentConversation);
+  const isLoading = useSelector(selectIsLoadingChat);
 
   const flatListRef = useRef<FlatList>(null);
   const [editingTitle, setEditingTitle] = useState(false);

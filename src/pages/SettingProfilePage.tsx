@@ -9,9 +9,13 @@ import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
-import {RootState} from '@/redux/store.ts';
 import {userUpdateAPI} from '@/redux/slices/auth/authThunk.ts';
 import {getUserByIdAPI} from '@/redux/slices/auth/authThunk.ts';
+import {
+  selectUser,
+  selectIsLoadingUser,
+  selectAuthError,
+} from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
 import { img, colors} from '@/utils'
@@ -48,9 +52,9 @@ const SettingProfilePage = () => {
   const [avatar, setavatar] = useState('');
   const [description, setdescription] = useState('');
 
-  const {user, isLoadingUser, isErrorUser} = useAppSelector(
-    (state: RootState) => state.auth,
-  );
+  const user = useAppSelector(selectUser);
+  const isLoadingUser = useAppSelector(selectIsLoadingUser);
+  const isErrorUser = useAppSelector(selectAuthError);
 
   const requestCameraPermission = async () => {
     try {

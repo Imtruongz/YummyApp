@@ -10,7 +10,8 @@ import {colors, ImagesSvg} from '@/utils'
 
 import {useAppDispatch, useAppSelector} from '../redux/hooks';
 import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
-import {RootState} from '../redux/store.ts';
+import { selectCategoryFoodList, selectIsLoadingFood } from '@/redux/selectors';
+
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
     RootStackParamList,
@@ -24,9 +25,8 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   const dispatch = useAppDispatch();
   const {categoryId} = route.params;
 
-  const {categoryFoodList, isLoadingFood} = useAppSelector(
-    (state: RootState) => state.food,
-  );
+  const categoryFoodList = useAppSelector(selectCategoryFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Log để debug trạng thái categoryFoodList

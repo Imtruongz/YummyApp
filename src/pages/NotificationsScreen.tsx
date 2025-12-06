@@ -7,14 +7,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { fetchNotifications } from '@/redux/slices/notification/notificationThunk';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { selectNotificationList, selectIsLoadingNotification } from '@/redux/selectors';
 import { HomeHeader } from '@/components';
 
 const NotificationsScreen = () => {
   const route = useRoute();
   const userId = (route.params as any)?.userId;
   const dispatch = useAppDispatch();
-  const notifications = useAppSelector(state => state.notification.list);
-  const loading = useAppSelector(state => state.notification.isLoading);
+  const notifications = useAppSelector(selectNotificationList);
+  const loading = useAppSelector(selectIsLoadingNotification);
   const { t } = useTranslation();
 
   useEffect(() => {

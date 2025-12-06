@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {  Modal,  View,  Text,  TouchableOpacity,  StyleSheet, Animated, Dimensions, Platform} from 'react-native';
-import {colors} from '@/utils';
+import {colors, ImagesSvg} from '@/utils';
+import IconSvg from './IconSvg';
 
 // Icons import
 const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;
@@ -131,7 +132,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
           
           {showCloseButton && (
             <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-              <IoniconsIcon name="close" size={20} color="#fff" />
+              <IconSvg xml={ImagesSvg.icClose} width={32} height={32}/>
             </TouchableOpacity>
           )}
         </Animated.View>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 16,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -170,18 +171,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: 16,
     marginBottom: 4,
   },
   message: {
-    color: '#fff',
+    color: colors.white,
     fontSize: 14,
     opacity: 0.9,
   },
   closeButton: {
-    padding: 5,
+    padding: 12,
     marginLeft: 8,
   },
   actionButton: {
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   actionText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: '600',
     fontSize: 12,
   }

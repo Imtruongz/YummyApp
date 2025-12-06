@@ -5,6 +5,7 @@ import {
   addFavoriteFoodAPI, 
   deleteFavoriteFoodAPI 
 } from './favoriteThunk';
+import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: FavoriteFoodState = {
   favoriteFoodList: [],
@@ -18,50 +19,33 @@ const favoriteSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     // Get all favorite foods
-    builder.addCase(getAllFavoriteFoodsAPI.pending, state => {
-      state.isLoadingFavorite = true;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(getAllFavoriteFoodsAPI.fulfilled, (state, action) => {
-      state.favoriteFoodList = action.payload;
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(getAllFavoriteFoodsAPI.rejected, state => {
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = true;
+    createAsyncThunkHandler(builder, getAllFavoriteFoodsAPI, {
+      loadingKey: 'isLoadingFavorite',
+      onFulfilled: (state, action) => {
+        state.favoriteFoodList = action.payload;
+      },
     });
     
-    // Add favorite food
-    builder.addCase(addFavoriteFoodAPI.pending, state => {
-      state.isLoadingFavorite = true;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(addFavoriteFoodAPI.fulfilled, (state, action) => {
-      state.favoriteFoodList.push(action.payload);
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(addFavoriteFoodAPI.rejected, state => {
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = true;
+    // Add favorite food - using upsert pattern
+    createAsyncThunkHandler(builder, addFavoriteFoodAPI, {
+      loadingKey: 'isLoadingFavorite',
+      onFulfilled: (state, action) => {
+        const favId = action.payload.favoriteFoodId;
+        state.favoriteFoodList = state.favoriteFoodList.filter(
+          fav => fav.favoriteFoodId !== favId
+        );
+        state.favoriteFoodList.push(action.payload);
+      },
     });
     
     // Delete favorite food
-    builder.addCase(deleteFavoriteFoodAPI.pending, state => {
-      state.isLoadingFavorite = true;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(deleteFavoriteFoodAPI.fulfilled, (state, action) => {
-      state.favoriteFoodList = state.favoriteFoodList.filter(
-        favorite => favorite.favoriteFoodId !== action.payload.favoriteFoodId
-      );
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = false;
-    });
-    builder.addCase(deleteFavoriteFoodAPI.rejected, state => {
-      state.isLoadingFavorite = false;
-      state.isErrorFavorite = true;
+    createAsyncThunkHandler(builder, deleteFavoriteFoodAPI, {
+      loadingKey: 'isLoadingFavorite',
+      onFulfilled: (state, action) => {
+        state.favoriteFoodList = state.favoriteFoodList.filter(
+          favorite => favorite.favoriteFoodId !== action.payload.favoriteFoodId
+        );
+      },
     });
   },
 });

@@ -7,6 +7,12 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
 import { getFoodByCategoryAPI } from '@/redux/slices/food/foodThunk';
+import {
+  selectCategoryList,
+  selectIsLoadingCategory,
+  selectCategoryFoodList,
+  selectIsLoadingFood,
+} from '@/redux/selectors';
 
 import api from '@/api/config';
 import { HomeHeader, CustomInput } from '@/components'
@@ -17,7 +23,8 @@ const SearchPage = () => {
   const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const { categoryList, isLoadingCategory } = useAppSelector(state => state.categories);
+  const categoryList = useAppSelector(selectCategoryList);
+  const isLoadingCategory = useAppSelector(selectIsLoadingCategory);
   type FoodResult = {
     foodId: string;
     foodName: string;
@@ -26,7 +33,8 @@ const SearchPage = () => {
   };
   const [allFoods, setAllFoods] = useState<FoodResult[]>([]);
   const [results, setResults] = useState<FoodResult[]>([]);
-  const { categoryFoodList, isLoadingFood } = useAppSelector(state => state.food);
+  const categoryFoodList = useAppSelector(selectCategoryFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [isCategorySearch, setIsCategorySearch] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<{ id: string, name: string } | null>(null);
 

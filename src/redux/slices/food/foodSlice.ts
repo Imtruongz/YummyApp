@@ -8,6 +8,7 @@ import {
   getFoodByCategoryAPI,
 } from './foodThunk';
 import {foodState} from './types';
+import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: foodState = {
   foodList: [],
@@ -29,123 +30,66 @@ const foodSlice = createSlice({
   },
   extraReducers(builder) {
     // Get all food
-    builder.addCase(getAllFoodAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
+    createAsyncThunkHandler(builder, getAllFoodAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        state.foodList = action.payload;
+      },
     });
-    builder.addCase(getAllFoodAPI.fulfilled, (state, action) => {
-      state.foodList = action.payload;
-      state.isLoadingFood = false;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getAllFoodAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
-    });
+
     // Get food by id
-    builder.addCase(getFoodByIdAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getFoodByIdAPI.fulfilled, (state, action) => {
-      if (action.payload.isViewMode) {
-        state.viewedUserFoodList = action.payload.data || [];
-      } else {
-        state.userFoodList = action.payload.data || [];
-      }
-      state.isLoadingFood = false;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getFoodByIdAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
-    });
-    // Add food
-    builder.addCase(addFoodAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
-    });
-    builder.addCase(
-      addFoodAPI.fulfilled,
-      (state, action) => {
-        if (action.payload) {
-          // Kiểm tra xem đã có trong danh sách chưa để tránh trùng lặp
-          const foodId = action.payload.foodId;
-          const foodExists = state.foodList.some(food => food.foodId === foodId);
-          if (!foodExists) {
-            state.foodList.push(action.payload);
-          }
-          
-          const userFoodExists = state.userFoodList.some(food => food.foodId === foodId);
-          if (!userFoodExists) {
-            state.userFoodList.push(action.payload);
-          }
+    createAsyncThunkHandler(builder, getFoodByIdAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        if (action.payload.isViewMode) {
+          state.viewedUserFoodList = action.payload.data || [];
+        } else {
+          state.userFoodList = action.payload.data || [];
         }
-        state.isLoadingFood = false;
-        state.isErrorFood = false;
       },
-    );
-    builder.addCase(addFoodAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
     });
-    // Delete the food
-    builder.addCase(deleteFoodAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
-    });
-    builder.addCase(
-      deleteFoodAPI.fulfilled,
-      (state, action) => {
-        state.foodList = state.foodList.filter(
-          food => food.foodId !== action.payload,
-        );
-        state.userFoodList = state.userFoodList.filter(
-          food => food.foodId !== action.payload,
-        );
 
-        state.isLoadingFood = false;
-        state.isErrorFood = false;
+    // Add food - using upsert pattern to prevent duplicates
+    createAsyncThunkHandler(builder, addFoodAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        if (action.payload) {
+          const foodId = action.payload.foodId;
+          
+          // Upsert pattern - remove if exists, then add
+          state.foodList = state.foodList.filter(food => food.foodId !== foodId);
+          state.foodList.push(action.payload);
+          
+          state.userFoodList = state.userFoodList.filter(food => food.foodId !== foodId);
+          state.userFoodList.push(action.payload);
+        }
       },
-    );
+    });
 
-    builder.addCase(deleteFoodAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
+    // Delete food
+    createAsyncThunkHandler(builder, deleteFoodAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        const foodId = action.payload;
+        state.foodList = state.foodList.filter(food => food.foodId !== foodId);
+        state.userFoodList = state.userFoodList.filter(food => food.foodId !== foodId);
+      },
     });
-    //Get detail food
-    builder.addCase(getDetailFoodAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
-      state.selectedFood = null;
-    });
-    builder.addCase(getDetailFoodAPI.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.selectedFood = action.payload;
-      } else {
-        state.selectedFood = null;
-      }
-      state.isLoadingFood = false;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getDetailFoodAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
+
+    // Get detail food
+    createAsyncThunkHandler(builder, getDetailFoodAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        state.selectedFood = action.payload || null;
+      },
     });
 
     // Get food by category
-    builder.addCase(getFoodByCategoryAPI.pending, state => {
-      state.isLoadingFood = true;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getFoodByCategoryAPI.fulfilled, (state, action) => {
-      state.categoryFoodList = action.payload || [];
-      state.isLoadingFood = false;
-      state.isErrorFood = false;
-    });
-    builder.addCase(getFoodByCategoryAPI.rejected, state => {
-      state.isLoadingFood = false;
-      state.isErrorFood = true;
+    createAsyncThunkHandler(builder, getFoodByCategoryAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        state.categoryFoodList = action.payload || [];
+      },
     });
   },
 });

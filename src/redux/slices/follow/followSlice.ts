@@ -52,41 +52,79 @@ const getDefaultUserFollowInfo = (): UserFollowInfo => ({
   error: null,
 });
 
+/**
+ * Helper to handle pending state for all follow actions
+ */
+const handleFollowPending = (state: FollowState, action: AnyAction) => {
+  const userId = getUserIdFromAction(action);
+  if (!userId) return;
+  state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
+  state.byUserId[userId].loading = true;
+  state.byUserId[userId].error = null;
+};
+
+/**
+ * Helper to handle rejected state for all follow actions
+ */
+const handleFollowRejected = (state: FollowState, action: AnyAction) => {
+  const userId = getUserIdFromAction(action);
+  if (!userId) return;
+  state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
+  state.byUserId[userId].loading = false;
+  state.byUserId[userId].error = action.payload || action.error?.message || 'Error';
+};
+
+/**
+ * Helper to handle fulfilled state for all follow actions
+ */
+const handleFollowFulfilled = (state: FollowState, action: AnyAction) => {
+  const userId = getUserIdFromAction(action);
+  if (!userId) return;
+  state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
+  state.byUserId[userId].loading = false;
+};
+
 const followSlice = createSlice({
   name: 'follow',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Handle specific API responses
     builder
       .addCase(isFollowingAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].isFollowing = action.payload;
+        state.byUserId[userId].loading = false;
       })
       .addCase(getFollowersAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].followers = action.payload;
+        state.byUserId[userId].loading = false;
       })
       .addCase(getFollowingAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].following = action.payload;
+        state.byUserId[userId].loading = false;
       })
       .addCase(countFollowersAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].followerCount = action.payload;
+        state.byUserId[userId].loading = false;
       })
       .addCase(countFollowingAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].followingCount = action.payload;
+        state.byUserId[userId].loading = false;
       })
       .addCase(followUserAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
@@ -94,6 +132,7 @@ const followSlice = createSlice({
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].isFollowing = true;
         state.byUserId[userId].followerCount += 1;
+        state.byUserId[userId].loading = false;
       })
       .addCase(unfollowUserAPI.fulfilled, (state, action) => {
         const userId = getUserIdFromAction(action);
@@ -101,35 +140,22 @@ const followSlice = createSlice({
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
         state.byUserId[userId].isFollowing = false;
         state.byUserId[userId].followerCount = Math.max(0, state.byUserId[userId].followerCount - 1);
+        state.byUserId[userId].loading = false;
       })
+      // Handle pending for all follow actions
       .addMatcher(
         (action: AnyAction) => action.type.startsWith('follow/') && action.type.endsWith('/pending'),
-        (state, action: AnyAction) => {
-          const userId = getUserIdFromAction(action);
-          if (!userId) return;
-          state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
-          state.byUserId[userId].loading = true;
-          state.byUserId[userId].error = null;
-        }
+        handleFollowPending
       )
+      // Handle rejected for all follow actions
       .addMatcher(
         (action: AnyAction) => action.type.startsWith('follow/') && action.type.endsWith('/rejected'),
-        (state, action: AnyAction) => {
-          const userId = getUserIdFromAction(action);
-          if (!userId) return;
-          state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
-          state.byUserId[userId].loading = false;
-          state.byUserId[userId].error = action.payload || action.error?.message || 'Error';
-        }
+        handleFollowRejected
       )
+      // Handle fulfilled (generic) for all follow actions
       .addMatcher(
         (action: AnyAction) => action.type.startsWith('follow/') && action.type.endsWith('/fulfilled'),
-        (state, action: AnyAction) => {
-          const userId = getUserIdFromAction(action);
-          if (!userId) return;
-          state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
-          state.byUserId[userId].loading = false;
-        }
+        handleFollowFulfilled
       );
   },
 });

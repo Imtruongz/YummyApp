@@ -1,6 +1,7 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {getAllCategoriesAPI} from './categoryThunk';
-import {categoryState} from './types';
+import {categoryState, category} from './types';
+import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: categoryState = {
   categoryList: [],
@@ -13,18 +14,10 @@ const categoriesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(getAllCategoriesAPI.pending, state => {
-      state.isLoadingCategory = true;
-      state.isErrorCategory = false;
-    });
-    builder.addCase(getAllCategoriesAPI.fulfilled, (state, action) => {
-      state.categoryList = action.payload;
-      state.isLoadingCategory = false;
-      state.isErrorCategory = false;
-    });
-    builder.addCase(getAllCategoriesAPI.rejected, state => {
-      state.isLoadingCategory = false;
-      state.isErrorCategory = true;
+    createAsyncThunkHandler(builder, getAllCategoriesAPI, {
+      onFulfilled: (state, action: PayloadAction<category[]>) => {
+        state.categoryList = action.payload;
+      },
     });
   },
 });

@@ -7,10 +7,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
-import { RootState } from '@/redux/store';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
 import { countFollowersAPI, countFollowingAPI } from '@/redux/slices/follow/followThunk';
+import {
+  selectUser,
+  selectIsLoadingUser,
+  selectUserFollowInfo,
+  selectFollowerCount,
+  selectFollowingCount,
+  selectUserFoodList,
+  selectAuthError,
+} from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, CustomAvatar, FirstRoute, SecondRoute, Typography, ProfileSkeleton } from '@/components'
 import {img, colors} from '@/utils'
@@ -72,12 +80,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
     ]);
   }, [t]);
 
-  const { user, isLoadingUser, isErrorUser } = useAppSelector((state: RootState) => state.auth);
-  const { userFoodList } = useAppSelector((state: RootState) => state.food);
-  const followInfo = useAppSelector((state: RootState) => state.follow.byUserId[userId] || {});
-  const followerCount = followInfo.followerCount ?? 0;
-  const followingCount = followInfo.followingCount ?? 0;
-  const followLoading = followInfo.loading ?? false;
+  const user = useAppSelector(selectUser);
+  const isLoadingUser = useAppSelector(selectIsLoadingUser);
+  const userFoodList = useAppSelector(selectUserFoodList);
+  const followInfo = useAppSelector(selectUserFollowInfo(userId));
+  const followerCount = followInfo?.followerCount ?? 0;
+  const followingCount = followInfo?.followingCount ?? 0;
+  const followLoading = followInfo?.loading ?? false;
+  const isErrorUser = useAppSelector(selectAuthError);
   console.log('ProfilePage - followerCount:', followerCount, 'followingCount:', followingCount);
 
   const renderTabBar = (

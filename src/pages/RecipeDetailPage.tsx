@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 import Toast from 'react-native-toast-message';
@@ -8,16 +8,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import { MMKV } from 'react-native-mmkv';
 
-import { getAllCommentFromFoodIdAPI, addCommentToFoodAPI, deleteCommentAPI, getAverageRatingAPI, addOrUpdateRatingAPI, getUserRatingAPI} from '@/redux/slices/review/reviewThunk';
-import { RootState } from '@/redux/store';
+import { getAllCommentFromFoodIdAPI, addCommentToFoodAPI, deleteCommentAPI } from '@/redux/slices/review/reviewThunk';
+import { getAverageRatingAPI, addOrUpdateRatingAPI, getUserRatingAPI } from '@/redux/slices/rating/ratingThunk';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
 import { review } from '@/redux/slices/review/types';
 import { addFavoriteFoodAPI } from '@/redux/slices/favorite/favoriteThunk';
 import { getDetailFoodAPI, getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
+import {
+  selectSelectedFood,
+  selectUserFoodList,
+  selectIsLoadingFood,
+  selectFoodReviewList,
+  selectIsLoadingReview,
+  selectUser,
+  selectIsLoadingUser,
+} from '@/redux/selectors';
 
 import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
-import {img, colors, ImagesSvg, formatDate, formatDateTime} from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime } from '@/utils'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
@@ -74,7 +83,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
         await dispatch(deleteCommentAPI(currentItem.reviewId)).unwrap();
         // Refresh comments list sau khi xóa
         await dispatch(getAllCommentFromFoodIdAPI(foodId));
-        
+
         Toast.show({
           type: 'success',
           text1: 'Thành công',
@@ -129,13 +138,15 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   };
 
   const dispatch = useAppDispatch();
-  const { selectedFood, userFoodList, isLoadingFood } = useAppSelector(
-    (state: RootState) => state.food,
-  );
+  const selectedFood = useAppSelector(selectSelectedFood);
+  const userFoodList = useAppSelector(selectUserFoodList);
+  const isLoadingFood = useAppSelector(selectIsLoadingFood);
 
-  const { foodReviewList, isLoadingReview } = useAppSelector((state: RootState) => state.review);
+  const foodReviewList = useAppSelector(selectFoodReviewList);
+  const isLoadingReview = useAppSelector(selectIsLoadingReview);
 
-  const { user, isLoadingUser } = useAppSelector((state: RootState) => state.auth);
+  const user = useAppSelector(selectUser);
+  const isLoadingUser = useAppSelector(selectIsLoadingUser);
 
   const [iconColor, setIconColor] = useState<string>(colors.light);
 
@@ -156,20 +167,33 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
 
     setCommentError(null);
     setIsAddingComment(true);
-    dispatch(getAllCommentFromFoodIdAPI(foodId));
-    setAverageRating
     try {
-      const result = await dispatch(
+      await dispatch(
         addCommentToFoodAPI({
           foodId: foodId,
           userId: myUserId,
           reviewText: commentText.trim(),
         }),
-      );
+      ).unwrap();
+      
       setCommentText('');
+      // Refresh comments list after adding
       await dispatch(getAllCommentFromFoodIdAPI(foodId));
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Thành công',
+        text2: 'Bình luận đã được thêm',
+        visibilityTime: 2000,
+      });
     } catch (error) {
       setCommentError('Failed to add the comment. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: 'Lỗi',
+        text2: 'Không thể thêm bình luận, vui lòng thử lại',
+        visibilityTime: 2000,
+      });
     } finally {
       setIsAddingComment(false);
     }

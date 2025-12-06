@@ -9,6 +9,7 @@ import {
   changePasswordAPI,
   facebookLoginAPI,
 } from './authThunk';
+import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: AuthState = {
   user: null,
@@ -29,121 +30,57 @@ const authSlice = createSlice({
     }
   },
   extraReducers: builder => {
-    //Login
-    builder.addCase(userLoginAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(
-      userLoginAPI.fulfilled,
-      (state, action: PayloadAction<User>) => {
+    // Login
+    createAsyncThunkHandler(builder, userLoginAPI, {
+      onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
-        state.isLoadingUser = false;
-        state.isErrorUser = false;
       },
-    );
-    builder.addCase(userLoginAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
     });
-    //Register
-    builder.addCase(userRegisterAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(
-      userRegisterAPI.fulfilled,
-      (state, action: PayloadAction<User>) => {
+
+    // Register
+    createAsyncThunkHandler(builder, userRegisterAPI, {
+      onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
-        state.isLoadingUser = false;
-        state.isErrorUser = false;
       },
-    );
-    builder.addCase(userRegisterAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
     });
-    //Get User By Id
-    builder.addCase(getUserByIdAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(
-      getUserByIdAPI.fulfilled,
-      (state, action: PayloadAction<{ data: User, isViewMode?: boolean }>) => {
+
+    // Get User By Id
+    createAsyncThunkHandler(builder, getUserByIdAPI, {
+      onFulfilled: (state, action: PayloadAction<{ data: User, isViewMode?: boolean }>) => {
         if (action.payload.isViewMode) {
           state.viewedUser = action.payload.data;
         } else {
           state.user = action.payload.data;
         }
-        state.isLoadingUser = false;
-        state.isErrorUser = false;
       },
-    );
-    builder.addCase(getUserByIdAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
-    });
-    //Update User
-    builder.addCase(userUpdateAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(userUpdateAPI.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
-    builder.addCase(userUpdateAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
-    });
-    //Change Password
-    builder.addCase(changePasswordAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(changePasswordAPI.fulfilled, (state, action) => {
-      state.user = action.payload;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
-    builder.addCase(changePasswordAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
     });
 
-    //Delete User
-    builder.addCase(userDeleteAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(userDeleteAPI.fulfilled, state => {
-      state.user = null;
-      state.isLoadingUser = false;
-      state.isErrorUser = false;
-    });
-    builder.addCase(userDeleteAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
-    });
-
-    //Facebook Login
-    builder.addCase(facebookLoginAPI.pending, state => {
-      state.isLoadingUser = true;
-      state.isErrorUser = false;
-    });
-    builder.addCase(
-      facebookLoginAPI.fulfilled,
-      (state, action: PayloadAction<User>) => {
+    // Update User
+    createAsyncThunkHandler(builder, userUpdateAPI, {
+      onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
-        state.isLoadingUser = false;
-        state.isErrorUser = false;
       },
-    );
-    builder.addCase(facebookLoginAPI.rejected, state => {
-      state.isLoadingUser = false;
-      state.isErrorUser = true;
+    });
+
+    // Change Password
+    createAsyncThunkHandler(builder, changePasswordAPI, {
+      onFulfilled: (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+      },
+    });
+
+    // Delete User
+    createAsyncThunkHandler(builder, userDeleteAPI, {
+      onFulfilled: (state) => {
+        state.user = null;
+      },
+    });
+
+    // Facebook Login
+    createAsyncThunkHandler(builder, facebookLoginAPI, {
+      onFulfilled: (state, action: PayloadAction<User>) => {
+        state.user = action.payload;
+      },
     });
   },
 });

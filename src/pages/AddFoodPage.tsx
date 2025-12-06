@@ -9,11 +9,11 @@ import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { RootState } from '@/redux/store';
 import { addFoodAPI } from '../redux/slices/food/foodThunk';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import { foodPayload } from '../redux/slices/food/types';
+import { selectCategoryList } from '@/redux/selectors';
 
 import { CustomButton, HomeHeader, CustomTitle, IconSvg, CustomInput } from '@/components'
 import {img, colors, ImagesSvg} from '@/utils'
@@ -73,7 +73,7 @@ const AddFoodPage = ({ navigation }: any) => {
   const [steps, setSteps] = useState<string[]>(['']);
   const [originalImageUri, setOriginalImageUri] = useState<string>('');
 
-  const { categoryList } = useAppSelector((state: RootState) => state.categories);
+  const categoryList = useAppSelector(selectCategoryList);
 
   const handleAddIngredient = () => {
     setIngredients([...ingredients, '']);

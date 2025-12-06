@@ -8,6 +8,8 @@ import {img, colors} from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getFollowersAPI, getFollowingAPI } from '@/redux/slices/follow/followThunk';
+import { selectFollowers, selectFollowing, selectFollowLoading } from '@/redux/selectors';
+
 interface UserItemProps {
   user: {
     userId: string;
@@ -42,11 +44,10 @@ const FollowersFollowingListScreen: React.FC = () => {
   const dispatch = useAppDispatch();
   const { userId, type } = route.params as { userId: string; type: 'followers' | 'following' };
 
-  const list = useAppSelector((state) => {
-    if (type === 'followers') return state.follow.byUserId[userId]?.followers;
-    return state.follow.byUserId[userId]?.following;
-  }) || [];
-  const loading = useAppSelector((state) => state.follow.byUserId[userId]?.loading ?? false);
+  const followers = useAppSelector(selectFollowers(userId));
+  const following = useAppSelector(selectFollowing(userId));
+  const list = type === 'followers' ? followers : following;
+  const loading = useAppSelector(selectFollowLoading(userId));
 
   useEffect(() => {
     if (type === 'followers') {

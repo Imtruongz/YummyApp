@@ -5,11 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ImagesSvg, colors } from '@/utils'
-import { RootState, AppDispatch } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { resetConversations} from '@/redux/slices/chatHistory/chatHistorySlice';
 import ChatHistoryItem from '@/pages/YummyAI/components/ChatHistoryItem';
 import { getUserConversationsAPI, deleteConversationAPI} from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { IconSvg, HomeHeader, CustomLoadingSpinner } from '@/components'
+import {
+  selectConversations,
+  selectIsLoadingConversations,
+  selectChatPage,
+  selectChatHasMore,
+  selectChatTotalCount,
+} from '@/redux/selectors';
 
 interface ChatHistoryScreenProps {
   navigation: any;
@@ -18,13 +25,11 @@ interface ChatHistoryScreenProps {
 const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    conversations,
-    isLoadingConversations,
-    page,
-    hasMore,
-    totalCount,
-  } = useSelector((state: RootState) => state.chatHistory);
+  const conversations = useSelector(selectConversations);
+  const isLoadingConversations = useSelector(selectIsLoadingConversations);
+  const page = useSelector(selectChatPage);
+  const hasMore = useSelector(selectChatHasMore);
+  const totalCount = useSelector(selectChatTotalCount);
 
   const [searchText, setSearchText] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);

@@ -8,6 +8,7 @@ import authSlice from './slices/auth/authSlice';
 import userSlice from './slices/auth/userSlice';
 import categoriesSlice from './slices/category/categoriesSlice';
 import reviewSlice from './slices/review/reviewSlice';
+import ratingSlice from './slices/rating/ratingSlice';
 import favoriteSlice from './slices/favorite/favoriteSlice';
 import followSlice from './slices/follow/followSlice';
 import notificationSlice from './slices/notification/notificationSlice';
@@ -20,6 +21,7 @@ export const store = configureStore({
     user: userSlice,
     categories: categoriesSlice,
     review: reviewSlice,
+    rating: ratingSlice,
     favorite: favoriteSlice,
     follow: followSlice,
     notification: notificationSlice,
