@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {food, foodPayload} from './types';
-import api from '../../../api/config';
+import api from '@/api/config';
 
 export const getAllFoodAPI = createAsyncThunk(
   'food/getAllFoodAPI',
@@ -10,20 +10,14 @@ export const getAllFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response.data || response.data.length === 0) {
-        console.log('No data returned from the server for getAllFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Error from getAllFoodAPI',
-        error.message,
-        'Response data error from getAllFoodAPI',
-        error.response?.data,
-      );
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -40,13 +34,10 @@ export const getFoodByIdAPI = createAsyncThunk(
         isViewMode
       };
     } catch (error: any) {
-      console.log(
-        'Errorrrr fooood:',
-        error.message,
-        'Data',
-        error.response?.data,
-      );
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -59,17 +50,14 @@ export const addFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response || !response.data) {
-        console.log('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Errorrrr fooood:',
-        error.message,
-        'Data',
-        error.response?.data,
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -80,13 +68,14 @@ export const deleteFoodAPI = createAsyncThunk(
     try {
       const response = await api.delete(`/foods/delete/${foodId}`);
       if (!response || !response.data) {
-        console.log('No data returned from the server for deleteFoodAPI');
-        return foodId;
+        return rejectWithValue('No data returned from the server');
       }
       return foodId;
     } catch (error: any) {
-      console.log('Error deleting food:', error.message);
-      return rejectWithValue(error.response?.data || 'Failed to delete food');
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to delete food';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -99,12 +88,14 @@ export const getDetailFoodAPI = createAsyncThunk(
         signal: thunkAPI.signal,
       });
       if (!response || !response.data) {
-        console.log('No data returned from the server for addFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.log('Error from getDetailFoodAPI:', error.message);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -120,19 +111,14 @@ export const getFoodByCategoryAPI = createAsyncThunk(
         },
       );
       if (!response || !response.data) {
-        console.log(
-          'No data returned from the server for getFoodByCategoryAPI',
-        );
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Error food from getFoodByCategoryAPI:',
-        error.message,
-        'Data from getFoodByCategoryAPI',
-        error.response?.data,
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );

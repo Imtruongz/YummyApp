@@ -10,27 +10,27 @@ export type AuthStackParamList = {
 };
 
 export type MainStackParamList = {
-  HomePage: undefined;
-  ProfilePage: { userId: string };
+  HomeScreen: undefined;
+  ProfileScreen: { userId: string };
   Settings: undefined;
   HomeNavigator: undefined;
   ProfileNavigator: undefined;
-  AddFoodPage: undefined;
-  SearchPage: undefined;
-  SettingPage: undefined;
+  NewFoodScreen: undefined;
+  SearchScreen: undefined;
+  SettingScreen: undefined;
   SettingNavigator: undefined;
   NotificationsScreen: undefined;
 };
 
 export type HomeStack = {
-  HomePage: undefined;
-  AddFoodPage: undefined;
-  ListFoodPage: undefined;
-  RecipeDetailPage: {
+  HomeScreen: undefined;
+  NewFoodScreen: undefined;
+  ListFoodScreen: undefined;
+  FoodDetailScreen: {
     foodId: string;
     userId: string;
   };
-  ListFoodByCategoriesPage: {
+  CategoriesScreen: {
     categoryId?: string;
   };
   ListFoodByUserPage: {
@@ -50,17 +50,17 @@ export type HomeStack = {
 }
 
 export type ProfileStack = {
-  SettingPage: undefined;
-  ProfilePage: {
+  SettingScreen: undefined;
+  ProfileScreen: {
     email: string;
   };
-  ChangePasswordPage: undefined,
-  SettingProfilePage: undefined,
-  RecipeDetailPage: {
+  ChangePasswordScreen: undefined,
+  SettingProfileScreen: undefined,
+  FoodDetailScreen: {
     foodId: string;
     userId: string;
   };
-  FollowersFollowingListScreen: {
+  FollowScreen: {
     userId: string;
     type: 'followers' | 'following';
   };

@@ -1,14 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, Button as RNButton} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { RootStackParamList } from '../../../android/types/StackNavType';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import '../languages/i18n';
+import '../../languages/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
-import { changeLanguage } from '../languages/i18n';
+import { changeLanguage } from '../../languages/i18n';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
@@ -16,9 +16,9 @@ import { colors, ImagesSvg} from '@/utils'
 
 const storage = new MMKV();
 interface SettingPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'SettingPage'> { }
+  extends NativeStackScreenProps<RootStackParamList, 'SettingScreen'> { }
 
-const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
+const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
   const { signOut } = useContext(AuthContext);
   const { t, i18n } = useTranslation();
 
@@ -69,12 +69,12 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
           <SettingButton
             title={t('setting_profile_setting')}
             navigation={navigation}
-            targetScreen="SettingProfilePage"
+            targetScreen="SettingProfileScreen"
           />
           <SettingButton
             title={t('setting_Password')}
             navigation={navigation}
-            targetScreen="ChangePasswordPage"
+            targetScreen="ChangePasswordScreen"
           />
           <SettingButton
             title={t('bank_accounts')}
@@ -160,7 +160,7 @@ const SettingPage: React.FC<SettingPageProps> = ({ navigation }) => {
   );
 };
 
-export default SettingPage;
+export default SettingScreen;
 
 const styles = StyleSheet.create({
   container: {

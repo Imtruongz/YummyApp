@@ -5,8 +5,8 @@ import {colors} from '@/utils';
 import HomeNavigator from './HomeNavigator.tsx';
 import ProfileNavigator from './ProfileNavigator.tsx';
 import { MainStackParamList } from './types.ts';
-import AddFoodPage from '../pages/AddFoodPage.tsx';
-import SearchPage from '../pages/SearchPage.tsx';
+import NewFoodScreen from '../pages/NewFoodScreen.tsx';
+import SearchScreen from '../pages/SearchScreen.tsx';
 import SettingNavigator from './SettingNavigator';
 import IconSvg from '../components/IconSvg.tsx';
 import { ImagesSvg } from '../utils/ImageSvg.tsx';
@@ -31,8 +31,8 @@ const BottomTab = () => {
         }}
       />
       <Tab.Screen
-        name="SearchPage"
-        component={SearchPage}
+        name="SearchScreen"
+        component={SearchScreen}
         options={{
           tabBarLabel: '',
           tabBarIcon: ({color}) => (
@@ -41,8 +41,8 @@ const BottomTab = () => {
         }}
       />
       <Tab.Screen
-        name="AddFoodPage"
-        component={AddFoodPage}
+        name="NewFoodScreen"
+        component={NewFoodScreen}
         options={{
           tabBarLabel: '',
           tabBarIcon: () => (
@@ -52,7 +52,7 @@ const BottomTab = () => {
         listeners={({ navigation }: any) => ({
           tabPress: (e: any) => {
             e.preventDefault();
-            navigation.navigate('AddFoodPage');
+            navigation.navigate('NewFoodScreen');
           },
         })}
       />
@@ -88,11 +88,11 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   if (homeRoute && homeRoute.state && homeRoute.state.routes) {
     const nested = homeRoute.state.routes[homeRoute.state.index];
     if (nested && (
-      nested.name === 'RecipeDetailPage' ||
-      nested.name === 'AddFoodPage' ||
-      nested.name === 'ListFoodByCategoriesPage' ||
+      nested.name === 'FoodDetailScreen' ||
+      nested.name === 'NewFoodScreen' ||
+      nested.name === 'CategoriesScreen' ||
       nested.name === 'ListFoodByUserPage' ||
-      nested.name === 'ListFoodPage' ||
+      nested.name === 'ListFoodScreen' ||
       nested.name === 'PaymentScreen' ||
       nested.name === 'PaymentSuccessScreen' || // Ẩn tab bar ở màn thành công
       nested.name === 'YummyAIScreen' ||
@@ -107,8 +107,8 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   if (settingRoute && settingRoute.state && settingRoute.state.routes) {
     const nested = settingRoute.state.routes[settingRoute.state.index];
     if (nested && (
-      nested.name === 'SettingProfilePage' ||
-      nested.name === 'ChangePasswordPage' ||
+      nested.name === 'SettingProfileScreen' ||
+      nested.name === 'ChangePasswordScreen' ||
       nested.name === 'PaymentScreen' ||
       nested.name === 'BankAccountScreen'
     )) {
@@ -120,18 +120,18 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
   if (profileRoute && profileRoute.state && profileRoute.state.routes) {
     const nested = profileRoute.state.routes[profileRoute.state.index];
     if (nested && (
-      nested.name === 'RecipeDetailPage' ||
-      nested.name === 'AddFoodPage' ||
-      nested.name === 'ListFoodByCategoriesPage' ||
+      nested.name === 'FoodDetailScreen' ||
+      nested.name === 'NewFoodScreen' ||
+      nested.name === 'CategoriesScreen' ||
       nested.name === 'ListFoodByUserPage' ||
-      nested.name === 'ListFoodPage' ||
-      nested.name === 'FollowersFollowingListScreen'
+      nested.name === 'ListFoodScreen' ||
+      nested.name === 'FollowScreen'
     )) {
       hideTabBar = true;
     }
   }
-  // Kiểm tra nếu tab hiện tại là AddFoodPage (tab giữa)
-  if (state.routes[state.index]?.name === 'AddFoodPage') {
+  // Kiểm tra nếu tab hiện tại là NewFoodScreen (tab giữa)
+  if (state.routes[state.index]?.name === 'NewFoodScreen') {
     hideTabBar = true;
   }
   if (hideTabBar) return null;
@@ -156,7 +156,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             navigation.navigate(route.name);
           }
         };
-        if (route.name === 'AddFoodPage') {
+        if (route.name === 'NewFoodScreen') {
           return (
             <TouchableOpacity
               key={route.key}

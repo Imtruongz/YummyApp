@@ -40,7 +40,7 @@ const StatsCard: React.FC<InfoItemProps> = ({ number, label }) => (
   </View>
 );
 
-const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
+const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
   route,
   navigation,
 }) => {
@@ -110,7 +110,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   }, [loadData]);
 
   const handleFoodPress = useCallback((foodId: string, userId: string) => {
-    navigation.navigate('RecipeDetailPage', { foodId, userId });
+    navigation.navigate('FoodDetailScreen', { foodId, userId });
   }, [navigation]);
 
 
@@ -146,16 +146,16 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   // Kiểm tra thông tin ngân hàng của người dùng trước khi chuyển đến màn hình Donate
   const handleDonatePress = useCallback(async () => {
     try {
-      console.log('[ListFoodByUser] userId before checking bank account:', userId);
-      console.log('[ListFoodByUser] User info:', viewedUser);
+      console.log('[UsersProfileScreen] userId before checking bank account:', userId);
+      console.log('[UsersProfileScreen] User info:', viewedUser);
       
       // Kiểm tra xem người dùng đích có tài khoản ngân hàng hay không
       // Loại bỏ dấu / ở đầu vì baseURL đã có /api
       const response = await api.get(`bank-accounts/${userId}`);
-      console.log('[ListFoodByUser] Bank account check response:', response.data);
+      console.log('[UsersProfileScreen] Bank account check response:', response.data);
       
       if (response.data && response.data.success && response.data.data) {
-        console.log('[ListFoodByUser] Navigating to PaymentScreen with userId:', userId);
+        console.log('[UsersProfileScreen] Navigating to PaymentScreen with userId:', userId);
         // Nếu có thông tin ngân hàng, chuyển đến màn hình PaymentScreen
         navigation.navigate('PaymentScreen', {
           amount: 0,
@@ -317,7 +317,7 @@ const ListFoodByUser: React.FC<ListFoodByUserPageProps> = ({
   );
 };
 
-export default ListFoodByUser;
+export default UsersProfileScreen;
 
 const styles = StyleSheet.create({
   container: {

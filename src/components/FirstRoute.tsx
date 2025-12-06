@@ -83,7 +83,7 @@ const FirstRoute = () => {
             item={item}
             onLongPress={() => showDialog(item)}
             onPress={() => {
-              navigation.navigate('RecipeDetailPage', {
+              navigation.navigate('FoodDetailScreen', {
                 foodId: item.foodId,
                 userId: item.userId,
               });

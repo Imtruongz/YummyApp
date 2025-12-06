@@ -108,7 +108,7 @@ const SecondRoute = () => {
               style={styles.item}
               onLongPress={() => showDialog(favorite.favoriteFoodId)}
               onPress={() => {
-                navigation.navigate('RecipeDetailPage', {
+                navigation.navigate('FoodDetailScreen', {
                   foodId: favorite.foodId,
                   userId: favorite.userId,
                 });

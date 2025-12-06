@@ -26,10 +26,10 @@ import {
 } from '@/redux/selectors';
 
 const storage = new MMKV();
-interface HomePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'HomePage'> { }
+interface HomeScreenProps
+  extends NativeStackScreenProps<RootStackParamList, 'HomeScreen'> { }
 
-const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
@@ -111,7 +111,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
               dotsPosition="outside"
               onBannerPress={(item) => {
                 if (item.link === '/explore') {
-                  navigation.navigate('ListFoodPage');
+                  navigation.navigate('ListFoodScreen');
                 }
               }}
             />
@@ -131,7 +131,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() =>
-                navigation.navigate('ListFoodByCategoriesPage', {
+                navigation.navigate('CategoriesScreen', {
                   categoryId: item.categoryId,
                 })
               }>
@@ -144,7 +144,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
         />
         {/* Daily Food Title */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('ListFoodPage')}
+          onPress={() => navigation.navigate('ListFoodScreen')}
           style={styles.titleContainer}>
           <CustomTitle title={t('home_daily_food')} />
           <CustomTitle style={styles.seeAll} title={t('home_see_all')} />
@@ -160,7 +160,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
             <Pressable
               style={styles.itemContainer}
               onPress={() =>
-                navigation.navigate('RecipeDetailPage', {
+                navigation.navigate('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
                 })
@@ -246,7 +246,7 @@ const HomePage: React.FC<HomePageProps> = ({ navigation }) => {
   );
 };
 
-export default HomePage;
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {

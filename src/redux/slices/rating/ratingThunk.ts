@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../api/config';
+import api from '@/api/config';
 import { RatingPayload, RatingStats, UserRating } from './types';
 
 // Get average rating for a food
@@ -15,10 +15,10 @@ export const getAverageRatingAPI = createAsyncThunk(
       );
       return response.data.data as RatingStats;
     } catch (error: any) {
-      console.log('Error from getAverageRatingAPI', error.message);
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -37,10 +37,10 @@ export const addOrUpdateRatingAPI = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: any) {
-      console.log('Error from addOrUpdateRatingAPI', error.message);
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -58,10 +58,10 @@ export const getUserRatingAPI = createAsyncThunk(
       );
       return response.data.data as UserRating;
     } catch (error: any) {
-      console.log('Error from getUserRatingAPI', error.message);
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );

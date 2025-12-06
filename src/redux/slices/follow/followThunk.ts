@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../api/config';
+import api from '@/api/config';
 
 export const followUserAPI = createAsyncThunk(
   'follow/followUserAPI',
@@ -8,7 +8,10 @@ export const followUserAPI = createAsyncThunk(
       const res = await api.post('/follow', { followerId, followingId });
       return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -20,7 +23,10 @@ export const unfollowUserAPI = createAsyncThunk(
       const res = await api.delete('/follow', { data: { followerId, followingId } });
       return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -32,7 +38,10 @@ export const isFollowingAPI = createAsyncThunk(
       const res = await api.get('/follow/status', { params: { followerId, followingId } });
       return res.data.isFollow;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -44,7 +53,10 @@ export const getFollowersAPI = createAsyncThunk(
       const res = await api.get(`/follow/followers/${userId}`);
       return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -56,7 +68,10 @@ export const getFollowingAPI = createAsyncThunk(
       const res = await api.get(`/follow/following/${userId}`);
       return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -68,7 +83,10 @@ export const countFollowersAPI = createAsyncThunk(
       const res = await api.get(`/follow/followers/${userId}/count`);
       return res.data.count;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -80,7 +98,10 @@ export const countFollowingAPI = createAsyncThunk(
       const res = await api.get(`/follow/following/${userId}/count`);
       return res.data.count;
     } catch (err: any) {
-      return rejectWithValue(err.response?.data || err.message);
+      const errorMessage = err.response?.data?.message || 
+                          err.message || 
+                          'Unexpected error occurred';
+      return rejectWithValue(errorMessage);
     }
   }
 );

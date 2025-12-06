@@ -1,5 +1,5 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import api from '../../../api/config';
+import api from '@/api/config';
 import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User, FacebookLoginPayload} from './types';
 
 export const userLoginAPI = createAsyncThunk(
@@ -11,7 +11,10 @@ export const userLoginAPI = createAsyncThunk(
         return response.data;
       }
     } catch (error: any) {
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Login failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -23,7 +26,10 @@ export const userRegisterAPI = createAsyncThunk(
       const response = await api.post('/users/register', payload);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Registration failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -35,7 +41,10 @@ export const userUpdateAPI = createAsyncThunk(
       const response = await api.patch<User>('/users/update', payload);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Update failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -47,7 +56,10 @@ export const changePasswordAPI = createAsyncThunk(
       const response = await api.patch<User>('/users/changePassword', payload);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Password change failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -59,7 +71,10 @@ export const userDeleteAPI = createAsyncThunk(
       const response = await api.delete('/users/delete');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Delete failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -74,7 +89,10 @@ export const getUserByIdAPI = createAsyncThunk(
         isViewMode
       };
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to fetch user';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -86,7 +104,10 @@ export const getAllUsers = createAsyncThunk(
       const response = await api.get('/users/getAll');
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to fetch users';
+      return rejectWithValue(errorMessage);
     }
   },
 );
@@ -98,7 +119,10 @@ export const facebookLoginAPI = createAsyncThunk(
       const response = await api.post('/users/facebook-login', payload);
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Facebook login failed';
+      return rejectWithValue(errorMessage);
     }
   },
 );

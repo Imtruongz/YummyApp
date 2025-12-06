@@ -13,7 +13,7 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
   }, [navigation]);
 
   const handleGoHome = () => {
-    navigation.navigate('HomePage');
+    navigation.navigate('HomeScreen');
   };
 
   return (

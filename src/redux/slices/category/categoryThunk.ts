@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {category} from './types';
-import api from '../../../api/config';
+import api from '@/api/config';
 
 export const getAllCategoriesAPI = createAsyncThunk(
   'categories/getAllCategoriesAPI',
@@ -11,20 +11,14 @@ export const getAllCategoriesAPI = createAsyncThunk(
       });
 
       if (!response.data || response.data.length === 0) {
-        console.log('No data returned from the server for getAllFoodAPI');
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Error from getAllCategoriesAPI:',
-        error.message,
-        'Data',
-        error.response?.data,
-      );
-      return thunkAPI.rejectWithValue(
-        'An error occurred while fetching categories',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'An error occurred while fetching categories';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );

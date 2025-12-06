@@ -37,7 +37,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress }) => (
   </TouchableOpacity>
 );
 
-const FollowersFollowingListScreen: React.FC = () => {
+const FollowScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute<any>();
   const navigation = useNavigation();
@@ -89,7 +89,7 @@ const FollowersFollowingListScreen: React.FC = () => {
   );
 };
 
-export default FollowersFollowingListScreen;
+export default FollowScreen;
 
 const styles = StyleSheet.create({
   container: {

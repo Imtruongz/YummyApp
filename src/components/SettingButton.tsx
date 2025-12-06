@@ -19,8 +19,8 @@ const SettingButton: React.FC<SettingButtonProps> = ({
 }) => {
   const defaultOnPress = () => {
     if (targetScreen) {
-      // Nếu là SettingProfilePage hoặc ChangePasswordPage thì navigate qua SettingNavigator
-      if (targetScreen === 'SettingProfilePage' || targetScreen === 'ChangePasswordPage') {
+      // Nếu là SettingProfileScreen hoặc ChangePasswordScreen thì navigate qua SettingNavigator
+      if (targetScreen === 'SettingProfileScreen' || targetScreen === 'ChangePasswordScreen') {
         navigation.navigate('SettingNavigator', { screen: targetScreen });
       } else {
         navigation.navigate(targetScreen);

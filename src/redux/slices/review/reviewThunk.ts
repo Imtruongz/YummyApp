@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {review, reviewPayload} from './types';
-import api from '../../../api/config';
+import api from '@/api/config';
 
 export const addCommentToFoodAPI = createAsyncThunk(
   'review/addCommentToFoodAPI',
@@ -14,23 +14,14 @@ export const addCommentToFoodAPI = createAsyncThunk(
         },
       );
       if (!response || !response.data) {
-        console.log(
-          'No data returned from the server for addCommentToFoodAPI',
-        );
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
-      console.log('Data from addCommentToFoodAPI:', response.data);
       return response.data;
     } catch (error: any) {
-      console.log(
-        'Error from addCommentToFoodAPI',
-        error.message,
-        'Response data error from addCommentToFoodAPI',
-        error.response?.data,
-      );
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -47,10 +38,10 @@ export const getAllCommentFromFoodIdAPI = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      console.log('Error from getAllCommentFromFoodIdAPI', error.message);
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
@@ -67,10 +58,10 @@ export const deleteCommentAPI = createAsyncThunk(
       );
       return response.data;
     } catch (error: any) {
-      console.log('Error from deleteCommentAPI', error.message.data);
-      return thunkAPI.rejectWithValue(
-        error.response?.data || 'Unexpected error occurred',
-      );
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Unexpected error occurred';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );

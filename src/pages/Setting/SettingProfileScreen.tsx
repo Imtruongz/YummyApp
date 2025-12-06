@@ -44,7 +44,7 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
   }
 };
 
-const SettingProfilePage = () => {
+const SettingProfileScreen = () => {
   const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
@@ -190,7 +190,7 @@ const SettingProfilePage = () => {
   );
 };
 
-export default SettingProfilePage;
+export default SettingProfileScreen;
 
 const styles = StyleSheet.create({
   container: {

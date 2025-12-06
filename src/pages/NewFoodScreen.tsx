@@ -51,7 +51,7 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
   }
 };
 
-const AddFoodPage = ({ navigation }: any) => {
+const NewFoodScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
   useLayoutEffect(() => {
     navigation?.getParent?.()?.setOptions({
@@ -479,7 +479,7 @@ const AddFoodPage = ({ navigation }: any) => {
   );
 };
 
-export default AddFoodPage;
+export default NewFoodScreen;
 
 const styles = StyleSheet.create({
   container: {

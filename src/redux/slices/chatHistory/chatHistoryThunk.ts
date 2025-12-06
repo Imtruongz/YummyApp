@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../../api/config';
+import api from '@/api/config';
 import {
   ChatMessage,
   Conversation,
@@ -26,8 +26,10 @@ export const saveChatAPI = createAsyncThunk(
       });
       return response.data.data;
     } catch (error: any) {
-      console.log('Error saving chat:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error saving chat';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -52,8 +54,10 @@ export const addMessageToConversationAPI = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: any) {
-      console.log('Error adding message:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error adding message';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -74,8 +78,10 @@ export const getUserConversationsAPI = createAsyncThunk(
       });
       return response.data.data;
     } catch (error: any) {
-      console.log('Error getting conversations:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error getting conversations';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -90,8 +96,10 @@ export const getConversationDetailAPI = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: any) {
-      console.log('Error getting conversation detail:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error getting conversation detail';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -106,8 +114,10 @@ export const deleteConversationAPI = createAsyncThunk(
       );
       return conversationId;
     } catch (error: any) {
-      console.log('Error deleting conversation:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error deleting conversation';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -129,8 +139,10 @@ export const updateConversationTitleAPI = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: any) {
-      console.log('Error updating title:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error updating title';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -145,8 +157,10 @@ export const exportConversationAPI = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: any) {
-      console.log('Error exporting conversation:', error.message);
-      return rejectWithValue(error.response?.data);
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Error exporting conversation';
+      return rejectWithValue(errorMessage);
     }
   }
 );

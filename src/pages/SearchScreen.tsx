@@ -18,7 +18,7 @@ import api from '@/api/config';
 import { HomeHeader, CustomInput } from '@/components'
 import { colors, containsTextCaseInsensitive} from '@/utils'
 
-const SearchPage = () => {
+const SearchScreen = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [query, setQuery] = useState('');
@@ -281,4 +281,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchPage;
+export default SearchScreen;

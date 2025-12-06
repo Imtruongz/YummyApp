@@ -20,7 +20,7 @@ interface FoodItemProps {
 
 /**
  * Component hiển thị một món ăn dạng card
- * Được sử dụng trong FirstRoute, ListFoodByUser và các màn hình liên quan
+ * Được sử dụng trong FirstRoute, UsersProfileScreen và các màn hình liên quan
  * 
  * @param item - Dữ liệu món ăn (foodId, foodName, foodThumbnail, userId)
  * @param onPress - Hàm xử lý khi nhấn vào card

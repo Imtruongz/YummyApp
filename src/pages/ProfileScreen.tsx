@@ -55,9 +55,9 @@ const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({ number, 
 );
 
 interface ProfilePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ProfilePage'> { }
+  extends NativeStackScreenProps<RootStackParamList, 'ProfileScreen'> { }
 
-const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
+const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
@@ -88,7 +88,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
   const followingCount = followInfo?.followingCount ?? 0;
   const followLoading = followInfo?.loading ?? false;
   const isErrorUser = useAppSelector(selectAuthError);
-  console.log('ProfilePage - followerCount:', followerCount, 'followingCount:', followingCount);
+  console.log('ProfileScreen - followerCount:', followerCount, 'followingCount:', followingCount);
 
   const renderTabBar = (
     props: SceneRendererProps & { navigationState: NavigationState<Route> },
@@ -116,11 +116,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ navigation }) => {
 
   const handleFollowersPress = () => {
     // @ts-ignore
-    navigation.navigate('FollowersFollowingListScreen', { userId, type: 'followers' });
+    navigation.navigate('FollowScreen', { userId, type: 'followers' });
   };
   const handleFollowingPress = () => {
     // @ts-ignore
-    navigation.navigate('FollowersFollowingListScreen', { userId, type: 'following' });
+    navigation.navigate('FollowScreen', { userId, type: 'following' });
   };
 
   return (
@@ -226,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfilePage;
+export default ProfileScreen;

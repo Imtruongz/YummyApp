@@ -6,26 +6,26 @@ export type RootStackParamList = {
   changePasswordPage: undefined;
   // main
   BottomTabs: undefined;
-  HomePage: undefined;
-  ProfilePage: {
+  HomeScreen: undefined;
+  ProfileScreen: {
     email: string;
   };
-  RecipeDetailPage: {
+  FoodDetailScreen: {
     foodId: string;
     userId: string;
   };
-  SettingPage: undefined;
-  AddFoodPage: undefined;
-  SettingProfilePage: undefined;
-  ListFoodPage: undefined;
-  ListFoodByCategoriesPage: {
+  SettingScreen: undefined;
+  NewFoodScreen: undefined;
+  SettingProfileScreen: undefined;
+  ListFoodScreen: undefined;
+  CategoriesScreen: {
     categoryId?: string;
   };
   ListFoodByUserPage: {
     userId: string;
   };
   OnBoarding: undefined;
-  ChangePasswordPage: undefined;
+  ChangePasswordScreen: undefined;
   PaymentScreen: {
     userId: string;
     amount?: number;

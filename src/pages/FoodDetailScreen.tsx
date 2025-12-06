@@ -30,9 +30,9 @@ import { img, colors, ImagesSvg, formatDate, formatDateTime } from '@/utils'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'RecipeDetailPage'> { }
+  extends NativeStackScreenProps<RootStackParamList, 'FoodDetailScreen'> { }
 
-const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
+const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
   route,
   navigation,
 }) => {
@@ -462,7 +462,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
                   key={item.foodId}
                   style={styles.itemContainer}
                   onPress={() =>
-                    navigation.navigate('RecipeDetailPage', {
+                    navigation.navigate('FoodDetailScreen', {
                       foodId: item.foodId,
                       userId: item.userId,
                     })
@@ -517,7 +517,7 @@ const RecipeDetailPage: React.FC<RecipeDetailPageProps> = ({
   );
 };
 
-export default RecipeDetailPage;
+export default FoodDetailScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import {useTranslation} from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MMKV} from 'react-native-mmkv';
-import {RootStackParamList} from '../../android/types/StackNavType.ts';
+import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
 import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword} from '@/utils'
@@ -16,9 +16,9 @@ const storage = new MMKV();
 const userId = storage.getString('userId') || '';
 
 interface ChangePasswordPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ChangePasswordPage'> {}
+  extends NativeStackScreenProps<RootStackParamList, 'ChangePasswordScreen'> {}
 
-const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
+const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
   navigation,
 }) => {
   const {t, i18n} = useTranslation();
@@ -156,7 +156,7 @@ const ChangePasswordPage: React.FC<ChangePasswordPageProps> = ({
   );
 };
 
-export default ChangePasswordPage;
+export default ChangePasswordScreen;
 
 const styles = StyleSheet.create({
   container: {

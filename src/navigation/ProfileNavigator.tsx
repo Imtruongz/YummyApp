@@ -1,10 +1,10 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {ProfileStack} from './types'
-import ProfilePage from '../pages/ProfilePage';
-import SettingPage from '../pages/SettingPage';
-import RecipeDetailPage from '../pages/RecipeDetailPage';
-import FollowersFollowingListScreen from '../pages/FollowersFollowingListScreen';
+import ProfileScreen from '../pages/ProfileScreen';
+import SettingScreen from '../pages/Setting/SettingScreen';
+import FoodDetailScreen from '../pages/FoodDetailScreen';
+import FollowScreen from '../pages/FollowScreen';
 
 const ProfileNavigator = () => {
   const Stack = createNativeStackNavigator<ProfileStack>();
@@ -14,10 +14,10 @@ const ProfileNavigator = () => {
         headerShown: false,
       }}>
 
-    <Stack.Screen name="ProfilePage" component={ProfilePage} />
-    <Stack.Screen name="SettingPage" component={SettingPage} />
-    <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
-    <Stack.Screen name="FollowersFollowingListScreen" component={FollowersFollowingListScreen} />
+    <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+    <Stack.Screen name="SettingScreen" component={SettingScreen} />
+    <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
+    <Stack.Screen name="FollowScreen" component={FollowScreen} />
 
     </Stack.Navigator>
   );

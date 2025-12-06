@@ -1,12 +1,12 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import AddFoodPage from '../pages/AddFoodPage';
-import RecipeDetailPage from '../pages/RecipeDetailPage';
-import HomePage from '../pages/HomePage';
-import ListFoodPage from '../pages/ListFoodPage';
+import NewFoodScreen from '../pages/NewFoodScreen';
+import FoodDetailScreen from '../pages/FoodDetailScreen';
+import HomeScreen from '../pages/HomeScreen';
+import ListFoodScreen from '../pages/ListFoodScreen';
 import {HomeStack} from './types'
-import ListFoodByUser from '../pages/ListFoodByUser';
-import ListFoodByCategoriesPage from '../pages/ListFoodByCategoriesPage';
+import UsersProfileScreen from '../pages/UsersProfileScreen';
+import CategoriesScreen from '../pages/CategoriesScreen';
 import NotificationsScreen from '../pages/NotificationsScreen';
 import PaymentScreen from '../pages/PaymentScreen';
 import PaymentSuccessScreen from '../pages/PaymentSuccessScreen';
@@ -20,14 +20,14 @@ const HomeNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="HomePage" component={HomePage} />
-      <Stack.Screen name="RecipeDetailPage" component={RecipeDetailPage} />
-      <Stack.Screen name="AddFoodPage" component={AddFoodPage} />
-      <Stack.Screen name="ListFoodPage" component={ListFoodPage} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="FoodDetailScreen" component={FoodDetailScreen} />
+      <Stack.Screen name="NewFoodScreen" component={NewFoodScreen} />
+      <Stack.Screen name="ListFoodScreen" component={ListFoodScreen} />
       <Stack.Screen name="YummyAIScreen" component={YummyAIScreen} />
       <Stack.Screen name="ChatHistory" component={ChatHistoryNavigator} />
-      <Stack.Screen name="ListFoodByUserPage" component={ListFoodByUser} />
-      <Stack.Screen name="ListFoodByCategoriesPage" component={ListFoodByCategoriesPage} />
+      <Stack.Screen name="ListFoodByUserPage" component={UsersProfileScreen} />
+      <Stack.Screen name="CategoriesScreen" component={CategoriesScreen} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
   <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
   <Stack.Screen name="PaymentSuccessScreen" component={PaymentSuccessScreen} />

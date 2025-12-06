@@ -1,55 +1,49 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType.ts';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {useTranslation} from 'react-i18next';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-import { HomeHeader, CustomTitle, IconSvg, Loading, NoData } from '@/components'
-import {colors, ImagesSvg} from '@/utils'
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../android/types/StackNavType';
 
-import {useAppDispatch, useAppSelector} from '../redux/hooks';
-import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
-import { selectCategoryFoodList, selectIsLoadingFood } from '@/redux/selectors';
+import {useAppDispatch, useAppSelector} from '@/redux/hooks';
+import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
+import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-interface ListFoodByCategoriesProps
-  extends NativeStackScreenProps<
-    RootStackParamList,
-    'ListFoodByCategoriesPage'
-  > {}
-const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
-  route,
-  navigation,
-}) => {
+import { HomeHeader, CustomTitle, IconSvg, NoData, Loading } from '@/components'
+import { colors, ImagesSvg} from '@/utils'
+
+interface ListFoodPageProps
+  extends NativeStackScreenProps<RootStackParamList, 'ListFoodScreen'> {}
+
+const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
-  const {categoryId} = route.params;
 
-  const categoryFoodList = useAppSelector(selectCategoryFoodList);
+  const foodList = useAppSelector(selectFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Log để debug trạng thái categoryFoodList
+  // Log để debug trạng thái foodList - HOOK NÀY PHẢI Ở TRƯỚC CÁC EARLY RETURNS
   useEffect(() => {
-    console.log('ListFoodByCategoriesPage - categoryFoodList updated:', 
-      categoryFoodList ? `${categoryFoodList.length} items` : 'no data');
-  }, [categoryFoodList]);
+    console.log('ListFoodScreen - foodList updated:', 
+      foodList ? `${foodList.length} items` : 'no data');
+  }, [foodList]);
   
-  // Bỏ logic lọc dữ liệu, hiển thị toàn bộ categoryFoodList
+  // Bỏ logic lọc dữ liệu, hiển thị toàn bộ foodList
   useEffect(() => {
-    if (categoryId) {
-      console.log('ListFoodByCategoriesPage - Dispatching getFoodByCategoryAPI for categoryId:', categoryId);
-      dispatch(getFoodByCategoryAPI(categoryId));
-    }
-  }, [dispatch, categoryId]);
+    // Log để debug
+    console.log('ListFoodScreen - Dispatching getAllFoodAPI');
+    dispatch(getAllFoodAPI());
+  }, [dispatch]);
 
   if (isLoadingFood) {
-    console.log('ListFoodByCategoriesPage - Loading state');
+    console.log('ListFoodScreen - Loading state');
     return <Loading />;
   }
 
-  // Kiểm tra dữ liệu trống - sử dụng categoryFoodList thay vì filteredCategoryFoodList
-  const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
+  // Kiểm tra dữ liệu trống - sử dụng foodList thay vì filteredFoodList
+  const hasNoData = !foodList || foodList.length === 0;
 
   return (
     <SafeAreaView style={styles.container}  edges={['left', 'right']}>
@@ -82,22 +76,20 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
               borderRadius: 8
             }}
             onPress={() => {
-              console.log('Manually refreshing category data');
-              if (categoryId) {
-                dispatch(getFoodByCategoryAPI(categoryId));
-              }
+              console.log('Manually refreshing data');
+              dispatch(getAllFoodAPI());
             }}>
             <Text style={{color: 'white'}}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.container2}>
-          {categoryFoodList?.map(item => (
+          {foodList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}
               onPress={() =>
-                navigation.navigate('RecipeDetailPage', {
+                navigation.navigate('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
                 })
@@ -112,7 +104,7 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
                   style={styles.title}
                   title={item.foodName}
                 />
-                <Text style={styles.title2}>{item.userDetail?.username}</Text>
+                <Text style={styles.title2}>{item.userDetail.username}</Text>
                 <View
                   style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                   <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
@@ -129,19 +121,24 @@ const ListFoodByCategoriesPage: React.FC<ListFoodByCategoriesProps> = ({
   );
 };
 
-export default ListFoodByCategoriesPage;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  titleHeader: {
+    padding: 12,
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+
   inputHeader: {
     width: '90%',
-    backgroundColor: colors.InputBg,
+    backgroundColor: colors.light,
     borderRadius: 12,
     padding: 16,
     margin: 18,
   },
+
   container2: {
     width: '100%',
     flexDirection: 'row',
@@ -184,3 +181,5 @@ const styles = StyleSheet.create({
     color: colors.smallText,
   },
 });
+
+export default ListFoodScreen;
