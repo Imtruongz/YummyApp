@@ -26,7 +26,7 @@ import {
 } from '@/redux/selectors';
 
 import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal } from '@/utils'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
@@ -52,7 +52,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
   const [commentText, setCommentText] = useState('');
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
-  const [visible, setVisible] = useState<boolean>(false);
+  const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
   const [currentItem, setCurrentItem] = useState<review | null>(null);
   const [averageRating, setAverageRating] = useState<number>(0);
   const [totalRatings, setTotalRatings] = useState<number>(0);
@@ -66,29 +66,29 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
     // Chỉ hiển thị modal nếu bình luận là của chính user
     if (item.userId === myUserId) {
       setDialogTitle('Delete');
-      setVisible(true);
+      openDeleteModal();
     }
     // Nếu không phải của user thì không làm gì cả
   };
   const handleCancel = () => {
     if (currentItem) {
-      setVisible(false);
+      closeDeleteModal();
     }
   };
 
   const handleDelete = async () => {
-    setVisible(false);
+    closeDeleteModal();
     if (currentItem) {
-      try {
-        await dispatch(deleteCommentAPI(currentItem.reviewId)).unwrap();
-        // Refresh comments list sau khi xóa
-        await dispatch(getAllCommentFromFoodIdAPI(foodId));
-
-        showToast.success('Thành công', 'Bình luận đã được xóa');
-      } catch (error) {
-        console.log('Failed to delete comment:', error);
-        showToast.error('Lỗi', 'Không thể xóa bình luận, vui lòng thử lại');
-      }
+      await handleAsyncAction(
+        async () => {
+          await dispatch(deleteCommentAPI(currentItem.reviewId)).unwrap();
+          await dispatch(getAllCommentFromFoodIdAPI(foodId));
+        },
+        {
+          successMessage: 'Bình luận đã được xóa',
+          errorMessage: 'Không thể xóa bình luận, vui lòng thử lại'
+        }
+      );
     }
   };
 
@@ -98,18 +98,20 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
       return;
     }
 
-    try {
-      await dispatch(
-        addFavoriteFoodAPI({
-          userId: myUserId,
-          foodId: foodId,
-        }),
-      ).unwrap();
-      showToast.success('Thành công', 'Đã thêm vào danh sách yêu thích');
-    } catch (error: any) {
-      const errorMessage = 'Món ăn đã có trong danh sách ưa thích';
-      showToast.error('Lỗi', errorMessage);
-    }
+    await handleAsyncAction(
+      async () => {
+        await dispatch(
+          addFavoriteFoodAPI({
+            userId: myUserId,
+            foodId: foodId,
+          }),
+        ).unwrap();
+      },
+      {
+        successMessage: 'Đã thêm vào danh sách yêu thích',
+        errorMessage: 'Món ăn đã có trong danh sách ưa thích'
+      }
+    );
   };
 
   const dispatch = useAppDispatch();
@@ -142,54 +144,52 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
 
     setCommentError(null);
     setIsAddingComment(true);
-    try {
-      await dispatch(
-        addCommentToFoodAPI({
-          foodId: foodId,
-          userId: myUserId,
-          reviewText: commentText.trim(),
-        }),
-      ).unwrap();
-      
-      setCommentText('');
-      // Refresh comments list after adding
-      await dispatch(getAllCommentFromFoodIdAPI(foodId));
-      
-      showToast.success('Thành công', 'Bình luận đã được thêm');
-    } catch (error) {
-      setCommentError('Failed to add the comment. Please try again.');
-      showToast.error('Lỗi', 'Không thể thêm bình luận, vui lòng thử lại');
-    } finally {
-      setIsAddingComment(false);
-    }
+    await handleAsyncAction(
+      async () => {
+        await dispatch(
+          addCommentToFoodAPI({
+            foodId: foodId,
+            userId: myUserId,
+            reviewText: commentText.trim(),
+          }),
+        ).unwrap();
+        
+        setCommentText('');
+        await dispatch(getAllCommentFromFoodIdAPI(foodId));
+      },
+      {
+        successMessage: 'Bình luận đã được thêm',
+        errorMessage: 'Không thể thêm bình luận, vui lòng thử lại',
+        onError: () => setCommentError('Failed to add the comment. Please try again.'),
+        onSuccess: () => setIsAddingComment(false)
+      }
+    );
+    setIsAddingComment(false);
   };
 
   const handleRatingChange = async (rating: number) => {
-    try {
-      await dispatch(
-        addOrUpdateRatingAPI({
-          foodId: foodId,
-          userId: myUserId,
-          rating: rating,
-        }),
-      ).unwrap();
+    await handleAsyncAction(
+      async () => {
+        await dispatch(
+          addOrUpdateRatingAPI({
+            foodId: foodId,
+            userId: myUserId,
+            rating: rating,
+          }),
+        ).unwrap();
 
-      setUserRating(rating);
+        setUserRating(rating);
 
-      // Refresh average rating
-      try {
+        // Refresh average rating
         const ratingResult = await dispatch(getAverageRatingAPI(foodId)).unwrap();
         setAverageRating(ratingResult.averageRating || 0);
         setTotalRatings(ratingResult.totalRatings || 0);
-      } catch (error) {
-        console.log('Error fetching updated rating:', error);
+      },
+      {
+        successMessage: `Cảm ơn bạn đã đánh giá ${rating} sao!`,
+        errorMessage: 'Không thể cập nhật đánh giá, vui lòng thử lại sau'
       }
-
-      showToast.success('Thành công', `Cảm ơn bạn đã đánh giá ${rating} sao!`);
-    } catch (error: any) {
-      console.log('Error updating rating:', error);
-      showToast.error('Lỗi', 'Không thể cập nhật đánh giá, vui lòng thử lại sau');
-    }
+    );
   };
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -481,7 +481,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
         </ScrollView>
       </SafeAreaView>
       <ConfirmationModal
-        visible={visible}
+        visible={isDeleteModalVisible}
         title={dialogTitle === 'Hidden' ? t('recipe_detail_not_authorized_title') : t('recipe_detail_delete_comment_title')}
         message={dialogTitle === 'Hidden'
           ? t('recipe_detail_not_authorized_message')

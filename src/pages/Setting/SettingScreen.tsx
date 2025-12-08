@@ -12,7 +12,7 @@ import { changeLanguage } from '../../languages/i18n';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
-import { colors, ImagesSvg} from '@/utils'
+import { colors, ImagesSvg, handleAsyncAction } from '@/utils'
 
 const storage = new MMKV();
 interface SettingPageProps
@@ -44,15 +44,19 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
   const hideDialog = () => setDialogVisible(false);
 
   const logout = async () => {
-    try {
-      LoginManager.logOut();
-      storage.delete('accessToken');
-      storage.delete('refreshToken');
-      storage.delete('userId');
-      signOut();
-    } catch (exception) {
-      console.log('Error during logout:', exception);
-    }
+    await handleAsyncAction(
+      async () => {
+        LoginManager.logOut();
+        storage.delete('accessToken');
+        storage.delete('refreshToken');
+        storage.delete('userId');
+        signOut();
+      },
+      {
+        showSuccessToast: false,
+        onError: (error) => console.log('Error during logout:', error)
+      }
+    );
   };
 
   const onPressCrashapp = () => {

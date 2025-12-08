@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast, handleAsyncAction} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
@@ -57,22 +57,21 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
       return;
     }
 
-    try {
-      const resultAction = await dispatch(
-        userRegisterAPI({email, password, username}),
-      );
-      if (userRegisterAPI.fulfilled.match(resultAction)) {
-        showToast.success('Sign up successfully', 'Please check your email to verify your account');
-        navigation.navigate('LoginScreen');
-      } else {
-        setIsErrorMessage(true);
-        setErrorMessage('Registration failed. Please try again.');
+    await handleAsyncAction(
+      async () => {
+        const resultAction = await dispatch(
+          userRegisterAPI({email, password, username}),
+        );
+        if (!userRegisterAPI.fulfilled.match(resultAction)) {
+          throw new Error('Registration failed');
+        }
+      },
+      {
+        successMessage: 'Sign up successfully',
+        errorMessage: 'An error occurred during registration',
+        onSuccess: () => navigation.navigate('LoginScreen')
       }
-    } catch (error) {
-      console.log('Registration error:', error);
-      setIsErrorMessage(true);
-      setErrorMessage('An error occurred during registration.');
-    }
+    );
   };
 
   return (

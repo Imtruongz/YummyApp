@@ -5,9 +5,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
 import api from '@/api/config';
-import { useNotification } from '@/contexts/NotificationContext';
 import { HomeHeader, IconSvg, ConfirmationModal } from '@/components'
-import { colors, ImagesSvg} from '@/utils'
+import { colors, ImagesSvg, handleAsyncAction, tryCatch, showToast } from '@/utils'
 
 type BankAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'BankAccountScreen'>;
 
@@ -20,7 +19,6 @@ interface BankInfo {
 
 const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();
-  const { showNotification } = useNotification();
   const [bankAccount, setBankAccount] = useState<BankInfo | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -58,34 +56,24 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
   
   const fetchBankAccount = async () => {
     setIsLoading(true);
-    try {
-      // Gọi API để lấy thông tin tài khoản ngân hàng của người dùng
+    const result = await tryCatch(async () => {
       const response = await api.get('/bank-accounts');
-      
-      if (response.data.success && response.data.data) {
-        setBankAccount(response.data.data);
-        
-        // Nếu đang trong chế độ chỉnh sửa, cập nhật form
-        if (isEditing) {
-          setBankName(response.data.data.bankName);
-          setBankCode(response.data.data.bankCode);
-          setAccountNumber(response.data.data.accountNumber);
-          setAccountName(response.data.data.accountName);
-        }
-      } else {
-        setBankAccount(null);
+      return response.data.data || null;
+    });
+    
+    if (result.success && result.data) {
+      setBankAccount(result.data);
+      if (isEditing) {
+        setBankName(result.data.bankName);
+        setBankCode(result.data.bankCode);
+        setAccountNumber(result.data.accountNumber);
+        setAccountName(result.data.accountName);
       }
-      setIsLoading(false);
-    } catch (error) {
-      console.log('Error fetching bank account:', error);
-      showNotification({
-        type: 'error',
-        title: t('error'),
-        message: t('failed_to_load_bank_accounts'),
-        duration: 3000,
-      });
-      setIsLoading(false);
+    } else {
+      setBankAccount(null);
+      showToast.error(t('error'), t('failed_to_load_bank_accounts'));
     }
+    setIsLoading(false);
   };
   
   const handleSaveAccount = async () => {
@@ -98,30 +86,20 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       accountName: accountName
     };
     
-    try {
-      // Gọi API để lưu thông tin tài khoản
-      const response = await api.post('/bank-accounts', accountData);
-      
-      if (response.data.success) {
-        setBankAccount(response.data.data);
-        setIsEditing(false);
-        
-        showNotification({
-          type: 'success',
-          title: t('success'),
-          message: t('bank_account_added_successfully'),
-          duration: 3000,
-        });
+    await handleAsyncAction(
+      async () => {
+        const response = await api.post('/bank-accounts', accountData);
+        return response.data.data;
+      },
+      {
+        onSuccess: (data) => {
+          setBankAccount(data);
+          setIsEditing(false);
+        },
+        successMessage: t('bank_account_added_successfully'),
+        errorMessage: t('failed_to_add_bank_account')
       }
-    } catch (error) {
-      console.log('Error saving bank account:', error);
-      showNotification({
-        type: 'error',
-        title: t('error'),
-        message: t('failed_to_add_bank_account'),
-        duration: 3000,
-      });
-    }
+    );
   };
   
   const handleStartEdit = () => {
@@ -139,31 +117,20 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
   };
   
   const confirmDeleteAccount = async () => {
-    try {
-      // Gọi API để xóa tài khoản
-      const response = await api.delete('/bank-accounts');
-      
-      if (response.data.success) {
-        setBankAccount(null);
-        
-        showNotification({
-          type: 'success',
-          title: t('success'),
-          message: t('bank_account_deleted_successfully'),
-          duration: 3000,
-        });
+    await handleAsyncAction(
+      async () => {
+        const response = await api.delete('/bank-accounts');
+        return response.data.success;
+      },
+      {
+        onSuccess: () => {
+          setBankAccount(null);
+          setIsConfirmDeleteVisible(false);
+        },
+        successMessage: t('bank_account_deleted_successfully'),
+        errorMessage: t('failed_to_delete_bank_account')
       }
-    } catch (error) {
-      console.log('Error deleting bank account:', error);
-      showNotification({
-        type: 'error',
-        title: t('error'),
-        message: t('failed_to_delete_bank_account'),
-        duration: 3000,
-      });
-    } finally {
-      setIsConfirmDeleteVisible(false);
-    }
+    );
   };
   
   const resetForm = () => {

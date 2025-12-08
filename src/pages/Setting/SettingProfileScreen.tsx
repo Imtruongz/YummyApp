@@ -18,7 +18,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast} from '@/utils'
+import { img, colors, showToast, handleAsyncAction} from '@/utils'
 
 const storage = new MMKV();
 
@@ -89,22 +89,26 @@ const SettingProfileScreen = () => {
       return;
     }
 
-    try {
-      const payload = {
-        userId: userId,
-        username: username,
-        description: description,
-        avatar: avatar,
-      };
+    await handleAsyncAction(
+      async () => {
+        const payload = {
+          userId: userId,
+          username: username,
+          description: description,
+          avatar: avatar,
+        };
 
-      const resultAction = await dispatch(userUpdateAPI(payload)).unwrap();
-      if (resultAction) {
-        showToast.success('Successfully Updated', 'Your profile has been updated.');
-        navigation.goBack();
+        const resultAction = await dispatch(userUpdateAPI(payload)).unwrap();
+        if (!resultAction) {
+          throw new Error('Update failed');
+        }
+      },
+      {
+        successMessage: 'Your profile has been updated',
+        errorMessage: 'Something went wrong',
+        onSuccess: () => navigation.goBack()
       }
-    } catch (err: any) {
-      showToast.error('Update Failed', err.message || 'Something went wrong!');
-    }
+    );
   };
 
   useEffect(() => {

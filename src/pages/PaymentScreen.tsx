@@ -6,11 +6,10 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import api from '@/api/config';
-import { useNotification } from '@/contexts/NotificationContext';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 import { CustomButton, HomeHeader, IconSvg } from '@/components'
-import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo } from '@/utils'
+import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast } from '@/utils'
 
 type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
 interface PaymentMethod {
@@ -39,7 +38,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const [amount, setAmount] = useState<number>(initialAmount);
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
   const { t } = useTranslation();
-  const { showNotification } = useNotification();
 
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
@@ -71,20 +69,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           console.log('[PaymentScreen] Error fetching recipient bank account:', error);
 
           if (error?.response?.status === 404) {
-            showNotification({
-              type: 'warning',
-              title: t('no_bank_account_title', 'Thông báo'),
-              message: t('no_bank_account_message'),
-              duration: 3000,
-            });
+            showToast.warning('Thông báo', t('no_bank_account_message'));
             navigation.goBack();
           } else {
-            showNotification({
-              type: 'error',
-              title: t('error'),
-              message: t('failed_to_load_bank_account'),
-              duration: 3000,
-            });
+            showToast.error(t('error'), t('failed_to_load_bank_account'));
           }
         } finally {
           setLoadingBankAccount(false);
@@ -93,7 +81,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
     };
 
     fetchRecipientBankAccount();
-  }, [userId, t, showNotification]);
+  }, [userId, t]);
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
     {
@@ -144,21 +132,13 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
   const handleConfirmPayment = async () => {
     if (!amount || amount <= 0) {
-      showNotification({
-        title: t('payment_payment_error'),
-        message: t('payment_enter_valid_amount'),
-        type: 'error',
-      });
+      showToast.error(t('payment_payment_error'), t('payment_enter_valid_amount'));
       return;
     }
 
     const selectedMethod = paymentMethods.find(method => method.selected);
     if (!selectedMethod) {
-      showNotification({
-        title: t('payment_payment_error'),
-        message: t('payment_select_payment_method'),
-        type: 'error',
-      });
+      showToast.error(t('payment_payment_error'), t('payment_select_payment_method'));
       return;
     }
 
@@ -177,11 +157,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       if (selectedPaymentMethod.integrated) {
         if (selectedPaymentMethod.id === 'bank') {
           if (!recipientBankAccount) {
-            showNotification({
-              title: t('payment_payment_error'),
-              message: t('no_recipient_bank_account'),
-              type: 'error'
-            });
+            showToast.error(t('payment_payment_error'), t('no_recipient_bank_account'));
             return;
           }
 
@@ -193,12 +169,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           });
 
           if (response.data && response.data.success) {
-            showNotification({
-              title: t('payment_success'),
-              message: t('payment_bank_transfer_success'),
-              type: 'success'
-            });
-
+            showToast.success(t('payment_success'), t('payment_bank_transfer_success'));
             navigation.goBack();
           }
         } else {
@@ -221,19 +192,11 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           }
         }
       } else {
-        showNotification({
-          title: t('payment_simulation_notice'),
-          message: t('payment_method_not_integrated', { method: paymentMethodName }),
-          type: 'info'
-        });
+        showToast.info(t('payment_simulation_notice'), t('payment_method_not_integrated', { method: paymentMethodName }));
       }
     } catch (error) {
       console.log('Lỗi khi thanh toán:', error);
-      showNotification({
-        title: t('payment_payment_error'),
-        message: t('payment_general_error'),
-        type: 'error'
-      });
+      showToast.error(t('payment_payment_error'), t('payment_general_error'));
     }
   };
 

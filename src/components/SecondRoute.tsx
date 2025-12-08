@@ -10,9 +10,8 @@ import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
-import { useNotification } from '@/contexts/NotificationContext';
 import { Typography, NoData, ConfirmationModal } from '@/components'
-import {colors} from '@/utils';
+import {colors, handleAsyncAction, showToast, useModal} from '@/utils';
 
 const storage = new MMKV();
 
@@ -29,6 +28,8 @@ const SecondRoute = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [currentFavoriteId, setCurrentFavoriteId] = useState<string | null>(null);
 
+  const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
+
   useEffect(() => {
     if (userId) {
       dispatch(getAllFavoriteFoodsAPI(userId));
@@ -40,43 +41,31 @@ const SecondRoute = () => {
 
   const showDialog = (favoriteFoodId: string) => {
     setCurrentFavoriteId(favoriteFoodId);
-    setVisible(true);
+    openDeleteModal();
   };
 
   const handleCancel = () => {
-    setVisible(false);
+    closeDeleteModal();
   };
-
-  const { showNotification } = useNotification();
 
   const handleDeleteFavorite = async () => {
     if (currentFavoriteId && userId) {
-      try {
-        await dispatch(
-          deleteFavoriteFoodAPI({
-            userId,
-            favoriteFoodId: currentFavoriteId,
-          }),
-        ).unwrap();
-        showNotification({
-          type: 'success',
-          title: t('success_title'),
-          message: t('delete_favorite_success_message'),
-          duration: 3000,
-        });
-      } catch (error) {
-        showNotification({
-          type: 'error',
-          title: t('error_title'),
-          message: t('delete_favorite_error_message'),
-          duration: 4000,
-          actionText: t('try_again_button'),
-          onAction: () => handleDeleteFavorite(),
-        });
-      } finally {
-        setVisible(false);
-        setCurrentFavoriteId(null);
-      }
+      await handleAsyncAction(
+        async () => {
+          await dispatch(
+            deleteFavoriteFoodAPI({
+              userId,
+              favoriteFoodId: currentFavoriteId,
+            }),
+          ).unwrap();
+        },
+        {
+          successMessage: 'Xóa yêu thích thành công',
+          errorMessage: 'Không thể xóa, vui lòng thử lại'
+        }
+      );
+      closeDeleteModal();
+      setCurrentFavoriteId(null);
     }
   };
 
@@ -137,7 +126,7 @@ const SecondRoute = () => {
         })}
       </ScrollView>
       <ConfirmationModal
-        visible={visible}
+        visible={isDeleteModalVisible}
         title={t('delete_favorite_title')}
         message={t('delete_favorite_confirmation_message')}
         type="warning"

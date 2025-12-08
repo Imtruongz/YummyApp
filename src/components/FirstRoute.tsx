@@ -9,9 +9,9 @@ import {RootStackParamList} from '../../android/types/StackNavType';
 import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
-import { useNotification } from '@/contexts/NotificationContext';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
 import {ConfirmationModal, FoodItemCard} from '@/components'
+import { handleAsyncAction, showToast, useModal } from '@/utils'
 
 const storage = new MMKV();
 
@@ -26,42 +26,33 @@ const FirstRoute = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
 
+  const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
+
   const showDialog = (item: food) => {
     setCurrentItem(item);
-    setVisible(true);
+    openDeleteModal();
   };
   const handleCancel = () => {
-    setVisible(false);
+    closeDeleteModal();
   };
 
-  const { showNotification } = useNotification();
-  
   const handleDelete = async () => {
+    closeDeleteModal();
     if (currentItem) {
-      try {
-        await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
-        showNotification({
-          type: 'success',
-          title: t('success_title'),
-          message: t('delete_recipe_success_message'),
-          duration: 3000,
-        });
-      } catch (error) {
-        showNotification({
-          type: 'error',
-          title: t('error_title'),
-          message: t('delete_recipe_error_message'),
-          duration: 4000,
-          actionText: t('try_again_button'),
-          onAction: () => handleDelete(),
-        });
-      } finally {
-        if (userId) {
-          dispatch(getFoodByIdAPI({userId}));
+      await handleAsyncAction(
+        async () => {
+          await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
+        },
+        {
+          successMessage: 'Xóa thành công',
+          errorMessage: 'Không thể xóa, vui lòng thử lại'
         }
-        setVisible(false);
-        setCurrentItem(null);
+      );
+      
+      if (userId) {
+        dispatch(getFoodByIdAPI({userId}));
       }
+      setCurrentItem(null);
     }
   };
 
@@ -93,7 +84,7 @@ const FirstRoute = () => {
         ))}
       </ScrollView>
       <ConfirmationModal
-        visible={visible}
+        visible={isDeleteModalVisible}
         title={t('delete_recipe_title')}
         message={t('delete_recipe_confirmation_message')}
         type="warning"

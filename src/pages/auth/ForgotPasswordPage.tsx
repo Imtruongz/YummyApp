@@ -4,7 +4,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, SafeAreaVie
 import { useTranslation } from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
-import { colors, img } from '@/utils'
+import { colors, img, showToast, handleAsyncAction } from '@/utils'
 import { CustomInput, CustomButton } from '@/components'
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
@@ -22,20 +22,25 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleResetPassword = async () => {
-    try {
-      setIsErrorMessage(false);
-      setErrorMessage('Email sent, please check your email');
-    } catch (error: any) {
-      console.log(error);
-      if (error.code === 'auth/invalid-email') {
-        setIsErrorMessage(true);
-        setErrorMessage('Invalid email');
-      }
-      if (error.code === 'auth/invalid-credential') {
-        setIsErrorMessage(true);
-        setErrorMessage('User not found, please try again');
-      }
+    if (!email) {
+      setIsErrorMessage(true);
+      setErrorMessage('Please enter your email address');
+      return;
     }
+
+    await handleAsyncAction(
+      async () => {
+        // Placeholder for actual API call
+        console.log('Reset password for:', email);
+        setIsErrorMessage(false);
+        setErrorMessage('Email sent, please check your email');
+      },
+      {
+        successMessage: 'Reset email sent',
+        errorMessage: 'Failed to send reset email',
+        showSuccessToast: false
+      }
+    );
   };
 
   return (

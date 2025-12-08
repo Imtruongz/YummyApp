@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
 import { CustomInput, CustomButton } from '@/components'
-import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword } from '@/utils';
+import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, showToast, handleAsyncAction } from '@/utils';
 
 import { useAppDispatch } from '@/redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '@/redux/slices/auth/authThunk';
@@ -51,84 +51,87 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
     if (!isValidEmail || !isValidPassword) {
       return;
     }
-    try {
-      const resultAction = await dispatch(userLoginAPI({ email, password }));
-      if (userLoginAPI.fulfilled.match(resultAction)) {
-        const user = resultAction.payload;
-        if (user) {
-          storage.set('userId', String(user.user.userId || ''));
-          storage.set('accessToken', user.accessToken);
-          storage.set('refreshToken', user.refreshToken);
-          // Lấy FCM token và gửi lên server
-          try {
-            const fcmToken = await messaging().getToken();
-            console.log('FCM Token lấy từ Firebase:', fcmToken);
-            await updateFcmTokenApi(fcmToken, user.accessToken);
-          } catch (err) {
-            console.log('Gửi FCM token lên server thất bại:', err, user.accessToken);
-          }
-          signIn();
-          
-        } else {
-          setIsErrorMessage(true);
-          setErrorMessage('Email not verified, please check your email');
-          console.log('Email not verified', user);
+
+    await handleAsyncAction(
+      async () => {
+        const resultAction = await dispatch(userLoginAPI({ email, password }));
+        if (!userLoginAPI.fulfilled.match(resultAction)) {
+          throw new Error('Login failed');
         }
-      } else {
-        setIsErrorMessage(true);
-        setErrorMessage('Login failed, please try again');
-        console.log('Login failed');
+        const user = resultAction.payload;
+        if (!user) {
+          throw new Error('Email not verified, please check your email');
+        }
+        storage.set('userId', String(user.user.userId || ''));
+        storage.set('accessToken', user.accessToken);
+        storage.set('refreshToken', user.refreshToken);
+        
+        // Lấy FCM token và gửi lên server
+        try {
+          const fcmToken = await messaging().getToken();
+          console.log('FCM Token lấy từ Firebase:', fcmToken);
+          await updateFcmTokenApi(fcmToken, user.accessToken);
+        } catch (err) {
+          console.log('Gửi FCM token lên server thất bại:', err, user.accessToken);
+        }
+      },
+      {
+        successMessage: 'Login successful',
+        errorMessage: 'An error occurred, please try again',
+        onSuccess: () => signIn()
       }
-    } catch (error) {
-      setIsErrorMessage(true);
-      setErrorMessage('An error occurred, please try again');
-      console.log('An error occurred', error);
-    }
+    );
   };
 
   const handleLoginWithFacebook = async () => {
-    try {
-      const result = await LoginManager.logInWithPermissions(['public_profile']);
-      if (result.isCancelled) {
-        console.log('Login cancelled');
-      }
-      else {
-        const profile = await Profile.getCurrentProfile();
-        if (profile) {
-          const data = {
-            userId: profile.userID || '',
-            username: profile.name || 'Facebook User',
-            email: profile.userID || '',
-            avatar: profile.imageURL || '',
-          }
-          console.log('Login with Facebook success', data);
-          const resultAction = await dispatch(facebookLoginAPI(data));
-          if (facebookLoginAPI.fulfilled.match(resultAction)) {
-            const user = resultAction.payload;
-            if (user) {
-              storage.set('userId', String(user.user.userId || ''));
-              storage.set('accessToken', user.accessToken);
-              storage.set('refreshToken', user.refreshToken);
-              // Lấy FCM token và gửi lên server
-              try {
-                const fcmToken = await messaging().getToken();
-                await updateFcmTokenApi(fcmToken, user.accessToken);
-              } catch (err) {
-                console.log('Gửi FCM token lên server thất bại:', err);
-              }
-              signIn();
-            }
-          } else {
-            setIsErrorMessage(true);
-            setErrorMessage('Login with Facebook failed, please try again');
-          }
+    await handleAsyncAction(
+      async () => {
+        const result = await LoginManager.logInWithPermissions(['public_profile']);
+        if (result.isCancelled) {
+          throw new Error('Login cancelled');
         }
+        
+        const profile = await Profile.getCurrentProfile();
+        if (!profile) {
+          throw new Error('Failed to get profile');
+        }
+
+        const data = {
+          userId: profile.userID || '',
+          username: profile.name || 'Facebook User',
+          email: profile.userID || '',
+          avatar: profile.imageURL || '',
+        }
+        console.log('Login with Facebook success', data);
+        const resultAction = await dispatch(facebookLoginAPI(data));
+        
+        if (!facebookLoginAPI.fulfilled.match(resultAction)) {
+          throw new Error('Facebook login failed');
+        }
+        
+        const user = resultAction.payload;
+        if (!user) {
+          throw new Error('Failed to get user data');
+        }
+
+        storage.set('userId', String(user.user.userId || ''));
+        storage.set('accessToken', user.accessToken);
+        storage.set('refreshToken', user.refreshToken);
+        
+        // Lấy FCM token và gửi lên server
+        try {
+          const fcmToken = await messaging().getToken();
+          await updateFcmTokenApi(fcmToken, user.accessToken);
+        } catch (err) {
+          console.log('Gửi FCM token lên server thất bại:', err);
+        }
+      },
+      {
+        successMessage: 'Login with Facebook successful',
+        errorMessage: 'An error occurred, please try again',
+        onSuccess: () => signIn()
       }
-    } catch (error) {
-      setIsErrorMessage(true);
-      setErrorMessage('An error occurred, please try again');
-      console.log('Login with Facebook error', error);
-    }
+    );
   };
 
   return (

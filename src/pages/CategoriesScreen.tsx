@@ -1,61 +1,51 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType.ts';
-import {useTranslation} from 'react-i18next';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../android/types/StackNavType.ts';
+import { useTranslation } from 'react-i18next';
 
 import { HomeHeader, CustomTitle, IconSvg, Loading, NoData } from '@/components'
-import {colors, ImagesSvg} from '@/utils'
+import { colors, ImagesSvg } from '@/utils'
 
-import {useAppDispatch, useAppSelector} from '../redux/hooks.ts';
-import {getFoodByCategoryAPI} from '../redux/slices/food/foodThunk.ts';
+import { useAppDispatch, useAppSelector } from '../redux/hooks.ts';
+import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk.ts';
 import { selectCategoryFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 interface ListFoodByCategoriesProps
   extends NativeStackScreenProps<
     RootStackParamList,
     'CategoriesScreen'
-  > {}
+  > { }
 const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
   route,
   navigation,
 }) => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const {categoryId} = route.params;
+  const { categoryId } = route.params;
 
   const categoryFoodList = useAppSelector(selectCategoryFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Log để debug trạng thái categoryFoodList
-  useEffect(() => {
-    console.log('CategoriesScreen - categoryFoodList updated:', 
-      categoryFoodList ? `${categoryFoodList.length} items` : 'no data');
-  }, [categoryFoodList]);
-  
-  // Bỏ logic lọc dữ liệu, hiển thị toàn bộ categoryFoodList
+
   useEffect(() => {
     if (categoryId) {
-      console.log('CategoriesScreen - Dispatching getFoodByCategoryAPI for categoryId:', categoryId);
       dispatch(getFoodByCategoryAPI(categoryId));
     }
   }, [dispatch, categoryId]);
 
   if (isLoadingFood) {
-    console.log('CategoriesScreen - Loading state');
     return <Loading />;
   }
 
-  // Kiểm tra dữ liệu trống - sử dụng categoryFoodList thay vì filteredCategoryFoodList
   const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
 
   return (
-    <SafeAreaView style={styles.container}  edges={['left', 'right']}>
-      <HomeHeader 
-        mode="back" 
-        title={t('add_category')} 
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <HomeHeader
+        mode="back"
+        title={t('add_category')}
         showGoBack={true}
         showNotification={false}
       />
@@ -64,30 +54,29 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
         placeholder={t('search')}
         onChangeText={text => setSearchQuery(text)}
       />
-      
+
       {hasNoData ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <NoData 
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <NoData
             message={t('list_nodata')}
             width={120}
             height={120}
             textSize={16}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             style={{
-              marginTop: 20, 
-              backgroundColor: colors.primary, 
-              paddingVertical: 10, 
-              paddingHorizontal: 20, 
+              marginTop: 20,
+              backgroundColor: colors.primary,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
               borderRadius: 8
             }}
             onPress={() => {
-              console.log('Manually refreshing category data');
               if (categoryId) {
                 dispatch(getFoodByCategoryAPI(categoryId));
               }
             }}>
-            <Text style={{color: 'white'}}>{t('reload')}</Text>
+            <Text style={{ color: 'white' }}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -103,7 +92,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
                 })
               }>
               {/* Top img */}
-              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+              <Image style={styles.img} source={{ uri: item.foodThumbnail }} />
               {/* Bottom info */}
               <View style={styles.titleItemLeft}>
                 <CustomTitle
@@ -114,9 +103,9 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
                 />
                 <Text style={styles.title2}>{item.userDetail?.username}</Text>
                 <View
-                  style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
-                  <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                  <Text style={{ color: colors.smallText, fontWeight: 'bold' }}>
                     ({(item.averageRating || 0).toFixed(1)})
                   </Text>
                 </View>
@@ -157,7 +146,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     gap: 8,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,

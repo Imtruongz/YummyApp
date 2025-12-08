@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ImagesSvg, colors } from '@/utils'
+import { ImagesSvg, colors, handleAsyncAction, showToast } from '@/utils'
 import { AppDispatch } from '@/redux/store';
 import { resetConversations} from '@/redux/slices/chatHistory/chatHistorySlice';
 import ChatHistoryItem from '@/pages/YummyAI/components/ChatHistoryItem';
@@ -69,16 +69,19 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
 
   const handleDeleteConversation = async (conversationId: string) => {
     setDeletingId(conversationId);
-    try {
-      await dispatch(deleteConversationAPI(conversationId)).unwrap();
-      setDeletingId(null);
-    } catch (error: any) {
-      setDeletingId(null);
-      Alert.alert(
-        t('common.error'),
-        error?.message || t('chatHistory.deleteError')
-      );
-    }
+    await handleAsyncAction(
+      () => dispatch(deleteConversationAPI(conversationId)).unwrap(),
+      {
+        onSuccess: () => setDeletingId(null),
+        onError: (error: any) => {
+          setDeletingId(null);
+          showToast.error(t('common.error'), error?.message || t('chatHistory.deleteError'));
+        },
+        successMessage: t('chatHistory.deleteSuccess'),
+        errorMessage: t('chatHistory.deleteError'),
+        showSuccessToast: false
+      }
+    );
   };
 
   const renderEmptyState = () => (

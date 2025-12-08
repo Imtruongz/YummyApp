@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
 import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CustomFoodItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
-import {img, colors, ImagesSvg} from '@/utils'
+import {img, colors, ImagesSvg, handleAsyncAction, tryCatch} from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
@@ -47,23 +47,25 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      try {
-        await Promise.all([
-          dispatch(getAllCategoriesAPI()),
-          dispatch(getAllFoodAPI()),
-          dispatch(getAllUsers()),
-          dispatch(getUserByIdAPI({ userId })),
-        ]);
-        
-        // Lấy dữ liệu banner từ nguồn local (vì chưa có API server)
-        const bannerData = getLocalBanners();
-        console.log('Loaded local banners:', bannerData.length);
-        setBanners(bannerData);
-      } catch (error) {
-        console.log('Error loading data:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      await handleAsyncAction(
+        async () => {
+          await Promise.all([
+            dispatch(getAllCategoriesAPI()),
+            dispatch(getAllFoodAPI()),
+            dispatch(getAllUsers()),
+            dispatch(getUserByIdAPI({ userId })),
+          ]);
+          
+          const bannerData = getLocalBanners();
+          console.log('Loaded local banners:', bannerData.length);
+          setBanners(bannerData);
+        },
+        {
+          showSuccessToast: false,
+          onError: (error) => console.log('Error loading data:', error),
+          onSuccess: () => setIsLoading(false)
+        }
+      );
     };
 
     loadData();

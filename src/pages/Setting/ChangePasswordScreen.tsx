@@ -7,7 +7,7 @@ import {MMKV} from 'react-native-mmkv';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast} from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction} from '@/utils'
 
 import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
 import {useAppDispatch} from '@/redux/hooks';
@@ -61,23 +61,25 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
       return;
     }
 
-    try {
-      const payload = {
-        userId: userId,
-        oldPassword: oldPassword,
-        newPassword: newPassword,
-      };
+    await handleAsyncAction(
+      async () => {
+        const payload = {
+          userId: userId,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+        };
 
-      await dispatch(changePasswordAPI(payload)).unwrap();
-      showToast.success('Success', 'Password successfully changed!');
-      setOldPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      logout();
-    } catch (error: any) {
-      console.log('Error', error.message || 'Failed to change password.');
-      showToast.error('Error', error.message || 'Failed to change password.');
-    }
+        await dispatch(changePasswordAPI(payload)).unwrap();
+        setOldPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+        logout();
+      },
+      {
+        successMessage: 'Password successfully changed',
+        errorMessage: 'Failed to change password'
+      }
+    );
   };
 
   const logout = async () => {

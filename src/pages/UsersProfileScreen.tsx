@@ -9,7 +9,6 @@ import api from '@/api/config';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
 import { getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { useNotification } from '@/contexts/NotificationContext';
 import { isFollowingAPI, followUserAPI, unfollowUserAPI, countFollowersAPI, countFollowingAPI} from '@/redux/slices/follow/followThunk';
 import { resetViewedUser } from '@/redux/slices/auth/authSlice';
 import { resetViewedUserFoodList } from '@/redux/slices/food/foodSlice';
@@ -22,7 +21,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
-import {img, colors} from '@/utils'
+import {img, colors, handleAsyncAction, tryCatch, showToast} from '@/utils'
 
 interface ListFoodByUserPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
@@ -48,7 +47,6 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
   const { userId } = route.params;
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const { showNotification } = useNotification();
 
   const viewedUserFoodList = useAppSelector(selectViewedUserFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
@@ -145,50 +143,36 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
 
   // Kiểm tra thông tin ngân hàng của người dùng trước khi chuyển đến màn hình Donate
   const handleDonatePress = useCallback(async () => {
-    try {
-      console.log('[UsersProfileScreen] userId before checking bank account:', userId);
-      console.log('[UsersProfileScreen] User info:', viewedUser);
-      
-      // Kiểm tra xem người dùng đích có tài khoản ngân hàng hay không
-      // Loại bỏ dấu / ở đầu vì baseURL đã có /api
-      const response = await api.get(`bank-accounts/${userId}`);
-      console.log('[UsersProfileScreen] Bank account check response:', response.data);
-      
-      if (response.data && response.data.success && response.data.data) {
-        console.log('[UsersProfileScreen] Navigating to PaymentScreen with userId:', userId);
-        // Nếu có thông tin ngân hàng, chuyển đến màn hình PaymentScreen
-        navigation.navigate('PaymentScreen', {
-          amount: 0,
-          userId: userId,
-          serviceType: 'Thanh toán dịch vụ',
-          serviceProvider: 'YummyApp'
-        });
-      } else {
-        // Nếu không có thông tin ngân hàng, hiển thị thông báo
-        showNotification({
-          type: 'warning',
-          title: t('no_bank_account_title', 'Thông báo'),
-          message: t('no_bank_account_message'),
-          duration: 3000,
-        });
+    await handleAsyncAction(
+      async () => {
+        console.log('[UsersProfileScreen] userId before checking bank account:', userId);
+        const response = await api.get(`bank-accounts/${userId}`);
+        console.log('[UsersProfileScreen] Bank account check response:', response.data);
+        
+        if (response.data && response.data.success && response.data.data) {
+          console.log('[UsersProfileScreen] Navigating to PaymentScreen with userId:', userId);
+          navigation.navigate('PaymentScreen', {
+            amount: 0,
+            userId: userId,
+            serviceType: 'Thanh toán dịch vụ',
+            serviceProvider: 'YummyApp'
+          });
+        } else {
+          showToast.warning('Thông báo', t('no_bank_account_message'));
+        }
+      },
+      {
+        showSuccessToast: false,
+        onError: (error: any) => {
+          if (error?.response?.status === 404) {
+            showToast.warning('Thông báo', t('no_bank_account_message'));
+          } else {
+            console.log('Unexpected error when checking bank account:', error);
+          }
+        }
       }
-    } catch (error: any) {
-      console.log('Error checking bank account:', error);
-      
-      // Nếu lỗi 404 (người dùng chưa có tài khoản ngân hàng), chỉ hiển thị thông báo thông tin
-      if (error?.response?.status === 404) {
-        showNotification({
-          type: 'warning',
-          title: t('no_bank_account_title', 'Thông báo'),
-          message: t('no_bank_account_message'),
-          duration: 3000,
-        });
-      } else {
-        // Các lỗi khác không hiện thông báo, chỉ log ra console
-        console.log('Unexpected error when checking bank account:', error);
-      }
-    }
-  }, [userId, navigation, showNotification, t]);
+    );
+  }, [userId, navigation, t]);
 
   if (isLoadingFood || isLoadingUser) {
     return <Loading />;

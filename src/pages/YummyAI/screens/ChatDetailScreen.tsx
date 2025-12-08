@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppDispatch } from '@/redux/store';
 import { getConversationDetailAPI, updateConversationTitleAPI,} from '@/redux/slices/chatHistory/chatHistoryThunk';
-import { ImagesSvg, colors } from '@/utils'
+import { ImagesSvg, colors, handleAsyncAction, showToast } from '@/utils'
 import { IconSvg, CustomLoadingSpinner } from '@/components'
 import {
   selectCurrentConversation,
@@ -63,22 +63,27 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
     }
 
     setIsSaving(true);
-    try {
-      await dispatch(
+    await handleAsyncAction(
+      () => dispatch(
         updateConversationTitleAPI({
           conversationId,
           title: newTitle.trim(),
         })
-      ).unwrap();
-      setEditingTitle(false);
-      setIsSaving(false);
-    } catch (error: any) {
-      setIsSaving(false);
-      Alert.alert(
-        t('common.error'),
-        error?.message || t('chatHistory.updateTitleError')
-      );
-    }
+      ).unwrap(),
+      {
+        onSuccess: () => {
+          setEditingTitle(false);
+          setIsSaving(false);
+        },
+        onError: (error: any) => {
+          setIsSaving(false);
+          showToast.error(t('common.error'), error?.message || t('chatHistory.updateTitleError'));
+        },
+        successMessage: t('chatHistory.updateTitleSuccess'),
+        errorMessage: t('chatHistory.updateTitleError'),
+        showSuccessToast: false
+      }
+    );
   };
 
   const handleCancel = () => {

@@ -9,7 +9,7 @@
 import { showToast } from './toast';
 
 export interface AsyncActionOptions {
-  onSuccess?: () => void | Promise<void>;
+  onSuccess?: (data?: any) => void | Promise<void>;
   onError?: (error: any) => void | Promise<void>;
   successMessage?: string;
   errorMessage?: string;
@@ -56,7 +56,7 @@ export const handleAsyncAction = async <T,>(
     }
 
     if (onSuccess) {
-      await onSuccess();
+      await onSuccess(result);
     }
 
     return result;
@@ -71,7 +71,7 @@ export const handleAsyncAction = async <T,>(
       await onError(error);
     }
 
-    console.error('Async action error:', error);
+    console.log('Async action error:', error);
     return null;
   }
 };
@@ -161,6 +161,6 @@ export const withRetry = async <T,>(
     await options.onError(lastError);
   }
 
-  console.error('Async action failed after retries:', lastError);
+  console.log('Async action failed after retries:', lastError);
   return null;
 };

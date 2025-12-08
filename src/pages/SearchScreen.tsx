@@ -16,7 +16,7 @@ import {
 
 import api from '@/api/config';
 import { HomeHeader, CustomInput } from '@/components'
-import { colors, containsTextCaseInsensitive} from '@/utils'
+import { colors, containsTextCaseInsensitive, tryCatch } from '@/utils'
 
 const SearchScreen = () => {
   const { t } = useTranslation();
@@ -41,11 +41,14 @@ const SearchScreen = () => {
   useEffect(() => {
     const fetchFoods = async () => {
       setLoading(true);
-      try {
+      const result = await tryCatch(async () => {
         const res = await api.get<FoodResult[]>('/foods/getAll');
-        setAllFoods(res.data || []);
-        setResults(res.data || []);
-      } catch (e) {
+        return res.data || [];
+      });
+      if (result.success && result.data) {
+        setAllFoods(result.data);
+        setResults(result.data);
+      } else {
         setAllFoods([]);
         setResults([]);
       }
