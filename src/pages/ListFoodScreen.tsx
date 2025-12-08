@@ -10,7 +10,7 @@ import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-import { HomeHeader, CustomTitle, IconSvg, NoData, Loading } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, NoData, Loading, CustomInput } from '@/components'
 import { colors, ImagesSvg} from '@/utils'
 
 interface ListFoodPageProps
@@ -24,25 +24,14 @@ const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Log để debug trạng thái foodList - HOOK NÀY PHẢI Ở TRƯỚC CÁC EARLY RETURNS
   useEffect(() => {
-    console.log('ListFoodScreen - foodList updated:', 
-      foodList ? `${foodList.length} items` : 'no data');
-  }, [foodList]);
-  
-  // Bỏ logic lọc dữ liệu, hiển thị toàn bộ foodList
-  useEffect(() => {
-    // Log để debug
-    console.log('ListFoodScreen - Dispatching getAllFoodAPI');
     dispatch(getAllFoodAPI());
   }, [dispatch]);
 
   if (isLoadingFood) {
-    console.log('ListFoodScreen - Loading state');
     return <Loading />;
   }
 
-  // Kiểm tra dữ liệu trống - sử dụng foodList thay vì filteredFoodList
   const hasNoData = !foodList || foodList.length === 0;
 
   return (
@@ -53,10 +42,14 @@ const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
         showGoBack={true}
         showNotification={false}
       />
-      <TextInput
+      <CustomInput
         style={styles.inputHeader}
         placeholder={t('search')}
         onChangeText={text => setSearchQuery(text)}
+        showIcon={true}
+        iconXml={ImagesSvg.icSearch}
+        isDisabled={true}
+        iconOnLeft={true}
       />
       
       {hasNoData ? (
@@ -109,7 +102,7 @@ const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
                   style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                   <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
                   <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                    (4.0)
+                    ({(item.averageRating || 0).toFixed(1)})
                   </Text>
                 </View>
               </View>

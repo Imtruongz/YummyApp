@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
@@ -106,7 +106,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
             onChangeText={setPassword}
             showIcon={true}
             onPressIcon={handleShowPassword}
-            iconName={showPassword ? 'eye' : 'eyeo'}
+            iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
           {isPasswordValid ? null : (
             <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
@@ -118,7 +118,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
             onChangeText={setConfirmPassword}
             showIcon={true}
             onPressIcon={handleShowConfirmPassword}
-            iconName={showConfirmPassword ? 'eye' : 'eyeo'}
+            iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
 
           {isConfirmPasswordValid ? null : (

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet,} from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { ImagesSvg } from '@/utils';
+import { ImagesSvg, useModal } from '@/utils';
 import {ConfirmationModal , IconSvg } from '@/components';
 interface ChatHistoryItemProps {
   conversationId: string;
@@ -22,7 +22,7 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   isDeleting = false,
 }) => {
   const { t } = useTranslation();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const deleteModal = useModal();
 
   const formatDate = (dateString: string) => {
     try {
@@ -58,11 +58,11 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
   };
 
   const handleDelete = () => {
-    setShowDeleteModal(true);
+    deleteModal.open();
   };
 
   const handleConfirmDelete = async () => {
-    setShowDeleteModal(false);
+    deleteModal.close();
     await onDelete();
   };
 
@@ -94,11 +94,11 @@ const ChatHistoryItem: React.FC<ChatHistoryItemProps> = ({
       </TouchableOpacity>
 
       <ConfirmationModal
-        visible={showDeleteModal}
+        visible={deleteModal.isVisible}
         title={t('chatHistory.deleteConfirm')}
         message={t('chatHistory.deleteMessage') }
         type="warning"
-        onClose={() => setShowDeleteModal(false)}
+        onClose={deleteModal.close}
         onConfirm={handleConfirmDelete}
         confirmText={t('delete')}
         cancelText={t('cancel')}

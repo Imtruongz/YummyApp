@@ -361,6 +361,30 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               </View>
             </View>
 
+            {selectedFood?.categoryDetail && (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: colors.primary,
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  borderRadius: 8,
+                  alignSelf: 'flex-start',
+                  marginTop: 10,
+                }}
+                onPress={() => {
+                  navigation.navigate('CategoriesScreen', {
+                    categoryId: selectedFood.categoryDetail?.categoryId,
+                  });
+                }}
+              >
+                <Typography
+                  title={selectedFood.categoryDetail.categoryName}
+                  color={'white'}
+                  fontSize={12}
+                />
+              </TouchableOpacity>
+            )}
+
             <CustomTitle title={t('recipe_detail_description')} style={{ marginTop: 10 }} />
             {selectedFood?.foodDescription &&
               selectedFood?.foodDescription.length > 150 ? (
@@ -600,11 +624,8 @@ const styles = StyleSheet.create({
   },
   foodNameStyle2: {
     width: '70%',
-    height: 60,
-    backgroundColor: colors.InputBg,
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 18,
+    marginHorizontal: 12,
+    paddingBottom: 12
   },
   titleContainer: {
     flexDirection: 'row',
@@ -617,14 +638,8 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   commentInput: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.InputBg,
-    borderTopColor: colors.InputBg,
-    paddingTop: 12,
-    paddingBottom: 18,
-    marginTop: 12,
-    marginBottom: 8,
+    width: '100%',
+    marginVertical: 12,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',

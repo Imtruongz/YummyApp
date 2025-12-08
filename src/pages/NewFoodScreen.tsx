@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import { Image, PermissionsAndroid, Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import { Image, PermissionsAndroid, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import Toast from 'react-native-toast-message';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNFS from 'react-native-fs';
@@ -16,7 +15,7 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 
 import { CustomButton, HomeHeader, CustomTitle, IconSvg, CustomInput } from '@/components'
-import {img, colors, ImagesSvg} from '@/utils'
+import { img, colors, ImagesSvg, showToast, handleAsyncAction } from '@/utils'
 
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';
@@ -184,16 +183,7 @@ const NewFoodScreen = ({ navigation }: any) => {
     const { isValid, errors } = validateForm();
     if (!isValid) {
       setErrorForm(errors);
-
-      // Hiển thị thông báo lỗi
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: t('error'),
-        text2: t('add_validation_form_error'),
-        visibilityTime: 3000,
-      });
-
+      showToast.error(t('error'), t('add_validation_form_error'));
       return;
     }
 
@@ -208,43 +198,35 @@ const NewFoodScreen = ({ navigation }: any) => {
       foodSteps: filteredSteps,
     };
 
-    try {
-      await dispatch(addFoodAPI(updatedFormData)).unwrap();
-      Toast.show({
-        type: 'success',
-        position: 'top',
-        text1: t('success'),
-        text2: t('add_success_message'),
-        visibilityTime: 2000,
-      });
+    // Dùng errorHandler để xử lý async action
+    await handleAsyncAction(
+      () => dispatch(addFoodAPI(updatedFormData)).unwrap(),
+      {
+        onSuccess: async () => {
+          // Refresh danh sách food
+          await dispatch(getFoodByIdAPI({ userId: userId }));
 
-      // Chỉ gọi một API để tránh trùng lặp dữ liệu
-      await dispatch(getFoodByIdAPI({ userId: userId }));
+          // Reset form state
+          setFormData(initialState);
+          setIngredients(['']);
+          setSteps(['']);
+          setErrorForm(null);
+          setOriginalImageUri('');
 
-      // Reset form state
-      setFormData(initialState);
-      setIngredients(['']);
-      setSteps(['']);
-      setErrorForm(null);
-      setOriginalImageUri('');
-
-      // Chuyển về màn hình Home
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'HomeNavigator' }],
-      });
-    } catch (error: any) {
-      console.log('Error adding food:', error);
-      setErrorForm(error?.data?.errors || { general: t('general_error') });
-
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: t('error'),
-        text2: t('add_error_message'),
-        visibilityTime: 3000,
-      });
-    }
+          // Chuyển về màn hình Home
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'HomeNavigator' }],
+          });
+        },
+        onError: (error: any) => {
+          // Handle error - set error form
+          setErrorForm(error?.data?.errors || { general: t('general_error') });
+        },
+        successMessage: t('add_success_message'),
+        errorMessage: t('add_error_message'),
+      }
+    );
   };
 
   return (
@@ -362,7 +344,7 @@ const NewFoodScreen = ({ navigation }: any) => {
         <View style={styles.foodcategoryContainer}>
           <CustomTitle title={t('add_cooking_time')} />
           <View>
-            <CustomInput style={[ styles.cookingTimeTextInput, errorForm?.CookingTime ? styles.inputError : {} ]}
+            <CustomInput style={[styles.cookingTimeTextInput, errorForm?.CookingTime ? styles.inputError : {}]}
               placeholder={t('add_cooking_time')}
               value={formData.CookingTime}
               onChangeText={text => {
@@ -427,7 +409,7 @@ const NewFoodScreen = ({ navigation }: any) => {
           <CustomTitle title={t('add_steps')} />
           {steps.map((step, index) => (
             <View key={index} style={styles.ISTextInputContainer}>
-              <CustomInput style={[ styles.ISTextInput, errorForm?.steps && !step.trim() ? styles.inputError : {} ]}
+              <CustomInput style={[styles.ISTextInput, errorForm?.steps && !step.trim() ? styles.inputError : {}]}
                 placeholder={`${t('add_placeholder_steps')} ${index + 1}`}
                 value={step}
                 onChangeText={text => {

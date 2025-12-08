@@ -20,6 +20,10 @@ export interface food {
     createdAt: string;
     updated_at: string;
   };
+  categoryDetail?: {
+    categoryId: string;
+    categoryName: string;
+  };
 }
 
 export interface foodPayload {

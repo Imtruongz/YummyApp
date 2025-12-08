@@ -117,7 +117,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
                   style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
                   <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
                   <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
-                    (4.0)
+                    ({(item.averageRating || 0).toFixed(1)})
                   </Text>
                 </View>
               </View>

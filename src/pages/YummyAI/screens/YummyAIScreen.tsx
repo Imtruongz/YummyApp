@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../android/types/StackNavType';
 
 import { aiApi } from '@/api/aiApi';
-import { YummyDrag, ImagesSvg, colors } from '@/utils'
+import { YummyDrag, ImagesSvg, colors, useModal } from '@/utils'
 import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 
@@ -54,7 +54,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   ];
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showSaveModal, setShowSaveModal] = useState(false);
+  const saveModal = useModal();
   const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
@@ -145,13 +145,14 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       ).unwrap();
 
       setSavingChat(false);
-      setShowSaveModal(false);
 
       Toast.show({
         type: 'success',
         text1: t('chatHistory.saveSuccess'),
         text2: title || t('chatHistory.autoTitle'),
       });
+
+      saveModal.close(); // ← Đóng modal sau khi lưu thành công
     } catch (error: any) {
       setSavingChat(false);
       Toast.show({
@@ -318,10 +319,10 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       {/* Save Chat Modal */}
       <SaveChatModal
-        visible={showSaveModal}
+        visible={saveModal.isVisible}
         isLoading={savingChat}
         onSave={handleSaveChat}
-        onCancel={() => setShowSaveModal(false)}
+        onCancel={saveModal.close}
       />
     </SafeAreaView>
   );
