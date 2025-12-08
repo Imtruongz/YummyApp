@@ -158,7 +158,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
   },
   body: {
-    paddingHorizontal: 12,
     paddingVertical: 24,
     gap: 14,
     justifyContent: 'center',

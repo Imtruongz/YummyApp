@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.light,
   },
   content: {
-    marginHorizontal: 18,
+    marginHorizontal: 16,
     marginVertical: 12,
     gap: 10,
   },
@@ -479,14 +479,12 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   foodNameTextInput: {
-    width: '100%',
     height: 53,
     backgroundColor: colors.InputBg,
     borderRadius: 12,
     padding: 16,
   },
   foodDescriptionTextInput: {
-    width: '100%',
     height: 123,
     backgroundColor: colors.InputBg,
     borderRadius: 12,

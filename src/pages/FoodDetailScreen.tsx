@@ -26,7 +26,7 @@ import {
 } from '@/redux/selectors';
 
 import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch } from '@/utils'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
@@ -94,7 +94,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
 
   const handleAddFavoriteFood = async () => {
     if (!myUserId || !foodId) {
-      showToast.error('Lỗi', 'Không thể thêm vào yêu thích, vui lòng thử lại sau');
+      showToast.error(t('error_title'), t('recipe_detail_error_add'));
       return;
     }
 
@@ -206,21 +206,22 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
         ]);
 
         // Fetch rating data
-        try {
-          const ratingResult = await dispatch(getAverageRatingAPI(foodId)).unwrap();
-          setAverageRating(ratingResult.averageRating || 0);
-          setTotalRatings(ratingResult.totalRatings || 0);
-        } catch (error) {
-          console.log('Error fetching average rating:', error);
+        const ratingResult = await tryCatch(async () => {
+          return await dispatch(getAverageRatingAPI(foodId)).unwrap();
+        });
+        if (ratingResult.success && ratingResult.data) {
+          setAverageRating(ratingResult.data.averageRating || 0);
+          setTotalRatings(ratingResult.data.totalRatings || 0);
         }
 
         // Fetch user's rating for this food
         if (myUserId) {
-          try {
-            const userRatingResult = await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
-            setUserRating(userRatingResult?.rating || 0);
-          } catch (error) {
-            console.log('Error fetching user rating:', error);
+          const userRatingResult = await tryCatch(async () => {
+            return await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
+          });
+          if (userRatingResult.success && userRatingResult.data) {
+            setUserRating(userRatingResult.data?.rating || 0);
+          } else {
             setUserRating(0);
           }
         }
@@ -578,9 +579,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   foodNameStyle2: {
-    width: '70%',
+    width: '75%',
     marginHorizontal: 12,
-    paddingBottom: 12
+    paddingBottom: 12,
   },
   titleContainer: {
     flexDirection: 'row',

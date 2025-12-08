@@ -11,7 +11,7 @@ import {RootState} from '@/redux/store';
 
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
 import { Typography, NoData, ConfirmationModal } from '@/components'
-import {colors, handleAsyncAction, showToast, useModal} from '@/utils';
+import {colors, handleAsyncAction, useModal} from '@/utils';
 
 const storage = new MMKV();
 

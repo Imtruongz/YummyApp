@@ -11,7 +11,7 @@ import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
 import {ConfirmationModal, FoodItemCard} from '@/components'
-import { handleAsyncAction, showToast, useModal } from '@/utils'
+import { handleAsyncAction, useModal } from '@/utils'
 
 const storage = new MMKV();
 

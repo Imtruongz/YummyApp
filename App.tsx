@@ -32,7 +32,7 @@ export default function App() {
           }
         },
         (remoteMessage) => {
-          showToast.info(remoteMessage.notification?.title || 'Thông báo', remoteMessage.notification?.body || '');
+          showToast.info(remoteMessage.notification?.title, remoteMessage.notification?.body);
         }
       );
     };

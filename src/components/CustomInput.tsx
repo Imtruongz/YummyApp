@@ -36,7 +36,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   return (
     <View style={[styles.container, style]}>
       {iconOnLeft && showIcon && iconXml && (
-        <TouchableOpacity onPress={onPressIcon} style={styles.icon}>
+        <TouchableOpacity onPress={onPressIcon} style={{marginRight: 6}}>
           <IconSvg
             xml={iconXml}
             width={24}
@@ -57,7 +57,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         editable={isDisabled}
       />
       {!iconOnLeft && showIcon && iconXml && (
-        <TouchableOpacity onPress={onPressIcon} style={styles.icon}>
+        <TouchableOpacity onPress={onPressIcon}>
           <IconSvg
             xml={iconXml}
             width={24}
@@ -78,10 +78,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.white,
-    borderRadius: 14,
+    padding: 16,
+    marginHorizontal: 16,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.gray,
-    padding: 8,
     shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
@@ -90,11 +91,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingHorizontal: 8,
     fontSize: 16,
     color: colors.dark,
-  },
-  icon: {
-    padding: 6,
   },
 });

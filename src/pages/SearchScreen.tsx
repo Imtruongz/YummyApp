@@ -16,7 +16,7 @@ import {
 
 import api from '@/api/config';
 import { HomeHeader, CustomInput } from '@/components'
-import { colors, containsTextCaseInsensitive, tryCatch } from '@/utils'
+import { colors, containsTextCaseInsensitive, ImagesSvg, tryCatch } from '@/utils'
 
 const SearchScreen = () => {
   const { t } = useTranslation();
@@ -103,10 +103,14 @@ const SearchScreen = () => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.searchContainer}>
           <CustomInput
-            style={styles.input}
+            style={styles.inputHeader}
             placeholder={t('search') || 'Nhập tên món ăn...'}
             value={query}
             onChangeText={handleSearch}
+            showIcon={true}
+            iconXml={ImagesSvg.icSearch}
+            isDisabled={true}
+            iconOnLeft={true}
           />
           {isCategorySearch && selectedCategory && (
             <View style={styles.selectedCategoryTagContainer}>
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingTop: 16,
   },
   input: {
@@ -281,6 +285,11 @@ const styles = StyleSheet.create({
     color: colors.dark,
     marginTop: 32,
     fontSize: 16,
+  },
+  inputHeader: {
+    backgroundColor: colors.light,
+    borderRadius: 12,
+    padding: 16,
   },
 });
 

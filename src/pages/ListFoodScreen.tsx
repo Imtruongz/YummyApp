@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
   },
 
   inputHeader: {
-    width: '90%',
     backgroundColor: colors.light,
     borderRadius: 12,
     padding: 16,
