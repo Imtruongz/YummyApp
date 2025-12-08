@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../android/types/StackNavType';
 
 import { aiApi } from '@/api/aiApi';
-import { YummyDrag, ImagesSvg, colors, useModal } from '@/utils'
+import { YummyDrag, ImagesSvg, colors, showToast, useModal } from '@/utils'
 import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 
@@ -117,11 +117,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: t('ai_assistant_error'),
-        text2: error.message || t('ai_assistant_error_response'),
-      });
+      showToast.error(t('ai_assistant_error'), error.message || t('ai_assistant_error_response'));
     } finally {
       setLoading(false);
     }
@@ -146,20 +142,12 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       setSavingChat(false);
 
-      Toast.show({
-        type: 'success',
-        text1: t('chatHistory.saveSuccess'),
-        text2: title || t('chatHistory.autoTitle'),
-      });
+      showToast.success(t('chatHistory.saveSuccess'), title || t('chatHistory.autoTitle'));
 
       saveModal.close(); // ← Đóng modal sau khi lưu thành công
     } catch (error: any) {
       setSavingChat(false);
-      Toast.show({
-        type: 'error',
-        text1: t('common.error'),
-        text2: error?.message || t('chatHistory.saveError'),
-      });
+      showToast.error(t('common.error'), error?.message || t('chatHistory.saveError'));
     }
   };
 
@@ -197,11 +185,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
           };
           setMessages(prev => [...prev, aiMessage]);
         } catch (error: any) {
-          Toast.show({
-            type: 'error',
-            text1: t('ai_assistant_error'),
-            text2: error.message || t('ai_assistant_error_response'),
-          });
+          showToast.error(t('ai_assistant_error'), error.message || t('ai_assistant_error_response'));
         } finally {
           setLoading(false);
         }

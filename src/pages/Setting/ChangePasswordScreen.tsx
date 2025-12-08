@@ -7,7 +7,7 @@ import {MMKV} from 'react-native-mmkv';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword} from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast} from '@/utils'
 
 import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
 import {useAppDispatch} from '@/redux/hooks';
@@ -69,22 +69,14 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
       };
 
       await dispatch(changePasswordAPI(payload)).unwrap();
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Password successfully changed!',
-      });
+      showToast.success('Success', 'Password successfully changed!');
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
       logout();
     } catch (error: any) {
       console.log('Error', error.message || 'Failed to change password.');
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error.message || 'Failed to change password.',
-      });
+      showToast.error('Error', error.message || 'Failed to change password.');
     }
   };
 

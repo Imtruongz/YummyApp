@@ -10,6 +10,7 @@ import { AuthContext } from './src/contexts/AuthContext';
 import { updateFcmTokenApi } from './src/api/updateFcmTokenApi';
 import NavigationRoot from './src/navigation/NavigationContainer';
 import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
+import { showToast } from './src/utils';
 import { NotificationProvider } from './src/contexts/NotificationContext';
 
 const storage = new MMKV();
@@ -32,12 +33,7 @@ export default function App() {
           }
         },
         (remoteMessage) => {
-          Toast.show({
-            type: 'info',
-            text1: remoteMessage.notification?.title || 'Thông báo',
-            text2: remoteMessage.notification?.body || '',
-            visibilityTime: 4000,
-          });
+          showToast.info(remoteMessage.notification?.title || 'Thông báo', remoteMessage.notification?.body || '');
         }
       );
     };

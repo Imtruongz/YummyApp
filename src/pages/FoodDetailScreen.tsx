@@ -26,7 +26,7 @@ import {
 } from '@/redux/selectors';
 
 import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast } from '@/utils'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
@@ -84,32 +84,17 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
         // Refresh comments list sau khi xóa
         await dispatch(getAllCommentFromFoodIdAPI(foodId));
 
-        Toast.show({
-          type: 'success',
-          text1: 'Thành công',
-          text2: 'Bình luận đã được xóa',
-          visibilityTime: 2000,
-        });
+        showToast.success('Thành công', 'Bình luận đã được xóa');
       } catch (error) {
         console.log('Failed to delete comment:', error);
-        Toast.show({
-          type: 'error',
-          text1: 'Lỗi',
-          text2: 'Không thể xóa bình luận, vui lòng thử lại',
-          visibilityTime: 2000,
-        });
+        showToast.error('Lỗi', 'Không thể xóa bình luận, vui lòng thử lại');
       }
     }
   };
 
   const handleAddFavoriteFood = async () => {
     if (!myUserId || !foodId) {
-      Toast.show({
-        type: 'error',
-        text1: 'Lỗi',
-        text2: 'Không thể thêm vào yêu thích, vui lòng thử lại sau',
-        visibilityTime: 2000,
-      });
+      showToast.error('Lỗi', 'Không thể thêm vào yêu thích, vui lòng thử lại sau');
       return;
     }
 
@@ -120,20 +105,10 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
           foodId: foodId,
         }),
       ).unwrap();
-      Toast.show({
-        type: 'success',
-        text1: 'Thành công',
-        text2: 'Đã thêm vào danh sách yêu thích',
-        visibilityTime: 2000,
-      });
+      showToast.success('Thành công', 'Đã thêm vào danh sách yêu thích');
     } catch (error: any) {
       const errorMessage = 'Món ăn đã có trong danh sách ưa thích';
-      Toast.show({
-        type: 'error',
-        text1: 'Lỗi',
-        text2: errorMessage,
-        visibilityTime: 2000,
-      });
+      showToast.error('Lỗi', errorMessage);
     }
   };
 
@@ -180,20 +155,10 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
       // Refresh comments list after adding
       await dispatch(getAllCommentFromFoodIdAPI(foodId));
       
-      Toast.show({
-        type: 'success',
-        text1: 'Thành công',
-        text2: 'Bình luận đã được thêm',
-        visibilityTime: 2000,
-      });
+      showToast.success('Thành công', 'Bình luận đã được thêm');
     } catch (error) {
       setCommentError('Failed to add the comment. Please try again.');
-      Toast.show({
-        type: 'error',
-        text1: 'Lỗi',
-        text2: 'Không thể thêm bình luận, vui lòng thử lại',
-        visibilityTime: 2000,
-      });
+      showToast.error('Lỗi', 'Không thể thêm bình luận, vui lòng thử lại');
     } finally {
       setIsAddingComment(false);
     }
@@ -220,20 +185,10 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
         console.log('Error fetching updated rating:', error);
       }
 
-      Toast.show({
-        type: 'success',
-        text1: 'Thành công',
-        text2: `Cảm ơn bạn đã đánh giá ${rating} sao!`,
-        visibilityTime: 2000,
-      });
+      showToast.success('Thành công', `Cảm ơn bạn đã đánh giá ${rating} sao!`);
     } catch (error: any) {
       console.log('Error updating rating:', error);
-      Toast.show({
-        type: 'error',
-        text1: 'Lỗi',
-        text2: 'Không thể cập nhật đánh giá, vui lòng thử lại sau',
-        visibilityTime: 2000,
-      });
+      showToast.error('Lỗi', 'Không thể cập nhật đánh giá, vui lòng thử lại sau');
     }
   };
 

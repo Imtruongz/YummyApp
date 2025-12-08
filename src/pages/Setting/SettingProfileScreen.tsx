@@ -18,7 +18,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors} from '@/utils'
+import { img, colors, showToast} from '@/utils'
 
 const storage = new MMKV();
 
@@ -85,11 +85,7 @@ const SettingProfileScreen = () => {
 
   const handleUpdateAccount = async () => {
     if (!username || !description || !avatar) {
-      Toast.show({
-        type: 'error',
-        text1: 'Validation Error',
-        text2: 'Please fill out all fields before updating.',
-      });
+      showToast.error('Validation Error', 'Please fill out all fields before updating.');
       return;
     }
 
@@ -103,19 +99,11 @@ const SettingProfileScreen = () => {
 
       const resultAction = await dispatch(userUpdateAPI(payload)).unwrap();
       if (resultAction) {
-        Toast.show({
-          type: 'success',
-          text1: 'Successfully Updated',
-          text2: 'Your profile has been updated.',
-        });
+        showToast.success('Successfully Updated', 'Your profile has been updated.');
         navigation.goBack();
       }
     } catch (err: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Update Failed',
-        text2: err.message || 'Something went wrong!',
-      });
+      showToast.error('Update Failed', err.message || 'Something went wrong!');
     }
   };
 

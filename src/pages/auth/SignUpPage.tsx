@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
@@ -62,11 +62,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         userRegisterAPI({email, password, username}),
       );
       if (userRegisterAPI.fulfilled.match(resultAction)) {
-        Toast.show({
-          type: 'success',
-          text1: 'Sign up successfully',
-          text2: 'Please check your email to verify your account',
-        });
+        showToast.success('Sign up successfully', 'Please check your email to verify your account');
         navigation.navigate('LoginScreen');
       } else {
         setIsErrorMessage(true);
