@@ -21,6 +21,7 @@ target 'YummyApp' do
   pod 'Firebase/Core'
   pod 'Firebase/Analytics'
   pod 'Firebase/Crashlytics'
+  pod 'Firebase/Messaging'
 
   use_frameworks! :linkage => :static
   $RNFirebaseAsStaticFramework = true

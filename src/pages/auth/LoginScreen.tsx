@@ -2,13 +2,13 @@ import React, { useState, useContext } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOpacity, Image, ScrollView,} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { MMKV } from 'react-native-mmkv';
-import messaging from '@react-native-firebase/messaging';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
 import { CustomInput, CustomButton } from '@/components'
 import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, showToast, handleAsyncAction } from '@/utils';
+import { getFCMTokenAndUpdate } from '@/utils/fcmHelper';
 
 import { useAppDispatch } from '@/redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '@/redux/slices/auth/authThunk';
@@ -66,14 +66,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         storage.set('accessToken', user.accessToken);
         storage.set('refreshToken', user.refreshToken);
         
-        // Lấy FCM token và gửi lên server
-        try {
-          const fcmToken = await messaging().getToken();
-          console.log('FCM Token lấy từ Firebase:', fcmToken);
-          await updateFcmTokenApi(fcmToken, user.accessToken);
-        } catch (err) {
-          console.log('Gửi FCM token lên server thất bại:', err, user.accessToken);
-        }
+        // Lấy FCM token
+        await getFCMTokenAndUpdate(user.accessToken);
       },
       {
         successMessage: 'Login successful',
@@ -118,13 +112,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         storage.set('accessToken', user.accessToken);
         storage.set('refreshToken', user.refreshToken);
         
-        // Lấy FCM token và gửi lên server
-        try {
-          const fcmToken = await messaging().getToken();
-          await updateFcmTokenApi(fcmToken, user.accessToken);
-        } catch (err) {
-          console.log('Gửi FCM token lên server thất bại:', err);
-        }
+        // Lấy FCM token
+        await getFCMTokenAndUpdate(user.accessToken);
       },
       {
         successMessage: 'Login with Facebook successful',
