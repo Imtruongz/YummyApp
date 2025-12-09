@@ -29,7 +29,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: t('ai_assistant_welcome'),
+      text: t('Yummy_AI.ai_assistant_welcome'),
       isUser: false,
     }
   ]);
@@ -117,7 +117,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error: any) {
-      showToast.error(t('ai_assistant_error'), error.message || t('ai_assistant_error_response'));
+      showToast.error(t('Yummy_AI.ai_assistant_error'), error.message || t('Yummy_AI.ai_assistant_error_response'));
     } finally {
       setLoading(false);
     }
@@ -196,25 +196,25 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const quickActions = [
     {
       id: '1',
-      label: t('ai_action_recipe'),
+      label: t('Yummy_AI.ai_action_recipe'),
       icon: '🍳',
       action: () => handleQuickAction('Hãy gợi ý cho tôi một công thức nấu ăn ngon và dễ làm'),
     },
     {
       id: '2',
-      label: t('ai_action_technique'),
+      label: t('Yummy_AI.ai_action_technique'),
       icon: '👨‍🍳',
       action: () => handleQuickAction('Hãy chia sẻ một kỹ thuật nấu ăn quan trọng'),
     },
     {
       id: '3',
-      label: t('ai_action_nutrition'),
+      label: t('Yummy_AI.ai_action_nutrition'),
       icon: '🥗',
       action: () => handleQuickAction('Cho tôi biết về giá trị dinh dưỡng của các loại thực phẩm'),
     },
     {
       id: '4',
-      label: t('ai_action_tips'),
+      label: t('Yummy_AI.ai_action_tips'),
       icon: '💡',
       action: () => handleQuickAction('Chia sẻ một mẹo nấu ăn hữu ích'),
     },
@@ -256,7 +256,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       >
         <HomeHeader
           mode="back"
-          title={t('ai_assistant_title')}
+          title={t('Yummy_AI.ai_assistant_title')}
           showNotification={false}
           showGoBack={true}
           showMenuButton={true}
@@ -281,7 +281,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         <View style={styles.inputContainer}>
           <CustomInput
             style={[styles.input, { maxHeight: 100 }]}
-            placeholder={t('ai_assistant_placeholder')}
+            placeholder={t('Yummy_AI.ai_assistant_placeholder')}
             value={input}
             onChangeText={setInput}
             multiline

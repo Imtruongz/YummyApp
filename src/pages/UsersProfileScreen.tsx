@@ -145,12 +145,8 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
   const handleDonatePress = useCallback(async () => {
     await handleAsyncAction(
       async () => {
-        console.log('[UsersProfileScreen] userId before checking bank account:', userId);
         const response = await api.get(`bank-accounts/${userId}`);
-        console.log('[UsersProfileScreen] Bank account check response:', response.data);
-        
         if (response.data && response.data.success && response.data.data) {
-          console.log('[UsersProfileScreen] Navigating to PaymentScreen with userId:', userId);
           navigation.navigate('PaymentScreen', {
             amount: 0,
             userId: userId,
@@ -158,14 +154,14 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
             serviceProvider: 'YummyApp'
           });
         } else {
-          showToast.warning('Thông báo', t('no_bank_account_message'));
+          showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
         }
       },
       {
         showSuccessToast: false,
         onError: (error: any) => {
           if (error?.response?.status === 404) {
-            showToast.warning('Thông báo', t('no_bank_account_message'));
+            showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
           } else {
             console.log('Unexpected error when checking bank account:', error);
           }
@@ -306,12 +302,12 @@ export default UsersProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
   },
 
   // Profile Section Styles
   profileSection: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 24,
@@ -328,7 +324,7 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
@@ -364,7 +360,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
     marginHorizontal: 4,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
@@ -398,7 +394,7 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   followButtonText: {
-    color: '#fff',
+    color: colors.light,
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'center',
@@ -429,7 +425,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: colors.light,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.1,
     shadowRadius: 3,

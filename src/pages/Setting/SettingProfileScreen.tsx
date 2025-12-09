@@ -122,7 +122,7 @@ const SettingProfileScreen = () => {
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader
         mode="back"
-        title={t('edit_profile_header')}
+        title={t('settings_screen.edit_profile_header')}
         showGoBack={true}
         showNotification={false}
       />
@@ -145,7 +145,7 @@ const SettingProfileScreen = () => {
             <CustomInput
               value={username}
               onChangeText={setusername}
-              placeholder={t('edit_profile_input_name')}
+              placeholder={t('settings_screen.edit_profile_input_name')}
               style={styles.input}
             />
           </View>
@@ -162,7 +162,7 @@ const SettingProfileScreen = () => {
             <CustomInput
               value={description}
               onChangeText={setdescription}
-              placeholder={t('edit_profile_input_description')}
+              placeholder={t('settings_screen.edit_profile_input_description')}
               isDisabled={true}
               style={styles.input}
             />
@@ -171,10 +171,10 @@ const SettingProfileScreen = () => {
           <View style={styles.buttonRow}>
             <CustomButton
               onPress={handleUpdateAccount}
-              title={t('edit_profile_btn_save')}
+              title={t('save')}
               style={styles.saveBtn}
             />
-            <CustomButton title={t('edit_profile_btn_cancel')} style={styles.cancelBtn} isCancel={true} />
+            <CustomButton title={t('cancel')} style={styles.cancelBtn} isCancel={true} />
           </View>
         </View>
       </TouchableWithoutFeedback>

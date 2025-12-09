@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { colors } from '@/utils';
 interface SaveChatModalProps {
   visible: boolean;
   isLoading: boolean;
@@ -98,10 +99,10 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '85%',
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B6B',
   },
   saveButtonText: {
-    color: '#fff',
+    color: colors.light,
     fontWeight: '600',
   },
 });

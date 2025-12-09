@@ -341,7 +341,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               </TouchableOpacity>
             )}
 
-            <CustomTitle title={t('recipe_detail_description')} style={{ marginTop: 10 }} />
+            <CustomTitle title={t('recipe_detail_screen.recipe_detail_description')} style={{ marginTop: 10 }} />
             {selectedFood?.foodDescription &&
               selectedFood?.foodDescription.length > 150 ? (
               <>
@@ -363,26 +363,26 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               <Text>{selectedFood?.foodDescription}</Text>
             )}
 
-            <CustomTitle title={t('recipe_detail_ingredient')} style={{ marginTop: 20 }} />
+            <CustomTitle title={t('recipe_detail_screen.recipe_detail_ingredient')} style={{ marginTop: 20 }} />
             {selectedFood?.foodIngredients.map((ingredient, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {ingredient}
               </Text>
             ))}
-            <CustomTitle title={t('recipe_detail_step')} style={{ marginTop: 20 }} />
+            <CustomTitle title={t('recipe_detail_screen.recipe_detail_step')} style={{ marginTop: 20 }} />
             {selectedFood?.foodSteps.map((step, index) => (
               <Text key={index} style={styles.ingredientText}>
                 {step}
               </Text>
             ))}
-            <CustomTitle title={'Đánh giá của bạn'} style={{ marginTop: 20 }} />
+            <CustomTitle title={t('recipe_detail_screen.recipe_detail_your_rating')} style={{ marginTop: 20 }} />
             <RatingInput
               rating={userRating}
               onRatingChange={handleRatingChange}
             />
 
             <TouchableOpacity style={styles.titleContainer}>
-              <CustomTitle title={t('recipe_detail_comment')} />
+              <CustomTitle title={t('recipe_detail_screen.recipe_detail_comment')} />
               <CustomTitle style={styles.seeAll} title="See all" />
             </TouchableOpacity>
             {foodReviewList.map(item => (
@@ -423,7 +423,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               />
               <CustomInput
                 style={styles.foodNameStyle2}
-                placeholder={t('recipe_detail_comment_placeholder')}
+                placeholder={t('recipe_detail_screen.recipe_detail_comment_placeholder')}
                 value={commentText}
                 onChangeText={setCommentText}
                 multiline={true}
@@ -431,7 +431,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               />
               <TouchableOpacity onPress={handleAddComment}><IconSvg xml={ImagesSvg.icSend} width={24} height={24} color={colors.primary} /></TouchableOpacity>
             </View>
-            <CustomTitle title={t('recipe_detail_more_food')} />
+            <CustomTitle title={t('recipe_detail_screen.recipe_detail_more_food')} />
             <FlatList
               data={userFoodList}
               horizontal
@@ -483,10 +483,10 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
       </SafeAreaView>
       <ConfirmationModal
         visible={isDeleteModalVisible}
-        title={dialogTitle === 'Hidden' ? t('recipe_detail_not_authorized_title') : t('recipe_detail_delete_comment_title')}
+        title={dialogTitle === 'Hidden' ? t('recipe_detail_screen.recipe_detail_not_authorized_title') : t('recipe_detail_screen.recipe_detail_delete_comment_title')}
         message={dialogTitle === 'Hidden'
-          ? t('recipe_detail_not_authorized_message')
-          : t('recipe_detail_delete_comment_message')}
+          ? t('recipe_detail_screen.recipe_detail_not_authorized_message')
+          : t('recipe_detail_screen.recipe_detail_delete_comment_message')}
         type={dialogTitle === 'Hidden' ? 'warning' : 'error'}
         onClose={handleCancel}
         onConfirm={dialogTitle === 'Hidden' ? handleCancel : handleDelete}

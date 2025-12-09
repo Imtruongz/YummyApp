@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet,} from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { useTranslation } from 'react-i18next';
-import { ImagesSvg, useModal } from '@/utils';
+import { colors, ImagesSvg, useModal } from '@/utils';
 import {ConfirmationModal , IconSvg } from '@/components';
 interface ChatHistoryItemProps {
   conversationId: string;
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },

@@ -9,6 +9,7 @@ import { fetchNotifications } from '@/redux/slices/notification/notificationThun
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { selectNotificationList, selectIsLoadingNotification } from '@/redux/selectors';
 import { HomeHeader } from '@/components';
+import { colors } from '@/utils';
 
 const NotificationsScreen = () => {
   const route = useRoute();
@@ -57,7 +58,7 @@ const NotificationsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.light },
   content: { flex: 1, padding: 16 },
   item: { padding: 12, borderBottomWidth: 1, borderColor: '#eee' },
   title: { fontSize: 16, fontWeight: 'bold' },

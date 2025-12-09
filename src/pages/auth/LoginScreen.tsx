@@ -133,14 +133,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           <CustomInput
             value={email}
             onChangeText={setEmail}
-            placeholder={t('login_email')}
+            placeholder={t('login_screen.login_email')}
           />
           {!isEmailValid ? (
-            <Text style={styles.errorMessage}>{t('email_invalid')}</Text>
+            <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
           ) : null}
           <CustomInput
             value={password}
-            placeholder={t('login_pw')}
+            placeholder={t('login_screen.login_pw')}
             secureTextEntry={!showPassword}
             onChangeText={setPassword}
             showIcon={true}
@@ -148,17 +148,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
           {isPasswordValid ? null : (
-            <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
+            <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
           )}
           {isErrorMessage ? (
             <Text style={styles.errorMessage}>{errorMessage}</Text>
           ) : null}
-          <CustomButton title={t('login_btn')} onPress={handleLoginWithEmail} fontSize={16} />
+          <CustomButton title={t('login_screen.login_btn')} onPress={handleLoginWithEmail} fontSize={16} />
 
           {/* Nút đăng nhập bằng Google */}
           <View style={styles.orContainer}>
             <View style={styles.line} />
-            <Text style={styles.orText}>{t('login_or')}</Text>
+            <Text style={styles.orText}>{t('login_screen.login_or')}</Text>
             <View style={styles.line} />
           </View>
 
@@ -170,19 +170,19 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
               source={FacebookIcon}
               style={styles.googleIcon}
             />
-            <Text style={styles.googleButtonText}>{t('login_with_facebook')}</Text>
+            <Text style={styles.googleButtonText}>{t('login_screen.login_with_facebook')}</Text>
           </TouchableOpacity>
         </View>
         {/* Footer */}
         <View style={styles.footer}>
           <AuthFooter
-            content={t('login_register')}
-            navigateTo={t('login_register_btn')}
+            content={t('login_screen.login_register')}
+            navigateTo={t('login_screen.login_register_btn')}
             navigation={navigation}
             targetScreen="SignUpPage"
           />
           <AuthFooter
-            navigateTo={t('login_forgot_pw')}
+            navigateTo={t('login_screen.login_forgot_pw')}
             navigation={navigation}
             targetScreen="ForgotPasswordPage"
           />

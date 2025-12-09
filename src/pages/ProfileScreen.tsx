@@ -64,8 +64,8 @@ const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([
-    { key: 'first', title: t('profile_your_posts') },
-    { key: 'second', title: t('profile_your_favorites') },
+    { key: 'first', title: t('profile_screen.profile_your_posts') },
+    { key: 'second', title: t('profile_screen.profile_your_favorites') },
   ]);
 
   const renderScene = SceneMap({
@@ -75,8 +75,8 @@ const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
 
   useEffect(() => {
     setRoutes([
-      { key: 'first', title: t('profile_your_posts') },
-      { key: 'second', title: t('profile_your_favorites') },
+      { key: 'first', title: t('profile_screen.profile_your_posts') },
+      { key: 'second', title: t('profile_screen.profile_your_favorites') },
     ]);
   }, [t]);
 
@@ -125,7 +125,7 @@ const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="profile" title={t('profile_my_profile_header')} showNotification={false} />
+      <HomeHeader mode="profile" title={t('profile_screen.profile_my_profile_header')} showNotification={false} />
       <View style={styles.infoContainer}>
         {isErrorUser ? (
           <Text>{t('Something went wrong')}</Text>
@@ -141,16 +141,16 @@ const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
               <View style={styles.myInfo3}>
                 <InfoItem
                   number={userFoodList.length ?? 0}
-                  label={t('profile_posts')}
+                  label={t('profile_screen.profile_posts')}
                 />
                 <InfoItem
                   number={followLoading ? '...' : followerCount}
-                  label={t('profile_followers')}
+                  label={t('profile_screen.profile_followers')}
                   onPress={handleFollowersPress}
                 />
                 <InfoItem
                   number={followLoading ? '...' : followingCount}
-                  label={t('profile_following')}
+                  label={t('profile_screen.profile_following')}
                   onPress={handleFollowingPress}
                 />
               </View>

@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     marginHorizontal: 16,
     marginVertical: 12,
     paddingHorizontal: 12,

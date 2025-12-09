@@ -74,11 +74,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
     if (currentTime < 12) {
-      return <Greeting iconName={ImagesSvg.icSun} title={t('goodMorning')} />;
+      return <Greeting iconName={ImagesSvg.icSun} title={t('home_screen.goodMorning')} />;
     } else if (currentTime < 18) {
-      return <Greeting iconName={ImagesSvg.icSun} title={t('goodAfternoon')} />;
+      return <Greeting iconName={ImagesSvg.icSun} title={t('home_screen.goodAfternoon')} />;
     } else {
-      return <Greeting iconName={ImagesSvg.icMoon} title={t('goodEvening')} />;
+      return <Greeting iconName={ImagesSvg.icMoon} title={t('home_screen.goodEvening')} />;
     }
   };
 
@@ -122,7 +122,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
         {/* Popular Category Title */}
         <TouchableOpacity style={styles.titleContainer}>
-          <CustomTitle title={t('home_popular_categories')} />
+          <CustomTitle title={t('home_screen.home_popular_categories')} />
         </TouchableOpacity>
         {/* Popular Category List */}
         <FlatList
@@ -148,8 +148,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <TouchableOpacity
           onPress={() => navigation.navigate('ListFoodScreen')}
           style={styles.titleContainer}>
-          <CustomTitle title={t('home_daily_food')} />
-          <CustomTitle style={styles.seeAll} title={t('home_see_all')} />
+          <CustomTitle title={t('home_screen.home_daily_food')} />
+          <CustomTitle style={styles.seeAll} title={t('home_screen.home_see_all')} />
         </TouchableOpacity>
         {/* Daily Food List */}
         <FlatList
@@ -207,7 +207,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         />
         {/* Popular Creator Title */}
         <TouchableOpacity style={styles.titleContainer}>
-          <CustomTitle title={t('home_popular_creators')} />
+          <CustomTitle title={t('home_screen.home_popular_creators')} />
         </TouchableOpacity>
         {/* Popular Creator List */}
         <FlatList

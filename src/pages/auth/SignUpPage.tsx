@@ -83,20 +83,20 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
         <View style={styles.body}>
           <CustomInput
             value={username}
-            placeholder={t('login_username')}
+            placeholder={t('login_screen.login_username')}
             onChangeText={setUsername}
           />
           <CustomInput
             value={email}
-            placeholder={t('login_email')}
+            placeholder={t('login_screen.login_email')}
             onChangeText={setEmail}
           />
           {!isEmailValid ? (
-            <Text style={styles.errorMessage}>{t('email_invalid')}</Text>
+            <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
           ) : null}
           <CustomInput
             value={password}
-            placeholder={t('login_pw')}
+            placeholder={t('login_screen.login_pw')}
             secureTextEntry={!showPassword}
             onChangeText={setPassword}
             showIcon={true}
@@ -104,11 +104,11 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
             iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
           {isPasswordValid ? null : (
-            <Text style={styles.errorMessage}>{t('pw_invalid')}</Text>
+            <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
           )}
           <CustomInput
             value={confirmPassword}
-            placeholder={t('change_confirm_pw')}
+            placeholder={t('login_screen.change_confirm_pw')}
             secureTextEntry={!showConfirmPassword}
             onChangeText={setConfirmPassword}
             showIcon={true}
@@ -118,7 +118,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
 
           {isConfirmPasswordValid ? null : (
             <Text style={styles.errorMessage}>
-              {t('pw_invalid')}
+              {t('login_screen.pw_invalid')}
             </Text>
           )}
           {
@@ -127,13 +127,13 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
               <Text style={styles.errorMessage}>{errorMessage}</Text>
             ) : null
           }
-          <CustomButton title={t('login_register_btn')} onPress={handleSignUp} />
+          <CustomButton title={t('login_screen.login_register_btn')} onPress={handleSignUp} />
         </View>
         {/* Footer */}
         <View style={styles.footer}>
           <AuthFooter
-            content={t('login_already_accounted')}
-            navigateTo={t('login_btn')}
+            content={t('login_screen.login_already_accounted')}
+            navigateTo={t('login_screen.login_btn')}
             navigation={navigation}
             targetScreen="LoginScreen"
           />

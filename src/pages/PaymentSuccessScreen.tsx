@@ -18,7 +18,7 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
 
   return (
     <LinearGradient
-      colors={[colors.primary, colors.primaryHover, '#fff']}
+      colors={[colors.primary, colors.primaryHover, colors.light]}
       locations={[0, 0.2, 1]}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 28,
     borderWidth: 6,
-    borderColor: '#fff',
+    borderColor: colors.light,
     shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     width: '100%',
     maxWidth: 340,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.06,
     shadowRadius: 4,
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.light,
     fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.2,

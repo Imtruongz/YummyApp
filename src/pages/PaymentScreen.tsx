@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, TextInput, KeyboardAvoidingView, Platform} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -69,10 +69,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           console.log('[PaymentScreen] Error fetching recipient bank account:', error);
 
           if (error?.response?.status === 404) {
-            showToast.warning('Thông báo', t('no_bank_account_message'));
+            showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
             navigation.goBack();
           } else {
-            showToast.error(t('error'), t('failed_to_load_bank_account'));
+            showToast.error(t('error'), t('payment_screen.failed_to_load_bank_account'));
           }
         } finally {
           setLoadingBankAccount(false);
@@ -132,13 +132,13 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
   const handleConfirmPayment = async () => {
     if (!amount || amount <= 0) {
-      showToast.error(t('payment_payment_error'), t('payment_enter_valid_amount'));
+      showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.payment_enter_valid_amount'));
       return;
     }
 
     const selectedMethod = paymentMethods.find(method => method.selected);
     if (!selectedMethod) {
-      showToast.error(t('payment_payment_error'), t('payment_select_payment_method'));
+      showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.payment_select_payment_method'));
       return;
     }
 
@@ -157,7 +157,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       if (selectedPaymentMethod.integrated) {
         if (selectedPaymentMethod.id === 'bank') {
           if (!recipientBankAccount) {
-            showToast.error(t('payment_payment_error'), t('no_recipient_bank_account'));
+            showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.no_recipient_bank_account'));
             return;
           }
 
@@ -169,7 +169,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           });
 
           if (response.data && response.data.success) {
-            showToast.success(t('payment_success'), t('payment_bank_transfer_success'));
+            showToast.success(t('payment_screen.payment_success'), t('payment_screen.payment_bank_transfer_success'));
             navigation.goBack();
           }
         } else {
@@ -192,11 +192,11 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           }
         }
       } else {
-        showToast.info(t('payment_simulation_notice'), t('payment_method_not_integrated', { method: paymentMethodName }));
+        showToast.info(t('payment_screen.payment_simulation_notice'), t('payment_screen.payment_method_not_integrated', { method: paymentMethodName }));
       }
     } catch (error) {
       console.log('Lỗi khi thanh toán:', error);
-      showToast.error(t('payment_payment_error'), t('payment_general_error'));
+      showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.payment_general_error'));
     }
   };
 
@@ -227,7 +227,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       >
         <HomeHeader
           mode="back"
-          title={t('payment_title')}
+          title={t('payment_screen.payment_title')}
           showGoBack={true}
           showNotification={false}
         />
@@ -237,13 +237,13 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             <View style={styles.serviceIconContainer}>
               <IconSvg xml={ImagesSvg.icHeart} width={30} height={30} color={colors.primary} />
             </View>
-            <Text style={styles.serviceTitle}>{t('payment_title')}</Text>
+            <Text style={styles.serviceTitle}>{t('payment_screen.payment_title')}</Text>
             <Text style={styles.phoneNumber}>{recipientBankAccount?.accountName}</Text>
           </View>
 
           <View style={styles.donationCard}>
             <View style={styles.donationTitleRow}>
-              <Text style={styles.donationTitle}>{t('payment_amount')}</Text>
+              <Text style={styles.donationTitle}>{t('payment_screen.payment_amount')}</Text>
             </View>
             <View style={styles.amountInputContainer}>
               <Text style={styles.currencyLabel}>$</Text>
@@ -252,7 +252,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
                 value={inputAmount}
                 onChangeText={handleAmountChange}
                 keyboardType="numeric"
-                placeholder={t('payment_enter_amount')}
+                placeholder={t('payment_screen.payment_enter_amount')}
                 placeholderTextColor="#aaa"
               />
             </View>
@@ -281,9 +281,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           {/* Payment Methods Section */}
           <View style={styles.paymentMethodsSection}>
             <View style={styles.paymentMethodsHeader}>
-              <Text style={styles.paymentMethodsTitle}>{t('payment_payment_methods')}</Text>
+              <Text style={styles.paymentMethodsTitle}>{t('payment_screen.payment_payment_methods')}</Text>
               <TouchableOpacity>
-                <Text style={styles.viewAllText}>{t('payment_view_all')}</Text>
+                <Text style={styles.viewAllText}>{t('payment_screen.payment_view_all')}</Text>
               </TouchableOpacity>
             </View>
 
@@ -344,28 +344,28 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
             </View>
           </View>
           <View style={styles.bottomPaymentSection}>
-          <View style={styles.totalAmount}>
-            <Text style={styles.totalAmountText}>{formatMoney(amount)}</Text>
+            <View style={styles.totalAmount}>
+              <Text style={styles.totalAmountText}>{formatMoney(amount)}</Text>
+            </View>
+            <CustomButton
+              title={t('payment_screen.payment_confirm')}
+              onPress={handleConfirmPayment}
+              style={styles.confirmButton}
+              fontSize={18}
+            />
           </View>
-          <CustomButton
-            title={t('payment_confirm')}
-            onPress={handleConfirmPayment}
-            style={styles.confirmButton}
-            fontSize={18}
-          />
-        </View>
         </ScrollView>
         <ConfirmationModal
           visible={showPaymentConfirmation}
-          title={t('payment_confirm_donate')}
-          message={t('payment_confirm_message', {
+          title={t('payment_screen.payment_confirm_donate')}
+          message={t('payment_screen.payment_confirm_message', {
             amount: formatMoney(amount),
             method: selectedPaymentMethod?.name || ''
           })}
           onClose={() => setShowPaymentConfirmation(false)}
           onConfirm={handleProcessPayment}
-          confirmText={t('payment_confirm')}
-          cancelText={t('payment_cancel')}
+          confirmText={t('confirm')}
+          cancelText={t('cancel')}
           type="warning"
         />
       </KeyboardAvoidingView>

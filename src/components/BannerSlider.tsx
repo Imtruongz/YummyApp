@@ -204,14 +204,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end', // Đẩy text xuống dưới cùng
   },
   title: {
-    color: '#fff',
+    color: colors.light,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 5,
     marginHorizontal: 10,
   },
   description: {
-    color: '#fff',
+    color: colors.light,
     fontSize: 14,
     marginBottom: 12,
     marginHorizontal: 10,

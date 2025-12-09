@@ -99,13 +99,13 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
     <View style={styles.container}>
       <HomeHeader 
         mode="back" 
-        title={t('change_pw_header')} 
+        title={t('settings_screen.change_pw_header')} 
         showGoBack={true}
         showNotification={false}
       />
       <View style={styles.body}>
         <CustomInput
-          placeholder={t('change_old_pw')}
+          placeholder={t('settings_screen.change_old_pw')}
           value={oldPassword}
           onChangeText={setOldPassword}
           secureTextEntry={!showOldPassword}
@@ -119,7 +119,7 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
           </Text>
         )}
         <CustomInput
-          placeholder={t('change_new_pw')}
+          placeholder={t('settings_screen.change_new_pw')}
           value={newPassword}
           secureTextEntry={!showNewPassword}
           showIcon={true}
@@ -131,7 +131,7 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
           <Text style={{color: 'red', fontSize: 12}}>Password invalid</Text>
         )}
         <CustomInput
-          placeholder={t('change_confirm_pw')}
+          placeholder={t('settings_screen.change_confirm_pw')}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry={!showConfirmPassword}
@@ -144,7 +144,7 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
             Confirmation password invalid
           </Text>
         )}
-        <CustomButton title={t('change_pw_btn')} onPress={handleChangePassword} />
+        <CustomButton title={t('settings_screen.change_pw_btn')} onPress={handleChangePassword} />
       </View>
     </View>
   );

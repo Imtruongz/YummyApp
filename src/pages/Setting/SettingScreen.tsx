@@ -67,26 +67,26 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
 
   return (
       <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-        <HomeHeader mode="title" title={t('setting_settings_header')} showNotification={false} />
+        <HomeHeader mode="title" title={t('settings_screen.setting_settings_header')} showNotification={false} />
         <View style={styles.accountContainer}>
-          <CustomTitle style={styles.title} title={t('setting_account')} />
+          <CustomTitle style={styles.title} title={t('settings_screen.setting_account')} />
           <SettingButton
-            title={t('setting_profile_setting')}
+            title={t('settings_screen.setting_profile_setting')}
             navigation={navigation}
             targetScreen="SettingProfileScreen"
           />
           <SettingButton
-            title={t('setting_Password')}
+            title={t('settings_screen.setting_Password')}
             navigation={navigation}
             targetScreen="ChangePasswordScreen"
           />
           <SettingButton
-            title={t('bank_accounts')}
+            title={t('settings_screen.bank_accounts')}
             navigation={navigation}
             targetScreen="BankAccountScreen"
           />
           <Pressable style={styles.languageContainer} onPress={() => setLanguageModalVisible(true)}>
-            <CustomTitle title={t('setting_language')} />
+            <CustomTitle title={t('settings_screen.setting_language')} />
             <View style={styles.languageButton}>
               <Text style={styles.languageText}>
                 {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
@@ -103,11 +103,11 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
                 <IconSvg xml={ImagesSvg.icTouchID} width={32} height={32} color='black' />
               </View>
               <View style={styles.biometricTextContainer}>
-                <Text style={styles.biometricTitle}>{t('setting_faceid')}</Text>
+                <Text style={styles.biometricTitle}>{t('settings_screen.setting_faceid')}</Text>
                 <Text style={styles.biometricDescription}>
                   {i18n.language === 'vn'
                     ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học'
-                    : 'Quickly unlock app with biometrics'}
+                    : t('settings_screen.setting_faceid_description')}
                 </Text>
               </View>
               <View style={styles.switchContainer}>
@@ -121,14 +121,14 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
         <View style={styles.accountContainer}>
           <SettingButton
             style={styles.button}
-            title={t('setting_logout')}
+            title={t('settings_screen.setting_logout')}
             onPress={handleLogout}
           />
         </View>
         <ConfirmationModal
           visible={dialogVisible}
-          title={t('setting_logout')}
-          message={t('setting_logout_content')}
+          title={t('settings_screen.setting_logout')}
+          message={t('settings_screen.setting_logout_content')}
           type="warning"
           onClose={hideDialog}
           onConfirm={logout}
@@ -139,7 +139,7 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
         <Modal
           visible={languageModalVisible}
           transparent
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setLanguageModalVisible(false)}>
           <Pressable
             style={styles.modalContainer}
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: colors.InputBg,
-    shadowColor: '#000',
+    shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,

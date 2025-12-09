@@ -22,7 +22,7 @@ export const initFirebaseMessaging = async (
       await messaging().registerDeviceForRemoteMessages();
       console.log('✅ [FCM] Thiết bị đã đăng ký cho remote messages');
     } catch (err) {
-      console.error('⚠️ [FCM] Lỗi đăng ký remote messages:', err);
+      console.log('⚠️ [FCM] Lỗi đăng ký remote messages:', err);
     }
 
     // Lấy FCM token
@@ -31,7 +31,7 @@ export const initFirebaseMessaging = async (
       console.log('🔔 [FCM] Token lấy từ Firebase:', fcmToken);
       if (onToken) onToken(fcmToken);
     } catch (err) {
-      console.error('❌ [FCM] Lỗi lấy token:', err);
+      console.log('❌ [FCM] Lỗi lấy token:', err);
     }
   } else {
     Alert.alert('Thông báo', 'Bạn chưa cho phép nhận thông báo!');

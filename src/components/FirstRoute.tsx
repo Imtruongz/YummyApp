@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView} from 'react-native';
+import { StyleSheet, ScrollView, FlatList, View } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import {MMKV} from 'react-native-mmkv';
@@ -23,7 +23,6 @@ const FirstRoute = () => {
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
   const [userId, setUserId] = useState(storage.getString('userId') || '');
 
-  const [visible, setVisible] = useState<boolean>(false);
   const [currentItem, setCurrentItem] = useState<food | null>(null);
 
   const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
@@ -59,18 +58,15 @@ const FirstRoute = () => {
   useEffect(() => {
     if (userId) {
       dispatch(getFoodByIdAPI({userId}));
-      console.log('getFoodByIdAPI rendered successfully with userId:', userId);
-    } else {
-      console.log('userId is empty, skipping getFoodByIdAPI call');
     }
   }, [dispatch, userId]);
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.container}>
-        {Array.isArray(userFoodList) && userFoodList.map(item => (
+      <FlatList
+        data={Array.isArray(userFoodList) ? userFoodList : []}
+        renderItem={({ item }) => (
           <FoodItemCard
-            key={item.foodId}
             item={item}
             onLongPress={() => showDialog(item)}
             onPress={() => {
@@ -81,8 +77,13 @@ const FirstRoute = () => {
             }}
             containerStyle={{ width: '47%' }}
           />
-        ))}
-      </ScrollView>
+        )}
+        keyExtractor={(item, index) => `${item.foodId}_${index}`}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        scrollEnabled={false}
+        contentContainerStyle={styles.container}
+      />
       <ConfirmationModal
         visible={isDeleteModalVisible}
         title={t('delete_recipe_title')}
@@ -103,11 +104,11 @@ export default FirstRoute;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    padding: 12,
+  },
+  columnWrapper: {
     justifyContent: 'space-between',
     gap: 14,
-    padding: 12,
   },
   title: {
     fontSize: 16,

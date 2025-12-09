@@ -52,7 +52,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
         <View style={styles.body}>
           <CustomInput
             value={email}
-            placeholder={t('login_email')}
+            placeholder={t('login_screen.login_email')}
             onChangeText={setEmail}
           />
           {isErrorMessage ? (
@@ -60,7 +60,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
           ) : (
             <Text style={styles.sentEmailMessage}>{errorMessage}</Text>
           )}
-          <CustomButton title={t('login_send_mail')} onPress={handleResetPassword} />
+          <CustomButton title={t('login_screen.login_send_mail')} onPress={handleResetPassword} />
           <AuthFooter
             content="Back to"
             navigateTo="Login"

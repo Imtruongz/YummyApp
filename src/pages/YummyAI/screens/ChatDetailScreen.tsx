@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   userText: {
-    color: '#fff',
+    color: colors.light,
   },
   aiText: {
     color: '#333',
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   footer: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.light,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderTopWidth: 1,
