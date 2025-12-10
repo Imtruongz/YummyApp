@@ -99,12 +99,12 @@ const SearchScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="search" title={t('tab_search') || 'Tìm kiếm'} showNotification={false} />
+      <HomeHeader mode="search" title={t('search')} showNotification={false} />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.searchContainer}>
           <CustomInput
             style={styles.inputHeader}
-            placeholder={t('search') || 'Nhập tên món ăn...'}
+            placeholder={t('new_food_screen.add_placeholder_food_name')}
             value={query}
             onChangeText={handleSearch}
             showIcon={true}
@@ -124,7 +124,7 @@ const SearchScreen = () => {
           )}
           {query.trim() === '' && !isCategorySearch ? (
             <View style={styles.suggestionContainer}>
-              <Text style={styles.suggestionTitle}>{t('search_suggestion_title')}</Text>
+              <Text style={styles.suggestionTitle}>{t('search_screen.search_suggestion_title')}</Text>
               {isLoadingCategory ? (
                 <View style={{ width: '100%', alignItems: 'center' }}>
                   <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />

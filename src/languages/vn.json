@@ -168,12 +168,22 @@
     "toast_profile_update_failed": "Không thể cập nhật hồ sơ của bạn.",
     "toast verify_email": "Vui lòng kiểm tra email của bạn để xác minh tài khoản"
   },
+  "notification_screen": {
+    "notification_title": "Thông báo",
+    "notification_no_notifications": "Không có thông báo nào",
+    "new_comment_notification": "Bạn có mình luật mới",
+    "read": "Đã đọc",
+    "unread": "Chưa đọc",
+    "had_comment_recently": "Có người vừa bình luận: "
+  },
+  "search_screen": {
+    "search": "Tìm kiếm",
+    "search_suggestion_title": "Gợi ý tìm kiếm theo thể loại"
+  },
   "add_category": "Danh mục",
   "loading": "Đang tải...",
   "reload": "Tải lại",
-  "search": "Tìm kiếm",
   "notifications": "Thông báo",
-  "notification_unread": "Chưa đọc",
   "ok": "OK",
   "demo": "Demo",
   "success": "Thành công",
@@ -190,7 +200,6 @@
   "general_error": "Đã xảy ra lỗi!",
   "list_can_not_find": "Không tìm thấy món ăn phù hợp",
   "list_nodata": "Không có món ăn nào trong danh mục này",
-  "search_suggestion_title": "Gợi ý tìm kiếm theo thể loại",
   "notification_empty": "Không có thông báo nào.",
   "follow_no_users": "Không tìm thấy người dùng nào.",
   "bank_accounts": "Tài khoản ngân hàng",

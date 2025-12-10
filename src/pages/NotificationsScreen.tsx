@@ -33,18 +33,18 @@ const NotificationsScreen = () => {
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.body}>{item.body}</Text>
       <Text style={styles.time}>{new Date(item.createdAt).toLocaleString()}</Text>
-      {!item.isRead && <Text style={styles.unread}>{t('notification_unread')}</Text>}
+      {!item.isRead && <Text style={styles.unread}>{t('notification_screen.unread')}</Text>}
     </TouchableOpacity>
   );
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="title" title={t('notifications')} showNotification={false} showGoBack />
+      <HomeHeader mode="title" title={t('notification_screen.notification_title')} showNotification={false} showGoBack />
       <View style={styles.content}>
         {loading ? (
           <Text>{t('loading')}</Text>
         ) : notifications.length === 0 ? (
-          <Text>{t('notification_empty')}</Text>
+          <Text>{t('notification_screen.notification_no_notifications')}</Text>
         ) : (
           <FlatList
             data={notifications}
@@ -58,13 +58,37 @@ const NotificationsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.light },
-  content: { flex: 1, padding: 16 },
-  item: { padding: 12, borderBottomWidth: 1, borderColor: '#eee' },
-  title: { fontSize: 16, fontWeight: 'bold' },
-  body: { fontSize: 14, color: '#333' },
-  time: { fontSize: 12, color: '#888', marginTop: 4 },
-  unread: { color: 'red', fontSize: 12, marginTop: 4 },
+  container: {
+    flex: 1,
+    backgroundColor: colors.light
+  },
+  content: {
+    flex: 1,
+    padding: 16
+  },
+  item: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderColor: '#eee'
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  body: {
+    fontSize: 14,
+    color: '#333'
+  },
+  time: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 4
+  },
+  unread: {
+    color: 'red',
+    fontSize: 12,
+    marginTop: 4
+  },
 });
 
 export default NotificationsScreen;
