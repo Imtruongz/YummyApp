@@ -35,6 +35,7 @@ const ListFoodScreen: React.FC = () => {
         title={t('add_category')} 
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
       <CustomInput
         style={styles.inputHeader}

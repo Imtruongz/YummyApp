@@ -71,6 +71,7 @@ const FollowScreen: React.FC = () => {
         title={type === 'followers' ? t('profile_followers') || 'Followers' : t('profile_following') || 'Following'} 
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
       {loading ? (
         <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />

@@ -1,6 +1,6 @@
-import { View, StyleSheet, Dimensions, Text} from 'react-native';
+import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { TabView, SceneMap, TabBar, SceneRendererProps, NavigationState, Route} from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
 import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,7 +19,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, CustomAvatar, FirstRoute, SecondRoute, Typography, ProfileSkeleton } from '@/components'
-import {img, colors, navigate} from '@/utils'
+import { img, colors, navigate } from '@/utils'
 
 const storage = new MMKV();
 const initialLayout = { width: Dimensions.get('window').width };
@@ -118,7 +118,11 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="profile" title={t('profile_screen.profile_my_profile_header')} showNotification={false} />
+      <HomeHeader
+        mode="profile"
+        title={t('profile_screen.profile_my_profile_header')}
+        showNotification={false}
+      />
       <View style={styles.infoContainer}>
         {isErrorUser ? (
           <Text>{t('Something went wrong')}</Text>

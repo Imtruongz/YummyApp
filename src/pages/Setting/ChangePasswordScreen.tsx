@@ -92,6 +92,7 @@ const ChangePasswordScreen: React.FC = () => {
         title={t('settings_screen.change_pw_header')} 
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
       <View style={styles.body}>
         <CustomInput

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Modal, FlatList} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
@@ -24,7 +24,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isBankModalVisible, setIsBankModalVisible] = useState<boolean>(false);
   const [isConfirmDeleteVisible, setIsConfirmDeleteVisible] = useState<boolean>(false);
-  
+
   // Form state
   const [bankName, setBankName] = useState<string>('');
   const [bankCode, setBankCode] = useState<string>('');
@@ -38,29 +38,29 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     { name: 'BIDV - Bank for Investment and Development of Vietnam', code: 'BIDV' },
     { name: 'Vietcombank - Joint Stock Commercial Bank for Foreign Trade of Vietnam', code: 'VCB' }
   ];
-  
+
   useEffect(() => {
     // Fetch user's bank account
     fetchBankAccount();
   }, []);
-  
+
   useEffect(() => {
     // Validate form
-    if (bankName.trim() && bankCode.trim() && 
-        accountNumber.trim() && accountName.trim()) {
+    if (bankName.trim() && bankCode.trim() &&
+      accountNumber.trim() && accountName.trim()) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
     }
   }, [bankName, bankCode, accountNumber, accountName]);
-  
+
   const fetchBankAccount = async () => {
     setIsLoading(true);
     const result = await tryCatch(async () => {
       const response = await api.get('/bank-accounts');
       return response.data.data || null;
     });
-    
+
     if (result.success && result.data) {
       setBankAccount(result.data);
       if (isEditing) {
@@ -75,17 +75,17 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     }
     setIsLoading(false);
   };
-  
+
   const handleSaveAccount = async () => {
     if (!isFormValid) return;
-    
+
     const accountData: BankInfo = {
       bankName: bankName,
       bankCode: bankCode,
       accountNumber: accountNumber,
       accountName: accountName
     };
-    
+
     await handleAsyncAction(
       async () => {
         const response = await api.post('/bank-accounts', accountData);
@@ -101,7 +101,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       }
     );
   };
-  
+
   const handleStartEdit = () => {
     if (bankAccount) {
       setBankName(bankAccount.bankName);
@@ -111,11 +111,11 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     }
     setIsEditing(true);
   };
-  
+
   const handleDeleteAccount = () => {
     setIsConfirmDeleteVisible(true);
   };
-  
+
   const confirmDeleteAccount = async () => {
     await handleAsyncAction(
       async () => {
@@ -132,7 +132,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       }
     );
   };
-  
+
   const resetForm = () => {
     setBankName('');
     setBankCode('');
@@ -140,10 +140,10 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     setAccountName('');
     setIsEditing(false);
   };
-  
+
   const renderBankAccount = () => {
     if (!bankAccount) return null;
-    
+
     return (
       <View style={styles.bankAccountItem}>
         <View style={styles.bankAccountDetails}>
@@ -153,17 +153,17 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           <Text style={styles.accountNumber}>{bankAccount.accountNumber}</Text>
           <Text style={styles.accountName}>{bankAccount.accountName}</Text>
         </View>
-        
+
         <View style={styles.bankAccountActions}>
-          <TouchableOpacity 
-            style={styles.actionButton} 
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={handleStartEdit}
           >
             <Text style={styles.actionButtonText}>{t('edit')}</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={[styles.actionButton, styles.deleteButton]} 
+
+          <TouchableOpacity
+            style={[styles.actionButton, styles.deleteButton]}
             onPress={handleDeleteAccount}
           >
             <IconSvg xml={ImagesSvg.icTrash} width={22} height={22} color="#FF3B30" />
@@ -172,17 +172,17 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       </View>
     );
   };
-  
+
   const renderAccountForm = () => {
     return (
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
           {bankAccount ? t('edit_bank_account') : t('add_new_bank_account')}
         </Text>
-        
+
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('bank_name')}</Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.selectBankButton}
             onPress={() => setIsBankModalVisible(true)}
           >
@@ -194,11 +194,11 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
               pointerEvents="none"
             />
             <View style={styles.selectIcon} >
-              <IconSvg xml={ImagesSvg.iconArrowDown} width={18} height={18} color={colors.dark}/>
+              <IconSvg xml={ImagesSvg.iconArrowDown} width={18} height={18} color={colors.dark} />
             </View>
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('bank_code')}</Text>
           <TextInput
@@ -209,7 +209,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             pointerEvents="none"
           />
         </View>
-        
+
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('account_number')}</Text>
           <TextInput
@@ -220,7 +220,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             keyboardType="numeric"
           />
         </View>
-        
+
         <View style={styles.formGroup}>
           <Text style={styles.label}>{t('account_name')}</Text>
           <TextInput
@@ -231,7 +231,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             autoCapitalize="characters"
           />
         </View>
-        
+
         <View style={styles.formActions}>
           <TouchableOpacity
             style={[styles.formButton, styles.cancelButton]}
@@ -241,7 +241,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.formButton, 
+              styles.formButton,
               styles.saveButton,
               !isFormValid && styles.disabledButton
             ]}
@@ -259,7 +259,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       </View>
     );
   };
-  
+
   // Render bank selection modal
   const renderBankSelectionModal = () => {
     return (
@@ -274,7 +274,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('select_bank')}</Text>
             </View>
-            
+
             <FlatList
               data={bankList}
               keyExtractor={(item) => item.code}
@@ -293,7 +293,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
               )}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
             />
-            
+
             <TouchableOpacity
               style={styles.modalCancelButton}
               onPress={() => setIsBankModalVisible(false)}
@@ -310,7 +310,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       </Modal>
     );
   };
-  
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -321,8 +321,9 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         title={t('bank_accounts')}
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
-      
+
       <ScrollView style={styles.content}>
         {isLoading ? (
           <View style={styles.loadingContainer}>
@@ -343,7 +344,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
                 </View>
               )
             )}
-            
+
             {isEditing ? (
               renderAccountForm()
             ) : (
@@ -368,10 +369,10 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           </>
         )}
       </ScrollView>
-      
+
       {/* Render bank selection modal */}
       {renderBankSelectionModal()}
-      
+
       {/* Confirmation Modal for delete */}
       <ConfirmationModal
         visible={isConfirmDeleteVisible}

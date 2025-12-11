@@ -125,6 +125,7 @@ const SettingProfileScreen = () => {
         title={t('settings_screen.edit_profile_header')}
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.body}>

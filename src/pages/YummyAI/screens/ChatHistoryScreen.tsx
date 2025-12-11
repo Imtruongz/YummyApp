@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput} from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ImagesSvg, colors, handleAsyncAction, showToast, navigate, goBack } from '@/utils'
+import { ImagesSvg, colors, handleAsyncAction, showToast, navigate } from '@/utils'
 import { AppDispatch } from '@/redux/store';
 import { resetConversations} from '@/redux/slices/chatHistory/chatHistorySlice';
 import ChatHistoryItem from '@/pages/YummyAI/components/ChatHistoryItem';
@@ -59,10 +59,6 @@ const ChatHistoryScreen: React.FC = () => {
     navigate('ChatDetailScreen', { conversationId });
   };
 
-  const handleGoBack = () => {
-    goBack();
-  };
-
   const handleDeleteConversation = async (conversationId: string) => {
     setDeletingId(conversationId);
     await handleAsyncAction(
@@ -82,7 +78,6 @@ const ChatHistoryScreen: React.FC = () => {
 
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      {/* <Ionicons name="chatbubbles-outline" size={64} color="#ddd" /> */}
       <Text style={styles.emptyTitle}>
         {t('chatHistory.noChats')}
       </Text>
@@ -108,7 +103,7 @@ const ChatHistoryScreen: React.FC = () => {
         title={t('chatHistory.title')}
         showNotification={false}
         showGoBack={true}
-        onGoBack={handleGoBack}
+        isBackHome={true}
       />
       <View style={styles.header}>
         <Text style={styles.chatCount}>

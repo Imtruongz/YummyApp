@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,7 @@ import api from '@/api/config';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
 import { getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
-import { isFollowingAPI, followUserAPI, unfollowUserAPI, countFollowersAPI, countFollowingAPI} from '@/redux/slices/follow/followThunk';
+import { isFollowingAPI, followUserAPI, unfollowUserAPI, countFollowersAPI, countFollowingAPI } from '@/redux/slices/follow/followThunk';
 import { resetViewedUser } from '@/redux/slices/auth/authSlice';
 import { resetViewedUserFoodList } from '@/redux/slices/food/foodSlice';
 import {
@@ -19,7 +19,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
-import {img, colors, handleAsyncAction, tryCatch, showToast, navigate} from '@/utils'
+import { img, colors, handleAsyncAction, tryCatch, showToast, navigate } from '@/utils'
 
 interface InfoItemProps {
   number: number | string;
@@ -169,9 +169,9 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const hasNoData = !viewedUserFoodList || viewedUserFoodList.length === 0;
 
   const renderFoodItem = ({ item }: { item: any }) => (
-    <FoodItemCard 
+    <FoodItemCard
       containerStyle={{ width: cardWidth, margin: 4 }}
-      item={item} 
+      item={item}
       onPress={() => handleFoodPress(item.foodId, item.userId)}
     />
   );
@@ -183,6 +183,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
         title=''
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
 
       {/* Profile Section */}

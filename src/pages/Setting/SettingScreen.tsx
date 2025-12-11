@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, Button as RNButton} from 'react-native';
+import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, Button as RNButton } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 import { LoginManager } from 'react-native-fbsdk-next';
@@ -66,101 +66,102 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
 
 
   return (
-      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-        <HomeHeader mode="title" title={t('settings_screen.setting_settings_header')} showNotification={false} />
-        <View style={styles.accountContainer}>
-          <CustomTitle style={styles.title} title={t('settings_screen.setting_account')} />
-          <SettingButton
-            title={t('settings_screen.setting_profile_setting')}
-            navigation={navigation}
-            targetScreen="SettingProfileScreen"
-          />
-          <SettingButton
-            title={t('settings_screen.setting_Password')}
-            navigation={navigation}
-            targetScreen="ChangePasswordScreen"
-          />
-          <SettingButton
-            title={t('settings_screen.bank_accounts')}
-            navigation={navigation}
-            targetScreen="BankAccountScreen"
-          />
-          <Pressable style={styles.languageContainer} onPress={() => setLanguageModalVisible(true)}>
-            <CustomTitle title={t('settings_screen.setting_language')} />
-            <View style={styles.languageButton}>
-              <Text style={styles.languageText}>
-                {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
+    <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+      <HomeHeader
+        mode="title"
+        title={t('settings_screen.setting_settings_header')}
+        showNotification={false}
+      />
+      <View style={styles.accountContainer}>
+        <CustomTitle style={styles.title} title={t('settings_screen.setting_account')} />
+        <SettingButton
+          title={t('settings_screen.setting_profile_setting')}
+          targetScreen="SettingProfileScreen"
+        />
+        <SettingButton
+          title={t('settings_screen.setting_Password')}
+          targetScreen="ChangePasswordScreen"
+        />
+        <SettingButton
+          title={t('settings_screen.bank_accounts')}
+          targetScreen="BankAccountScreen"
+        />
+        <Pressable style={styles.languageContainer} onPress={() => setLanguageModalVisible(true)}>
+          <CustomTitle title={t('settings_screen.setting_language')} />
+          <View style={styles.languageButton}>
+            <Text style={styles.languageText}>
+              {languages.find(lang => lang.code === i18n.language)?.label || i18n.language}
+            </Text>
+          </View>
+        </Pressable>
+        <TouchableOpacity
+          style={styles.biometricContainer}
+          activeOpacity={0.7}
+          onPress={onPressCrashapp}
+        >
+          <View style={styles.biometricContent}>
+            <View style={styles.biometricIconContainer}>
+              <IconSvg xml={ImagesSvg.icTouchID} width={32} height={32} color='black' />
+            </View>
+            <View style={styles.biometricTextContainer}>
+              <Text style={styles.biometricTitle}>{t('settings_screen.setting_faceid')}</Text>
+              <Text style={styles.biometricDescription}>
+                {i18n.language === 'vn'
+                  ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học'
+                  : t('settings_screen.setting_faceid_description')}
               </Text>
             </View>
-          </Pressable>
-          <TouchableOpacity
-            style={styles.biometricContainer}
-            activeOpacity={0.7}
-            onPress={onPressCrashapp}
-            >
-            <View style={styles.biometricContent}>
-              <View style={styles.biometricIconContainer}>
-                <IconSvg xml={ImagesSvg.icTouchID} width={32} height={32} color='black' />
-              </View>
-              <View style={styles.biometricTextContainer}>
-                <Text style={styles.biometricTitle}>{t('settings_screen.setting_faceid')}</Text>
-                <Text style={styles.biometricDescription}>
-                  {i18n.language === 'vn'
-                    ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học'
-                    : t('settings_screen.setting_faceid_description')}
-                </Text>
-              </View>
-              <View style={styles.switchContainer}>
-                <View style={styles.biometricSwitch}>
-                  <View style={styles.switchKnob} />
-                </View>
+            <View style={styles.switchContainer}>
+              <View style={styles.biometricSwitch}>
+                <View style={styles.switchKnob} />
               </View>
             </View>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.accountContainer}>
-          <SettingButton
-            style={styles.button}
-            title={t('settings_screen.setting_logout')}
-            onPress={handleLogout}
-          />
-        </View>
-        <ConfirmationModal
-          visible={dialogVisible}
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.accountContainer}>
+        <SettingButton
+          style={styles.button}
           title={t('settings_screen.setting_logout')}
-          message={t('settings_screen.setting_logout_content')}
-          type="warning"
-          onClose={hideDialog}
-          onConfirm={logout}
-          confirmText={t('OK')}
-          cancelText={t('Cancel')}
+          onPress={handleLogout}
         />
+      </View>
+      <ConfirmationModal
+        visible={dialogVisible}
+        title={t('settings_screen.setting_logout')}
+        message={t('settings_screen.setting_logout_content')}
+        type="warning"
+        onClose={hideDialog}
+        onConfirm={logout}
+        confirmText={t('OK')}
+        cancelText={t('Cancel')}
+      />
 
-        <Modal
-          visible={languageModalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setLanguageModalVisible(false)}>
-          <Pressable
-            style={styles.modalContainer}
-            onPress={() => setLanguageModalVisible(false)}>
-            <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
-              <FlatList
-                data={languages}
-                keyExtractor={(item) => item.code}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.modalItem}
-                    onPress={() => handleSelectLanguage(item.code)}>
-                    <Text style={styles.modalItemText}>{item.label}</Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </Pressable>
+      <Modal
+        visible={languageModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setLanguageModalVisible(false)}>
+        <Pressable
+          style={styles.modalContainer}
+          onPress={() => setLanguageModalVisible(false)}>
+          <Pressable style={styles.modalContent} onPress={(e) => e.stopPropagation()}>
+            <FlatList
+              data={languages}
+              keyExtractor={(item) => item.code}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.modalItem}
+                  onPress={() => handleSelectLanguage(item.code)}>
+                  <Text style={styles.modalItemText}>{item.label}</Text>
+                </TouchableOpacity>
+              )}
+            />
           </Pressable>
-        </Modal>
+        </Pressable>
+      </Modal>
 
-      </SafeAreaView>
+    </SafeAreaView>
   );
 };
 

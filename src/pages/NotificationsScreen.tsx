@@ -39,7 +39,13 @@ const NotificationsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="title" title={t('notification_screen.notification_title')} showNotification={false} showGoBack />
+      <HomeHeader
+        mode="title"
+        title={t('notification_screen.notification_title')}
+        showNotification={false}
+        showGoBack
+        isBackHome={true}
+      />
       <View style={styles.content}>
         {loading ? (
           <Text>{t('loading')}</Text>

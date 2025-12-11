@@ -5,29 +5,37 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '@/redux/hooks';
 
 import { Typography, DropdownMenu, MenuOption, IconSvg } from '@/components'
-import {colors, img, ImagesSvg, goBack, navigate} from '@/utils';
+import { colors, img, ImagesSvg, goBack, navigate } from '@/utils';
 
 type HeaderMode = 'home' | 'title' | 'search' | 'profile' | 'back';
 
-interface HomeHeaderProps {
-  // Props cho home mode
+interface HomeModeProps {
   avatar?: string;
   username?: string;
   greetingMessage?: React.ReactNode;
+}
 
-  // Props chung
+interface CommonProps {
   mode?: HeaderMode;
   title?: string;
   showNotification?: boolean;
   showGoBack?: boolean;
   showMenuButton?: boolean;
+  isBackHome?: boolean;
   menuOptions?: MenuOption[];
   onNotificationPress?: () => void;
   onGoBack?: () => void;
   onMenuPress?: () => void;
 }
 
-const HomeHeader: React.FC<HomeHeaderProps> = ({
+interface HomeHeaderProps extends HomeModeProps, CommonProps {}
+
+/**
+ * HomeHeader component - A flexible header for different screen modes in Yummy app.
+ * Supports home, title, search, profile, and back modes with customizable right actions.
+ */
+
+const HomeHeader: React.FC<HomeHeaderProps> = React.memo(({
   avatar,
   username,
   greetingMessage,
@@ -36,6 +44,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   showNotification = true,
   showGoBack = false,
   showMenuButton = false,
+  isBackHome = false,
   menuOptions,
   onNotificationPress,
   onGoBack,
@@ -58,6 +67,10 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
     } else {
       goBack();
     }
+  };
+
+  const handleBackHome = () => {
+    navigate('HomeScreen');
   };
 
   const renderLeftContent = () => {
@@ -100,6 +113,41 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
     }
   };
 
+  const renderRightContent = () => {
+    if (isBackHome) {
+      return (
+        <TouchableOpacity onPress={handleBackHome}>
+          <IconSvg xml={ImagesSvg.icHome} width={24} height={24} color="black" />
+        </TouchableOpacity>
+      );
+    }
+
+    if (showMenuButton) {
+      return menuOptions ? (
+        <DropdownMenu
+          options={menuOptions}
+          trigger={
+            <IconSvg xml={ImagesSvg.icOptions} width={24} height={24} color="black" />
+          }
+        />
+      ) : (
+        <TouchableOpacity style={styles.menuButton} onPress={onMenuPress}>
+          <IconSvg xml={ImagesSvg.icOptions} width={24} height={24} color="black" />
+        </TouchableOpacity>
+      );
+    }
+
+    if (showNotification) {
+      return (
+        <TouchableOpacity onPress={handleNotificationPress}>
+          <IconSvg xml={ImagesSvg.imageNotification} width={100} height={30} color="black" />
+        </TouchableOpacity>
+      );
+    }
+
+    return <View style={styles.placeholderButton} />;
+  };
+
   return (
     <View style={{ backgroundColor: colors.primaryHover }}>
       <StatusBar backgroundColor={colors.primaryHover} barStyle="light-content" />
@@ -111,29 +159,12 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
           {renderLeftContent()}
         </View>
         <View style={styles.rightContainer}>
-          {showMenuButton ? (
-            menuOptions ? (
-              <DropdownMenu
-                options={menuOptions}
-                trigger={
-                  <IconSvg xml={ImagesSvg.icOptions} width={24} height={24} color='black' />
-                }
-              />
-            ) : (
-              <TouchableOpacity style={styles.menuButton} onPress={onMenuPress}>
-                <IconSvg xml={ImagesSvg.icOptions} width={24} height={24} color='black' />
-              </TouchableOpacity>
-            )
-          ) : showNotification ? (
-            <TouchableOpacity onPress={handleNotificationPress} ><IconSvg xml={ImagesSvg.imageNotification} width={100} height={30} color='black' /></TouchableOpacity>
-          ) : (
-            <View style={styles.placeholderButton} />
-          )}
+          {renderRightContent()}
         </View>
       </View>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   headerContainer: {

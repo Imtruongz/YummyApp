@@ -99,7 +99,11 @@ const SearchScreen = () => {
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
-      <HomeHeader mode="search" title={t('search')} showNotification={false} />
+      <HomeHeader
+        mode="search"
+        title={t('search')}
+        showNotification={false}
+      />
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.searchContainer}>
           <CustomInput

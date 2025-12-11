@@ -44,6 +44,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
         title={t('add_category')}
         showGoBack={true}
         showNotification={false}
+        isBackHome={true}
       />
       <TextInput
         style={styles.inputHeader}

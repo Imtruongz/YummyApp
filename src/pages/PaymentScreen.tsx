@@ -225,6 +225,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
           title={t('payment_screen.payment_title')}
           showGoBack={true}
           showNotification={false}
+          isBackHome={true}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
           {/* Payment Card */}
