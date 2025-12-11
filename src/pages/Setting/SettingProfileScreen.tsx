@@ -18,7 +18,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast, handleAsyncAction} from '@/utils'
+import { img, colors, showToast, handleAsyncAction, goBack} from '@/utils'
 
 const storage = new MMKV();
 
@@ -106,7 +106,7 @@ const SettingProfileScreen = () => {
       {
         successMessage: 'Your profile has been updated',
         errorMessage: 'Something went wrong',
-        onSuccess: () => navigation.goBack()
+        onSuccess: () => goBack()
       }
     );
   };

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { HomeHeader, CustomAvatar } from '@/components'
-import {img, colors} from '@/utils'
+import {img, colors, navigate} from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getFollowersAPI, getFollowingAPI } from '@/redux/slices/follow/followThunk';
@@ -40,7 +40,6 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress }) => (
 const FollowScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute<any>();
-  const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { userId, type } = route.params as { userId: string; type: 'followers' | 'following' };
 
@@ -59,8 +58,7 @@ const FollowScreen: React.FC = () => {
 
   const handleUserPress = (selectedUserId: string) => {
     // Điều hướng sang HomeNavigator > ListFoodByUserPage
-    // @ts-ignore
-    navigation.navigate('HomeNavigator', {
+    navigate('HomeNavigator', {
       screen: 'ListFoodByUserPage',
       params: { userId: selectedUserId },
     });

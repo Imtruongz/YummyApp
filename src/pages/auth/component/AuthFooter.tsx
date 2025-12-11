@@ -1,19 +1,19 @@
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import colors from '@/utils/color';
+import { navigate } from '@/utils/navigationHelper';
 
 interface TextFooterProps {
   content?: string;
   navigateTo: string;
-  navigation: any;
   targetScreen?: string;
 }
 
-const TextFooter: React.FC<TextFooterProps> = ({content, navigation, navigateTo, targetScreen}) => {
+const TextFooter: React.FC<TextFooterProps> = ({content, navigateTo, targetScreen}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{content}</Text>
-      <TouchableOpacity onPress={() => navigation.navigate(targetScreen)}>
+      <TouchableOpacity onPress={() => targetScreen && navigate(targetScreen as any)}>
         <Text style={styles.textNavigate}>{navigateTo}</Text>
       </TouchableOpacity>
     </View>

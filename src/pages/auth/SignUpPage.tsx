@@ -1,12 +1,10 @@
 import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView} from 'react-native';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast, handleAsyncAction} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast, handleAsyncAction, navigate} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
@@ -14,9 +12,7 @@ import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
 
-interface SignUpPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'SignUpPage'> {}
-const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
+const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation();
 
@@ -69,7 +65,7 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
       {
         successMessage: 'Sign up successfully',
         errorMessage: 'An error occurred during registration',
-        onSuccess: () => navigation.navigate('LoginScreen')
+        onSuccess: () => navigate('LoginScreen')
       }
     );
   };
@@ -134,7 +130,6 @@ const SignupPage: React.FC<SignUpPageProps> = ({navigation}) => {
           <AuthFooter
             content={t('login_screen.login_already_accounted')}
             navigateTo={t('login_screen.login_btn')}
-            navigation={navigation}
             targetScreen="LoginScreen"
           />
         </View>

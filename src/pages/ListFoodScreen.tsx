@@ -3,20 +3,14 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View}
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../android/types/StackNavType';
-
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, Loading, CustomInput } from '@/components'
-import { colors, ImagesSvg} from '@/utils'
+import { colors, ImagesSvg, navigate} from '@/utils'
 
-interface ListFoodPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ListFoodScreen'> {}
-
-const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
+const ListFoodScreen: React.FC = () => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
 
@@ -82,7 +76,7 @@ const ListFoodScreen: React.FC<ListFoodPageProps> = ({navigation}) => {
               key={item.foodId}
               style={styles.itemContainer}
               onPress={() =>
-                navigation.navigate('FoodDetailScreen', {
+                navigate('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
                 })

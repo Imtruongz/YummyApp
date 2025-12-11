@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppDispatch } from '@/redux/store';
 import { getConversationDetailAPI, updateConversationTitleAPI,} from '@/redux/slices/chatHistory/chatHistoryThunk';
-import { ImagesSvg, colors, handleAsyncAction, showToast } from '@/utils'
+import { ImagesSvg, colors, goBack, handleAsyncAction, showToast } from '@/utils'
 import { IconSvg, CustomLoadingSpinner } from '@/components'
 import {
   selectCurrentConversation,
@@ -167,7 +167,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => goBack()}
             style={styles.backButton}
           >
             <IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color={colors.dark} />

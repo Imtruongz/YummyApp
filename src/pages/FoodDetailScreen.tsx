@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
-import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -27,6 +26,7 @@ import {
 
 import { Loading, CustomTitle, IconSvg, CustomInput, RatingInput, Typography, ConfirmationModal, CustomAvatar } from '@/components'
 import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch } from '@/utils'
+import { navigate, goBack } from '@/utils/navigationHelper'
 
 const storage = new MMKV();
 interface RecipeDetailPageProps
@@ -34,18 +34,7 @@ interface RecipeDetailPageProps
 
 const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
   route,
-  navigation,
 }) => {
-  useLayoutEffect(() => {
-    navigation.getParent()?.setOptions({
-      tabBarStyle: { display: 'none' },
-    });
-    return () => {
-      navigation.getParent()?.setOptions({
-        tabBarStyle: undefined,
-      });
-    };
-  }, [navigation]);
   const { foodId, userId } = route.params;
   const myUserId = storage.getString('userId') || '';
   const [showstrInstructions, setShowstrInstructions] = useState(false);
@@ -241,9 +230,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
       <SafeAreaView style={styles.container} edges={['left', 'right']}>
         <TouchableOpacity
           style={[styles.arrowLeftIcon, { backgroundColor: iconColor }]}
-          onPress={() => {
-            navigation.goBack();
-          }}
+          onPress={goBack}
         >
           <IconSvg xml={ImagesSvg.icArrowLeft} width={24} height={24} color='black' />
         </TouchableOpacity>
@@ -269,7 +256,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
               style={styles.infoContainer}
               onPress={() => {
                 if (selectedFood?.userId) {
-                  navigation.navigate('ListFoodByUserPage', {
+                  navigate('ListFoodByUserPage', {
                     userId: selectedFood.userId
                   });
                 }
@@ -328,7 +315,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
                   marginTop: 10,
                 }}
                 onPress={() => {
-                  navigation.navigate('CategoriesScreen', {
+                  navigate('CategoriesScreen', {
                     categoryId: selectedFood.categoryDetail?.categoryId,
                   });
                 }}
@@ -442,7 +429,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({
                   key={item.foodId}
                   style={styles.itemContainer}
                   onPress={() =>
-                    navigation.navigate('FoodDetailScreen', {
+                    navigate('FoodDetailScreen', {
                       foodId: item.foodId,
                       userId: item.userId,
                     })

@@ -2,22 +2,18 @@ import { StyleSheet, ScrollView, FlatList, View } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import {MMKV} from 'react-native-mmkv';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../../android/types/StackNavType';
 
 import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
 import {ConfirmationModal, FoodItemCard} from '@/components'
-import { handleAsyncAction, useModal } from '@/utils'
+import { handleAsyncAction, useModal, navigate } from '@/utils'
 
 const storage = new MMKV();
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
@@ -70,7 +66,7 @@ const FirstRoute = () => {
             item={item}
             onLongPress={() => showDialog(item)}
             onPress={() => {
-              navigation.navigate('FoodDetailScreen', {
+              navigate('FoodDetailScreen', {
                 foodId: item.foodId,
                 userId: item.userId,
               });

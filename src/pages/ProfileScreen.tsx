@@ -4,8 +4,6 @@ import { TabView, SceneMap, TabBar, SceneRendererProps, NavigationState, Route} 
 import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
@@ -21,7 +19,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, CustomAvatar, FirstRoute, SecondRoute, Typography, ProfileSkeleton } from '@/components'
-import {img, colors} from '@/utils'
+import {img, colors, navigate} from '@/utils'
 
 const storage = new MMKV();
 const initialLayout = { width: Dimensions.get('window').width };
@@ -54,10 +52,7 @@ const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({ number, 
   )
 );
 
-interface ProfilePageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ProfileScreen'> { }
-
-const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
+const ProfileScreen: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
@@ -115,12 +110,10 @@ const ProfileScreen: React.FC<ProfilePageProps> = ({ navigation }) => {
   }
 
   const handleFollowersPress = () => {
-    // @ts-ignore
-    navigation.navigate('FollowScreen', { userId, type: 'followers' });
+    navigate('FollowScreen', { userId, type: 'followers' });
   };
   const handleFollowingPress = () => {
-    // @ts-ignore
-    navigation.navigate('FollowScreen', { userId, type: 'following' });
+    navigate('FollowScreen', { userId, type: 'following' });
   };
 
   return (

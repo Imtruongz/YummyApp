@@ -2,18 +2,10 @@ import React from 'react';
 import { View, StyleSheet, StatusBar, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppSelector } from '@/redux/hooks';
 
 import { Typography, DropdownMenu, MenuOption, IconSvg } from '@/components'
-import {colors, img, ImagesSvg} from '@/utils';
-
-type RootStackParamList = {
-  NotificationsScreen: { userId: string | undefined };
-};
-
-type HomeHeaderNavigationProp = NativeStackNavigationProp<RootStackParamList, 'NotificationsScreen'>;
+import {colors, img, ImagesSvg, goBack, navigate} from '@/utils';
 
 type HeaderMode = 'home' | 'title' | 'search' | 'profile' | 'back';
 
@@ -49,7 +41,6 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
   onGoBack,
   onMenuPress
 }) => {
-  const navigation = useNavigation<HomeHeaderNavigationProp>();
   const user = useAppSelector(state => state.auth.user);
   const insets = useSafeAreaInsets();
 
@@ -57,7 +48,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
     if (onNotificationPress) {
       onNotificationPress();
     } else {
-      navigation.navigate('NotificationsScreen', { userId: user?.userId });
+      navigate('NotificationsScreen', { userId: user?.userId });
     }
   };
 
@@ -65,7 +56,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({
     if (onGoBack) {
       onGoBack();
     } else {
-      navigation.goBack();
+      goBack();
     }
   };
 

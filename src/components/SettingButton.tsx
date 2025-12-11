@@ -1,17 +1,15 @@
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {ImagesSvg} from '@/utils';
+import {ImagesSvg, navigate} from '@/utils';
 import {IconSvg} from '@/components';
 
 interface SettingButtonProps {
-  navigation?: any;
   style?: object;
   targetScreen?: string;
   title?: string;
   onPress?: () => void;
 }
 const SettingButton: React.FC<SettingButtonProps> = ({
-  navigation,
   targetScreen,
   title,
   style,
@@ -21,9 +19,9 @@ const SettingButton: React.FC<SettingButtonProps> = ({
     if (targetScreen) {
       // Nếu là SettingProfileScreen hoặc ChangePasswordScreen thì navigate qua SettingNavigator
       if (targetScreen === 'SettingProfileScreen' || targetScreen === 'ChangePasswordScreen') {
-        navigation.navigate('SettingNavigator', { screen: targetScreen });
+        navigate('SettingNavigator', { screen: targetScreen });
       } else {
-        navigation.navigate(targetScreen);
+        navigate(targetScreen as any);
       }
     }
   };

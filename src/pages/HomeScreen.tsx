@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
 import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CustomFoodItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
-import {img, colors, ImagesSvg, handleAsyncAction, tryCatch} from '@/utils'
+import {img, colors, ImagesSvg, handleAsyncAction, navigate} from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
@@ -113,7 +113,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               dotsPosition="outside"
               onBannerPress={(item) => {
                 if (item.link === '/explore') {
-                  navigation.navigate('ListFoodScreen');
+                  navigate('ListFoodScreen');
                 }
               }}
             />
@@ -133,7 +133,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() =>
-                navigation.navigate('CategoriesScreen', {
+                navigate('CategoriesScreen', {
                   categoryId: item.categoryId,
                 })
               }>
@@ -146,7 +146,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         />
         {/* Daily Food Title */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('ListFoodScreen')}
+          onPress={() => navigate('ListFoodScreen')}
           style={styles.titleContainer}>
           <CustomTitle title={t('home_screen.home_daily_food')} />
           <CustomTitle style={styles.seeAll} title={t('home_screen.home_see_all')} />
@@ -162,7 +162,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <Pressable
               style={styles.itemContainer}
               onPress={() =>
-                navigation.navigate('FoodDetailScreen', {
+                navigate('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
                 })
@@ -218,7 +218,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() =>
-                navigation.navigate('ListFoodByUserPage', {
+                navigate('ListFoodByUserPage', {
                   userId: item.userId,
                 })
               }
@@ -242,7 +242,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View style={{ height: 80 }} />
       </ScrollView>
       <DraggableFloatingButton
-        onPress={() => navigation.navigate('YummyAIScreen')}
+        onPress={() => navigate('YummyAIScreen')}
       />
     </SafeAreaView>
   );

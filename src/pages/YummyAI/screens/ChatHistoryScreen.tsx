@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { ImagesSvg, colors, handleAsyncAction, showToast } from '@/utils'
+import { ImagesSvg, colors, handleAsyncAction, showToast, navigate, goBack } from '@/utils'
 import { AppDispatch } from '@/redux/store';
 import { resetConversations} from '@/redux/slices/chatHistory/chatHistorySlice';
 import ChatHistoryItem from '@/pages/YummyAI/components/ChatHistoryItem';
@@ -18,11 +18,7 @@ import {
   selectChatTotalCount,
 } from '@/redux/selectors';
 
-interface ChatHistoryScreenProps {
-  navigation: any;
-}
-
-const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => {
+const ChatHistoryScreen: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const conversations = useSelector(selectConversations);
@@ -60,11 +56,11 @@ const ChatHistoryScreen: React.FC<ChatHistoryScreenProps> = ({ navigation }) => 
   };
 
   const handleSelectConversation = (conversationId: string) => {
-    navigation.navigate('ChatDetail', { conversationId });
+    navigate('ChatDetailScreen', { conversationId });
   };
 
   const handleGoBack = () => {
-    navigation.goBack();
+    goBack();
   };
 
   const handleDeleteConversation = async (conversationId: string) => {

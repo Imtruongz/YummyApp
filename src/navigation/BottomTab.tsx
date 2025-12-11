@@ -8,6 +8,7 @@ import { MainStackParamList } from './types.ts';
 import NewFoodScreen from '../pages/NewFoodScreen.tsx';
 import SearchScreen from '../pages/SearchScreen.tsx';
 import SettingNavigator from './SettingNavigator';
+import { navigate } from '@/utils/navigationHelper'
 import IconSvg from '../components/IconSvg.tsx';
 import { ImagesSvg } from '../utils/ImageSvg.tsx';
 
@@ -49,10 +50,10 @@ const BottomTab = () => {
             <View />
           ),
         }}
-        listeners={({ navigation }: any) => ({
+        listeners={() => ({
           tabPress: (e: any) => {
             e.preventDefault();
-            navigation.navigate('NewFoodScreen');
+            navigate('NewFoodScreen');
           },
         })}
       />
@@ -153,7 +154,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
             canPreventDefault: true,
           });
           if (!event.defaultPrevented) {
-            navigation.navigate(route.name);
+            navigate(route.name);
           }
         };
         if (route.name === 'NewFoodScreen') {

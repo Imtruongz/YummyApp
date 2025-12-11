@@ -2,12 +2,10 @@ import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 import {useTranslation} from 'react-i18next';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {MMKV} from 'react-native-mmkv';
-import {RootStackParamList} from '../../../android/types/StackNavType.ts';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction} from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo} from '@/utils'
 
 import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
 import {useAppDispatch} from '@/redux/hooks';
@@ -15,12 +13,7 @@ import {useAppDispatch} from '@/redux/hooks';
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';
 
-interface ChangePasswordPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ChangePasswordScreen'> {}
-
-const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
-  navigation,
-}) => {
+const ChangePasswordScreen: React.FC = () => {
   const {t, i18n} = useTranslation();
   const dispatch = useAppDispatch();
   const [oldPassword, setOldPassword] = useState('');
@@ -86,10 +79,7 @@ const ChangePasswordScreen: React.FC<ChangePasswordPageProps> = ({
     try {
       storage.delete('accessToken');
       console.log('Access Token removed', storage.getString('accessToken'));
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'LoginScreen'}],
-      });
+      resetTo('LoginScreen');
     } catch (exception) {
       console.log('Error clearing accessToken', exception);
     }

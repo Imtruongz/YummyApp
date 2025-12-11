@@ -8,7 +8,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../android/types/StackNavType';
 
 import { aiApi } from '@/api/aiApi';
-import { YummyDrag, ImagesSvg, colors, showToast, useModal } from '@/utils'
+import { YummyDrag, ImagesSvg, colors, showToast, useModal, goBack } from '@/utils'
 import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 
@@ -81,7 +81,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         console.log('Save error:', error);
       }
     }
-    navigation.goBack();
+    goBack();
   };
 
   const handleSend = async () => {

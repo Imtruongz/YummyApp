@@ -20,6 +20,7 @@ export type MainStackParamList = {
   SettingScreen: undefined;
   SettingNavigator: undefined;
   NotificationsScreen: undefined;
+  FollowScreen: { userId: string; type: 'followers' | 'following' };
 };
 
 export type HomeStack = {
@@ -47,6 +48,7 @@ export type HomeStack = {
   PaymentSuccessScreen: undefined;
   YummyAIScreen: undefined;
   ChatHistory: undefined;
+  ChatDetailScreen: { conversationId: string };
 }
 
 export type ProfileStack = {

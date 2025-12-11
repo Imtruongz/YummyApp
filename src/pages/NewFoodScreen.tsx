@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, PermissionsAndroid, Pressable, ScrollView, StyleSheet, Text, View, Platform } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -15,7 +15,7 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 
 import { CustomButton, HomeHeader, IconSvg, CustomInput } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction } from '@/utils'
+import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo } from '@/utils'
 
 const storage = new MMKV();
 const userId = storage.getString('userId') || '';
@@ -48,18 +48,8 @@ const convertImageToBase64 = async (uri: string): Promise<string> => {
   }
 };
 
-const NewFoodScreen = ({ navigation }: any) => {
+const NewFoodScreen = () => {
   const { t } = useTranslation();
-  useLayoutEffect(() => {
-    navigation?.getParent?.()?.setOptions({
-      tabBarStyle: { display: 'none' },
-    });
-    return () => {
-      navigation?.getParent?.()?.setOptions({
-        tabBarStyle: undefined,
-      });
-    };
-  }, [navigation]);
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState<foodPayload>(initialState);
   const [errorForm, setErrorForm] = useState<null | { [key: string]: string }>(
@@ -206,10 +196,7 @@ const NewFoodScreen = ({ navigation }: any) => {
           setOriginalImageUri('');
           setIsSubmitting(false);
 
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'HomeNavigator' }],
-          });
+          resetTo('HomeNavigator');
         },
         onError: (error: any) => {
           setErrorForm(error?.data?.errors || { general: t('general_error') });

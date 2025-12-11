@@ -1,23 +1,19 @@
 import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {RootStackParamList} from '../../android/types/StackNavType';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import {MMKV} from 'react-native-mmkv';
-import {useNavigation} from '@react-navigation/native';
 
 import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
 import { Typography, NoData, ConfirmationModal } from '@/components'
-import {colors, handleAsyncAction, useModal} from '@/utils';
+import {colors, handleAsyncAction, useModal, navigate} from '@/utils';
 
 const storage = new MMKV();
 
 const SecondRoute = () => {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const { t } = useTranslation();
   const [userId, setUserId] = useState(storage.getString('userId') || '');
   const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
@@ -97,7 +93,7 @@ const SecondRoute = () => {
               style={styles.item}
               onLongPress={() => showDialog(favorite.favoriteFoodId)}
               onPress={() => {
-                navigation.navigate('FoodDetailScreen', {
+                navigate('FoodDetailScreen', {
                   foodId: favorite.foodId,
                   userId: favorite.userId,
                 });

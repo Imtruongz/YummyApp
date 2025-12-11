@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import api from '@/api/config';
 import ConfirmationModal from '@/components/ConfirmationModal';
 
 import { CustomButton, HomeHeader, IconSvg } from '@/components'
-import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast } from '@/utils'
+import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast, goBack } from '@/utils'
 
 type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
 interface PaymentMethod {
@@ -45,11 +45,6 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
   const [loadingBankAccount, setLoadingBankAccount] = useState<boolean>(false);
   const [recipientUsername, setRecipientUsername] = useState<string>('');
 
-  useLayoutEffect(() => {
-    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-    return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
-  }, [navigation]);
-
   useEffect(() => {
     const fetchRecipientBankAccount = async () => {
       if (userId) {
@@ -70,7 +65,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
           if (error?.response?.status === 404) {
             showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
-            navigation.goBack();
+            goBack();
           } else {
             showToast.error(t('error'), t('payment_screen.failed_to_load_bank_account'));
           }
@@ -170,7 +165,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
           if (response.data && response.data.success) {
             showToast.success(t('payment_screen.payment_success'), t('payment_screen.payment_bank_transfer_success'));
-            navigation.goBack();
+            goBack();
           }
         } else {
           const response = await api.post('/payment/create-session', {

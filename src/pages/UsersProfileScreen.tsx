@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -21,10 +19,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
-import {img, colors, handleAsyncAction, tryCatch, showToast} from '@/utils'
-
-interface ListFoodByUserPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ListFoodByUserPage'> { }
+import {img, colors, handleAsyncAction, tryCatch, showToast, navigate} from '@/utils'
 
 interface InfoItemProps {
   number: number | string;
@@ -39,10 +34,7 @@ const StatsCard: React.FC<InfoItemProps> = ({ number, label }) => (
   </View>
 );
 
-const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
-  route,
-  navigation,
-}) => {
+const UsersProfileScreen: React.FC = ({ route }: any) => {
   const { t } = useTranslation();
   const { userId } = route.params;
   const dispatch = useAppDispatch();
@@ -108,8 +100,8 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
   }, [loadData]);
 
   const handleFoodPress = useCallback((foodId: string, userId: string) => {
-    navigation.navigate('FoodDetailScreen', { foodId, userId });
-  }, [navigation]);
+    navigate('FoodDetailScreen', { foodId, userId });
+  }, []);
 
 
   const handleFollowPress = useCallback(() => {
@@ -147,7 +139,7 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
       async () => {
         const response = await api.get(`bank-accounts/${userId}`);
         if (response.data && response.data.success && response.data.data) {
-          navigation.navigate('PaymentScreen', {
+          navigate('PaymentScreen', {
             amount: 0,
             userId: userId,
             serviceType: 'Thanh toán dịch vụ',
@@ -168,7 +160,7 @@ const UsersProfileScreen: React.FC<ListFoodByUserPageProps> = ({
         }
       }
     );
-  }, [userId, navigation, t]);
+  }, [userId, t]);
 
   if (isLoadingFood || isLoadingUser) {
     return <Loading />;

@@ -1,19 +1,14 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import {colors} from '@/utils';
+import {colors, navigate} from '@/utils';
 import LinearGradient from 'react-native-linear-gradient';
 
 const PaymentSuccessScreen = ({ navigation }: any) => {
   const { t } = useTranslation();
 
-  useLayoutEffect(() => {
-    navigation.getParent()?.setOptions({ tabBarStyle: { display: 'none' } });
-    return () => navigation.getParent()?.setOptions({ tabBarStyle: undefined });
-  }, [navigation]);
-
   const handleGoHome = () => {
-    navigation.navigate('HomeScreen');
+    navigate('HomeScreen');
   };
 
   return (
