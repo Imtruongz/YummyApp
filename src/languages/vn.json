@@ -77,7 +77,10 @@
     "profile_following": "Đang theo dõi",
     "profile_your_posts": "Bài đăng của bạn",
     "profile_your_favorites": "Món ăn yêu thích",
-    "profile_follow_btn": "Theo dõi"
+    "profile_follow_btn": "Theo dõi",
+    "post" : "Bài viết",
+    "unfollow_btn": "Bỏ theo dõi",
+    "donate_btn": "Ủng hộ"
   },
   "settings_screen": {
     "setting_settings_header": "Cài đặt",
@@ -132,7 +135,10 @@
     "recipe_detail_not_authorized_message": "Bạn không có quyền xóa bình luận này!",
     "recipe_detail_your_rating": "Đánh giá của bạn",
     "recipe_detail_comment_placeholder": "Nhập bình luận của bạn",
-    "recipe_detail_error_add": "Món ăn này đã có trong danh sách yêu thích của bạn"
+    "recipe_detail_error_add": "Món ăn này đã có trong danh sách yêu thích của bạn",
+    "recipe_detail_created_date": "Ngày đăng",
+    "recipe_detail_cooking_time": "Thời gian nấu",
+    "recipe_detail_ratings": "Đánh giá"
   },
   "payment_screen": {
     "payment_title": "Ủng hộ người sáng tạo",

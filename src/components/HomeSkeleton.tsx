@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Animated, ScrollView } from 'react-native';
-import {colors} from '@/utils';
+import { colors } from '@/utils';
 
 const HomeSkeleton = () => {
   const animatedValue = new Animated.Value(0);
@@ -95,9 +95,6 @@ const HomeSkeleton = () => {
           ))}
         </View>
       </ScrollView>
-
-      {/* Add Food Button Skeleton */}
-      <View style={styles.addFoodBtn} />
     </View>
   );
 };
@@ -113,13 +110,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: colors.light,
-    shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
     paddingVertical: 12,
     paddingHorizontal: 14,
+    paddingTop: 50,
   },
   header1: {
     flexDirection: 'row',
@@ -181,7 +174,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: colors.light,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
@@ -210,7 +203,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: colors.light,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,

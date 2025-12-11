@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FlatList, Pressable, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity,} from 'react-native';
+import { FlatList, Pressable, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MMKV } from 'react-native-mmkv';
@@ -7,16 +7,16 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
-import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CustomFoodItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
-import {img, colors, ImagesSvg, handleAsyncAction, navigate} from '@/utils'
+import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
+import { img, colors, ImagesSvg, handleAsyncAction, navigate } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
 import { getAllFoodAPI } from '@/redux/slices/food/foodThunk';
 import { getAllUsers } from '@/redux/slices/auth/authThunk';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
-import { 
-  selectFoodList, 
+import {
+  selectFoodList,
   selectIsLoadingFood,
   selectUser,
   selectIsLoadingUser,
@@ -29,11 +29,11 @@ const storage = new MMKV();
 interface HomeScreenProps
   extends NativeStackScreenProps<RootStackParamList, 'HomeScreen'> { }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { t, i18n } = useTranslation();
+const HomeScreen: React.FC<HomeScreenProps> = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const userId = storage.getString('userId') || '';
-  
+
   const foodList = useAppSelector(selectFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const user = useAppSelector(selectUser);
@@ -55,7 +55,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             dispatch(getAllUsers()),
             dispatch(getUserByIdAPI({ userId })),
           ]);
-          
+
           const bannerData = getLocalBanners();
           console.log('Loaded local banners:', bannerData.length);
           setBanners(bannerData);
@@ -82,6 +82,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
+  const RenderRefreshControl = () => (
+    <RefreshControl refreshing={isLoading} onRefresh={() => { }} />
+  );
+
   if (isLoading || isLoadingFood || isLoadingUser || isLoadingCategory) {
     return <HomeSkeleton />;
   }
@@ -98,7 +102,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         greetingMessage={message}
         showNotification={true}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={RenderRefreshControl()}
+      >
         {/* Banner Slider */}
         {banners.length > 0 && (
           <View style={styles.bannerContainer}>
@@ -131,13 +138,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           showsHorizontalScrollIndicator={true}
           keyExtractor={(item, index) => `${item.categoryId}_${index}`}
           renderItem={({ item }) => (
-            <Pressable
-              onPress={() =>
-                navigate('CategoriesScreen', {
-                  categoryId: item.categoryId,
-                })
-              }>
-              <CustomFoodItem
+            <Pressable onPress={() => navigate('CategoriesScreen', { categoryId: item.categoryId })}>
+              <CategoryItem
                 title={item.categoryName}
                 image={item.categoryThumbnail}
               />
@@ -161,12 +163,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               style={styles.itemContainer}
-              onPress={() =>
-                navigate('FoodDetailScreen', {
-                  foodId: item.foodId,
-                  userId: item.userId,
-                })
-              }>
+              onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId, })}>
               <Image source={{ uri: item.foodThumbnail }} style={styles.img2} />
               <View style={styles.titleItemLeft2}>
                 <Typography
@@ -217,11 +214,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           keyExtractor={(item, index) => `${item.userId}_${index}`}
           renderItem={({ item }) => (
             <Pressable
-              onPress={() =>
-                navigate('ListFoodByUserPage', {
-                  userId: item.userId,
-                })
-              }
+              onPress={() => navigate('ListFoodByUserPage', { userId: item.userId })}
               style={styles.creatorItems}>
               <CustomAvatar
                 width={100}

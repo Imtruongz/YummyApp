@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
+import { MMKV } from 'react-native-mmkv';
 
 import api from '@/api/config';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
@@ -19,19 +20,24 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
-import { img, colors, handleAsyncAction, tryCatch, showToast, navigate } from '@/utils'
+import { img, colors, handleAsyncAction, showToast, navigate } from '@/utils'
+
+const storage = new MMKV();
+
+const screenWidth = Dimensions.get('window').width;
+const numColumns = screenWidth > 600 ? 3 : 2;
+const cardWidth = (screenWidth - 48) / numColumns - 8;
 
 interface InfoItemProps {
   number: number | string;
   label: string;
 }
 
-// Component Stats Card
-const StatsCard: React.FC<InfoItemProps> = ({ number, label }) => (
-  <View style={styles.statsCard}>
+const StatsCard: React.FC<InfoItemProps & { onPress?: () => void }> = ({ number, label, onPress }) => (
+  <TouchableOpacity style={styles.statsCard} onPress={onPress} activeOpacity={0.7}>
     <Text style={styles.statsNumber}>{number}</Text>
     <Text style={styles.statsLabel}>{label}</Text>
-  </View>
+  </TouchableOpacity>
 );
 
 const UsersProfileScreen: React.FC = ({ route }: any) => {
@@ -39,6 +45,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const { userId } = route.params;
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const [showBioExpanded, setShowBioExpanded] = useState(false);
 
   const viewedUserFoodList = useAppSelector(selectViewedUserFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
@@ -53,18 +60,11 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   useEffect(() => {
     try {
-      const { MMKV } = require('react-native-mmkv');
-      const storage = new MMKV();
       setCurrentUserId(storage.getString('userId') || '');
     } catch (e) {
       setCurrentUserId('');
     }
   }, []);
-
-  const screenWidth = Dimensions.get('window').width;
-  const numColumns = screenWidth > 600 ? 3 : 2;
-  const cardWidth = (screenWidth - 48) / numColumns - 8;
-
 
   useEffect(() => {
     loadData();
@@ -176,6 +176,128 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
     />
   );
 
+  const renderHeader = () => (
+    <View>
+      <View style={styles.avatarSection}>
+        <View style={styles.avatarContainer}>
+          <View style={styles.avatarGradientBorder}>
+            <CustomAvatar
+              width={110}
+              height={110}
+              borderRadius={55}
+              image={viewedUser?.avatar || img.defaultAvatar}
+            />
+          </View>
+        </View>
+        <View style={styles.userInfoSection}>
+          <View style={styles.userHeaderRow}>
+            <Text style={styles.username}>{viewedUser?.username}</Text>
+          </View>
+          {viewedUser?.description && (
+            <TouchableOpacity
+              onPress={() => setShowBioExpanded(!showBioExpanded)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[styles.bio, { color: showBioExpanded ? colors.primary : colors.smallText }]}
+                numberOfLines={showBioExpanded ? 0 : 2}
+              >
+                {viewedUser.description}
+              </Text>
+              {viewedUser.description.length > 50 && (
+                <Text style={styles.readMoreText}>
+                  {showBioExpanded ? 'Show less' : 'Read more'}
+                </Text>
+              )}
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+      <View style={styles.statsSection}>
+        <StatsCard
+          number={viewedUserFoodList?.length ?? 0}
+          label={t('profile_screen.profile_posts')}
+          onPress={() => console.log('Posts tapped')}
+        />
+        <View style={styles.statsDivider} />
+        <StatsCard
+          number={followLoading ? '...' : followerCount}
+          label={t('profile_screen.profile_followers')}
+          onPress={() => console.log('Followers tapped')}
+        />
+        <View style={styles.statsDivider} />
+        <StatsCard
+          number={followLoading ? '...' : followingCount}
+          label={t('profile_screen.profile_following')}
+          onPress={() => console.log('Following tapped')}
+        />
+      </View>
+      <View style={styles.actionButtonsSection}>
+        {userId !== currentUserId ? (
+          <>
+            <TouchableOpacity
+              style={[
+                styles.primaryButton,
+                isFollowing && styles.secondaryButton
+              ]}
+              onPress={handleFollowPress}
+              activeOpacity={0.8}
+              disabled={followLoading}
+            >
+              {followLoading ? (
+                <ActivityIndicator size="small" color={isFollowing ? colors.primary : colors.light} />
+              ) : (
+                <Text style={[styles.buttonText, isFollowing && styles.secondaryButtonText]} numberOfLines={1}>
+                  {isFollowing
+                    ? t('profile_screen.unfollow_btn')
+                    : t('profile_screen.profile_follow_btn')}
+                </Text>
+              )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.primaryButton}
+              onPress={handleDonatePress}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.buttonText}>{t('profile_screen.donate_btn')}</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={() => navigate('ProfileScreen')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>Edit Profile</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+      <View style={styles.gridHeader}>
+        <Text style={styles.gridTitle}>{t('profile_screen.profile_posts')} ({viewedUserFoodList?.length ?? 0})</Text>
+      </View>
+    </View>
+  );
+
+  const RenderRefreshControl = () => (
+    <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={[colors.primary]}
+      tintColor={colors.primary}
+    />
+  );
+
+  const RenderEmpty = () => (
+    <View style={styles.emptyContainer}>
+      <NoData
+        message={t('list_nodata', 'No recipes yet')}
+        width={120}
+        height={120}
+        textSize={16}
+      />
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <HomeHeader
@@ -185,107 +307,18 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
         showNotification={false}
         isBackHome={true}
       />
-
-      {/* Profile Section */}
-      <View style={styles.profileSection}>
-        {/* Avatar Section */}
-        <View style={styles.avatarSection}>
-          <View style={styles.avatarContainer}>
-            <CustomAvatar
-              width={100}
-              height={100}
-              borderRadius={50}
-              image={viewedUser?.avatar || img.defaultAvatar}
-            />
-          </View>
-          <View style={styles.infoBlock3}>
-            <Text style={styles.username}>{viewedUser?.username}</Text>
-            {viewedUser?.description && (
-              <Text style={styles.bio} numberOfLines={2}>
-                {viewedUser.description}
-              </Text>
-            )}
-          </View>
-        </View>
-
-        {/* Stats Section */}
-        <View style={styles.statsSection}>
-          <StatsCard
-            number={viewedUserFoodList?.length ?? 0}
-            label={t('profile_posts', 'Posts')}
-          />
-          <StatsCard
-            number={followLoading ? '...' : followerCount}
-            label={t('profile_followers', 'Followers')}
-          />
-          <StatsCard
-            number={followLoading ? '...' : followingCount}
-            label={t('profile_following', 'Following')}
-          />
-        </View>
-
-        <View style={styles.handleFlDnt}>
-          {/* Action Button */}
-          {userId !== currentUserId && (
-            <TouchableOpacity
-              style={[styles.followButton, isFollowing ? { backgroundColor: colors.gray } : {}]}
-              onPress={handleFollowPress}
-              activeOpacity={0.8}
-              disabled={followLoading}
-            >
-              <Text style={styles.followButtonText}>
-                {followLoading
-                  ? t('loading', 'Đang xử lý...')
-                  : isFollowing
-                    ? t('profile_unfollow_btn', 'Unfollow')
-                    : t('profile_follow_btn', 'Follow')}
-              </Text>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            style={styles.followButton}
-            onPress={() => handleDonatePress()}
-            activeOpacity={0.8}
-            disabled={followLoading}
-          >
-            <Text style={styles.followButtonText}>
-              Donate
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Content Section */}
-      {hasNoData ? (
-        <View style={styles.emptyContainer}>
-          <NoData
-            message={t('list_nodata', 'No recipes yet')}
-            width={120}
-            height={120}
-            textSize={16}
-          />
-        </View>
-      ) : (
-        <FlatList
-          data={viewedUserFoodList}
-          keyExtractor={(item) => item.foodId}
-          renderItem={renderFoodItem}
-          numColumns={numColumns}
-          contentContainerStyle={[
-            styles.foodGrid,
-            { paddingHorizontal: (screenWidth - cardWidth * numColumns - 8 * (numColumns - 1)) / 2 }
-          ]}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[colors.primary]}
-              tintColor={colors.primary}
-            />
-          }
-        />
-      )}
+      <FlatList
+        data={viewedUserFoodList}
+        keyExtractor={(item) => item.foodId}
+        renderItem={renderFoodItem}
+        numColumns={numColumns}
+        scrollEventThrottle={16}
+        ListHeaderComponent={renderHeader()}
+        contentContainerStyle={[styles.foodGrid, { paddingHorizontal: (screenWidth - cardWidth * numColumns - 8 * (numColumns - 1)) / 2 }]}
+        showsVerticalScrollIndicator={false}
+        refreshControl={RenderRefreshControl()}
+        ListEmptyComponent={RenderEmpty()}
+      />
     </SafeAreaView>
   );
 };
@@ -297,159 +330,149 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-
-  // Profile Section Styles
-  profileSection: {
-    backgroundColor: colors.light,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-
-  // Avatar Section
   avatarSection: {
     alignItems: 'center',
-    marginBottom: 20,
-    paddingHorizontal: 20,
-    flexDirection: 'row',
+    marginBottom: 28,
+    paddingTop: 16,
   },
   avatarContainer: {
-    marginBottom: 12,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 6,
+    marginBottom: 16,
+  },
+  avatarGradientBorder: {
+    padding: 3,
+    borderRadius: 60,
+    backgroundColor: colors.primary,
+  },
+  userInfoSection: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  userHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
   },
   username: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
+    color: colors.dark,
     textAlign: 'center',
   },
   bio: {
     fontSize: 14,
-    color: '#666',
+    color: colors.smallText,
     textAlign: 'center',
     lineHeight: 20,
-    maxWidth: 280,
+    marginTop: 8,
   },
-
-  // Stats Section
+  readMoreText: {
+    color: colors.primary,
+    fontSize: 12,
+    fontWeight: '600',
+    marginTop: 4,
+  },
   statsSection: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 24,
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    paddingVertical: 12,
+  },
+  statsDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#e0e0e0',
   },
   statsCard: {
     alignItems: 'center',
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    marginHorizontal: 4,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    paddingVertical: 8,
   },
   statsNumber: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: colors.primary,
-    marginBottom: 2,
+    marginBottom: 4,
   },
   statsLabel: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '500',
+    fontSize: 11,
+    color: colors.smallText,
+    fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
-
-  // Follow Button
-  followButton: {
-    backgroundColor: colors.primary,
-    borderRadius: 25,
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    alignSelf: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+  actionButtonsSection: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  followButtonText: {
+  primaryButton: {
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  secondaryButton: {
+    backgroundColor: colors.light,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+  },
+  menuButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  buttonText: {
     color: colors.light,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     textAlign: 'center',
   },
-
-  // Content Section
+  secondaryButtonText: {
+    color: colors.primary,
+  },
+  gridHeader: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+    marginBottom: 8,
+  },
+  gridTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.dark,
+  },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 40,
   },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 12,
-    lineHeight: 20,
-  },
-
-  // Food Grid
   foodGrid: {
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 24,
-  },
-  infoContainer: {
-    paddingVertical: 12,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: colors.light,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  infoBlock1: {
-    marginBottom: 22,
-    gap: 8,
-  },
-  infoBlock2: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: 12,
-    gap: 6,
-  },
-  infoBlock3: {
-    paddingHorizontal: 12,
-    alignItems: 'flex-start',
-  },
-  infoItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    gap: 4,
-    marginHorizontal: 12,
-  },
-  header: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row',
   },
   avatar: {
     width: 80,
@@ -458,62 +481,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.primary,
   },
-  tabVIewContainer: {
-    flex: 1,
-    backgroundColor: colors.light,
-  },
-  icon: {
-    padding: 12,
-  },
   title: {
     padding: 12,
-  },
-  titleHeader: {
-    padding: 12,
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  myInfoContainer: {
-    flexDirection: 'column',
-    width: '100%',
-  },
-  myInfo2: {
-    justifyContent: 'flex-start',
-    width: '100%',
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 4,
-    paddingHorizontal: 12,
-  },
-  myInfo3: {
-    width: 120,
-    justifyContent: 'space-around',
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-  },
-  inputHeader: {
-    width: '90%',
-    backgroundColor: colors.light,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
-  },
-  ListFoodContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 14,
-    padding: 12,
-  },
-  title2: {
-    fontSize: 12,
-    color: colors.smallText,
-  },
-  handleFlDnt: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 12,
   },
 });
