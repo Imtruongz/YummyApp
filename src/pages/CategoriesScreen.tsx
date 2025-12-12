@@ -37,6 +37,14 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
 
   const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
 
+  // Filter food list based on search query
+  const filteredFoodList = categoryFoodList?.filter(item =>
+    item.foodName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.userDetail?.username?.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || [];
+
+  const showNoSearchResults = searchQuery && filteredFoodList.length === 0;
+
   return (
     <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <HomeHeader
@@ -50,6 +58,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
         style={styles.inputHeader}
         placeholder={t('search')}
         onChangeText={text => setSearchQuery(text)}
+        value={searchQuery}
       />
 
       {hasNoData ? (
@@ -76,9 +85,18 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
             <Text style={{ color: 'white' }}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
+      ) : showNoSearchResults ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <NoData
+            message={t('list_nodata')}
+            width={120}
+            height={120}
+            textSize={16}
+          />
+        </View>
       ) : (
         <ScrollView contentContainerStyle={styles.container2}>
-          {categoryFoodList?.map(item => (
+          {filteredFoodList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}
