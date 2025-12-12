@@ -68,7 +68,7 @@ const FollowScreen: React.FC = () => {
     <View style={styles.container}>
       <HomeHeader 
         mode="back" 
-        title={type === 'followers' ? t('profile_followers') || 'Followers' : t('profile_following') || 'Following'} 
+        title={type === 'followers' ? t('profile_screen.profile_followers') : t('profile_screen.profile_following')} 
         showGoBack={true}
         showNotification={false}
         isBackHome={true}

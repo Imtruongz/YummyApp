@@ -2,16 +2,14 @@ import {StyleSheet, View, Text} from 'react-native';
 import React, {useState} from 'react';
 import Toast from 'react-native-toast-message';
 import {useTranslation} from 'react-i18next';
-import {MMKV} from 'react-native-mmkv';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo} from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo, getStorageString, deleteStorageKey} from '@/utils'
 
 import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
 import {useAppDispatch} from '@/redux/hooks';
 
-const storage = new MMKV();
-const userId = storage.getString('userId') || '';
+const userId = getStorageString('userId') || '';
 
 const ChangePasswordScreen: React.FC = () => {
   const {t, i18n} = useTranslation();
@@ -77,8 +75,8 @@ const ChangePasswordScreen: React.FC = () => {
 
   const logout = async () => {
     try {
-      storage.delete('accessToken');
-      console.log('Access Token removed', storage.getString('accessToken'));
+      deleteStorageKey('accessToken');
+      console.log('Access Token removed', getStorageString('accessToken'));
       resetTo('LoginScreen');
     } catch (exception) {
       console.log('Error clearing accessToken', exception);

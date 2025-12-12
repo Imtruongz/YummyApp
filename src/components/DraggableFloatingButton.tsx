@@ -1,9 +1,7 @@
 import React, { useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, Dimensions, TouchableOpacity, Platform, Image, Text} from 'react-native';
-import {colors, YummyDrag} from '@/utils';
-import { MMKV } from 'react-native-mmkv';
+import {colors, YummyDrag, getStorageString, setStorageString} from '@/utils';
 
-const storage = new MMKV();
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
 const SNAP_MARGIN = 20;
@@ -14,8 +12,8 @@ interface DraggableFloatingButtonProps {
 
 const DraggableFloatingButton: React.FC<DraggableFloatingButtonProps> = ({ onPress }) => {
   const initialPosition = {
-    x: Number(storage.getString('floatingButtonX')) || SCREEN_WIDTH - BUTTON_SIZE - SNAP_MARGIN,
-    y: Number(storage.getString('floatingButtonY')) || SCREEN_HEIGHT - BUTTON_SIZE - SNAP_MARGIN
+    x: Number(getStorageString('floatingButtonX')) || SCREEN_WIDTH - BUTTON_SIZE - SNAP_MARGIN,
+    y: Number(getStorageString('floatingButtonY')) || SCREEN_HEIGHT - BUTTON_SIZE - SNAP_MARGIN
   };
 
   const position = useRef(new Animated.ValueXY(initialPosition)).current;
@@ -59,8 +57,8 @@ const DraggableFloatingButton: React.FC<DraggableFloatingButtonProps> = ({ onPre
         }).start();
 
         // Lưu vị trí mới
-        storage.set('floatingButtonX', String(newX));
-        storage.set('floatingButtonY', String(newY));
+        setStorageString('floatingButtonX', String(newX));
+        setStorageString('floatingButtonY', String(newY));
       },
     })
   ).current;

@@ -16,7 +16,7 @@ import {
 
 import api from '@/api/config';
 import { HomeHeader, CustomInput } from '@/components'
-import { colors, containsTextCaseInsensitive, ImagesSvg, tryCatch } from '@/utils'
+import { colors, containsTextCaseInsensitive, ImagesSvg, tryCatch, navigateToFoodDetail } from '@/utils'
 
 const SearchScreen = () => {
   const { t } = useTranslation();
@@ -88,7 +88,10 @@ const SearchScreen = () => {
 
 
   const renderItem = ({ item }: { item: FoodResult }) => (
-    <TouchableOpacity style={styles.item}>
+    <TouchableOpacity 
+      style={styles.item}
+      onPress={() => navigateToFoodDetail(item.foodId, '')}
+    >
       <Image source={{ uri: item.foodThumbnail }} style={styles.image} />
       <View style={styles.info}>
         <Text style={styles.name}>{item.foodName}</Text>

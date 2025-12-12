@@ -8,16 +8,14 @@ import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
 import {ConfirmationModal, FoodItemCard} from '@/components'
-import { handleAsyncAction, useModal, navigate } from '@/utils'
-
-const storage = new MMKV();
+import { handleAsyncAction, useModal, navigate, getStorageString } from '@/utils'
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   
   const {userFoodList} = useAppSelector((state: RootState) => state.food);
-  const [userId, setUserId] = useState(storage.getString('userId') || '');
+  const [userId, setUserId] = useState(getStorageString('userId') || '');
 
   const [currentItem, setCurrentItem] = useState<food | null>(null);
 

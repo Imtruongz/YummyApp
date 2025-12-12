@@ -23,7 +23,7 @@ const ChatHistoryNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="ChatDetail"
+        name="ChatDetailScreen"
         component={ChatDetailScreen}
         options={{
           title: t('chatHistory.title') || 'Chat History',

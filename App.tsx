@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Provider } from 'react-redux';
-import { MMKV } from 'react-native-mmkv';
 import Toast from 'react-native-toast-message';
 import { PaperProvider } from 'react-native-paper';
 import './src/languages/i18n';
@@ -10,19 +9,17 @@ import { AuthContext } from './src/contexts/AuthContext';
 import { updateFcmTokenApi } from './src/api/updateFcmTokenApi';
 import NavigationRoot from './src/navigation/NavigationContainer';
 import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
-import { showToast } from './src/utils';
-
-const storage = new MMKV();
+import { showToast, getStorageString, deleteStorageKey } from './src/utils';
 
 export default function App() {
-  const [isSignedIn, setIsSignedIn] = useState(!!storage.getString('accessToken'));
+  const [isSignedIn, setIsSignedIn] = useState(!!getStorageString('accessToken'));
 
   useEffect(() => {
     let unsubscribe: (() => void) | undefined;
     const setupFCM = async () => {
       unsubscribe = await initFirebaseMessaging(
         async (token) => {
-          const accessToken = storage.getString('accessToken');
+          const accessToken = getStorageString('accessToken');
           if (accessToken) {
             try {
               await updateFcmTokenApi(token, accessToken);
@@ -49,7 +46,7 @@ export default function App() {
           isSignedIn,
           signIn: () => setIsSignedIn(true),
           signOut: () => {
-            storage.delete('accessToken');
+            deleteStorageKey('accessToken');
             setIsSignedIn(false);
           }
         }}>

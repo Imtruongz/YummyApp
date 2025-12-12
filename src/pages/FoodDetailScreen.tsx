@@ -5,7 +5,6 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
-import { MMKV } from 'react-native-mmkv';
 
 import { getAllCommentFromFoodIdAPI, addCommentToFoodAPI, deleteCommentAPI } from '@/redux/slices/review/reviewThunk';
 import { getAverageRatingAPI, addOrUpdateRatingAPI, getUserRatingAPI } from '@/redux/slices/rating/ratingThunk';
@@ -22,16 +21,13 @@ import {
 } from '@/redux/selectors';
 
 import { Loading, IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch } from '@/utils'
-import { navigate, goBack } from '@/utils/navigationHelper'
-
-const storage = new MMKV();
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack } from '@/utils'
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'FoodDetailScreen'> { }
 
 const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
   const { foodId, userId } = route.params;
-  const myUserId = storage.getString('userId') || '';
+  const myUserId = getStorageString('userId') || '';
   const [showstrInstructions, setShowstrInstructions] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentError, setCommentError] = useState<string | null>(null);

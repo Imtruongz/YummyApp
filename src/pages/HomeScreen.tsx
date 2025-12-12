@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
 import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
-import { img, colors, ImagesSvg, handleAsyncAction, navigate } from '@/utils'
+import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
@@ -24,15 +24,13 @@ import {
   selectCategoryList,
   selectIsLoadingCategory,
 } from '@/redux/selectors';
-
-const storage = new MMKV();
 interface HomeScreenProps
   extends NativeStackScreenProps<RootStackParamList, 'HomeScreen'> { }
 
 const HomeScreen: React.FC<HomeScreenProps> = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const userId = storage.getString('userId') || '';
+  const userId = getStorageString('userId') || '';
 
   const foodList = useAppSelector(selectFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);

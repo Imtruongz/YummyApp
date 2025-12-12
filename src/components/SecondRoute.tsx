@@ -1,21 +1,19 @@
 import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
-import {MMKV} from 'react-native-mmkv';
+
 
 import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
 import { Typography, NoData, ConfirmationModal } from '@/components'
-import {colors, handleAsyncAction, useModal, navigate} from '@/utils';
-
-const storage = new MMKV();
+import {colors, handleAsyncAction, useModal, navigate, getStorageString} from '@/utils';
 
 const SecondRoute = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [userId, setUserId] = useState(storage.getString('userId') || '');
+  const [userId, setUserId] = useState(getStorageString('userId') || '');
   const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
     (state: RootState) => state.favorite,
   );

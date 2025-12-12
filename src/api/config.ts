@@ -1,9 +1,7 @@
 import axios from 'axios';
-import { MMKV } from 'react-native-mmkv';
+import { getStorageString } from '../utils/mmkvStorage';
 
 const API_URL = `http://10.100.13.108:4040/api`;
-
-const storage = new MMKV();
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
@@ -17,7 +15,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = storage.getString('accessToken');
+    const token = getStorageString('accessToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

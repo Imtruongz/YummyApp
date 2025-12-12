@@ -2,7 +2,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import * as RNLocalize from 'react-native-localize';
-import { MMKV } from 'react-native-mmkv';
 
 import en from './en.json';
 import vn from './vn.json';
@@ -10,8 +9,7 @@ import zh from './zh.json';
 import bankAccountEn from './bank_account_en.json';
 import bankAccountVi from './bank_account_vi.json';
 import bankAccountZh from './bank_account_zh.json';
-
-const storage = new MMKV();
+import { getStorageString, setStorageString } from '@/utils';
 
 const resources = {
   en: { 
@@ -35,7 +33,7 @@ const resources = {
 };
 
 // Lấy ngôn ngữ đã lưu hoặc sử dụng ngôn ngữ mặc định của thiết bị
-const savedLanguage = storage.getString('language');
+const savedLanguage = getStorageString('language');
 const deviceLanguage = RNLocalize.getLocales()[0]?.languageTag || 'en';
 const languageTag = savedLanguage || deviceLanguage;
 
@@ -59,7 +57,7 @@ if (!i18n.isInitialized) {
 // Hàm thay đổi ngôn ngữ và lưu vào storage
 export const changeLanguage = async (lang: string) => {
   await i18n.changeLanguage(lang);
-  storage.set('language', lang);
+  setStorageString('language', lang);
 };
 
 export default i18n;

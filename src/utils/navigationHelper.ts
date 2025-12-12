@@ -50,7 +50,12 @@ export function navigateToSettings() {
 }
 
 export function navigateToFoodDetail(foodId: string, userId: string) {
-  navigate('FoodDetailScreen', { foodId, userId });
+  if (navigationRef.isReady()) {
+    navigationRef.navigate('HomeNavigator' as any, {
+      screen: 'FoodDetailScreen',
+      params: { foodId, userId },
+    });
+  }
 }
 
 export function navigateToCategories(categoryId?: string) {

@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, B
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 import { LoginManager } from 'react-native-fbsdk-next';
-import { MMKV } from 'react-native-mmkv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import '../../languages/i18n';
 import crashlytics from '@react-native-firebase/crashlytics';
@@ -12,9 +11,7 @@ import { changeLanguage } from '../../languages/i18n';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
-import { colors, ImagesSvg, handleAsyncAction } from '@/utils'
-
-const storage = new MMKV();
+import { colors, ImagesSvg, handleAsyncAction, deleteStorageKey } from '@/utils'
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingScreen'> { }
 
@@ -47,9 +44,9 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
     await handleAsyncAction(
       async () => {
         LoginManager.logOut();
-        storage.delete('accessToken');
-        storage.delete('refreshToken');
-        storage.delete('userId');
+        deleteStorageKey('accessToken');
+        deleteStorageKey('refreshToken');
+        deleteStorageKey('userId');
         signOut();
       },
       {

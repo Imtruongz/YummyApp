@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, FlatList, Dimensions, RefreshControl, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { MMKV } from 'react-native-mmkv';
 
 import api from '@/api/config';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
@@ -20,9 +19,7 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
-import { img, colors, handleAsyncAction, showToast, navigate } from '@/utils'
-
-const storage = new MMKV();
+import { img, colors, handleAsyncAction, showToast, navigate, getStorageString } from '@/utils'
 
 const screenWidth = Dimensions.get('window').width;
 const numColumns = screenWidth > 600 ? 3 : 2;
@@ -60,7 +57,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   useEffect(() => {
     try {
-      setCurrentUserId(storage.getString('userId') || '');
+      setCurrentUserId(getStorageString('userId') || '');
     } catch (e) {
       setCurrentUserId('');
     }

@@ -3,7 +3,6 @@ import { ActivityIndicator, PermissionsAndroid, StyleSheet, Text, View, Touchabl
 import {useTranslation} from 'react-i18next';
 import RNFS from 'react-native-fs';
 import {useNavigation} from '@react-navigation/native';
-import {MMKV} from 'react-native-mmkv';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
@@ -18,11 +17,9 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast, handleAsyncAction, goBack} from '@/utils'
+import { img, colors, showToast, handleAsyncAction, goBack, getStorageString} from '@/utils'
 
-const storage = new MMKV();
-
-const userId = storage.getString('userId') || '';
+const userId = getStorageString('userId') || '';
 
 // Hàm chuyển đổi hình ảnh sang base64
 const convertImageToBase64 = async (uri: string): Promise<string> => {

@@ -4,7 +4,6 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RNFS from 'react-native-fs';
-import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -15,10 +14,9 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 
 import { CustomButton, HomeHeader, IconSvg, CustomInput } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo } from '@/utils'
+import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString } from '@/utils'
 
-const storage = new MMKV();
-const userId = storage.getString('userId') || '';
+const userId = getStorageString('userId') || '';
 
 const initialState: foodPayload = {
   foodName: '',

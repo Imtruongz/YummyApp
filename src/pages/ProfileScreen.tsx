@@ -19,9 +19,8 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, CustomAvatar, FirstRoute, SecondRoute, Typography, ProfileSkeleton } from '@/components'
-import { img, colors, navigate } from '@/utils'
+import { img, colors, navigate, getStorageString } from '@/utils'
 
-const storage = new MMKV();
 const initialLayout = { width: Dimensions.get('window').width };
 
 interface InfoItemProps {
@@ -55,7 +54,7 @@ const InfoItem: React.FC<InfoItemProps & { onPress?: () => void }> = ({ number, 
 const ProfileScreen: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const [userId, setUserId] = useState(storage.getString('userId') || '');
+  const [userId, setUserId] = useState(getStorageString('userId') || '');
 
   const [index, setIndex] = useState(0);
   const [routes, setRoutes] = useState([

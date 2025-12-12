@@ -1,24 +1,21 @@
 import React, { useState, useContext } from 'react';
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOpacity, Image, ScrollView,} from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { MMKV } from 'react-native-mmkv';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 
 import { CustomInput, CustomButton } from '@/components'
-import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, showToast, handleAsyncAction } from '@/utils';
+import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, handleAsyncAction, setStorageString } from '@/utils';
 import { getFCMTokenAndUpdate } from '@/utils/fcmHelper';
 
 import { useAppDispatch } from '@/redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '@/redux/slices/auth/authThunk';
 
-import { updateFcmTokenApi } from '@/api/updateFcmTokenApi';
 import { AuthContext } from '@/contexts/AuthContext';
 import AuthFooter from './component/AuthFooter';
 import AuthHeader from './component/AuthHeader';
 
-const storage = new MMKV();
 const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
 
@@ -62,9 +59,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         if (!user) {
           throw new Error('Email not verified, please check your email');
         }
-        storage.set('userId', String(user.user.userId || ''));
-        storage.set('accessToken', user.accessToken);
-        storage.set('refreshToken', user.refreshToken);
+        setStorageString('userId', String(user.user.userId || ''));
+        setStorageString('accessToken', user.accessToken);
+        setStorageString('refreshToken', user.refreshToken);
         
         // Lấy FCM token
         await getFCMTokenAndUpdate(user.accessToken);
@@ -108,9 +105,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           throw new Error('Failed to get user data');
         }
 
-        storage.set('userId', String(user.user.userId || ''));
-        storage.set('accessToken', user.accessToken);
-        storage.set('refreshToken', user.refreshToken);
+        setStorageString('userId', String(user.user.userId || ''));
+        setStorageString('accessToken', user.accessToken);
+        setStorageString('refreshToken', user.refreshToken);
         
         // Lấy FCM token
         await getFCMTokenAndUpdate(user.accessToken);
