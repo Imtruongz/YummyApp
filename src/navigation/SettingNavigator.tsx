@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingScreen from '../pages/Setting/SettingScreen';
 import ChangePasswordScreen from '@/pages/Setting/ChangePasswordScreen';
 import SettingProfileScreen from '@/pages/Setting/SettingProfileScreen';
-import PaymentScreen from '../pages/PaymentScreen';
+import PaymentScreen from '../pages/Payment/PaymentScreen';
 import BankAccountScreen from '../pages/Setting/BankAccountScreen';
 import { RootStackParamList } from '../../android/types/StackNavType';
 

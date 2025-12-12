@@ -2,6 +2,15 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- 🔍 Package Visibility for Android 11+ - Declare intent filters of apps we want to query -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="mblaos" />
+        </intent>
+        <package android:name="com.mblaos.app" />
+    </queries>
+
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -29,6 +38,13 @@
           <category android:name="android.intent.category.DEFAULT" />
           <category android:name="android.intent.category.BROWSABLE" />
           <data android:scheme="yummyapp" />
+        </intent-filter>
+        <!-- ✨ Deep Link callback từ MBLaos -->
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="yummy" android:host="payment-result" />
         </intent-filter>
       </activity>
     </application>

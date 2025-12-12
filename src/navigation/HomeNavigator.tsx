@@ -8,8 +8,8 @@ import {HomeStack} from './types'
 import UsersProfileScreen from '../pages/UsersProfileScreen';
 import CategoriesScreen from '../pages/CategoriesScreen';
 import NotificationsScreen from '../pages/NotificationsScreen';
-import PaymentScreen from '../pages/PaymentScreen';
-import PaymentSuccessScreen from '../pages/PaymentSuccessScreen';
+import PaymentScreen from '../pages/Payment/PaymentScreen';
+import PaymentSuccessScreen from '../pages/Payment/PaymentSuccessScreen';
 import YummyAIScreen from '../pages/YummyAI/screens/YummyAIScreen';
 import ChatHistoryNavigator from './ChatHistoryNavigator';
 

@@ -2,66 +2,81 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, Linking, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { useFocusEffect } from '@react-navigation/native';
 
-import api from '@/api/config';
 import ConfirmationModal from '@/components/ConfirmationModal';
-
+import { PaymentScreenProps, PaymentMethod, BankAccount, INITIAL_PAYMENT_METHODS } from './type';
+import * as paymentService from './paymentService';
 import { CustomButton, HomeHeader, IconSvg } from '@/components'
 import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast, goBack } from '@/utils'
 
-type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
-interface PaymentMethod {
-  id: string;
-  name: string;
-  iconType: 'image' | 'custom';
-  iconName?: string;
-  iconColor?: string;
-  imagePath?: any;
-  balance?: string;
-  selected?: boolean;
-  integrated?: boolean;
-  cardNumber?: string;
-  cardType?: string;
-}
-
-interface BankAccount {
-  bankName: string;
-  bankCode: string;
-  accountNumber: string;
-  accountName: string;
-}
-
-const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
+const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
+  const { t } = useTranslation();
   const { amount: initialAmount = 5, phoneNumber = '0363704403', serviceType = 'Donate', serviceProvider = 'Yummy', userId } = route.params || {};
+
   const [amount, setAmount] = useState<number>(initialAmount);
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
-  const { t } = useTranslation();
-
   const [showPaymentConfirmation, setShowPaymentConfirmation] = useState<boolean>(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod | null>(null);
   const [recipientBankAccount, setRecipientBankAccount] = useState<BankAccount | null>(null);
   const [loadingBankAccount, setLoadingBankAccount] = useState<boolean>(false);
   const [recipientUsername, setRecipientUsername] = useState<string>('');
+  
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(INITIAL_PAYMENT_METHODS); const formatMoney = (amount: number) => {
+    return formatUSDCurrency(amount);
+  };
+
+  const handleDeepLink = ({ url }: { url: string }) => {
+    console.log('[PaymentScreen] Received deep link:', url);
+
+    const route = url.replace(/.*?:\/\//g, '');
+    const [path, queryString] = route.split('?');
+
+    if (path === 'payment-result') {
+      const params = new URLSearchParams(queryString);
+      const status = params.get('status');
+      const transactionId = params.get('transactionId');
+
+      console.log('[PaymentScreen] Payment callback - Status:', status, 'TXN:', transactionId);
+
+      if (status === 'success') {
+        showToast.success(
+          t('payment_screen.payment_success'),
+          `${t('payment_screen.payment_bank_transfer_success')} (TXN: ${transactionId})`
+        );
+        setTimeout(() => goBack(), 1500);
+      } else if (status === 'failed' || status === 'cancelled') {
+        showToast.error(
+          t('payment_screen.payment_payment_error'),
+          t('payment_screen.payment_general_error')
+        );
+      } else if (status === 'pending') {
+        showToast.info(
+          'Thông báo',
+          'Giao dịch đang xử lý...'
+        );
+      }
+    }
+  };
 
   useEffect(() => {
-    const fetchRecipientBankAccount = async () => {
+    const fetchRecipientData = async () => {
       if (userId) {
         setLoadingBankAccount(true);
         try {
-          const userResponse = await api.get(`users/getUserById/${userId}`);
-          if (userResponse.data && userResponse.data.success) {
-            setRecipientUsername(userResponse.data.data.username || '');
+          // Fetch user info
+          const userData = await paymentService.getUserById(userId);
+          if (userData) {
+            setRecipientUsername(userData.username || '');
           }
 
-          const response = await api.get(`bank-accounts/${userId}`);
-          if (response.data && response.data.success && response.data.data) {
-            console.log('[PaymentScreen] Fetched recipient bank account:', response.data.data);
-            setRecipientBankAccount(response.data.data);
+          // Fetch bank account
+          const bankAccount = await paymentService.getRecipientBankAccount(userId);
+          if (bankAccount) {
+            setRecipientBankAccount(bankAccount);
           }
         } catch (error: any) {
-          console.log('[PaymentScreen] Error fetching recipient bank account:', error);
+          console.log('[PaymentScreen] Error fetching data:', error);
 
           if (error?.response?.status === 404) {
             showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
@@ -75,36 +90,33 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       }
     };
 
-    fetchRecipientBankAccount();
+    fetchRecipientData();
   }, [userId, t]);
 
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
-    {
-      id: 'zalopay',
-      name: 'Ví Zalopay',
-      iconType: 'custom',
-      selected: false,
-      integrated: false
-    },
-    {
-      id: 'mblaos',
-      name: 'MBLaos',
-      iconType: 'custom',
-      selected: true,
-      integrated: true
-    },
-    {
-      id: 'bidv',
-      name: 'BIDV',
-      iconType: 'custom',
-      cardType: 'BIDV',
-      integrated: false
-    }
-  ]);
+  // ✨ Deep Link Listener - Handle callback từ MBLaos
+  useEffect(() => {
+    // Listen for deep links
+    const subscription = Linking.addEventListener('url', handleDeepLink);
 
-  const formatMoney = (amount: number) => {
-    return formatUSDCurrency(amount);
-  };
+    return () => {
+      subscription.remove();
+    };
+  }, [t]);
+
+  // ✨ Focus effect - Check for initial URL when screen is focused (in case app was opened via deep link)
+  useFocusEffect(
+    React.useCallback(() => {
+      const checkInitialURL = async () => {
+        const initialUrl = await Linking.getInitialURL();
+        if (initialUrl != null) {
+          console.log('[PaymentScreen] Initial URL:', initialUrl);
+          handleDeepLink({ url: initialUrl });
+        }
+      };
+
+      checkInitialURL();
+    }, [handleDeepLink])
+  );
 
   const handleAmountChange = (text: string) => {
     const numericValue = extractNumbersOnly(text);
@@ -136,58 +148,43 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.payment_select_payment_method'));
       return;
     }
-
-    const paymentMethodName = selectedMethod.name;
-
     setSelectedPaymentMethod(selectedMethod);
     setShowPaymentConfirmation(true);
   };
 
   const handleProcessPayment = async () => {
-    if (!selectedPaymentMethod) return;
-
-    const paymentMethodName = selectedPaymentMethod.name;
-
     try {
-      if (selectedPaymentMethod.integrated) {
-        if (selectedPaymentMethod.id === 'bank') {
-          if (!recipientBankAccount) {
-            showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.no_recipient_bank_account'));
-            return;
-          }
-
-          const response = await api.post('/payment/record-bank-transfer', {
-            amount: amount,
-            description: `Donate $${amount} cho ${recipientUsername} qua YummyApp`,
-            receiverId: userId,
-            bankAccountInfo: recipientBankAccount
-          });
-
-          if (response.data && response.data.success) {
-            showToast.success(t('payment_screen.payment_success'), t('payment_screen.payment_bank_transfer_success'));
-            goBack();
-          }
-        } else {
-          const response = await api.post('/payment/create-session', {
-            amount: amount,
-            description: `Donate $${amount} cho người dùng qua YummyApp`,
-            merchantName: 'YummyFood',
-            receiverId: userId,
-          });
-
-          const data = response.data;
-
-          if (data.success && data.token) {
-            const url = `mblaos://pay?token=${data.token}`;
-            console.log('Opening URL with dynamic token:', url);
-            await Linking.openURL(url);
-            return;
+      const response = await paymentService.createPaymentSession(amount, userId);
+      if (response && response.success && response.token) {
+        // Điều hướng sang app MBLaos với token từ api createPaymentSession
+        const deepLinkUrl = `mblaos://pay?token=${encodeURIComponent(response.token)}`;
+        console.log('[PaymentScreen] Opening MBLaos with token:', response.token);
+        try {
+          // Check nếu MBLaos app đã cài
+          const canOpen = await Linking.canOpenURL('mblaos://pay');
+          console.log('[PaymentScreen] Can open MBLaos:', canOpen);
+          if (canOpen) {
+            console.log('[PaymentScreen] MBlaos đã cài, opening...');
+            await Linking.openURL(deepLinkUrl);
           } else {
-            throw new Error('Không thể tạo token thanh toán');
+            console.log('[PaymentScreen] MBLaos chưa cài, không thể mở.');
+            try {
+              await Linking.openURL(deepLinkUrl);
+            } catch (openError) {
+              console.log('[PaymentScreen] Failed to open MBLaos:', openError);
+              showToast.error(
+                'Thông báo',
+                'MBLaos chưa cài. Vui lòng cài đặt MBLaos để thanh toán.'
+              );
+            }
           }
+        } catch (linkError) {
+          console.log('[PaymentScreen] Lỗi khi kiểm tra deep link:', linkError);
+          showToast.error(t('payment_screen.payment_payment_error'), 'Không thể mở MBLaos');
         }
+        return;
       } else {
-        showToast.info(t('payment_screen.payment_simulation_notice'), t('payment_screen.payment_method_not_integrated', { method: paymentMethodName }));
+        throw new Error('Không thể tạo token thanh toán');
       }
     } catch (error) {
       console.log('Lỗi khi thanh toán:', error);
@@ -211,6 +208,26 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
       default:
         return null;
     }
+  };
+
+  const ItemInfo = (label?: string, value?: string) => {
+    return (
+      <View style={styles.bankInfoRow}>
+        <Text style={styles.bankInfoLabel}>{label}</Text>
+        <Text style={styles.bankInfoValue}>{value}</Text>
+      </View>
+    );
+  };
+
+  const ItemCost = (amount: number, inputAmount: string, value?: string) => {
+    return (
+      <TouchableOpacity
+        style={styles.quickAmountButton}
+        onPress={() => { setAmount(amount); setInputAmount(inputAmount); }}
+      >
+        <Text style={styles.quickAmountText}>{value}</Text>
+      </TouchableOpacity>
+    )
   };
 
   return (
@@ -253,24 +270,9 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
               />
             </View>
             <View style={styles.quickAmountContainer}>
-              <TouchableOpacity
-                style={styles.quickAmountButton}
-                onPress={() => { setAmount(5); setInputAmount('5'); }}
-              >
-                <Text style={styles.quickAmountText}>$5</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.quickAmountButton}
-                onPress={() => { setAmount(10); setInputAmount('10'); }}
-              >
-                <Text style={styles.quickAmountText}>$10</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.quickAmountButton}
-                onPress={() => { setAmount(20); setInputAmount('20'); }}
-              >
-                <Text style={styles.quickAmountText}>$20</Text>
-              </TouchableOpacity>
+              {ItemCost(5, '5', '$5')}
+              {ItemCost(10, '10', '$10')}
+              {ItemCost(20, '20', '$20')}
             </View>
           </View>
 
@@ -309,22 +311,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ navigation, route }) => {
 
           <View style={styles.bankInfoCard}>
             <Text style={styles.recipientName}>{recipientUsername}</Text>
-            <View style={styles.bankInfoRow}>
-              <Text style={styles.bankInfoLabel}>{t('bank_name')}:</Text>
-              <Text style={styles.bankInfoValue}>{recipientBankAccount?.bankName}</Text>
-            </View>
-            <View style={styles.bankInfoRow}>
-              <Text style={styles.bankInfoLabel}>{t('bank_code')}:</Text>
-              <Text style={styles.bankInfoValue}>{recipientBankAccount?.bankCode}</Text>
-            </View>
-            <View style={styles.bankInfoRow}>
-              <Text style={styles.bankInfoLabel}>{t('account_number')}:</Text>
-              <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountNumber}</Text>
-            </View>
-            <View style={styles.bankInfoRow}>
-              <Text style={styles.bankInfoLabel}>{t('account_name')}:</Text>
-              <Text style={styles.bankInfoValue}>{recipientBankAccount?.accountName}</Text>
-            </View>
+            {ItemInfo(t('bank_name'), recipientBankAccount?.bankName)}
+            {ItemInfo(t('bank_code'), recipientBankAccount?.bankCode)}
+            {ItemInfo(t('account_number'), recipientBankAccount?.accountNumber)}
+            {ItemInfo(t('account_name'), recipientBankAccount?.accountName)}
             <View style={styles.bankInfoRow}>
               <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
               <View style={styles.transferInputContainer}>
@@ -626,10 +616,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     padding: 0,
     marginRight: 5,
-  },
-  editIcon: {
-    marginLeft: 4,
-    padding: 2,
   },
 });
 
