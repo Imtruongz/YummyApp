@@ -4,12 +4,13 @@ import api from '@/api/config';
 
 export const getAllFoodAPI = createAsyncThunk(
   'food/getAllFoodAPI',
-  async (_, thunkAPI) => {
+  async ({page = 1, limit = 10}: {page?: number, limit?: number} = {}, thunkAPI) => {
     try {
-      const response = await api.get<food[]>('/foods/getAll', {
+      const response = await api.get<{data: food[], pagination: any}>('/foods/getAll', {
+        params: { page, limit },
         signal: thunkAPI.signal,
       });
-      if (!response.data || response.data.length === 0) {
+      if (!response.data || !response.data.data || response.data.data.length === 0) {
         return thunkAPI.rejectWithValue('No data returned from the server');
       }
       return response.data;

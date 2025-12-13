@@ -49,7 +49,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
         async () => {
           await Promise.all([
             dispatch(getAllCategoriesAPI()),
-            dispatch(getAllFoodAPI()),
+            dispatch(getAllFoodAPI({ page: 1, limit: 10 })),
             dispatch(getAllUsers()),
             dispatch(getUserByIdAPI({ userId })),
           ]);

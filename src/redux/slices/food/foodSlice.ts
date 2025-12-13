@@ -18,6 +18,13 @@ const initialState: foodState = {
   selectedFood: null,
   isLoadingFood: false,
   isErrorFood: false,
+  pagination: {
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+    hasNextPage: false,
+  }
 };
 
 const foodSlice = createSlice({
@@ -33,7 +40,13 @@ const foodSlice = createSlice({
     createAsyncThunkHandler(builder, getAllFoodAPI, {
       loadingKey: 'isLoadingFood',
       onFulfilled: (state, action) => {
-        state.foodList = action.payload;
+        // Nếu là trang 1, replace; nếu không thì append
+        if (action.payload.pagination.page === 1) {
+          state.foodList = action.payload.data;
+        } else {
+          state.foodList = [...state.foodList, ...action.payload.data];
+        }
+        state.pagination = action.payload.pagination;
       },
     });
 

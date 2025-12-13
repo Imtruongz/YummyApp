@@ -30,7 +30,7 @@ export function resetTo(routeName: string, params?: any) {
 
 // Helpers cụ thể cho các screen
 export function navigateToHome() {
-  navigate('HomeNavigator');
+  resetTo('HomeNavigator');
 }
 
 export function navigateToSearch() {

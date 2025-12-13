@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -16,13 +16,15 @@ const ListFoodScreen: React.FC = () => {
 
   const foodList = useAppSelector(selectFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
+  const pagination = useAppSelector(state => state.food.pagination);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
   
   useEffect(() => {
-    dispatch(getAllFoodAPI());
+    dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
   }, [dispatch]);
 
-  if (isLoadingFood) {
+  if (isLoadingFood && currentPage === 1) {
     return <Loading />;
   }
 
@@ -35,6 +37,14 @@ const ListFoodScreen: React.FC = () => {
   ) || [];
 
   const showNoSearchResults = searchQuery && filteredFoodList.length === 0;
+
+  const loadMoreFood = async () => {
+    if (!isLoadingFood && pagination.hasNextPage && currentPage < pagination.totalPages) {
+      const nextPage = currentPage + 1;
+      setCurrentPage(nextPage);
+      await dispatch(getAllFoodAPI({ page: nextPage, limit: 10 })).unwrap();
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}  edges={['left', 'right']}>
@@ -73,7 +83,8 @@ const ListFoodScreen: React.FC = () => {
             }}
             onPress={() => {
               console.log('Manually refreshing data');
-              dispatch(getAllFoodAPI());
+              setCurrentPage(1);
+              dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
             }}>
             <Text style={{color: 'white'}}>{t('reload')}</Text>
           </TouchableOpacity>
@@ -88,7 +99,17 @@ const ListFoodScreen: React.FC = () => {
           />
         </View>
       ) : (
-        <ScrollView contentContainerStyle={styles.container2}>
+        <ScrollView 
+          contentContainerStyle={styles.container2}
+          onScroll={({ nativeEvent }) => {
+            const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+            const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - 100;
+            if (isEndReached) {
+              loadMoreFood();
+            }
+          }}
+          scrollEventThrottle={400}
+        >
           {filteredFoodList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
@@ -120,6 +141,13 @@ const ListFoodScreen: React.FC = () => {
               </View>
             </TouchableOpacity>
           ))}
+          
+          {/* Loading indicator khi load thêm */}
+          {isLoadingFood && currentPage > 1 && (
+            <View style={{ width: '100%', padding: 16, alignItems: 'center', justifyContent: 'center' }}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          )}
         </ScrollView>
       )}
     </SafeAreaView>

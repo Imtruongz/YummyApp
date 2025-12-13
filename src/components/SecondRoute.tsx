@@ -1,7 +1,6 @@
-import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator} from 'react-native';
+import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
-
 
 import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
@@ -99,21 +98,12 @@ const SecondRoute = () => {
               <Image
                 style={styles.img}
                 source={{
-                  uri: foodDetails?.foodThumbnail || 'https://via.placeholder.com/100',
+                  uri: foodDetails?.foodThumbnail,
                 }}
               />
               <View style={styles.titleItemLeft}>
-                <Typography
-                  title={foodDetails?.foodName || 'Không có tên'}
-                  fontSize={16}
-                  fontWeight="700"
-                  numberOfLines={2}
-                />
-                <Typography
-                  title={foodDetails?.foodDescription || 'Không có mô tả'}
-                  fontSize={12}
-                  numberOfLines={3}
-                />
+                <Text numberOfLines={2} style={{ fontSize: 16, fontWeight: '700', color: colors.dark }}>{foodDetails?.foodName}</Text>
+                <Text numberOfLines={3} style={{ fontSize: 12, color: colors.dark }}>{foodDetails?.foodDescription}</Text>
               </View>
             </TouchableOpacity>
           );
@@ -127,7 +117,7 @@ const SecondRoute = () => {
         onClose={handleCancel}
         onConfirm={handleDeleteFavorite}
         confirmText={t('delete_button')}
-        cancelText={t('cancel_button')}
+        cancelText={t('cancel')}
       />
     </>
   );

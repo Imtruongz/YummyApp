@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { HomeHeader, CustomTitle, IconSvg, Loading, NoData } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, Loading, NoData, CustomInput } from '@/components'
 import { colors, ImagesSvg, navigate } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks.ts';
@@ -54,11 +54,14 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
         showNotification={false}
         isBackHome={true}
       />
-      <TextInput
+      <CustomInput
         style={styles.inputHeader}
         placeholder={t('search')}
         onChangeText={text => setSearchQuery(text)}
         value={searchQuery}
+        showIcon={true}
+        iconXml={ImagesSvg.icSearch}
+        iconOnLeft={true}
       />
 
       {hasNoData ? (
@@ -140,11 +143,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   inputHeader: {
-    width: '90%',
-    backgroundColor: colors.InputBg,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
+    height: 52,
+    paddingHorizontal: 12,
+    margin: 12,
+    backgroundColor: colors.light,
   },
   container2: {
     width: '100%',

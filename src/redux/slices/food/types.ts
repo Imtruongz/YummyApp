@@ -45,4 +45,11 @@ export interface foodState {
   selectedFood: food | null
   isLoadingFood: boolean;
   isErrorFood: boolean;
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+  }
 }

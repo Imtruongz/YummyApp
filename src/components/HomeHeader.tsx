@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppSelector } from '@/redux/hooks';
 
 import { Typography, DropdownMenu, MenuOption, IconSvg } from '@/components'
-import { colors, img, ImagesSvg, goBack, navigate } from '@/utils';
+import { colors, img, ImagesSvg, goBack, navigate, navigateToHome } from '@/utils';
 
 type HeaderMode = 'home' | 'title' | 'search' | 'profile' | 'back';
 
@@ -70,7 +70,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = React.memo(({
   };
 
   const handleBackHome = () => {
-    navigate('HomeScreen');
+    navigateToHome();
   };
 
   const renderLeftContent = () => {

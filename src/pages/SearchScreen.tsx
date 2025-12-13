@@ -42,8 +42,10 @@ const SearchScreen = () => {
     const fetchFoods = async () => {
       setLoading(true);
       const result = await tryCatch(async () => {
-        const res = await api.get<FoodResult[]>('/foods/getAll');
-        return res.data || [];
+        const res = await api.get<{ data: FoodResult[], pagination: any }>('/foods/getAll', {
+          params: { page: 1, limit: 1000 } // Lấy tất cả cho search
+        });
+        return res.data.data || []; // Lấy .data từ response
       });
       if (result.success && result.data) {
         setAllFoods(result.data);

@@ -8,6 +8,11 @@ export const userLoginAPI = createAsyncThunk(
     try {
       const response = await api.post('/users/login', payload);
       if (response && response.data) {
+        console.log('✅ LOGIN SUCCESS');
+        console.log('📱 Access Token:', response.data.accessToken);
+        console.log('👤 User ID:', response.data.userId);
+        console.log('👤 User Name:', response.data.username);
+        console.log('📦 Full Response:', response.data);
         return response.data;
       }
     } catch (error: any) {

@@ -86,7 +86,7 @@ const FirstRoute = () => {
         onClose={handleCancel}
         onConfirm={handleDelete}
         confirmText={t('delete_button')}
-        cancelText={t('cancel_button')}
+        cancelText={t('cancel')}
       />
     </>
   );

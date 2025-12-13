@@ -1,7 +1,7 @@
 import React from 'react';
-import { Image, StyleSheet, View, TouchableOpacity, ViewStyle, ImageStyle, StyleProp} from 'react-native';
+import { Image, StyleSheet, View, TouchableOpacity, ViewStyle, ImageStyle, StyleProp, Text } from 'react-native';
 import { Typography } from '@/components'
-import {colors} from '@/utils';
+import { colors } from '@/utils';
 
 interface FoodItemProps {
   item: {
@@ -46,17 +46,15 @@ const FoodItemCard: React.FC<FoodItemProps> = ({
       onLongPress={onLongPress}
       activeOpacity={0.8}>
       {/* Top img */}
-      <Image 
-        style={[styles.img, imageStyle]} 
-        source={{ uri: item.foodThumbnail }} 
+      <Image
+        style={[styles.img, imageStyle]}
+        source={{ uri: item.foodThumbnail }}
       />
       {/* Bottom info */}
       <View style={[styles.titleItemLeft, textContainerStyle]}>
-        <Typography 
-          title={item.foodName} 
-          fontSize={fontSize} 
-          numberOfLines={2} 
-        />
+        <Text numberOfLines={2} style={{ fontSize: fontSize, fontWeight: '500', color: colors.dark, textAlign: 'center' }}>
+          {item.foodName}
+        </Text>
       </View>
     </TouchableOpacity>
   );
