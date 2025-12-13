@@ -294,9 +294,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputHeader: {
+    height: 52,
+    paddingHorizontal: 12,
+    margin: 8,
     backgroundColor: colors.light,
-    borderRadius: 12,
-    padding: 16,
   },
 });
 

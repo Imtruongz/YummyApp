@@ -1,18 +1,18 @@
-import {StyleSheet, View, Text} from 'react-native';
-import React, {useState} from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import React, { useState } from 'react';
 import Toast from 'react-native-toast-message';
-import {useTranslation} from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo, getStorageString, deleteStorageKey} from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo, getStorageString, deleteStorageKey } from '@/utils'
 
-import {changePasswordAPI} from '@/redux/slices/auth/authThunk';
-import {useAppDispatch} from '@/redux/hooks';
+import { changePasswordAPI } from '@/redux/slices/auth/authThunk';
+import { useAppDispatch } from '@/redux/hooks';
 
 const userId = getStorageString('userId') || '';
 
 const ChangePasswordScreen: React.FC = () => {
-  const {t, i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const [oldPassword, setOldPassword] = useState('');
   const [isOldPasswordValid, setIsOldPasswordValid] = useState(true);
@@ -85,29 +85,31 @@ const ChangePasswordScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <HomeHeader 
-        mode="back" 
-        title={t('settings_screen.change_pw_header')} 
+      <HomeHeader
+        mode="back"
+        title={t('settings_screen.change_pw_header')}
         showGoBack={true}
         showNotification={false}
         isBackHome={true}
       />
       <View style={styles.body}>
         <CustomInput
+          style={styles.input}
           placeholder={t('settings_screen.change_old_pw')}
           value={oldPassword}
           onChangeText={setOldPassword}
           secureTextEntry={!showOldPassword}
           showIcon={true}
           onPressIcon={handleShowOldPassword}
-           iconXml={showOldPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
+          iconXml={showOldPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isOldPasswordValid && (
-          <Text style={{color: 'red', fontSize: 12}}>
+          <Text style={{ color: 'red', fontSize: 12 }}>
             Password must be at least 6 characters.
           </Text>
         )}
         <CustomInput
+          style={styles.input}
           placeholder={t('settings_screen.change_new_pw')}
           value={newPassword}
           secureTextEntry={!showNewPassword}
@@ -117,9 +119,10 @@ const ChangePasswordScreen: React.FC = () => {
           iconXml={showNewPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isNewPasswordValid && (
-          <Text style={{color: 'red', fontSize: 12}}>Password invalid</Text>
+          <Text style={{ color: 'red', fontSize: 12 }}>Password invalid</Text>
         )}
         <CustomInput
+          style={styles.input}
           placeholder={t('settings_screen.change_confirm_pw')}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -129,11 +132,11 @@ const ChangePasswordScreen: React.FC = () => {
           iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isConfirmPasswordValid && (
-          <Text style={{color: 'red', fontSize: 12}}>
+          <Text style={{ color: 'red', fontSize: 12 }}>
             Confirmation password invalid
           </Text>
         )}
-        <CustomButton title={t('settings_screen.change_pw_btn')} onPress={handleChangePassword} />
+        <CustomButton style={styles.button} title={t('settings_screen.change_pw_btn')} onPress={handleChangePassword} />
       </View>
     </View>
   );
@@ -148,8 +151,17 @@ const styles = StyleSheet.create({
   },
   body: {
     paddingVertical: 24,
-    gap: 14,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  input: {
+    height: 52,
+    backgroundColor: colors.InputBg,
+    paddingHorizontal: 12,
+    margin: 12
+  },
+  button: {
+    height: 52,
+    marginTop: 24,
   },
 });

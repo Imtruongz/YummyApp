@@ -77,11 +77,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.white,
-    padding: 16,
-    marginHorizontal: 16,
-    borderRadius: 16,
     borderWidth: 1,
+    borderRadius: 12,
     borderColor: colors.gray,
     shadowColor: colors.dark,
     shadowOffset: { width: 0, height: 2 },
@@ -91,7 +88,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     color: colors.dark,
   },
 });

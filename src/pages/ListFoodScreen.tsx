@@ -137,10 +137,10 @@ const styles = StyleSheet.create({
   },
 
   inputHeader: {
+    height: 52,
+    paddingHorizontal: 12,
+    margin: 12,
     backgroundColor: colors.light,
-    borderRadius: 12,
-    padding: 16,
-    margin: 18,
   },
 
   container2: {

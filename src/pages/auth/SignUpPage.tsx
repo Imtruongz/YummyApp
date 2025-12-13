@@ -78,11 +78,13 @@ const SignupPage: React.FC = () => {
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
+            style={styles.input}
             value={username}
             placeholder={t('login_screen.login_username')}
             onChangeText={setUsername}
           />
           <CustomInput
+            style={styles.input}
             value={email}
             placeholder={t('login_screen.login_email')}
             onChangeText={setEmail}
@@ -91,6 +93,7 @@ const SignupPage: React.FC = () => {
             <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
           ) : null}
           <CustomInput
+            style={styles.input}
             value={password}
             placeholder={t('login_screen.login_pw')}
             secureTextEntry={!showPassword}
@@ -103,6 +106,7 @@ const SignupPage: React.FC = () => {
             <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
           )}
           <CustomInput
+            style={styles.input}
             value={confirmPassword}
             placeholder={t('login_screen.change_confirm_pw')}
             secureTextEntry={!showConfirmPassword}
@@ -158,6 +162,12 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: colors.danger,
+  },
+  input: {
+    height: 52,
+    backgroundColor: colors.light,
+    paddingHorizontal: 12,
+    margin: 12,
   },
 });
 

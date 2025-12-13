@@ -280,7 +280,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
         <View style={styles.inputContainer}>
           <CustomInput
-            style={[styles.input, { maxHeight: 100 }]}
+            style={styles.input}
             placeholder={t('Yummy_AI.ai_assistant_placeholder')}
             value={input}
             onChangeText={setInput}
@@ -384,13 +384,11 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    height: 52,
     backgroundColor: colors.InputBg,
-    borderRadius: 20,
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
-    marginRight: 8,
-    fontSize: 16,
+    marginHorizontal: 8,
+    borderRadius: 26,
   },
   sendButton: {
     backgroundColor: colors.white,

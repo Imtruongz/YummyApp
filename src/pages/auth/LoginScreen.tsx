@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOpacity, Image, ScrollView,} from 'react-native';
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOpacity, Image, ScrollView, } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -22,7 +22,7 @@ Settings.setAppID(fbAppId)
 interface LoginScreenProps
   extends NativeStackScreenProps<RootStackParamList, 'LoginScreen'> { }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginScreenProps> = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const [email, setEmail] = useState('');
@@ -62,7 +62,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         setStorageString('userId', String(user.user.userId || ''));
         setStorageString('accessToken', user.accessToken);
         setStorageString('refreshToken', user.refreshToken);
-        
+
         // Lấy FCM token
         await getFCMTokenAndUpdate(user.accessToken);
       },
@@ -81,7 +81,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         if (result.isCancelled) {
           throw new Error('Login cancelled');
         }
-        
+
         const profile = await Profile.getCurrentProfile();
         if (!profile) {
           throw new Error('Failed to get profile');
@@ -95,11 +95,11 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         }
         console.log('Login with Facebook success', data);
         const resultAction = await dispatch(facebookLoginAPI(data));
-        
+
         if (!facebookLoginAPI.fulfilled.match(resultAction)) {
           throw new Error('Facebook login failed');
         }
-        
+
         const user = resultAction.payload;
         if (!user) {
           throw new Error('Failed to get user data');
@@ -108,7 +108,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         setStorageString('userId', String(user.user.userId || ''));
         setStorageString('accessToken', user.accessToken);
         setStorageString('refreshToken', user.refreshToken);
-        
+
         // Lấy FCM token
         await getFCMTokenAndUpdate(user.accessToken);
       },
@@ -128,6 +128,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         {/* Content */}
         <View style={styles.body}>
           <CustomInput
+            style={styles.input}
             value={email}
             onChangeText={setEmail}
             placeholder={t('login_screen.login_email')}
@@ -136,6 +137,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
           ) : null}
           <CustomInput
+            style={styles.input}
             value={password}
             placeholder={t('login_screen.login_pw')}
             secureTextEntry={!showPassword}
@@ -175,12 +177,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           <AuthFooter
             content={t('login_screen.login_register')}
             navigateTo={t('login_screen.login_register_btn')}
-            navigation={navigation}
             targetScreen="SignUpPage"
           />
           <AuthFooter
             navigateTo={t('login_screen.login_forgot_pw')}
-            navigation={navigation}
             targetScreen="ForgotPasswordPage"
           />
         </View>
@@ -245,6 +245,12 @@ const styles = StyleSheet.create({
     color: '#757575',
     fontSize: 16,
     fontWeight: '500',
+  },
+  input: {
+    height: 52,
+    backgroundColor: colors.light,
+    paddingHorizontal: 12,
+    margin: 12,
   },
 });
 

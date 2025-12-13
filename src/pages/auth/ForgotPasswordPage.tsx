@@ -12,9 +12,7 @@ import AuthHeader from './component/AuthHeader.tsx';
 interface ForgotPasswordPageProps
   extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}
 
-const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
-  navigation,
-}) => {
+const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = () => {
     const { t, i18n } = useTranslation();
   
   const [email, setEmail] = useState('');
@@ -54,6 +52,7 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
             value={email}
             placeholder={t('login_screen.login_email')}
             onChangeText={setEmail}
+            style={styles.input}
           />
           {isErrorMessage ? (
             <Text style={styles.errorMessage}>{errorMessage}</Text>
@@ -64,7 +63,6 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = ({
           <AuthFooter
             content="Back to"
             navigateTo="Login"
-            navigation={navigation}
             targetScreen="LoginScreen"
           />
         </View>
@@ -89,6 +87,12 @@ const styles = StyleSheet.create({
   },
   sentEmailMessage: {
     color: colors.success,
+  },
+  input: {
+    height: 52,
+    backgroundColor: colors.light,
+    paddingHorizontal: 12,
+    margin: 12,
   },
 });
 

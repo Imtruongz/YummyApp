@@ -679,6 +679,10 @@ const styles = StyleSheet.create({
   },
   commentInputField: {
     flex: 1,
+    height: 52,
+    backgroundColor: colors.InputBg,
+    paddingHorizontal: 12,
+    marginHorizontal: 12,
   },
   sendButton: {
     width: 40,

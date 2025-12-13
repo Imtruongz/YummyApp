@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
+    fontWeight: '500',
     color: colors.dark,
     textAlign: 'center',
     flexWrap: 'wrap',
