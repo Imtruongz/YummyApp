@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
-import {getAllFoodAPI} from '@/redux/slices/food/foodThunk';
+import {getAllFoodAPI, searchFoodAPI} from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, Loading, CustomInput } from '@/components'
@@ -19,30 +19,43 @@ const ListFoodScreen: React.FC = () => {
   const pagination = useAppSelector(state => state.food.pagination);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
   
   useEffect(() => {
     dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
   }, [dispatch]);
 
-  if (isLoadingFood && currentPage === 1) {
+  if (isLoadingFood && currentPage === 1 && !isSearchMode) {
     return <Loading />;
   }
 
   const hasNoData = !foodList || foodList.length === 0;
 
-  // Filter food list based on search query
-  const filteredFoodList = foodList?.filter(item =>
-    item.foodName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.userDetail?.username?.toLowerCase().includes(searchQuery.toLowerCase())
-  ) || [];
-
-  const showNoSearchResults = searchQuery && filteredFoodList.length === 0;
+  // Xử lý nhấn button search
+  const handleSearchPress = () => {
+    console.log('Searching for:', searchQuery);
+    setCurrentPage(1);
+    setHasSearched(true);
+    if (searchQuery.trim() === '') {
+      setIsSearchMode(false);
+      dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
+    } else {
+      setIsSearchMode(true);
+      dispatch(searchFoodAPI({ query: searchQuery, page: 1, limit: 10 }));
+    }
+  };
 
   const loadMoreFood = async () => {
     if (!isLoadingFood && pagination.hasNextPage && currentPage < pagination.totalPages) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
-      await dispatch(getAllFoodAPI({ page: nextPage, limit: 10 })).unwrap();
+      
+      if (isSearchMode) {
+        await dispatch(searchFoodAPI({ query: searchQuery, page: nextPage, limit: 10 })).unwrap();
+      } else {
+        await dispatch(getAllFoodAPI({ page: nextPage, limit: 10 })).unwrap();
+      }
     }
   };
 
@@ -55,17 +68,30 @@ const ListFoodScreen: React.FC = () => {
         showNotification={false}
         isBackHome={true}
       />
-      <CustomInput
-        style={styles.inputHeader}
-        placeholder={t('search')}
-        onChangeText={text => setSearchQuery(text)}
-        value={searchQuery}
-        showIcon={true}
-        iconXml={ImagesSvg.icSearch}
-        iconOnLeft={true}
-      />
+      <View style={styles.searchContainer}>
+        <CustomInput
+          style={[styles.inputHeader, {flex: 1}]}
+          placeholder={t('search')}
+          onChangeText={text => setSearchQuery(text)}
+          value={searchQuery}
+          showIcon={true}
+          iconXml={ImagesSvg.icSearch}
+          iconOnLeft={true}
+        />
+        <TouchableOpacity 
+          style={styles.searchButton}
+          onPress={handleSearchPress}
+          disabled={isLoadingFood && hasSearched && isSearchMode}
+        >
+          <Text style={styles.searchButtonText}>{t('search')}</Text>
+        </TouchableOpacity>
+      </View>
       
-      {hasNoData ? (
+      {isLoadingFood && hasSearched && isSearchMode && currentPage === 1 ? (
+        <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
+          <ActivityIndicator size="large" color='red' />
+        </View>
+      ) : hasNoData && !isSearchMode ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
             message={t('list_nodata')}
@@ -89,7 +115,7 @@ const ListFoodScreen: React.FC = () => {
             <Text style={{color: 'white'}}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
-      ) : showNoSearchResults ? (
+      ) : hasSearched && isSearchMode && foodList.length === 0 && !isLoadingFood ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
             message={t('list_nodata')}
@@ -110,7 +136,7 @@ const ListFoodScreen: React.FC = () => {
           }}
           scrollEventThrottle={400}
         >
-          {filteredFoodList?.map(item => (
+          {foodList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}
@@ -164,11 +190,36 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 10,
+  },
+
   inputHeader: {
     height: 52,
     paddingHorizontal: 12,
     margin: 12,
     backgroundColor: colors.light,
+  },
+
+  searchButton: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 52,
+    marginRight: 12,
+  },
+
+  searchButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
 
   container2: {

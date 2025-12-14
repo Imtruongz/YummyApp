@@ -23,6 +23,28 @@ export const getAllFoodAPI = createAsyncThunk(
   },
 );
 
+export const searchFoodAPI = createAsyncThunk(
+  'food/searchFoodAPI',
+  async ({query = '', page = 1, limit = 10}: {query?: string, page?: number, limit?: number} = {}, thunkAPI) => {
+    try {
+      console.log('SearchFoodAPI action')
+      const response = await api.get<{data: food[], pagination: any}>('/foods/search', {
+        params: { q: query, page, limit },
+        signal: thunkAPI.signal,
+      });
+      console.log('Response:', response); 
+      if (!response.data) {
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Search failed';
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  },
+);
 export const getFoodByIdAPI = createAsyncThunk(
   'food/getFoodByIdAPI',
   async ({userId, isViewMode = false}: {userId: string, isViewMode?: boolean}, {rejectWithValue}) => {
