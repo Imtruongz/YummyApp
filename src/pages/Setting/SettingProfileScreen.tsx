@@ -93,7 +93,7 @@ const SettingProfileScreen = () => {
           {isLoadingUser ? (
             <ActivityIndicator size="large" color={colors.primary} />
           ) : isErrorUser ? (
-            <Text>Something went wronggg</Text>
+            <Text>{t('general_error')}</Text>
           ) : (
             <View style={styles.avatarContainer}>
               <OverlayBadge

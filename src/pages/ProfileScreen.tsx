@@ -124,7 +124,7 @@ const ProfileScreen: React.FC = () => {
       />
       <View style={styles.infoContainer}>
         {isErrorUser ? (
-          <Text>{t('Something went wrong')}</Text>
+          <Text>{t('general_error')}</Text>
         ) : (
           <View style={styles.myInfoContainer}>
             <View style={styles.myInfo2}>

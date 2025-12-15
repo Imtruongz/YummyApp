@@ -105,7 +105,7 @@ const ChangePasswordScreen: React.FC = () => {
         />
         {!isOldPasswordValid && (
           <Text style={{ color: 'red', fontSize: 12 }}>
-            Password must be at least 6 characters.
+            {t('login_screen.pw_invalid')}
           </Text>
         )}
         <CustomInput
@@ -119,7 +119,7 @@ const ChangePasswordScreen: React.FC = () => {
           iconXml={showNewPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
         />
         {!isNewPasswordValid && (
-          <Text style={{ color: 'red', fontSize: 12 }}>Password invalid</Text>
+          <Text style={{ color: 'red', fontSize: 12 }}>{t('login_screen.pw_not_match')}</Text>
         )}
         <CustomInput
           style={styles.input}
@@ -133,7 +133,7 @@ const ChangePasswordScreen: React.FC = () => {
         />
         {!isConfirmPasswordValid && (
           <Text style={{ color: 'red', fontSize: 12 }}>
-            Confirmation password invalid
+            {t('login_screen.pw_confirm_not_match')}
           </Text>
         )}
         <CustomButton style={styles.button} title={t('settings_screen.change_pw_btn')} onPress={handleChangePassword} />

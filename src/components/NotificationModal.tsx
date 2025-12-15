@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {  Modal,  View,  Text,  TouchableOpacity,  StyleSheet, Animated, Dimensions, Platform} from 'react-native';
 import {colors, ImagesSvg} from '@/utils';
 import IconSvg from './IconSvg';
-
-// Icons import
-const IoniconsIcon = require('react-native-vector-icons/Ionicons').default;
-
 export interface NotificationModalProps {
   visible: boolean;
   title: string;
@@ -110,7 +106,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
           ]}
         >
           <View style={styles.iconContainer}>
-            <IoniconsIcon name={getIcon()} size={28} color="#fff" />
+            <Text>ABC</Text>
           </View>
           
           <View style={styles.textContainer}>

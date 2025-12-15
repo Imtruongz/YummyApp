@@ -6,28 +6,22 @@ import * as RNLocalize from 'react-native-localize';
 import en from './en.json';
 import vn from './vn.json';
 import zh from './zh.json';
-import bankAccountEn from './bank_account_en.json';
-import bankAccountVi from './bank_account_vi.json';
-import bankAccountZh from './bank_account_zh.json';
 import { getStorageString, setStorageString } from '@/utils';
 
 const resources = {
   en: { 
     translation: {
       ...en,
-      ...bankAccountEn
     }
   },
   vn: { 
     translation: {
       ...vn,
-      ...bankAccountVi
     }
   },
   zh: { 
     translation: {
       ...zh,
-      ...bankAccountZh
     }
   },
 };
