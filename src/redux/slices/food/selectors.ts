@@ -10,6 +10,8 @@ export const selectFoodState = (state: RootState) => state.food;
 
 export const selectFoodList = (state: RootState): food[] => state.food.foodList;
 
+export const selectSearchFoodList = (state: RootState): food[] => state.food.searchFoodList;
+
 export const selectUserFoodList = (state: RootState): food[] => state.food.userFoodList;
 
 export const selectViewedUserFoodList = (state: RootState): food[] => state.food.viewedUserFoodList;

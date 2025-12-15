@@ -1,4 +1,4 @@
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View, KeyboardTypeOptions} from 'react-native';
 import React from 'react';
 import IconSvg from './IconSvg';
 import { TouchableOpacity } from 'react-native';
@@ -17,6 +17,7 @@ interface CustomInputProps {
   numberOfLines?: number;
   style?: object;
   isDisabled?: boolean;
+  keyboardType?: KeyboardTypeOptions;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -32,6 +33,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
   numberOfLines = 1,
   style,
   isDisabled = true,
+  keyboardType = 'default',
 }) => {
   return (
     <View style={[styles.container, style]}>
@@ -55,6 +57,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         multiline={multiline}
         numberOfLines={numberOfLines}
         editable={isDisabled}
+        keyboardType={keyboardType}
       />
       {!iconOnLeft && showIcon && iconXml && (
         <TouchableOpacity onPress={onPressIcon}>

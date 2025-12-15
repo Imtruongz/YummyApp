@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator} from 'react-native';
 import {useTranslation} from 'react-i18next';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { useRoute } from '@react-navigation/native';
 
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {getAllFoodAPI, searchFoodAPI} from '@/redux/slices/food/foodThunk';
-import { selectFoodList, selectIsLoadingFood } from '@/redux/selectors';
+import { selectFoodList, selectSearchFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, Loading, CustomInput } from '@/components'
 import { colors, ImagesSvg, navigate} from '@/utils'
@@ -13,8 +14,10 @@ import { colors, ImagesSvg, navigate} from '@/utils'
 const ListFoodScreen: React.FC = () => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
+  const route = useRoute();
 
   const foodList = useAppSelector(selectFoodList);
+  const searchFoodList = useAppSelector(selectSearchFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
   const pagination = useAppSelector(state => state.food.pagination);
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,14 +26,26 @@ const ListFoodScreen: React.FC = () => {
   const [hasSearched, setHasSearched] = useState(false);
   
   useEffect(() => {
-    dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    // Nếu có initialSearch param từ HomeScreen, tự động search
+    const initialSearch = (route.params as any)?.initialSearch;
+    if (initialSearch) {
+      setSearchQuery(initialSearch);
+      setCurrentPage(1);
+      setHasSearched(true);
+      setIsSearchMode(true);
+      dispatch(searchFoodAPI({ query: initialSearch, page: 1, limit: 10 }));
+    } else {
+      dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
+    }
+  }, [dispatch, route.params]);
 
   if (isLoadingFood && currentPage === 1 && !isSearchMode) {
     return <Loading />;
   }
 
-  const hasNoData = !foodList || foodList.length === 0;
+  // Dùng searchFoodList khi search, foodList khi hiển thị danh sách bình thường
+  const displayList = isSearchMode ? searchFoodList : foodList;
+  const hasNoData = !displayList || displayList.length === 0;
 
   // Xử lý nhấn button search
   const handleSearchPress = () => {
@@ -115,7 +130,7 @@ const ListFoodScreen: React.FC = () => {
             <Text style={{color: 'white'}}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
-      ) : hasSearched && isSearchMode && foodList.length === 0 && !isLoadingFood ? (
+      ) : hasSearched && isSearchMode && displayList.length === 0 && !isLoadingFood ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
             message={t('list_nodata')}
@@ -136,7 +151,7 @@ const ListFoodScreen: React.FC = () => {
           }}
           scrollEventThrottle={400}
         >
-          {foodList?.map(item => (
+          {displayList?.map(item => (
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}

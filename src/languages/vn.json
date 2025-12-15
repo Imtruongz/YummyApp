@@ -16,7 +16,7 @@
     "add_success_message": "Thêm món ăn mới thành công!",
     "add_error_message": "Không thể thêm món ăn. Vui lòng thử lại.",
     "add_placeholder_food_name": "Nhập tên món ăn",
-    "add_cooking_time": "Thời gian nấu (phút)",
+    "add_cooking_time": "Thời gian nấu",
     "add_description": "Mô tả",
     "add_placeholder_description": "Nhập mô tả món ăn",
     "add_ingredients": "Thành phần",

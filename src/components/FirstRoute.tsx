@@ -7,14 +7,14 @@ import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
-import {ConfirmationModal, FoodItemCard} from '@/components'
+import {ConfirmationModal, FoodItemCard, FoodListSkeleton} from '@/components'
 import { handleAsyncAction, useModal, navigate, getStorageString } from '@/utils'
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   
-  const {userFoodList} = useAppSelector((state: RootState) => state.food);
+  const {userFoodList, isLoadingFood} = useAppSelector((state: RootState) => state.food);
   const [userId, setUserId] = useState(getStorageString('userId') || '');
 
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -57,27 +57,31 @@ const FirstRoute = () => {
 
   return (
     <>
-      <FlatList
-        data={Array.isArray(userFoodList) ? userFoodList : []}
-        renderItem={({ item }) => (
-          <FoodItemCard
-            item={item}
-            onLongPress={() => showDialog(item)}
-            onPress={() => {
-              navigate('FoodDetailScreen', {
-                foodId: item.foodId,
-                userId: item.userId,
-              });
-            }}
-            containerStyle={{ width: '47%' }}
-          />
-        )}
-        keyExtractor={(item, index) => `${item.foodId}_${index}`}
-        numColumns={2}
-        columnWrapperStyle={styles.columnWrapper}
-        scrollEnabled={false}
-        contentContainerStyle={styles.container}
-      />
+      {isLoadingFood ? (
+        <FoodListSkeleton count={userFoodList.length || 4} />
+      ) : (
+        <FlatList
+          data={Array.isArray(userFoodList) ? userFoodList : []}
+          renderItem={({ item }) => (
+            <FoodItemCard
+              item={item}
+              onLongPress={() => showDialog(item)}
+              onPress={() => {
+                navigate('FoodDetailScreen', {
+                  foodId: item.foodId,
+                  userId: item.userId,
+                });
+              }}
+              containerStyle={{ width: '47%' }}
+            />
+          )}
+          keyExtractor={(item, index) => `${item.foodId}_${index}`}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
+          scrollEnabled={false}
+          contentContainerStyle={styles.container}
+        />
+      )}
       <ConfirmationModal
         visible={isDeleteModalVisible}
         title={t('delete_recipe_title')}

@@ -7,7 +7,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
-import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput } from '@/components'
 import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -41,6 +41,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
   const isLoadingCategory = useAppSelector(selectIsLoadingCategory);
   const [isLoading, setIsLoading] = useState(true);
   const [banners, setBanners] = useState<Banner[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -104,6 +105,29 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={RenderRefreshControl()}
       >
+        {/* Search Bar */}
+        <View style={styles.searchContainer}>
+          <CustomInput
+            style={styles.searchInput}
+            placeholder={t('search')}
+            onChangeText={text => setSearchQuery(text)}
+            value={searchQuery}
+            showIcon={true}
+            iconXml={ImagesSvg.icSearch}
+            iconOnLeft={true}
+          />
+          {searchQuery.trim() && (
+            <TouchableOpacity 
+              style={styles.searchButton}
+              onPress={() => {
+                navigate('ListFoodScreen', { initialSearch: searchQuery });
+                setSearchQuery('');
+              }}
+            >
+              <Text style={styles.searchButtonText}>🔍</Text>
+            </TouchableOpacity>
+          )}
+        </View>
         {/* Banner Slider */}
         {banners.length > 0 && (
           <View style={styles.bannerContainer}>
@@ -178,6 +202,28 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
                   ellipsizeMode="tail"
                   style={{ color: colors.smallText }}
                 />
+                
+                {/* Info Row: Rating, Cooking Time, Difficulty, Servings */}
+                <View style={styles.infoRow}>
+                  {(item.averageRating !== undefined && item.averageRating !== null) && (
+                    <View style={styles.infoBadge}>
+                      <Text style={styles.infoBadgeText}>⭐ {(item.averageRating || 0).toFixed(1)}</Text>
+                    </View>
+                  )}
+                  {item.CookingTime && (
+                    <View style={styles.infoBadge}>
+                      <Text style={styles.infoBadgeText}>⏱️ {item.CookingTime}m</Text>
+                    </View>
+                  )}
+                  {item.difficultyLevel && (
+                    <View style={styles.infoBadge}>
+                      <Text style={styles.infoBadgeText}>
+                        ⚡ {item.difficultyLevel === 'easy' ? 'Dễ' : item.difficultyLevel === 'medium' ? 'Trung bình' : 'Khó'}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <CustomAvatar
@@ -246,6 +292,33 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 44,
+    backgroundColor: colors.light,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    paddingHorizontal: 12,
+  },
+  searchButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  searchButtonText: {
+    fontSize: 20,
+  },
   bannerContainer: {
     width: '100%',
   },
@@ -260,6 +333,22 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 14,
     right: 14,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    gap: 6,
+    flexWrap: 'wrap',
+  },
+  infoBadge: {
+    backgroundColor: colors.primary + '15',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  infoBadgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.primary,
   },
   titleItemLeft2: {
     padding: 14,

@@ -27,6 +27,8 @@ const initialState: foodPayload = {
   foodThumbnail: '',
   foodSteps: [],
   CookingTime: '',
+  difficultyLevel: 'medium',
+  servings: 1,
 };
 
 const convertImageToBase64 = async (uri: string): Promise<string> => {
@@ -262,80 +264,167 @@ const NewFoodScreen = () => {
 
           <View style={styles.divider} />
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('new_food_screen.add_category')}</Text>
-            <SelectDropdown
-              data={categoryList}
-              onSelect={selectedItem => {
-                setFormData(prev => ({
-                  ...prev,
-                  categoryId: selectedItem.categoryId,
-                }));
-                if (errorForm?.categoryId) {
-                  const newErrorForm = { ...errorForm };
-                  delete newErrorForm.categoryId;
-                  setErrorForm(newErrorForm);
-                }
-              }}
-              renderButton={(selectedItem, isOpened) => {
-                return (
-                  <View style={[
-                    styles.dropdownButtonStyle,
-                    errorForm?.categoryId ? styles.inputError : {}
-                  ]}>
-                    <Text style={styles.dropdownButtonTxtStyle}>
-                      {(selectedItem && selectedItem.categoryName) || t('new_food_screen.add_category')}
-                    </Text>
-                    <IconSvg
-                      xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
-                      width={18}
-                      height={18}
-                      color={colors.primary}
-                    />
-                  </View>
-                );
-              }}
-              renderItem={(item, isSelected) => {
-                return (
-                  <View
-                    style={{
-                      ...styles.dropdownItemStyle,
-                      ...(isSelected && { backgroundColor: colors.primary + '20' }),
-                    }}>
-                    <Text style={styles.dropdownItemTxtStyle}>
-                      {item.categoryName}
-                    </Text>
-                  </View>
-                );
-              }}
-              showsVerticalScrollIndicator={false}
-              dropdownStyle={styles.dropdownMenuStyle}
-            />
-            {errorForm?.categoryId && (
-              <Text style={styles.errorText}>{errorForm.categoryId}</Text>
-            )}
-          </View>
+          {/* 2x2 Grid: Category, Cooking Time, Difficulty, Servings */}
+          <View style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {/* Row 1: Category & Cooking Time */}
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+              {/* Category */}
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Text style={styles.label}>{t('new_food_screen.add_category')}</Text>
+                </View>
+                <SelectDropdown
+                  data={categoryList}
+                  onSelect={selectedItem => {
+                    setFormData(prev => ({
+                      ...prev,
+                      categoryId: selectedItem.categoryId,
+                    }));
+                    if (errorForm?.categoryId) {
+                      const newErrorForm = { ...errorForm };
+                      delete newErrorForm.categoryId;
+                      setErrorForm(newErrorForm);
+                    }
+                  }}
+                  renderButton={(selectedItem, isOpened) => {
+                    return (
+                      <View style={[
+                        styles.dropdownButtonStyle,
+                        { height: 44 },
+                        errorForm?.categoryId ? styles.inputError : {}
+                      ]}>
+                        <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
+                          {(selectedItem && selectedItem.categoryName) || t('new_food_screen.add_category')}
+                        </Text>
+                        <IconSvg
+                          xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
+                          width={16}
+                          height={16}
+                          color={colors.primary}
+                        />
+                      </View>
+                    );
+                  }}
+                  renderItem={(item, isSelected) => {
+                    return (
+                      <View
+                        style={{
+                          ...styles.dropdownItemStyle,
+                          ...(isSelected && { backgroundColor: colors.primary + '20' }),
+                        }}>
+                        <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
+                          {item.categoryName}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  dropdownStyle={styles.dropdownMenuStyle}
+                />
+                {errorForm?.categoryId && (
+                  <Text style={styles.errorText}>{errorForm.categoryId}</Text>
+                )}
+              </View>
 
-          <View style={styles.divider} />
+              {/* Cooking Time */}
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Text style={styles.label}>{t('new_food_screen.add_cooking_time')}</Text>
+                </View>
+                <CustomInput
+                  style={[styles.input, { height: 44, fontSize: 13 }, errorForm?.CookingTime ? styles.inputError : {}]}
+                  placeholder="30"
+                  keyboardType="number-pad"
+                  value={formData.CookingTime}
+                  onChangeText={text => {
+                    setFormData(prev => ({ ...prev, CookingTime: text }));
+                    if (errorForm?.CookingTime) {
+                      const newErrorForm = { ...errorForm };
+                      delete newErrorForm.CookingTime;
+                      setErrorForm(newErrorForm);
+                    }
+                  }}
+                />
+                {errorForm?.CookingTime && (
+                  <Text style={styles.errorText}>{errorForm.CookingTime}</Text>
+                )}
+              </View>
+            </View>
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('new_food_screen.add_cooking_time')}</Text>
-            <CustomInput
-              style={[styles.input, errorForm?.CookingTime ? styles.inputError : {}]}
-              placeholder="30"
-              value={formData.CookingTime}
-              onChangeText={text => {
-                setFormData(prev => ({ ...prev, CookingTime: text }));
-                if (errorForm?.CookingTime) {
-                  const newErrorForm = { ...errorForm };
-                  delete newErrorForm.CookingTime;
-                  setErrorForm(newErrorForm);
-                }
-              }}
-            />
-            {errorForm?.CookingTime && (
-              <Text style={styles.errorText}>{errorForm.CookingTime}</Text>
-            )}
+            {/* Row 2: Difficulty & Servings */}
+            <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+              {/* Difficulty Level */}
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Text style={styles.label}>Mức độ khó</Text>
+                </View>
+                <SelectDropdown
+                  data={['easy', 'medium', 'hard']}
+                  onSelect={selectedItem => {
+                    setFormData(prev => ({
+                      ...prev,
+                      difficultyLevel: selectedItem,
+                    }));
+                  }}
+                  renderButton={(selectedItem, isOpened) => {
+                    const displayText = selectedItem === 'easy' ? 'Dễ' : selectedItem === 'medium' ? 'Trung bình' : 'Khó';
+                    return (
+                      <View style={[styles.dropdownButtonStyle, { height: 44 }]}>
+                        <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
+                          {displayText || 'Chọn'}
+                        </Text>
+                        <IconSvg
+                          xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
+                          width={16}
+                          height={16}
+                          color={colors.primary}
+                        />
+                      </View>
+                    );
+                  }}
+                  renderItem={(item, isSelected) => {
+                    const displayText = item === 'easy' ? 'Dễ' : item === 'medium' ? 'Trung bình' : 'Khó';
+                    return (
+                      <View
+                        style={{
+                          ...styles.dropdownItemStyle,
+                          ...(isSelected && { backgroundColor: colors.primary + '20' }),
+                        }}>
+                        <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
+                          {displayText}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  showsVerticalScrollIndicator={false}
+                  dropdownStyle={styles.dropdownMenuStyle}
+                />
+              </View>
+
+              {/* Servings */}
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                  <Text style={styles.label}>Khẩu phần</Text>
+                </View>
+                <CustomInput
+                  style={[styles.input, { height: 44, fontSize: 13 }, errorForm?.servings ? styles.inputError : {}]}
+                  placeholder="1"
+                  keyboardType="number-pad"
+                  value={formData.servings ? formData.servings.toString() : '1'}
+                  onChangeText={text => {
+                    setFormData(prev => ({ ...prev, servings: text ? parseInt(text) : 1 }));
+                    if (errorForm?.servings) {
+                      const newErrorForm = { ...errorForm };
+                      delete newErrorForm.servings;
+                      setErrorForm(newErrorForm);
+                    }
+                  }}
+                />
+                {errorForm?.servings && (
+                  <Text style={styles.errorText}>{errorForm.servings}</Text>
+                )}
+              </View>
+            </View>
           </View>
         </View>
 

@@ -77,7 +77,10 @@
     "profile_following": "关注",
     "profile_your_posts": "你的帖子",
     "profile_your_favorites": "你的收藏",
-    "profile_follow_btn": "跟随"
+    "profile_follow_btn": "跟随",
+    "post": "帖子",
+    "unfollow_btn": "取消跟随",
+    "donate_btn": "捐赠"
   },
   "settings_screen": {
     "setting_settings_header": "设置",
@@ -132,7 +135,10 @@
     "recipe_detail_not_authorized_message": "您无权删除此评论！",
     "recipe_detail_your_rating": "您的评分",
     "recipe_detail_comment_placeholder": "输入您的评论",
-    "recipe_detail_error_add": "该菜品已在您的收藏列表中"
+    "recipe_detail_error_add": "该菜品已在您的收藏列表中",
+    "recipe_detail_created_date": "发布日期",
+    "recipe_detail_cooking_time": "烹饪时间",
+    "recipe_detail_ratings": "评分"
   },
   "payment_screen": {
     "payment_title": "捐赠给创作者",
@@ -169,12 +175,19 @@
     "toast_profile_update_failed": "无法更新您的资料。",
     "toast verify_email": "请检查您的电子邮件以验证您的帐户"
   },
+  "notification_screen": {
+    "notification_title": "通知",
+    "notification_no_notifications": "没有通知",
+    "new_comment_notification": "您有新的评论",
+    "read": "已读",
+    "unread": "未读",
+    "had_comment_recently": "有人刚评论了: "
+  },
   "add_category": "分类",
   "loading": "加载中...",
   "reload": "重新加载",
   "search": "搜索",
   "notifications": "通知",
-  "notification_unread": "未读",
   "ok": "确定",
   "demo": "演示",
   "success": "成功",
@@ -191,6 +204,10 @@
   "list_can_not_find": "未找到符合条件的美食",
   "list_nodata": "该分类中没有美食",
   "search_suggestion_title": "按类别搜索建议",
+  "search_screen": {
+    "search": "搜索",
+    "search_suggestion_title": "按类别搜索建议"
+  },
   "notification_empty": "没有通知。",
   "follow_no_users": "未找到用户。",
   "bank_accounts": "银行账户",

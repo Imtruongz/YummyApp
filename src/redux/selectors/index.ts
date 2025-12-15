@@ -10,6 +10,7 @@
 export {
   selectFoodState,
   selectFoodList,
+  selectSearchFoodList,
   selectUserFoodList,
   selectViewedUserFoodList,
   selectCategoryFoodList,

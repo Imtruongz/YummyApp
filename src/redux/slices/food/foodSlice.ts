@@ -13,6 +13,7 @@ import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
 
 const initialState: foodState = {
   foodList: [],
+  searchFoodList: [],
   userFoodList: [],
   viewedUserFoodList: [],
   categoryFoodList: [],
@@ -112,9 +113,9 @@ const foodSlice = createSlice({
       onFulfilled: (state, action) => {
         // Nếu là trang 1, replace; nếu không thì append
         if (action.payload.pagination.page === 1) {
-          state.foodList = action.payload.data;
+          state.searchFoodList = action.payload.data;
         } else {
-          state.foodList = [...state.foodList, ...action.payload.data];
+          state.searchFoodList = [...state.searchFoodList, ...action.payload.data];
         }
         state.pagination = action.payload.pagination;
       },

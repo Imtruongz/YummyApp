@@ -8,6 +8,8 @@ export interface food {
   foodThumbnail: string;
   foodSteps: string[];
   CookingTime: string;
+  difficultyLevel?: string;
+  servings?: number;
   createdAt: string;
   updated_at: string;
   averageRating?: number;
@@ -35,10 +37,13 @@ export interface foodPayload {
   foodThumbnail: string;
   foodSteps: string[];
   CookingTime: string;
+  difficultyLevel?: string;
+  servings?: number;
 }
 
 export interface foodState {
   foodList: food[];
+  searchFoodList: food[];
   userFoodList: food[];
   viewedUserFoodList: food[];
   categoryFoodList: food[];
