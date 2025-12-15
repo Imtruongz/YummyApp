@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, showToast, handleAsyncAction, navigate} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, handleAsyncAction, navigate} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
@@ -63,8 +63,8 @@ const SignupPage: React.FC = () => {
         }
       },
       {
-        successMessage: 'Sign up successfully',
-        errorMessage: 'An error occurred during registration',
+        successMessage: t('login_screen.login_register_success_toast'),
+        errorMessage: t('login_screen.login_register_error_toast'),
         onSuccess: () => navigate('LoginScreen')
       }
     );

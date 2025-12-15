@@ -25,19 +25,19 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
             {/* <MaterialIcons name="done" size={60} color={colors.success} /> */}
           </View>
         </View>
-        <Text style={styles.title}>{t('payment_success_title')}</Text>
-        <Text style={styles.message}>{t('payment_success_static_message')}</Text>
+        <Text style={styles.title}>{t('payment_screen.payment_success_title')}</Text>
+        <Text style={styles.message}>{t('payment_screen.payment_success_message')}</Text>
         <View style={styles.detailBox}>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>{t('amount')}</Text>
+            <Text style={styles.detailLabel}>{t('payment_screen.amount')}</Text>
             <Text style={styles.detailValue}>500,000đ</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>{t('transaction_code')}</Text>
+            <Text style={styles.detailLabel}>{t('payment_screen.transaction_code')}</Text>
             <Text style={styles.detailValue}>#123456789</Text>
           </View>
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>{t('payment_time')}</Text>
+            <Text style={styles.detailLabel}>{t('payment_screen.payment_time')}</Text>
             <Text style={styles.detailValue}>13/10/2025, 14:30</Text>
           </View>
         </View>

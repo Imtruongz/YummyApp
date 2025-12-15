@@ -64,8 +64,8 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
           await dispatch(getAllCommentFromFoodIdAPI(foodId));
         },
         {
-          successMessage: 'Bình luận đã được xóa',
-          errorMessage: 'Không thể xóa bình luận, vui lòng thử lại'
+          successMessage: t('toast_messages.toast_comment_delete_success'),
+          errorMessage: t('toast_messages.toast_comment_delete_error')
         }
       );
     }
@@ -73,7 +73,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
 
   const handleAddFavoriteFood = async () => {
     if (!myUserId || !foodId) {
-      showToast.error(t('error_title'), t('recipe_detail_error_add'));
+      showToast.error(t('error_title'), t('toast_messages.toast_food_added_error'));
       return;
     }
 
@@ -87,8 +87,8 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         ).unwrap();
       },
       {
-        successMessage: 'Đã thêm vào danh sách yêu thích',
-        errorMessage: 'Món ăn đã có trong danh sách ưa thích'
+        successMessage: t('toast_messages.toast_food_added_success'),
+        errorMessage: t('recipe_detail_screen.recipe_detail_error_add')
       }
     );
   };
@@ -132,8 +132,8 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         await dispatch(getAllCommentFromFoodIdAPI(foodId));
       },
       {
-        successMessage: 'Bình luận đã được thêm',
-        errorMessage: 'Không thể thêm bình luận, vui lòng thử lại',
+        successMessage: t('toast_messages.toast_comment_add_success'),
+        errorMessage: t('toast_messages.toast_comment_add_error'),
         onError: () => setCommentError('Failed to add the comment. Please try again.'),
         onSuccess: () => setIsAddingComment(false)
       }
@@ -160,8 +160,8 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         setTotalRatings(ratingResult.totalRatings || 0);
       },
       {
-        successMessage: `Cảm ơn bạn đã đánh giá ${rating} sao!`,
-        errorMessage: 'Không thể cập nhật đánh giá, vui lòng thử lại sau'
+        successMessage: t('toast_messages.toast_rating_success', { rating }),
+        errorMessage: t('toast_messages.toast_rating_error')
       }
     );
   };

@@ -143,14 +143,14 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
             serviceProvider: 'YummyApp'
           });
         } else {
-          showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
+          showToast.info(t('notification_screen.notification_title'), t('payment_screen.no_bank_account_message'));
         }
       },
       {
         showSuccessToast: false,
         onError: (error: any) => {
           if (error?.response?.status === 404) {
-            showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
+            showToast.info(t('notification_screen.notification_title'), t('payment_screen.no_bank_account_message'));
           } else {
             console.log('Unexpected error when checking bank account:', error);
           }
@@ -287,7 +287,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const RenderEmpty = () => (
     <View style={styles.emptyContainer}>
       <NoData
-        message={t('list_nodata', 'No recipes yet')}
+        message={t('no_data')}
         width={120}
         height={120}
         textSize={16}

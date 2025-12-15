@@ -4,7 +4,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, SafeAreaVie
 import { useTranslation } from 'react-i18next';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../android/types/StackNavType.ts';
-import { colors, img, showToast, handleAsyncAction } from '@/utils'
+import { colors, img, handleAsyncAction } from '@/utils'
 import { CustomInput, CustomButton } from '@/components'
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
@@ -34,8 +34,8 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = () => {
         setErrorMessage('Email sent, please check your email');
       },
       {
-        successMessage: 'Reset email sent',
-        errorMessage: 'Failed to send reset email',
+        successMessage: t('forgot_password_screen.forgot_pw_success'),
+        errorMessage: t('forgot_password_screen.forgot_pw_error'),
         showSuccessToast: false
       }
     );

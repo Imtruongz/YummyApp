@@ -156,7 +156,7 @@ const SearchScreen = () => {
             isLoadingFood ? (
               <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
             ) : categoryFoodList.length === 0 ? (
-              <Text style={styles.empty}>{t('list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
+              <Text style={styles.empty}>{t('search_screen.list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
             ) : (
               <FlatList
                 data={categoryFoodList}
@@ -169,7 +169,7 @@ const SearchScreen = () => {
           ) : loading ? (
             <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
           ) : results.length === 0 ? (
-            <Text style={styles.empty}>{t('list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
+            <Text style={styles.empty}>{t('search_screen.list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
           ) : (
             <FlatList
               data={results}

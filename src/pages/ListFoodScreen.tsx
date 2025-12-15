@@ -109,7 +109,7 @@ const ListFoodScreen: React.FC = () => {
       ) : hasNoData && !isSearchMode ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
-            message={t('list_nodata')}
+            message={t('no_data')}
             width={120}
             height={120}
             textSize={16}
@@ -133,7 +133,7 @@ const ListFoodScreen: React.FC = () => {
       ) : hasSearched && isSearchMode && displayList.length === 0 && !isLoadingFood ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
-            message={t('list_nodata')}
+            message={t('no_data')}
             width={120}
             height={120}
             textSize={16}

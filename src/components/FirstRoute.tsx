@@ -7,7 +7,7 @@ import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
-import {ConfirmationModal, FoodItemCard, FoodListSkeleton} from '@/components'
+import {ConfirmationModal, FoodItemCard, FoodListSkeleton, NoData} from '@/components'
 import { handleAsyncAction, useModal, navigate, getStorageString } from '@/utils'
 
 const FirstRoute = () => {
@@ -37,8 +37,8 @@ const FirstRoute = () => {
           await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
         },
         {
-          successMessage: 'Xóa thành công',
-          errorMessage: 'Không thể xóa, vui lòng thử lại'
+          successMessage: t('toast_messages.toast_delete_success'),
+          errorMessage: t('toast_messages.toast_delete_error')
         }
       );
       
@@ -59,6 +59,8 @@ const FirstRoute = () => {
     <>
       {isLoadingFood ? (
         <FoodListSkeleton count={userFoodList.length || 4} />
+      ) : !userFoodList || userFoodList.length === 0 ? (
+        <NoData width={80} height={80} textSize={16} message={t('no_data')} />
       ) : (
         <FlatList
           data={Array.isArray(userFoodList) ? userFoodList : []}
@@ -84,8 +86,8 @@ const FirstRoute = () => {
       )}
       <ConfirmationModal
         visible={isDeleteModalVisible}
-        title={t('delete_recipe_title')}
-        message={t('delete_recipe_confirmation_message')}
+        title={t('profile_screen.delete_recipe_title')}
+        message={t('profile_screen.delete_recipe_confirmation_message')}
         type="warning"
         onClose={handleCancel}
         onConfirm={handleDelete}

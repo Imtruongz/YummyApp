@@ -67,7 +67,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
       {hasNoData ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <NoData
-            message={t('list_nodata')}
+            message={t('no_data')}
             width={120}
             height={120}
             textSize={16}
@@ -91,7 +91,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
       ) : showNoSearchResults ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <NoData
-            message={t('list_nodata')}
+            message={t('no_data')}
             width={120}
             height={120}
             textSize={16}

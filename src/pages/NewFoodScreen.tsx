@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Image, PermissionsAndroid, Pressable, ScrollView, StyleSheet, Text, View, Platform } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RNFS from 'react-native-fs';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -14,7 +12,7 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 
 import { CustomButton, HomeHeader, IconSvg, CustomInput } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString } from '@/utils'
+import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString, pickImageFromLibrary } from '@/utils'
 
 const userId = getStorageString('userId') || '';
 
@@ -29,23 +27,6 @@ const initialState: foodPayload = {
   CookingTime: '',
   difficultyLevel: 'medium',
   servings: 1,
-};
-
-const convertImageToBase64 = async (uri: string): Promise<string> => {
-  try {
-    if (uri.startsWith('file://')) {
-      const base64Data = await RNFS.readFile(uri, 'base64');
-      return `data:image/jpeg;base64,${base64Data}`;
-    } else if (uri.startsWith('content://')) {
-      const base64Data = await RNFS.readFile(uri, 'base64');
-      return `data:image/jpeg;base64,${base64Data}`;
-    } else {
-      return '';
-    }
-  } catch (error) {
-    console.log('Error converting image to base64:', error);
-    return '';
-  }
 };
 
 const NewFoodScreen = () => {
@@ -94,36 +75,18 @@ const NewFoodScreen = () => {
 
   const requestCameraPermission = async () => {
     try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        );
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Permission denied');
-          return;
-        }
-      }
-
-      const result: any = await launchImageLibrary({
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 800,
-        maxWidth: 800,
-      });
-
-      if (result.assets && result.assets.length > 0) {
-        const imageUri = result.assets[0].uri;
-        setOriginalImageUri(imageUri);
-        const base64Image = await convertImageToBase64(imageUri);
+      const result = await pickImageFromLibrary({ maxWidth: 800, maxHeight: 800 });
+      
+      if (result) {
+        setOriginalImageUri(result.imageUri);
         setFormData(prev => ({
           ...prev,
-          foodThumbnail: base64Image,
+          foodThumbnail: result.base64Image,
         }));
-      } else if (result.errorCode) {
-        console.log('Image picker error:', result.errorMessage);
       }
     } catch (err) {
       console.log('Error selecting image:', err);
+      showToast.error(t('error'), t('toast_messages.image_picker_error'));
     }
   };
 
@@ -356,7 +319,7 @@ const NewFoodScreen = () => {
               {/* Difficulty Level */}
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>Mức độ khó</Text>
+                  <Text style={styles.label}>{t('new_food_screen.difficulty_level')}</Text>
                 </View>
                 <SelectDropdown
                   data={['easy', 'medium', 'hard']}
@@ -367,11 +330,11 @@ const NewFoodScreen = () => {
                     }));
                   }}
                   renderButton={(selectedItem, isOpened) => {
-                    const displayText = selectedItem === 'easy' ? 'Dễ' : selectedItem === 'medium' ? 'Trung bình' : 'Khó';
+                    const displayText = selectedItem ? t(`new_food_screen.${selectedItem}`) : t('new_food_screen.difficulty_level');
                     return (
                       <View style={[styles.dropdownButtonStyle, { height: 44 }]}>
                         <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
-                          {displayText || 'Chọn'}
+                          {displayText}
                         </Text>
                         <IconSvg
                           xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
@@ -383,7 +346,7 @@ const NewFoodScreen = () => {
                     );
                   }}
                   renderItem={(item, isSelected) => {
-                    const displayText = item === 'easy' ? 'Dễ' : item === 'medium' ? 'Trung bình' : 'Khó';
+                    const displayText = item ? t(`new_food_screen.${item}`) : '';
                     return (
                       <View
                         style={{
@@ -404,7 +367,7 @@ const NewFoodScreen = () => {
               {/* Servings */}
               <View style={{ flex: 1 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>Khẩu phần</Text>
+                  <Text style={styles.label}>{t('new_food_screen.food_portions')}</Text>
                 </View>
                 <CustomInput
                   style={[styles.input, { height: 44, fontSize: 13 }, errorForm?.servings ? styles.inputError : {}]}

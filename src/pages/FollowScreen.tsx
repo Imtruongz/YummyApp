@@ -81,7 +81,7 @@ const FollowScreen: React.FC = () => {
           keyExtractor={(item) => item.userId}
           renderItem={({ item }) => <UserItem user={item} onPress={handleUserPress} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<Text style={styles.emptyText}>{t('follow_no_users') || 'No users found.'}</Text>}
+          ListEmptyComponent={<Text style={styles.emptyText}>{t('no_data')}</Text>}
         />
       )}
     </View>

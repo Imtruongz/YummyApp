@@ -79,10 +79,10 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
           console.log('[PaymentScreen] Error fetching data:', error);
 
           if (error?.response?.status === 404) {
-            showToast.info('Thông báo', t('payment_screen.no_bank_account_message'));
+            showToast.info(t('notification_screen.notification_title'), t('payment_screen.no_bank_account_message'));
             goBack();
           } else {
-            showToast.error(t('error'), t('payment_screen.failed_to_load_bank_account'));
+            showToast.error(t('error'), t('bank_screen.failed_to_load_bank_account'));
           }
         } finally {
           setLoadingBankAccount(false);
@@ -311,16 +311,16 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
 
           <View style={styles.bankInfoCard}>
             <Text style={styles.recipientName}>{recipientUsername}</Text>
-            {ItemInfo(t('bank_name'), recipientBankAccount?.bankName)}
-            {ItemInfo(t('bank_code'), recipientBankAccount?.bankCode)}
-            {ItemInfo(t('account_number'), recipientBankAccount?.accountNumber)}
-            {ItemInfo(t('account_name'), recipientBankAccount?.accountName)}
+            {ItemInfo(t('bank_screen.bank_name'), recipientBankAccount?.bankName)}
+            {ItemInfo(t('bank_screen.bank_code'), recipientBankAccount?.bankCode)}
+            {ItemInfo(t('bank_screen.account_number'), recipientBankAccount?.accountNumber)}
+            {ItemInfo(t('bank_screen.account_name'), recipientBankAccount?.accountName)}
             <View style={styles.bankInfoRow}>
-              <Text style={styles.bankInfoLabel}>{t('transfer_note')}:</Text>
+              <Text style={styles.bankInfoLabel}>{t('payment_screen.transfer_note')}:</Text>
               <View style={styles.transferInputContainer}>
                 <TextInput
                   style={styles.transferNoteInput}
-                  placeholder={t('enter_transfer_note')}
+                  placeholder={t('payment_screen.enter_transfer_note')}
                   placeholderTextColor="#aaa"
                   defaultValue={`Donate cho ${recipientUsername}`}
                   multiline={false}

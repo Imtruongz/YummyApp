@@ -4,7 +4,7 @@ import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
 import { CustomButton, HomeHeader, CustomInput } from '@/components'
-import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, showToast, handleAsyncAction, resetTo, getStorageString, deleteStorageKey } from '@/utils'
+import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, handleAsyncAction, resetTo, getStorageString, deleteStorageKey } from '@/utils'
 
 import { changePasswordAPI } from '@/redux/slices/auth/authThunk';
 import { useAppDispatch } from '@/redux/hooks';
@@ -67,8 +67,8 @@ const ChangePasswordScreen: React.FC = () => {
         logout();
       },
       {
-        successMessage: 'Password successfully changed',
-        errorMessage: 'Failed to change password'
+        successMessage: t('settings_screen.change_pw_success'),
+        errorMessage: t('settings_screen.change_pw_error')
       }
     );
   };

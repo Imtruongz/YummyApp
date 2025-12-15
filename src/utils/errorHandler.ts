@@ -7,6 +7,7 @@
  */
 
 import { showToast } from './toast';
+import { t } from 'i18next';
 
 export interface AsyncActionOptions {
   onSuccess?: (data?: any) => void | Promise<void>;
@@ -64,7 +65,7 @@ export const handleAsyncAction = async <T,>(
     const errorMsg = error?.response?.data?.message || error?.message || errorMessage;
 
     if (showErrorToast) {
-      showToast.error('Lỗi', errorMsg);
+      showToast.error(t('error'), errorMsg);
     }
 
     if (onError) {
@@ -154,7 +155,7 @@ export const withRetry = async <T,>(
                    'Có lỗi xảy ra';
 
   if (options.showErrorToast) {
-    showToast.error('Lỗi', errorMsg);
+    showToast.error(t('error'), errorMsg);
   }
 
   if (options.onError) {

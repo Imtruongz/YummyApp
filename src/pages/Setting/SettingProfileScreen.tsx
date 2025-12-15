@@ -1,10 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import { ActivityIndicator, PermissionsAndroid, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import {useTranslation} from 'react-i18next';
-import RNFS from 'react-native-fs';
 import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {launchImageLibrary} from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 
 import {useAppDispatch, useAppSelector} from '@/redux/hooks';
@@ -17,29 +15,9 @@ import {
 } from '@/redux/selectors';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast, handleAsyncAction, goBack, getStorageString} from '@/utils'
+import { img, colors, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary} from '@/utils'
 
 const userId = getStorageString('userId') || '';
-
-// Hàm chuyển đổi hình ảnh sang base64
-const convertImageToBase64 = async (uri: string): Promise<string> => {
-  try {
-    if (uri.startsWith('file://')) {
-      const base64Data = await RNFS.readFile(uri, 'base64');
-      return `data:image/jpeg;base64,${base64Data}`;
-    } else if (uri.startsWith('content://')) {
-      console.log('Need to handle content:// URI');
-      const base64Data = await RNFS.readFile(uri, 'base64');
-      return `data:image/jpeg;base64,${base64Data}`;
-    } else {
-      console.log('Unsupported URI format');
-      return '';
-    }
-  } catch (error) {
-    console.log('Error converting image to base64:', error);
-    return '';
-  }
-};
 
 const SettingProfileScreen = () => {
   const {t, i18n} = useTranslation();
@@ -55,34 +33,20 @@ const SettingProfileScreen = () => {
 
   const requestCameraPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const result: any = await launchImageLibrary({
-          mediaType: 'photo',
-          includeBase64: false,
-          maxHeight: 800,
-          maxWidth: 800,
-        });
-        if (result.assets && result.assets.length > 0) {
-          const imageUri = result.assets[0].uri;
-          const base64Image = await convertImageToBase64(imageUri);
-          setavatar(base64Image);
-        } else {
-          console.log('No image selected or camera launch failed');
-        }
-      } else {
-        console.log('Camera permission denied');
+      const result = await pickImageFromLibrary({ maxWidth: 800, maxHeight: 800 });
+      
+      if (result) {
+        setavatar(result.base64Image);
       }
     } catch (err) {
-      console.log(err);
+      console.log('Error selecting image:', err);
+      showToast.error(t('error'), t('toast_messages.image_picker_error'));
     }
   };
 
   const handleUpdateAccount = async () => {
     if (!username || !description || !avatar) {
-      showToast.error('Validation Error', 'Please fill out all fields before updating.');
+      showToast.error(t('error'), t('toast_messages.fill_all_fields'));
       return;
     }
 
@@ -101,8 +65,8 @@ const SettingProfileScreen = () => {
         }
       },
       {
-        successMessage: 'Your profile has been updated',
-        errorMessage: 'Something went wrong',
+        successMessage: t('settings_screen.edit_profile_success'),
+        errorMessage: t('settings_screen.edit_profile_error'),
         onSuccess: () => goBack()
       }
     );
@@ -139,7 +103,7 @@ const SettingProfileScreen = () => {
             </View>
           )}
           <View style={styles.formRow}>
-            <Text style={styles.label}>Name</Text>
+            <Text style={styles.label}>{t('settings_screen.user_name')}</Text>
             <CustomInput
               value={username}
               onChangeText={setusername}
@@ -148,7 +112,7 @@ const SettingProfileScreen = () => {
             />
           </View>
           <View style={styles.formRow}>
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>{t('settings_screen.email')}</Text>
             <CustomInput
               value={user?.email}
               isDisabled={false}
@@ -156,7 +120,7 @@ const SettingProfileScreen = () => {
             />
           </View>
           <View style={styles.formRow}>
-            <Text style={styles.label}>Bio</Text>
+            <Text style={styles.label}>{t('settings_screen.description')}</Text>
             <CustomInput
               value={description}
               onChangeText={setdescription}

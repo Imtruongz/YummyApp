@@ -71,7 +71,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       }
     } else {
       setBankAccount(null);
-      showToast.error(t('error'), t('failed_to_load_bank_accounts'));
+      showToast.error(t('error'), t('bank_screen.failed_to_load_bank_account'));
     }
     setIsLoading(false);
   };
@@ -96,8 +96,8 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           setBankAccount(data);
           setIsEditing(false);
         },
-        successMessage: t('bank_account_added_successfully'),
-        errorMessage: t('failed_to_add_bank_account')
+        successMessage: t('bank_screen.bank_account_added_successfully'),
+        errorMessage: t('bank_screen.failed_to_add_bank_account')
       }
     );
   };
@@ -127,8 +127,8 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
           setBankAccount(null);
           setIsConfirmDeleteVisible(false);
         },
-        successMessage: t('bank_account_deleted_successfully'),
-        errorMessage: t('failed_to_delete_bank_account')
+        successMessage: t('bank_screen.bank_account_deleted_successfully'),
+        errorMessage: t('bank_screen.failed_to_delete_bank_account')
       }
     );
   };
@@ -177,11 +177,11 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     return (
       <View style={styles.formContainer}>
         <Text style={styles.formTitle}>
-          {bankAccount ? t('edit_bank_account') : t('add_new_bank_account')}
+          {bankAccount ? t('bank_screen.edit_bank_account') : t('bank_screen.add_bank_account')}
         </Text>
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{t('bank_name')}</Text>
+          <Text style={styles.label}>{t('bank_screen.bank_name')}</Text>
           <TouchableOpacity
             style={styles.selectBankButton}
             onPress={() => setIsBankModalVisible(true)}
@@ -189,7 +189,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             <TextInput
               style={[styles.input, { color: bankName ? colors.dark : colors.gray }]}
               value={bankName}
-              placeholder={t('select_or_enter_bank_name')}
+              placeholder={t('bank_screen.select_or_enter_bank_name')}
               editable={false}
               pointerEvents="none"
             />
@@ -200,7 +200,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{t('bank_code')}</Text>
+          <Text style={styles.label}>{t('bank_screen.bank_code')}</Text>
           <TextInput
             style={[styles.input, { color: bankCode ? colors.dark : colors.gray, backgroundColor: '#F5F7FA' }]}
             value={bankCode}
@@ -211,7 +211,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{t('account_number')}</Text>
+          <Text style={styles.label}>{t('bank_screen.account_number')}</Text>
           <TextInput
             style={styles.input}
             value={accountNumber}
@@ -222,12 +222,12 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         </View>
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{t('account_name')}</Text>
+          <Text style={styles.label}>{t('bank_screen.account_name')}</Text>
           <TextInput
             style={styles.input}
             value={accountName}
             onChangeText={setAccountName}
-            placeholder={t('account_name_placeholder')}
+            placeholder={t('bank_screen.account_name_placeholder')}
             autoCapitalize="characters"
           />
         </View>
@@ -272,7 +272,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t('select_bank')}</Text>
+              <Text style={styles.modalTitle}>{t('bank_screen.select_bank')}</Text>
             </View>
 
             <FlatList
@@ -318,7 +318,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
     >
       <HomeHeader
         mode="back"
-        title={t('bank_accounts')}
+        title={t('bank_screen.bank_accounts')}
         showGoBack={true}
         showNotification={false}
         isBackHome={true}
@@ -334,8 +334,8 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             {!bankAccount && !isEditing ? (
               <View style={styles.emptyContainer}>
                 {/* <IoniconsIcon name="wallet-outline" size={60} color={colors.gray} /> */}
-                <Text style={styles.emptyText}>{t('no_bank_account')}</Text>
-                <Text style={styles.emptySubText}>{t('add_bank_account_to_receive')}</Text>
+                <Text style={styles.emptyText}>{t('bank_screen.no_bank_account')}</Text>
+                <Text style={styles.emptySubText}>{t('bank_screen.add_bank_account_to_receive')}</Text>
               </View>
             ) : (
               !isEditing && (
@@ -362,7 +362,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
                 }}
               >
                 <Text style={styles.addButtonText}>
-                  {bankAccount ? t('edit_bank_account') : t('add_bank_account')}
+                  {bankAccount ? t('bank_screen.edit_bank_account') : t('bank_screen.add_bank_account')}
                 </Text>
               </TouchableOpacity>
             )}
@@ -376,8 +376,8 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       {/* Confirmation Modal for delete */}
       <ConfirmationModal
         visible={isConfirmDeleteVisible}
-        title={t('confirm_delete')}
-        message={t('confirm_delete_bank_account')}
+        title={t('bank_screen.confirm_delete')}
+        message={t('bank_screen.confirm_delete_bank_account')}
         type="warning"
         onClose={() => setIsConfirmDeleteVisible(false)}
         onConfirm={confirmDeleteAccount}

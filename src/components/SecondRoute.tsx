@@ -53,8 +53,8 @@ const SecondRoute = () => {
           ).unwrap();
         },
         {
-          successMessage: 'Xóa yêu thích thành công',
-          errorMessage: 'Không thể xóa, vui lòng thử lại'
+          successMessage: t('toast_messages.toast_delete_success'),
+          errorMessage: t('toast_messages.toast_delete_error')
         }
       );
       closeDeleteModal();
@@ -76,7 +76,7 @@ const SecondRoute = () => {
   }
 
   if (!favoriteFoodList || favoriteFoodList.length === 0) {
-    return <NoData message="Không có công thức yêu thích nào" />;
+    return <NoData width={80} height={80} textSize={16} message={t('no_data')} />;
   }
 
   return (
@@ -111,8 +111,8 @@ const SecondRoute = () => {
       </ScrollView>
       <ConfirmationModal
         visible={isDeleteModalVisible}
-        title={t('delete_favorite_title')}
-        message={t('delete_favorite_confirmation_message')}
+        title={t('profile_screen.delete_favorite_title')}
+        message={t('profile_screen.delete_favorite_confirmation_message')}
         type="warning"
         onClose={handleCancel}
         onConfirm={handleDeleteFavorite}

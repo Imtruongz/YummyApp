@@ -67,8 +67,8 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         await getFCMTokenAndUpdate(user.accessToken);
       },
       {
-        successMessage: 'Login successful',
-        errorMessage: 'An error occurred, please try again',
+        successMessage: t('login_screen.login_success_toast'),
+        errorMessage: t('login_screen.login_error_toast'),
         onSuccess: () => signIn()
       }
     );
@@ -113,8 +113,8 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
         await getFCMTokenAndUpdate(user.accessToken);
       },
       {
-        successMessage: 'Login with Facebook successful',
-        errorMessage: 'An error occurred, please try again',
+        successMessage: t('login_screen.login_success_toast'),
+        errorMessage: t('login_screen.login_error_toast'),
         onSuccess: () => signIn()
       }
     );
