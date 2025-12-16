@@ -158,12 +158,11 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
           showsHorizontalScrollIndicator={true}
           keyExtractor={(item, index) => `${item.categoryId}_${index}`}
           renderItem={({ item }) => (
-            <Pressable onPress={() => navigate('CategoriesScreen', { categoryId: item.categoryId })}>
-              <CategoryItem
-                title={item.categoryName}
-                image={item.categoryThumbnail}
-              />
-            </Pressable>
+            <CategoryItem
+              title={item.categoryName}
+              image={item.categoryThumbnail}
+              onPress={() => navigate('CategoriesScreen', { categoryId: item.categoryId })}
+            />
           )}
         />
         {/* Daily Food Title */}

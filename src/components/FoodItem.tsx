@@ -1,4 +1,4 @@
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { colors } from '@/utils';
 
@@ -7,7 +7,6 @@ interface CustomFoodItemProps {
   image?: string;
   style?: object;
   onPress?: () => void;
-  isOnPressOpen?: boolean;
 }
 
 const CategoryItem: React.FC<CustomFoodItemProps> = ({
@@ -15,16 +14,14 @@ const CategoryItem: React.FC<CustomFoodItemProps> = ({
   image,
   style,
   onPress,
-  isOnPressOpen,
 }) => {
   return (
-    <View style={[styles.container, style]}>
+    <TouchableOpacity onPress={onPress} style={[styles.container, style]}>
+      <Image style={styles.img} source={{ uri: image }} />
       <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
         {title}
       </Text>
-      <Image style={styles.img} source={{ uri: image }} />
-      {isOnPressOpen && <Button title="Open" onPress={onPress} />}
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -37,18 +34,18 @@ const styles = StyleSheet.create({
     height: 100,
     margin: 10,
     borderRadius: 10,
-    backgroundColor: colors.light,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 5,
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignItems: 'center',
+
+    // shadowColor: colors.dark,
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.12,
+    // shadowRadius: 10,
+    // elevation: 5,
   },
   text: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.dark,
     textAlign: 'center',
     flexWrap: 'wrap',
@@ -57,6 +54,6 @@ const styles = StyleSheet.create({
     width: 80,
     height: 40,
     resizeMode: 'contain',
-    marginTop: 4,
+    margin: 12,
   },
 });

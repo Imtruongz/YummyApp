@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { View, StyleSheet, ActivityIndicator, TouchableOpacity, KeyboardAvoidingView, Platform, FlatList, Image} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, FlatList, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
-import Toast from 'react-native-toast-message';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../../android/types/StackNavType';
 
@@ -12,13 +11,14 @@ import { YummyDrag, ImagesSvg, colors, showToast, useModal, goBack } from '@/uti
 import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 
-import { SaveChatModal, QuickActionButtons } from '@/pages/YummyAI/components'
+import { SaveChatModal, QuickActionButtons, TypingIndicator } from '@/pages/YummyAI/components'
 import { IconSvg, HomeHeader, Typography, CustomInput, MenuOption } from '@/components';
 
 type Message = {
   id: string;
-  text: string;
+  text?: string;
   isUser: boolean;
+  isTyping?: boolean;
 };
 
 type YummyAIScreenProps = NativeStackScreenProps<RootStackParamList, 'YummyAIScreen'>;
@@ -35,14 +35,6 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   ]);
 
   const menuOptions: MenuOption[] = [
-    // {
-    //   id: 'save-chat',
-    //   label: t('save'),
-    //   icon: '💾',
-    //   onPress: () => {
-    //     setShowSaveModal(true);
-    //   },
-    // },
     {
       id: 'chat-history',
       label: t('chatHistory.title'),
@@ -53,19 +45,17 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     },
   ];
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
   const saveModal = useModal();
   const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
 
   const handleGoBack = async () => {
-    // Save chat if there are messages beyond welcome message
     if (messages.length >= 3) {
       try {
         const messagesToSave = messages
-          .filter(msg => msg.id !== '1')
+          .filter(msg => msg.id !== '1' && !msg.isTyping && msg.text)
           .map(msg => ({
-            text: msg.text,
+            text: msg.text!,
             isUser: msg.isUser,
           }));
 
@@ -84,52 +74,71 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     goBack();
   };
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const sendMessage = async (messageText: string, delay: number = 0) => {
+    if (!messageText.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: input.trim(),
-      isUser: true,
+    const executeMessage = async () => {
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        text: messageText.trim(),
+        isUser: true,
+      };
+
+      const typingIndicatorId = `typing-${Date.now()}`;
+
+      setMessages(prev => [...prev, userMessage]);
+      setInput('');
+
+      setMessages(prev => [...prev, {
+        id: typingIndicatorId,
+        isUser: false,
+        isTyping: true,
+      }]);
+
+      try {
+        const conversationHistory = messages
+          .filter(msg => msg.id !== '1' && !msg.id.includes('typing') && msg.text)
+          .map(msg => ({
+            role: msg.isUser ? 'user' : 'assistant',
+            content: msg.text!,
+          }));
+
+        const response = await aiApi.askCookingQuestion(
+          messageText.trim(),
+          conversationHistory
+        );
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: response.answer,
+          isUser: false,
+        };
+        setMessages(prev =>
+          prev.filter(msg => msg.id !== typingIndicatorId).concat(aiMessage)
+        );
+      } catch (error: any) {
+        setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
+        showToast.error(t('Yummy_AI.ai_assistant_error'), error.message);
+      }
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setLoading(true);
-
-    try {
-      // Build conversation history (exclude welcome message)
-      const conversationHistory = messages
-        .filter(msg => msg.id !== '1')
-        .map(msg => ({
-          role: msg.isUser ? 'user' : 'assistant',
-          content: msg.text,
-        }));
-
-      const response = await aiApi.askCookingQuestion(
-        userMessage.text,
-        conversationHistory
-      );
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response.answer,
-        isUser: false,
-      };
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error: any) {
-      showToast.error(t('Yummy_AI.ai_assistant_error'), error.message || t('Yummy_AI.ai_assistant_error_response'));
-    } finally {
-      setLoading(false);
+    if (delay > 0) {
+      setTimeout(executeMessage, delay);
+    } else {
+      await executeMessage();
     }
+  };
+
+  const handleSend = async () => {
+    await sendMessage(input);
   };
 
   const handleSaveChat = async (title: string) => {
     try {
       setSavingChat(true);
       const messagesToSave = messages
-        .filter(msg => msg.id !== '1') // Filter out welcome message
+        .filter(msg => msg.id !== '1' && !msg.isTyping && msg.text)
         .map(msg => ({
-          text: msg.text,
+          text: msg.text!,
           isUser: msg.isUser,
         }));
 
@@ -144,7 +153,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       showToast.success(t('chatHistory.saveSuccess'), title || t('chatHistory.autoTitle'));
 
-      saveModal.close(); // ← Đóng modal sau khi lưu thành công
+      saveModal.close();
     } catch (error: any) {
       setSavingChat(false);
       showToast.error(t('common.error'), error?.message || t('chatHistory.saveError'));
@@ -153,44 +162,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
   const handleQuickAction = (message: string) => {
     setInput(message);
-    setTimeout(() => {
-      const userMessage: Message = {
-        id: Date.now().toString(),
-        text: message,
-        isUser: true,
-      };
-
-      setMessages(prev => [...prev, userMessage]);
-      setInput('');
-      setLoading(true);
-
-      (async () => {
-        try {
-          // Build conversation history (exclude welcome message)
-          const conversationHistory = messages
-            .filter(msg => msg.id !== '1')
-            .map(msg => ({
-              role: msg.isUser ? 'user' : 'assistant',
-              content: msg.text,
-            }));
-
-          const response = await aiApi.askCookingQuestion(
-            message,
-            conversationHistory
-          );
-          const aiMessage: Message = {
-            id: (Date.now() + 1).toString(),
-            text: response.answer,
-            isUser: false,
-          };
-          setMessages(prev => [...prev, aiMessage]);
-        } catch (error: any) {
-          showToast.error(t('ai_assistant_error'), error.message || t('ai_assistant_error_response'));
-        } finally {
-          setLoading(false);
-        }
-      })();
-    }, 100);
+    sendMessage(message, 100);
   };
 
   const quickActions = [
@@ -238,11 +210,15 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         styles.messageBubble,
         item.isUser ? styles.userBubble : styles.aiBubble
       ]}>
-        <Typography
-          title={item.text}
-          fontSize={16}
-          style={item.isUser ? styles.userText : styles.aiText}
-        />
+        {item.isTyping ? (
+          <TypingIndicator />
+        ) : (
+          <Typography
+            title={item.text || ''}
+            fontSize={16}
+            style={item.isUser ? styles.userText : styles.aiText}
+          />
+        )}
       </View>
     </View>
   );
@@ -286,18 +262,12 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
             onChangeText={setInput}
             multiline
           />
-          {loading ? (
-            <View style={styles.loadingButton}>
-              <ActivityIndicator size="small" color={colors.white} />
-            </View>
-          ) : (
-            <TouchableOpacity
-              style={styles.sendButton}
-              onPress={handleSend}
-              disabled={!input.trim()}>
-              <IconSvg xml={ImagesSvg.icSend} width={36} height={36} color={colors.primary} />
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={styles.sendButton}
+            onPress={handleSend}
+            disabled={!input.trim()}>
+            <IconSvg xml={ImagesSvg.icSend} width={36} height={36} color={colors.primary} />
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
 
@@ -316,18 +286,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.light,
-  },
-  headerWithButtons: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  saveHeaderButton: {
-    paddingRight: 16,
-    paddingVertical: 8,
-  },
-  saveButtonText: {
-    fontSize: 20,
   },
   messageList: {
     flex: 1,
