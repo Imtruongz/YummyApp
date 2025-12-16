@@ -26,6 +26,9 @@ export type MainStackParamList = {
 export type HomeStack = {
   HomeScreen: undefined;
   NewFoodScreen: undefined;
+  EditFoodScreen: {
+    foodId: string;
+  };
   ListFoodScreen: undefined;
   FoodDetailScreen: {
     foodId: string;

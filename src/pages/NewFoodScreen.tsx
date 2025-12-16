@@ -11,7 +11,7 @@ import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 
-import { CustomButton, HomeHeader, IconSvg, CustomInput } from '@/components'
+import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
 import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString, pickImageFromLibrary } from '@/utils'
 
 const userId = getStorageString('userId') || '';
@@ -369,19 +369,12 @@ const NewFoodScreen = () => {
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
                   <Text style={styles.label}>{t('new_food_screen.food_portions')}</Text>
                 </View>
-                <CustomInput
-                  style={[styles.input, { height: 44, fontSize: 13 }, errorForm?.servings ? styles.inputError : {}]}
-                  placeholder="1"
-                  keyboardType="number-pad"
-                  value={formData.servings ? formData.servings.toString() : '1'}
-                  onChangeText={text => {
-                    setFormData(prev => ({ ...prev, servings: text ? parseInt(text) : 1 }));
-                    if (errorForm?.servings) {
-                      const newErrorForm = { ...errorForm };
-                      delete newErrorForm.servings;
-                      setErrorForm(newErrorForm);
-                    }
-                  }}
+                <NumberSpinner
+                  value={formData.servings || 1}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, servings: value }))}
+                  min={1}
+                  max={20}
+                  step={1}
                 />
                 {errorForm?.servings && (
                   <Text style={styles.errorText}>{errorForm.servings}</Text>

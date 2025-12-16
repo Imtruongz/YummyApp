@@ -7,6 +7,7 @@ import {
   getDetailFoodAPI,
   getFoodByCategoryAPI,
   searchFoodAPI,
+  updateFoodAPI,
 } from './foodThunk';
 import {foodState} from './types';
 import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
@@ -88,6 +89,31 @@ const foodSlice = createSlice({
         const foodId = action.payload;
         state.foodList = state.foodList.filter(food => food.foodId !== foodId);
         state.userFoodList = state.userFoodList.filter(food => food.foodId !== foodId);
+      },
+    });
+
+    // Update food
+    createAsyncThunkHandler(builder, updateFoodAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        const updatedFood = action.payload;
+        
+        // Update in foodList
+        const foodListIndex = state.foodList.findIndex(f => f.foodId === updatedFood.foodId);
+        if (foodListIndex >= 0) {
+          state.foodList[foodListIndex] = updatedFood;
+        }
+        
+        // Update in userFoodList
+        const userFoodIndex = state.userFoodList.findIndex(f => f.foodId === updatedFood.foodId);
+        if (userFoodIndex >= 0) {
+          state.userFoodList[userFoodIndex] = updatedFood;
+        }
+        
+        // Update selectedFood if it's the one being edited
+        if (state.selectedFood?.foodId === updatedFood.foodId) {
+          state.selectedFood = updatedFood;
+        }
       },
     });
 

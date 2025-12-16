@@ -7,7 +7,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
-import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput, CustomButton } from '@/components'
 import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -109,7 +109,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
         <View style={styles.searchContainer}>
           <CustomInput
             style={styles.searchInput}
-            placeholder={t('search')}
+            placeholder={t('search_screen.search')}
             onChangeText={text => setSearchQuery(text)}
             value={searchQuery}
             showIcon={true}
@@ -117,15 +117,13 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             iconOnLeft={true}
           />
           {searchQuery.trim() && (
-            <TouchableOpacity 
-              style={styles.searchButton}
+            <CustomButton
+              title={t('search_screen.search')}
               onPress={() => {
                 navigate('ListFoodScreen', { initialSearch: searchQuery });
                 setSearchQuery('');
               }}
-            >
-              <Text style={styles.searchButtonText}>🔍</Text>
-            </TouchableOpacity>
+              style={styles.searchButton} />
           )}
         </View>
         {/* Banner Slider */}
@@ -202,7 +200,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
                   ellipsizeMode="tail"
                   style={{ color: colors.smallText }}
                 />
-                
+
                 {/* Info Row: Rating, Cooking Time, Difficulty, Servings */}
                 <View style={styles.infoRow}>
                   {(item.averageRating !== undefined && item.averageRating !== null) && (
@@ -309,12 +307,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   searchButton: {
-    width: 44,
+    width: 80,
     height: 44,
-    borderRadius: 12,
     backgroundColor: colors.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   searchButtonText: {
     fontSize: 20,

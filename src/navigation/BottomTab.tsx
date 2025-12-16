@@ -91,6 +91,7 @@ const CustomTabBar = ({ state, descriptors, navigation }: any) => {
     if (nested && (
       nested.name === 'FoodDetailScreen' ||
       nested.name === 'NewFoodScreen' ||
+      nested.name === 'EditFoodScreen' ||
       nested.name === 'CategoriesScreen' ||
       nested.name === 'ListFoodByUserPage' ||
       nested.name === 'ListFoodScreen' ||

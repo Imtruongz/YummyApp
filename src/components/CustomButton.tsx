@@ -1,4 +1,4 @@
-import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {colors} from '@/utils';
 import { IconSvg } from '@/components'
@@ -14,6 +14,7 @@ interface CustomButtonProps {
   disabled?: boolean;
   fontSize?: number;
   isCancel?: boolean;
+  isLoading?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -27,20 +28,27 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   disabled = false,
   fontSize,
   isCancel = false,
+  isLoading = false,
 }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.btn, style]}
-      disabled={disabled}>
-      {isText && (
-        <Text
-          style={[styles.text, fontSize ? { fontSize } : {}, { color: isCancel ? colors.dark : styles.text.color }]}
-        >
-          {title}
-        </Text>
+      disabled={disabled || isLoading}>
+      {isLoading ? (
+        <ActivityIndicator color={colors.white} size="small" />
+      ) : (
+        <>
+          {isText && (
+            <Text
+              style={[styles.text, fontSize ? { fontSize } : {}, { color: isCancel ? colors.dark : styles.text.color }]}
+            >
+              {title}
+            </Text>
+          )}
+          {isIcon && <IconSvg xml={icon} width={iconSize} height={iconSize} />}
+        </>
       )}
-      {isIcon && <IconSvg xml={icon} width={iconSize} height={iconSize} />}
     </TouchableOpacity>
   );
 };

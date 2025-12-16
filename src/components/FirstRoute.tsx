@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, FlatList, View } from 'react-native';
+import { StyleSheet, ScrollView, FlatList, View, Modal, TouchableOpacity, Text } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { useTranslation } from 'react-i18next';
 import {MMKV} from 'react-native-mmkv';
@@ -7,8 +7,9 @@ import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 import {food} from '@/redux/slices/food/types';
 import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
-import {ConfirmationModal, FoodItemCard, FoodListSkeleton, NoData} from '@/components'
-import { handleAsyncAction, useModal, navigate, getStorageString } from '@/utils'
+import {FoodItemCard, FoodListSkeleton, NoData} from '@/components'
+import { handleAsyncAction, useModal, navigate, getStorageString, colors } from '@/utils'
+import { navigationRef } from '@/utils/navigationHelper'
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
@@ -18,19 +19,30 @@ const FirstRoute = () => {
   const [userId, setUserId] = useState(getStorageString('userId') || '');
 
   const [currentItem, setCurrentItem] = useState<food | null>(null);
+  const [isActionModalVisible, setIsActionModalVisible] = useState(false);
 
-  const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
-
-  const showDialog = (item: food) => {
+  const showActionModal = (item: food) => {
     setCurrentItem(item);
-    openDeleteModal();
+    setIsActionModalVisible(true);
   };
-  const handleCancel = () => {
-    closeDeleteModal();
+
+  const closeActionModal = () => {
+    setIsActionModalVisible(false);
+    setCurrentItem(null);
+  };
+
+  const handleEdit = () => {
+    closeActionModal();
+    if (currentItem) {
+      navigationRef.navigate('HomeNavigator' as any, {
+        screen: 'EditFoodScreen',
+        params: { foodId: currentItem.foodId },
+      });
+    }
   };
 
   const handleDelete = async () => {
-    closeDeleteModal();
+    closeActionModal();
     if (currentItem) {
       await handleAsyncAction(
         async () => {
@@ -67,7 +79,7 @@ const FirstRoute = () => {
           renderItem={({ item }) => (
             <FoodItemCard
               item={item}
-              onLongPress={() => showDialog(item)}
+              onLongPress={() => showActionModal(item)}
               onPress={() => {
                 navigate('FoodDetailScreen', {
                   foodId: item.foodId,
@@ -84,16 +96,39 @@ const FirstRoute = () => {
           contentContainerStyle={styles.container}
         />
       )}
-      <ConfirmationModal
-        visible={isDeleteModalVisible}
-        title={t('profile_screen.delete_recipe_title')}
-        message={t('profile_screen.delete_recipe_confirmation_message')}
-        type="warning"
-        onClose={handleCancel}
-        onConfirm={handleDelete}
-        confirmText={t('delete_button')}
-        cancelText={t('cancel')}
-      />
+
+      {/* Action Modal */}
+      <Modal
+        visible={isActionModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={closeActionModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.editButton]}
+                onPress={handleEdit}
+              >
+                <Text style={styles.editButtonText}>{t('edit_button')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.deleteButton]}
+                onPress={handleDelete}
+              >
+                <Text style={styles.deleteButtonText}>{t('delete_button')}</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={closeActionModal}
+            >
+              <Text style={styles.cancelButtonText}>{t('cancel')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };
@@ -113,5 +148,60 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    paddingBottom: 30,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 12,
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButton: {
+    backgroundColor: colors.primary,
+  },
+  editButtonText: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  deleteButton: {
+    backgroundColor: '#FFE5E5', // Light red - tạm thời
+  },
+  deleteButtonText: {
+    color: '#FF3B30', // Red - tạm thời
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  cancelButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: colors.light,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cancelButtonText: {
+    color: colors.primaryText,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

@@ -16,6 +16,9 @@ export type RootStackParamList = {
   };
   SettingScreen: undefined;
   NewFoodScreen: undefined;
+  EditFoodScreen: {
+    foodId: string;
+  };
   SettingProfileScreen: undefined;
   ListFoodScreen: undefined;
   CategoriesScreen: {

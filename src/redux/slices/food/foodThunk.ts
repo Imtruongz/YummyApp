@@ -145,3 +145,23 @@ export const getFoodByCategoryAPI = createAsyncThunk(
     }
   },
 );
+
+export const updateFoodAPI = createAsyncThunk(
+  'food/updateFoodAPI',
+  async (updatedFood: food & {userId: string}, thunkAPI) => {
+    try {
+      const response = await api.put<food>('/foods/update', updatedFood, {
+        signal: thunkAPI.signal,
+      });
+      if (!response || !response.data) {
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to update food';
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  },
+);
