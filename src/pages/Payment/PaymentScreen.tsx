@@ -21,7 +21,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const [recipientBankAccount, setRecipientBankAccount] = useState<BankAccount | null>(null);
   const [loadingBankAccount, setLoadingBankAccount] = useState<boolean>(false);
   const [recipientUsername, setRecipientUsername] = useState<string>('');
-  
+
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(INITIAL_PAYMENT_METHODS); const formatMoney = (amount: number) => {
     return formatUSDCurrency(amount);
   };
@@ -156,33 +156,19 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
     try {
       const response = await paymentService.createPaymentSession(amount, userId);
       if (response && response.success && response.token) {
-        // Điều hướng sang app MBLaos với token từ api createPaymentSession
         const deepLinkUrl = `mblaos://pay?token=${encodeURIComponent(response.token)}`;
         console.log('[PaymentScreen] Opening MBLaos with token:', response.token);
+
         try {
-          // Check nếu MBLaos app đã cài
-          const canOpen = await Linking.canOpenURL('mblaos://pay');
-          console.log('[PaymentScreen] Can open MBLaos:', canOpen);
-          if (canOpen) {
-            console.log('[PaymentScreen] MBlaos đã cài, opening...');
-            await Linking.openURL(deepLinkUrl);
-          } else {
-            console.log('[PaymentScreen] MBLaos chưa cài, không thể mở.');
-            try {
-              await Linking.openURL(deepLinkUrl);
-            } catch (openError) {
-              console.log('[PaymentScreen] Failed to open MBLaos:', openError);
-              showToast.error(
-                'Thông báo',
-                'MBLaos chưa cài. Vui lòng cài đặt MBLaos để thanh toán.'
-              );
-            }
-          }
-        } catch (linkError) {
-          console.log('[PaymentScreen] Lỗi khi kiểm tra deep link:', linkError);
-          showToast.error(t('payment_screen.payment_payment_error'), 'Không thể mở MBLaos');
+          await Linking.openURL(deepLinkUrl);
+          console.log('[PaymentScreen] Successfully opened MBLaos');
+        } catch (openError) {
+          console.log('[PaymentScreen] Failed to open MBLaos:', openError);
+          showToast.error(
+            'Thông báo',
+            'MBLaos chưa cài. Vui lòng cài đặt MBLaos để thanh toán.'
+          );
         }
-        return;
       } else {
         throw new Error('Không thể tạo token thanh toán');
       }
@@ -334,7 +320,7 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
               <Text style={styles.totalAmountText}>{formatMoney(amount)}</Text>
             </View>
             <CustomButton
-              title={t('payment_screen.payment_confirm')}
+              title={t('confirm')}
               onPress={handleConfirmPayment}
               style={styles.confirmButton}
               fontSize={18}

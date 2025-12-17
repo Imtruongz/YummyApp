@@ -7,6 +7,17 @@ export interface RegisterPayload {
   email: string;
   password: string;
 }
+
+export interface VerifyEmailPayload {
+  email: string;
+  verificationCode: string;
+  userData?: {
+    username: string;
+    password: string;
+    email: string;
+  };
+}
+
 export interface UpdatePayload {
   username: string;
   avatar: string;

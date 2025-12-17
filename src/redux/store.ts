@@ -6,6 +6,7 @@ import { setupListeners } from '@reduxjs/toolkit/query';
 import foodSlice from './slices/food/foodSlice';
 import authSlice from './slices/auth/authSlice';
 import userSlice from './slices/auth/userSlice';
+import signupSlice from './slices/auth/signupSlice';
 import categoriesSlice from './slices/category/categoriesSlice';
 import reviewSlice from './slices/review/reviewSlice';
 import ratingSlice from './slices/rating/ratingSlice';
@@ -19,6 +20,7 @@ export const store = configureStore({
     food: foodSlice,
     auth: authSlice,
     user: userSlice,
+    signup: signupSlice,
     categories: categoriesSlice,
     review: reviewSlice,
     rating: ratingSlice,

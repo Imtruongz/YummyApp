@@ -178,7 +178,7 @@
     "recipe_detail_ratings": "Đánh giá"
   },
   "payment_screen": {
-    "payment_title": "Ủng hộ người sáng tạo",
+    "payment_title": "Ủng hộ người sáng tạo(demo)",
     "payment_confirm_transaction": "Xác nhận giao dịch",
     "payment_amount": "Số tiền ủng hộ",
     "payment_enter_amount": "Nhập số tiền...",

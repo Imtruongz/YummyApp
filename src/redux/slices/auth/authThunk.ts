@@ -1,6 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import api from '@/api/config';
-import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User, FacebookLoginPayload} from './types';
+import {LoginPayload, RegisterPayload, UpdatePayload, ChangePasswordPayload, User, FacebookLoginPayload, VerifyEmailPayload} from './types';
 
 export const userLoginAPI = createAsyncThunk(
   'auth/userLoginAPI',
@@ -127,6 +127,38 @@ export const facebookLoginAPI = createAsyncThunk(
       const errorMessage = error.response?.data?.message || 
                           error.message || 
                           'Facebook login failed';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+// ← NEW: Verify email with code
+export const verifyEmailAPI = createAsyncThunk(
+  'auth/verifyEmailAPI',
+  async (payload: VerifyEmailPayload, {rejectWithValue}) => {
+    try {
+      const response = await api.post('/users/verify-email', payload);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Email verification failed';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+// ← NEW: Resend verification email
+export const resendVerificationEmailAPI = createAsyncThunk(
+  'auth/resendVerificationEmailAPI',
+  async (payload: {email: string}, {rejectWithValue}) => {
+    try {
+      const response = await api.post('/users/resend-verification-email', payload);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to resend verification email';
       return rejectWithValue(errorMessage);
     }
   },

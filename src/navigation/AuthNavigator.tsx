@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../pages/auth/LoginScreen.tsx';
 import SignupPage from '../pages/auth/SignUpPage.tsx';
 import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.tsx';
+import VerifyEmailScreen from '../pages/auth/VerifyEmailScreen.tsx';
 import { AuthStackParamList } from './types.ts'
 
 const AuthNavigator = () => {
@@ -14,6 +15,7 @@ const AuthNavigator = () => {
     }}>
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="SignUpPage" component={SignupPage} />
+      <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen} />
       <Stack.Screen name="ForgotPasswordPage" component={ForgotPasswordPage} />
     </Stack.Navigator>
   );

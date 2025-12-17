@@ -8,6 +8,7 @@ import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, Images
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
+import { saveSignUpForm } from '@/redux/slices/auth/signupSlice.ts';
 
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
@@ -55,6 +56,10 @@ const SignupPage: React.FC = () => {
 
     await handleAsyncAction(
       async () => {
+        // ✅ Lưu form data vào Redux (chưa gửi server tạo user)
+        dispatch(saveSignUpForm({ username, email, password }));
+
+        // Gửi email xác thực (backend chỉ gửi email, không lưu user)
         const resultAction = await dispatch(
           userRegisterAPI({email, password, username}),
         );
@@ -65,7 +70,7 @@ const SignupPage: React.FC = () => {
       {
         successMessage: t('login_screen.login_register_success_toast'),
         errorMessage: t('login_screen.login_register_error_toast'),
-        onSuccess: () => navigate('LoginScreen')
+        onSuccess: () => navigate('VerifyEmailScreen', { email })
       }
     );
   };
