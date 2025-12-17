@@ -4,11 +4,12 @@ import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, handleAsyncAction, navigate} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, navigate} from '@/utils';
 
 import {useAppDispatch} from '@/redux/hooks.ts';
 import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
 import { saveSignUpForm } from '@/redux/slices/auth/signupSlice.ts';
+import { useLoading } from '@/hooks/useLoading';
 
 import AuthFooter from './component/AuthFooter.tsx';
 import AuthHeader from './component/AuthHeader.tsx';
@@ -16,6 +17,7 @@ import AuthHeader from './component/AuthHeader.tsx';
 const SignupPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { t, i18n } = useTranslation();
+  const { LoadingShow, LoadingHide } = useLoading();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -54,25 +56,26 @@ const SignupPage: React.FC = () => {
       return;
     }
 
-    await handleAsyncAction(
-      async () => {
-        // ✅ Lưu form data vào Redux (chưa gửi server tạo user)
-        dispatch(saveSignUpForm({ username, email, password }));
+    LoadingShow();
+    try {
+      // ✅ Lưu form data vào Redux (chưa gửi server tạo user)
+      dispatch(saveSignUpForm({ username, email, password }));
 
-        // Gửi email xác thực (backend chỉ gửi email, không lưu user)
-        const resultAction = await dispatch(
-          userRegisterAPI({email, password, username}),
-        );
-        if (!userRegisterAPI.fulfilled.match(resultAction)) {
-          throw new Error('Registration failed');
-        }
-      },
-      {
-        successMessage: t('login_screen.login_register_success_toast'),
-        errorMessage: t('login_screen.login_register_error_toast'),
-        onSuccess: () => navigate('VerifyEmailScreen', { email })
+      // Gửi email xác thực (backend chỉ gửi email, không lưu user)
+      const resultAction = await dispatch(
+        userRegisterAPI({email, password, username}),
+      );
+      if (!userRegisterAPI.fulfilled.match(resultAction)) {
+        throw new Error('Registration failed');
       }
-    );
+      navigate('VerifyEmailScreen', { email });
+    } catch (error: any) {
+      const errorMsg = error?.message || t('login_screen.login_register_error_toast');
+      setErrorMessage(errorMsg);
+      setIsErrorMessage(true);
+    } finally {
+      LoadingHide();
+    }
   };
 
   return (

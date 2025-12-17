@@ -4,15 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
+import SelectDropdown from 'react-native-select-dropdown';
 
 import { CustomInput, CustomButton } from '@/components'
 import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, handleAsyncAction, setStorageString } from '@/utils';
 import { getFCMTokenAndUpdate } from '@/utils/fcmHelper';
+import { changeLanguage } from '@/languages/i18n';
+import IconSvg from '@/components/IconSvg';
 
 import { useAppDispatch } from '@/redux/hooks';
 import { userLoginAPI, facebookLoginAPI } from '@/redux/slices/auth/authThunk';
 
 import { AuthContext } from '@/contexts/AuthContext';
+import { useLoading } from '@/hooks/useLoading';
 import AuthFooter from './component/AuthFooter';
 import AuthHeader from './component/AuthHeader';
 
@@ -25,6 +29,7 @@ interface LoginScreenProps
 const LoginScreen: React.FC<LoginScreenProps> = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
+  const { LoadingShow, LoadingHide } = useLoading();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
@@ -33,6 +38,16 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   const [isErrorMessage, setIsErrorMessage] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
   const { signIn } = useContext(AuthContext);
+
+  const languages = [
+    { code: 'en', label: 'English' },
+    { code: 'vn', label: 'Tiếng Việt' },
+    { code: 'zh', label: '中文' },
+  ];
+
+  const handleChangeLanguage = async (selectedItem: any) => {
+    await changeLanguage(selectedItem.code);
+  };
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -49,80 +64,125 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       return;
     }
 
-    await handleAsyncAction(
-      async () => {
-        const resultAction = await dispatch(userLoginAPI({ email, password }));
-        if (!userLoginAPI.fulfilled.match(resultAction)) {
-          throw new Error('Login failed');
-        }
-        const user = resultAction.payload;
-        if (!user) {
-          throw new Error('Email not verified, please check your email');
-        }
-        setStorageString('userId', String(user.user.userId || ''));
-        setStorageString('accessToken', user.accessToken);
-        setStorageString('refreshToken', user.refreshToken);
-
-        // Lấy FCM token
-        await getFCMTokenAndUpdate(user.accessToken);
-      },
-      {
-        successMessage: t('login_screen.login_success_toast'),
-        errorMessage: t('login_screen.login_error_toast'),
-        onSuccess: () => signIn()
+    LoadingShow();
+    try {
+      const resultAction = await dispatch(userLoginAPI({ email, password }));
+      if (!userLoginAPI.fulfilled.match(resultAction)) {
+        throw new Error('Login failed');
       }
-    );
+      const user = resultAction.payload;
+      if (!user) {
+        throw new Error('Email not verified, please check your email');
+      }
+      setStorageString('userId', String(user.user.userId || ''));
+      setStorageString('accessToken', user.accessToken);
+      setStorageString('refreshToken', user.refreshToken);
+
+      // Lấy FCM token
+      await getFCMTokenAndUpdate(user.accessToken);
+
+      signIn();
+    } catch (error: any) {
+      const errorMsg = error?.message || t('login_screen.login_error_toast');
+      setErrorMessage(errorMsg);
+      setIsErrorMessage(true);
+    } finally {
+      LoadingHide();
+    }
   };
 
   const handleLoginWithFacebook = async () => {
-    await handleAsyncAction(
-      async () => {
-        const result = await LoginManager.logInWithPermissions(['public_profile']);
-        if (result.isCancelled) {
-          throw new Error('Login cancelled');
-        }
-
-        const profile = await Profile.getCurrentProfile();
-        if (!profile) {
-          throw new Error('Failed to get profile');
-        }
-
-        const data = {
-          userId: profile.userID || '',
-          username: profile.name || 'Facebook User',
-          email: profile.userID || '',
-          avatar: profile.imageURL || '',
-        }
-        console.log('Login with Facebook success', data);
-        const resultAction = await dispatch(facebookLoginAPI(data));
-
-        if (!facebookLoginAPI.fulfilled.match(resultAction)) {
-          throw new Error('Facebook login failed');
-        }
-
-        const user = resultAction.payload;
-        if (!user) {
-          throw new Error('Failed to get user data');
-        }
-
-        setStorageString('userId', String(user.user.userId || ''));
-        setStorageString('accessToken', user.accessToken);
-        setStorageString('refreshToken', user.refreshToken);
-
-        // Lấy FCM token
-        await getFCMTokenAndUpdate(user.accessToken);
-      },
-      {
-        successMessage: t('login_screen.login_success_toast'),
-        errorMessage: t('login_screen.login_error_toast'),
-        onSuccess: () => signIn()
+    
+    try {
+      const result = await LoginManager.logInWithPermissions(['public_profile']);
+      if (result.isCancelled) {
+        throw new Error('Login cancelled');
       }
-    );
+
+      const profile = await Profile.getCurrentProfile();
+      if (!profile) {
+        throw new Error('Failed to get profile');
+      }
+
+      const data = {
+        userId: profile.userID || '',
+        username: profile.name || 'Facebook User',
+        email: profile.userID || '',
+        avatar: profile.imageURL || '',
+      }
+      LoadingShow();
+      console.log('Login with Facebook success', data);
+      const resultAction = await dispatch(facebookLoginAPI(data));
+
+      if (!facebookLoginAPI.fulfilled.match(resultAction)) {
+        throw new Error('Facebook login failed');
+      }
+
+      const user = resultAction.payload;
+      if (!user) {
+        throw new Error('Failed to get user data');
+      }
+
+      setStorageString('userId', String(user.user.userId || ''));
+      setStorageString('accessToken', user.accessToken);
+      setStorageString('refreshToken', user.refreshToken);
+
+      // Lấy FCM token
+      await getFCMTokenAndUpdate(user.accessToken);
+
+      signIn();
+    } catch (error: any) {
+      const errorMsg = error?.message || t('login_screen.login_error_toast');
+      setErrorMessage(errorMsg);
+      setIsErrorMessage(true);
+    } finally {
+      LoadingHide();
+    }
   };
 
   return (
     <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
       <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1 }}>
+        {/* Language Selector */}
+        <View style={styles.languageSelectorContainer}>
+          <SelectDropdown
+            data={languages}
+            onSelect={handleChangeLanguage}
+            renderButton={(selectedItem, isOpened) => {
+              return (
+                <View style={styles.dropdownButtonStyle}>
+                  <Text style={styles.dropdownButtonTxtStyle}>
+                    {(selectedItem && selectedItem.label) || 'English'} 🌐
+                  </Text>
+                  <IconSvg
+                    xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
+                    width={14}
+                    height={14}
+                    color={'white'}
+                  />
+                </View>
+              );
+            }}
+            renderItem={(item, isSelected) => {
+              return (
+                <View style={{
+                  ...styles.dropdownItemStyle,
+                  ...(isSelected && { backgroundColor: colors.primary + '20' }),
+                }}>
+                  <Text style={[styles.dropdownItemTxtStyle, {
+                    color: isSelected ? colors.primary : colors.dark,
+                    fontWeight: isSelected ? '600' : '400',
+                  }]}>
+                    {item.label}
+                  </Text>
+                </View>
+              );
+            }}
+            showsVerticalScrollIndicator={false}
+            dropdownStyle={styles.dropdownMenuStyle}
+          />
+        </View>
+
         {/* Title */}
         <AuthHeader img={URLS.Yummy} />
         {/* Content */}
@@ -192,6 +252,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.light,
+  },
+  languageSelectorContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 56,
+    alignItems: 'flex-end',
+  },
+  dropdownButtonStyle: {
+    width: 140,
+    height: 40,
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+  },
+  dropdownButtonTxtStyle: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '600',
+    color: 'white',
+  },
+  dropdownMenuStyle: {
+    backgroundColor: '#E9ECEF',
+    borderRadius: 8,
+    marginTop: -10,
+  },
+  dropdownItemStyle: {
+    width: '100%',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  dropdownItemTxtStyle: {
+    fontSize: 13,
+    fontWeight: '400',
   },
   body: {
     flex: 4,

@@ -126,6 +126,7 @@
     "login_email": "Địa chỉ email",
     "login_pw": "Mật khẩu",
     "login_btn": "Đăng nhập",
+    "change_confirm_pw": "Xác nhận mật khẩu",
     "login_register": "Chưa có tài khoản?",
     "login_register_btn": "Đăng ký",
     "login_invalid": "Tên người dùng hoặc mật khẩu không hợp lệ",
@@ -157,8 +158,8 @@
     "signup_confirm_pw": "Xác nhận mật khẩu",
     "signup_btn": "Đăng ký",
     "signup_invalid_username": "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới, từ 3 đến 15 ký tự",
-    "login_register_success_toast": "Đăng ký thành công",
-    "login_register_error_toast": "Đã xảy ra lỗi trong quá trình đăng ký"
+    "signup_register_success_toast": "Đăng ký thành công",
+    "signup_register_error_toast": "Đã xảy ra lỗi trong quá trình đăng ký"
   },
   "recipe_detail_screen": {
     "recipe_detail_description": "Mô tả",
@@ -294,6 +295,24 @@
     "add_difficulty_level": "Mức độ khó",
     "add_servings": "Khẩu phần",
     "add_servings_placeholder": "Số khẩu phần"
+  },
+  "verification_screen": {
+    "back_button": "← Quay lại",
+    "title": "Xác nhận Email",
+    "subtitle": "Chúng tôi đã gửi mã xác nhận đến",
+    "instructions": "Nhập mã 6 chữ số bạn nhận được",
+    "error_full_code": "Vui lòng nhập đầy đủ 6 chữ số",
+    "error_form_data": "Dữ liệu form không tồn tại. Vui lòng đăng ký lại.",
+    "error_verification_failed": "Xác thực email thất bại",
+    "error_resend_failed": "Gửi lại mã xác thực thất bại",
+    "timer_label": "Mã hết hạn trong:",
+    "verify_button": "Xác nhận",
+    "resend_label": "Không nhận được mã?",
+    "resend_button": "Gửi lại",
+    "support_text": "Có vấn đề?",
+    "support_link": "Liên hệ hỗ trợ",
+    "success_message": "Xác nhận email thành công",
+    "failure_message": "Xác nhận email thất bại"
   },
   "add_category": "Danh mục",
   "loading": "Đang tải...",

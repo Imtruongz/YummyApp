@@ -6,6 +6,7 @@ import './src/languages/i18n';
 import { store } from './src/redux/store';
 import ErrorBoundary from './src/utils/errorBoundary';
 import { AuthContext } from './src/contexts/AuthContext';
+import { LoadingProvider } from './src/contexts/LoadingContext';
 import { updateFcmTokenApi } from './src/api/updateFcmTokenApi';
 import NavigationRoot from './src/navigation/NavigationContainer';
 import { initFirebaseMessaging } from './src/utils/firebaseMessaging';
@@ -50,10 +51,12 @@ export default function App() {
             setIsSignedIn(false);
           }
         }}>
-          <Provider store={store}>
-            <NavigationRoot />
-            <Toast />
-          </Provider>
+          <LoadingProvider>
+            <Provider store={store}>
+              <NavigationRoot />
+              <Toast />
+            </Provider>
+          </LoadingProvider>
         </AuthContext.Provider>
       </ErrorBoundary>
     </PaperProvider>
