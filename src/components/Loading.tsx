@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import {IconSvg, CustomTitle, CustomLoadingSpinner } from '@/components'
 import {colors, ImagesSvg} from '@/utils';
+import Lottie from 'lottie-react-native';
+import { LOADING } from '@/assets';
 
 const Loading = () => {
   const { t, i18n } = useTranslation();
@@ -18,6 +20,12 @@ const Loading = () => {
           color={colors.light}
           style={styles.loading}
         />
+        <Lottie
+          source={LOADING}
+          autoPlay
+          loop
+          style={{ width: 250, height: 250, marginTop: 10 }}
+        />
       </View>
     </View>
   );
@@ -31,7 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.loadingColor,
+    backgroundColor: 'transparent',
   },
   body: {
     justifyContent: 'center',

@@ -1,11 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import {colors, navigate} from '@/utils';
+import {colors, navigate, formatUSDCurrency} from '@/utils';
 import LinearGradient from 'react-native-linear-gradient';
 
-const PaymentSuccessScreen = ({ navigation }: any) => {
+const PaymentSuccessScreen = ({ route, navigation }: any) => {
   const { t } = useTranslation();
+  
+  // Get data from route params
+  const { 
+    amount = 0, 
+    transactionId = '#N/A',
+    recipientName = 'Unknown',
+    timestamp = new Date().toLocaleString('vi-VN')
+  } = route?.params || {};
 
   const handleGoHome = () => {
     navigate('HomeScreen');
@@ -30,15 +38,19 @@ const PaymentSuccessScreen = ({ navigation }: any) => {
         <View style={styles.detailBox}>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>{t('payment_screen.amount')}</Text>
-            <Text style={styles.detailValue}>500,000đ</Text>
+            <Text style={styles.detailValue}>${amount}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>{t('payment_screen.transaction_code')}</Text>
-            <Text style={styles.detailValue}>#123456789</Text>
+            <Text style={styles.detailValue}>{transactionId}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>{t('payment_screen.recipient')}</Text>
+            <Text style={styles.detailValue}>{recipientName}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>{t('payment_screen.payment_time')}</Text>
-            <Text style={styles.detailValue}>13/10/2025, 14:30</Text>
+            <Text style={styles.detailValue}>{timestamp}</Text>
           </View>
         </View>
         <TouchableOpacity style={styles.button} onPress={handleGoHome}>

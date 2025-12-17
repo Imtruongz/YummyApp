@@ -8,7 +8,7 @@ import ConfirmationModal from '@/components/ConfirmationModal';
 import { PaymentScreenProps, PaymentMethod, BankAccount, INITIAL_PAYMENT_METHODS } from './type';
 import * as paymentService from './paymentService';
 import { CustomButton, HomeHeader, IconSvg } from '@/components'
-import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast, goBack } from '@/utils'
+import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBLogo, ZaloPayLogo, showToast, goBack, navigate } from '@/utils'
 
 const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const { t } = useTranslation();
@@ -33,9 +33,19 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
     const [path, queryString] = route.split('?');
 
     if (path === 'payment-result') {
-      const params = new URLSearchParams(queryString);
-      const status = params.get('status');
-      const transactionId = params.get('transactionId');
+      // Parse query string manually (URLSearchParams not supported in some engines)
+      const params: { [key: string]: string } = {};
+      if (queryString) {
+        queryString.split('&').forEach(param => {
+          const [key, value] = param.split('=');
+          if (key && value) {
+            params[key] = decodeURIComponent(value);
+          }
+        });
+      }
+
+      const status = params.status;
+      const transactionId = params.transactionId;
 
       console.log('[PaymentScreen] Payment callback - Status:', status, 'TXN:', transactionId);
 
@@ -44,7 +54,15 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
           t('payment_screen.payment_success'),
           `${t('payment_screen.payment_bank_transfer_success')} (TXN: ${transactionId})`
         );
-        setTimeout(() => goBack(), 1500);
+        // Navigate to PaymentSuccessScreen instead of goBack
+        setTimeout(() => {
+          navigate('PaymentSuccessScreen', {
+            amount: amount,
+            transactionId: transactionId,
+            recipientName: recipientUsername,
+            timestamp: new Date().toLocaleString('vi-VN'),
+          });
+        }, 500);
       } else if (status === 'failed' || status === 'cancelled') {
         showToast.error(
           t('payment_screen.payment_payment_error'),
