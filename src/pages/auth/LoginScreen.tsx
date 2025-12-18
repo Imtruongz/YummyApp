@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   dropdownButtonStyle: {
-    width: 140,
+    width: 130,
     height: 40,
     backgroundColor: colors.primary,
     borderRadius: 12,

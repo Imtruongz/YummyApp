@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { HomeHeader, CustomAvatar } from '@/components'
 import {img, colors, navigate} from '@/utils'
+import { useLoading } from '@/hooks/useLoading';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getFollowersAPI, getFollowingAPI } from '@/redux/slices/follow/followThunk';
@@ -41,12 +42,21 @@ const FollowScreen: React.FC = () => {
   const { t } = useTranslation();
   const route = useRoute<any>();
   const dispatch = useAppDispatch();
+  const { LoadingShow, LoadingHide } = useLoading();
   const { userId, type } = route.params as { userId: string; type: 'followers' | 'following' };
 
   const followers = useAppSelector(selectFollowers(userId));
   const following = useAppSelector(selectFollowing(userId));
   const list = type === 'followers' ? followers : following;
   const loading = useAppSelector(selectFollowLoading(userId));
+
+  useEffect(() => {
+    if (loading) {
+      LoadingShow();
+    } else {
+      LoadingHide();
+    }
+  }, [loading, LoadingShow, LoadingHide]);
 
   useEffect(() => {
     if (type === 'followers') {
@@ -73,17 +83,13 @@ const FollowScreen: React.FC = () => {
         showNotification={false}
         isBackHome={true}
       />
-      {loading ? (
-        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 40 }} />
-      ) : (
-        <FlatList
-          data={list}
-          keyExtractor={(item) => item.userId}
-          renderItem={({ item }) => <UserItem user={item} onPress={handleUserPress} />}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={<Text style={styles.emptyText}>{t('no_data')}</Text>}
-        />
-      )}
+      <FlatList
+        data={list}
+        keyExtractor={(item) => item.userId}
+        renderItem={({ item }) => <UserItem user={item} onPress={handleUserPress} />}
+        contentContainerStyle={styles.listContent}
+        ListEmptyComponent={<Text style={styles.emptyText}>{t('no_data')}</Text>}
+      />
     </View>
   );
 };

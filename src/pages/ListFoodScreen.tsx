@@ -8,13 +8,15 @@ import {useAppDispatch, useAppSelector} from '@/redux/hooks';
 import {getAllFoodAPI, searchFoodAPI} from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectSearchFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-import { HomeHeader, CustomTitle, IconSvg, NoData, Loading, CustomInput } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput } from '@/components'
 import { colors, ImagesSvg, navigate} from '@/utils'
+import { useLoading } from '@/hooks/useLoading'
 
 const ListFoodScreen: React.FC = () => {
   const {t} = useTranslation();
   const dispatch = useAppDispatch();
   const route = useRoute();
+  const { LoadingShow, LoadingHide } = useLoading();
 
   const foodList = useAppSelector(selectFoodList);
   const searchFoodList = useAppSelector(selectSearchFoodList);
@@ -39,9 +41,14 @@ const ListFoodScreen: React.FC = () => {
     }
   }, [dispatch, route.params]);
 
-  if (isLoadingFood && currentPage === 1 && !isSearchMode) {
-    return <Loading />;
-  }
+  // Track loading state
+  useEffect(() => {
+    if (isLoadingFood && currentPage === 1) {
+      LoadingShow();
+    } else {
+      LoadingHide();
+    }
+  }, [isLoadingFood, currentPage, LoadingShow, LoadingHide]);
 
   // Dùng searchFoodList khi search, foodList khi hiển thị danh sách bình thường
   const displayList = isSearchMode ? searchFoodList : foodList;
@@ -102,11 +109,7 @@ const ListFoodScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
       
-      {isLoadingFood && hasSearched && isSearchMode && currentPage === 1 ? (
-        <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center'}}>
-          <ActivityIndicator size="large" color='red' />
-        </View>
-      ) : hasNoData && !isSearchMode ? (
+      {isLoadingFood && currentPage === 1 ? null : hasNoData && !isSearchMode ? (
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <NoData 
             message={t('no_data')}

@@ -7,12 +7,13 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useLoading } from '@/hooks/useLoading';
 import { updateFoodAPI, getDetailFoodAPI, getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { foodPayload, food } from '../redux/slices/food/types';
 import { selectCategoryList, selectSelectedFood } from '@/redux/selectors';
 
-import { CustomButton, HomeHeader, IconSvg, CustomInput, Loading, NumberSpinner } from '@/components'
+import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
 import { colors, ImagesSvg, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary } from '@/utils'
 
 interface EditFoodScreenProps
@@ -23,6 +24,7 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
     const userId = getStorageString('userId') || '';
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
+    const { LoadingShow, LoadingHide } = useLoading();
 
     const [formData, setFormData] = useState<foodPayload>({
         foodName: '',
@@ -41,8 +43,6 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
     const [ingredients, setIngredients] = useState<string[]>(['']);
     const [steps, setSteps] = useState<string[]>(['']);
     const [originalImageUri, setOriginalImageUri] = useState<string>('');
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const categoryList = useAppSelector(selectCategoryList);
     const selectedFood = useAppSelector(selectSelectedFood);
@@ -51,17 +51,17 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                setIsLoading(true);
+                LoadingShow();
                 await Promise.all([
                     dispatch(getDetailFoodAPI(foodId)),
                     dispatch(getAllCategoriesAPI()),
                 ]);
             } finally {
-                setIsLoading(false);
+                LoadingHide();
             }
         };
         loadData();
-    }, [dispatch, foodId]);
+    }, [dispatch, foodId, LoadingShow, LoadingHide]);
 
     // Pre-fill form when food data is loaded
     useEffect(() => {
@@ -193,7 +193,7 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
             servings: formData.servings,
         };
 
-        setIsSubmitting(true);
+        LoadingShow();
 
         await handleAsyncAction(
             () => dispatch(updateFoodAPI(updatedFormData as any)).unwrap(),
@@ -201,22 +201,18 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
                 onSuccess: async () => {
                     await dispatch(getFoodByIdAPI({ userId: userId }));
                     setErrorForm(null);
-                    setIsSubmitting(false);
+                    LoadingHide();
                     goBack();
                 },
                 onError: (error: any) => {
                     setErrorForm(error?.data?.errors || { general: t('general_error') });
-                    setIsSubmitting(false);
+                    LoadingHide();
                 },
                 successMessage: t('edit_food_screen.add_success_message'),
                 errorMessage: t('edit_food_screen.add_error_message'),
             }
         );
     };
-
-    if (isLoading) {
-        return <Loading />;
-    }
 
     return (
         <SafeAreaView style={styles.container} edges={['left', 'right']}>
@@ -413,16 +409,15 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
                         />
                     </View>
                 </View>
-
-                {/* Submit Button */}
-                <View style={styles.submitButtonContainer}>
-                    <CustomButton
-                        title={t('edit_food_screen.add_update_button')}
-                        onPress={handleSubmit}
-                        isLoading={isSubmitting}
-                    />
-                </View>
             </ScrollView>
+            {/* Submit Button */}
+            <View style={styles.buttonContainer}>
+                <CustomButton
+                    title={t('edit_food_screen.add_update_button')}
+                    onPress={handleSubmit}
+                    style={styles.submitButton}
+                />
+            </View>
         </SafeAreaView>
     );
 };
@@ -650,12 +645,14 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
     },
-    submitButtonContainer: {
-        marginTop: 24,
-        marginBottom: 20,
-        paddingHorizontal: 0,
+    buttonContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+        padding: 26,
+        backgroundColor: 'transparent',
+    },
+    submitButton: {
+        minHeight: 52,
     },
     generalErrorContainer: {
         marginBottom: 12,

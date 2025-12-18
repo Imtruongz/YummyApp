@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { HomeHeader, CustomTitle, IconSvg, Loading, NoData, CustomInput } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput } from '@/components'
 import { colors, ImagesSvg, navigate } from '@/utils'
+import { useLoading } from '@/hooks/useLoading';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks.ts';
 import { getFoodByCategoryAPI } from '../redux/slices/food/foodThunk.ts';
@@ -20,6 +21,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { categoryId } = route.params;
+  const { LoadingShow, LoadingHide } = useLoading();
 
   const categoryFoodList = useAppSelector(selectCategoryFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
@@ -31,9 +33,13 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
     }
   }, [dispatch, categoryId]);
 
-  if (isLoadingFood) {
-    return <Loading />;
-  }
+  useEffect(() => {
+    if (isLoadingFood) {
+      LoadingShow();
+    } else {
+      LoadingHide();
+    }
+  }, [isLoadingFood, LoadingShow, LoadingHide]);
 
   const hasNoData = !categoryFoodList || categoryFoodList.length === 0;
 
@@ -64,7 +70,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
         iconOnLeft={true}
       />
 
-      {hasNoData ? (
+      {isLoadingFood ? null : hasNoData ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <NoData
             message={t('no_data')}
@@ -72,21 +78,6 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
             height={120}
             textSize={16}
           />
-          <TouchableOpacity
-            style={{
-              marginTop: 20,
-              backgroundColor: colors.primary,
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderRadius: 8
-            }}
-            onPress={() => {
-              if (categoryId) {
-                dispatch(getFoodByCategoryAPI(categoryId));
-              }
-            }}>
-            <Text style={{ color: 'white' }}>{t('reload')}</Text>
-          </TouchableOpacity>
         </View>
       ) : showNoSearchResults ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

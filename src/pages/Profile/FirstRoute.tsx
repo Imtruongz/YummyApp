@@ -1,21 +1,22 @@
-import { StyleSheet, ScrollView, FlatList, View, Modal, TouchableOpacity, Text } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { StyleSheet, FlatList, View, Modal, TouchableOpacity, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {MMKV} from 'react-native-mmkv';
 
-import {useAppSelector, useAppDispatch} from '@/redux/hooks';
-import {RootState} from '@/redux/store';
-import {food} from '@/redux/slices/food/types';
-import {deleteFoodAPI, getFoodByIdAPI} from '@/redux/slices/food/foodThunk';
-import {FoodItemCard, FoodListSkeleton, NoData} from '@/components'
-import { handleAsyncAction, useModal, navigate, getStorageString, colors } from '@/utils'
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { RootState } from '@/redux/store';
+import { food } from '@/redux/slices/food/types';
+import { deleteFoodAPI, getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
+import { FoodItemCard, FoodListSkeleton, NoData } from '@/components'
+import { handleAsyncAction, useModal, navigate, getStorageString, colors, showToast } from '@/utils'
 import { navigationRef } from '@/utils/navigationHelper'
+import { useLoading } from '@/hooks/useLoading';
 
 const FirstRoute = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  
-  const {userFoodList, isLoadingFood} = useAppSelector((state: RootState) => state.food);
+  const { LoadingShow, LoadingHide } = useLoading();
+
+  const { userFoodList, isLoadingFood } = useAppSelector((state: RootState) => state.food);
   const [userId, setUserId] = useState(getStorageString('userId') || '');
 
   const [currentItem, setCurrentItem] = useState<food | null>(null);
@@ -44,18 +45,26 @@ const FirstRoute = () => {
   const handleDelete = async () => {
     closeActionModal();
     if (currentItem) {
+      LoadingShow();
       await handleAsyncAction(
         async () => {
           await dispatch(deleteFoodAPI(currentItem.foodId)).unwrap();
         },
         {
-          successMessage: t('toast_messages.toast_delete_success'),
-          errorMessage: t('toast_messages.toast_delete_error')
+          onSuccess: () => {
+            showToast.success(t('success'), t('toast_messages.toast_delete_success'));
+            LoadingHide();
+
+          },
+          onError: () => {
+            showToast.error(t('error'), t('toast_messages.toast_delete_error'));
+            LoadingHide();
+          }
         }
       );
-      
+
       if (userId) {
-        dispatch(getFoodByIdAPI({userId}));
+        dispatch(getFoodByIdAPI({ userId }));
       }
       setCurrentItem(null);
     }
@@ -63,7 +72,7 @@ const FirstRoute = () => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(getFoodByIdAPI({userId}));
+      dispatch(getFoodByIdAPI({ userId }));
     }
   }, [dispatch, userId]);
 

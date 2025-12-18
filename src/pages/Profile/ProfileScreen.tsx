@@ -1,7 +1,6 @@
 import { View, StyleSheet, Dimensions, Text } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { TabView, SceneMap, TabBar, SceneRendererProps, NavigationState, Route } from 'react-native-tab-view';
-import { MMKV } from 'react-native-mmkv';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,8 +11,6 @@ import {
   selectUser,
   selectIsLoadingUser,
   selectUserFollowInfo,
-  selectFollowerCount,
-  selectFollowingCount,
   selectUserFoodList,
   selectAuthError,
 } from '@/redux/selectors';

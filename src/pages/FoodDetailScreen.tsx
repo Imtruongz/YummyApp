@@ -20,14 +20,16 @@ import {
   selectUser,
 } from '@/redux/selectors';
 
-import { Loading, IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
+import { IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
 import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack } from '@/utils'
+import { useLoading } from '@/hooks/useLoading'
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'FoodDetailScreen'> { }
 
 const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
   const { foodId, userId } = route.params;
   const myUserId = getStorageString('userId') || '';
+  const { LoadingShow, LoadingHide } = useLoading();
   const [showstrInstructions, setShowstrInstructions] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [commentError, setCommentError] = useState<string | null>(null);
@@ -38,9 +40,14 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
   const [dialogTitle, setDialogTitle] = useState('');
 
   const [totalRatings, setTotalRatings] = useState<number>(0);
-  const [isAddingComment, setIsAddingComment] = useState(false);
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const selectedFood = useAppSelector(selectSelectedFood);
+  const userFoodList = useAppSelector(selectUserFoodList);
+  const foodReviewList = useAppSelector(selectFoodReviewList);
+  const user = useAppSelector(selectUser);
+  const [iconColor, setIconColor] = useState<string>(colors.light);
 
   const showDialog = (item: review) => {
     setCurrentItem(item);
@@ -55,17 +62,117 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
     }
   };
 
+  const handleScroll = (event: any) => {
+    const scrollY = event.nativeEvent.contentOffset.y;
+    if (scrollY > 275) {
+      setIconColor(colors.secondary);
+    } else {
+      setIconColor(colors.light);
+    }
+  };
+
+  const loadFoodDetails = async () => {
+    try {
+      await dispatch(getDetailFoodAPI(foodId));
+    } catch (error) {
+      console.log('Error loading food details:', error);
+    }
+  };
+
+  const loadComments = async () => {
+    try {
+      await dispatch(getAllCommentFromFoodIdAPI(foodId));
+    } catch (error) {
+      console.log('Error loading comments:', error);
+    }
+  };
+
+  const loadUserInfo = async () => {
+    try {
+      await dispatch(getUserByIdAPI({ userId: myUserId }));
+    } catch (error) {
+      console.log('Error loading user info:', error);
+    }
+  };
+
+  const loadUserFoodList = async () => {
+    try {
+      await dispatch(getFoodByIdAPI({ userId, isViewMode: true }));
+    } catch (error) {
+      console.log('Error loading user food list:', error);
+    }
+  };
+
+  const loadRatingData = async () => {
+    const result = await tryCatch(async () => {
+      return await dispatch(getAverageRatingAPI(foodId)).unwrap();
+    });
+    
+    if (result.success && result.data) {
+      setAverageRating(result.data.averageRating || 0);
+      setTotalRatings(result.data.totalRatings || 0);
+    }
+    
+    return result;
+  };
+
+  const loadUserRating = async () => {
+    if (!myUserId) return { success: false };
+    
+    const result = await tryCatch(async () => {
+      return await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
+    });
+    
+    if (result.success && result.data) {
+      setUserRating(result.data?.rating || 0);
+    } else {
+      setUserRating(0);
+    }
+    
+    return result;
+  };
+
+  useEffect(() => {
+    LoadingShow();
+    const loadInitialData = async () => {
+      try {
+        // Load basic data in parallel
+        await Promise.all([
+          loadFoodDetails(),
+          loadComments(),
+          loadUserInfo(),
+          loadUserFoodList(),
+          loadRatingData(),
+          loadUserRating()
+        ]);
+      } catch (error) {
+        console.log('Error loading food detail screen data:', error);
+      } finally {
+        LoadingHide();
+      }
+    };
+    
+    loadInitialData();
+  }, [dispatch, foodId, myUserId, userId]);
+
   const handleDelete = async () => {
     closeDeleteModal();
     if (currentItem) {
+      LoadingShow();
       await handleAsyncAction(
         async () => {
           await dispatch(deleteCommentAPI(currentItem.reviewId)).unwrap();
           await dispatch(getAllCommentFromFoodIdAPI(foodId));
         },
         {
-          successMessage: t('toast_messages.toast_comment_delete_success'),
-          errorMessage: t('toast_messages.toast_comment_delete_error')
+          onSuccess: () => {
+            LoadingHide();
+            showToast.success(t('success_title'), t('toast_messages.toast_comment_delete_success'));
+          },
+          onError: () => {
+            LoadingHide();
+            showToast.error(t('error_title'), t('toast_messages.toast_comment_delete_error'));
+          }
         }
       );
     }
@@ -76,38 +183,25 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
       showToast.error(t('error_title'), t('toast_messages.toast_food_added_error'));
       return;
     }
-
+    LoadingShow();
     await handleAsyncAction(
       async () => {
-        await dispatch(
-          addFavoriteFoodAPI({
-            userId: myUserId,
-            foodId: foodId,
-          }),
-        ).unwrap();
+        await dispatch(addFavoriteFoodAPI({
+          userId: myUserId,
+          foodId: foodId,
+        }),).unwrap();
       },
       {
-        successMessage: t('toast_messages.toast_food_added_success'),
-        errorMessage: t('recipe_detail_screen.recipe_detail_error_add')
+        onSuccess: () => {
+          LoadingHide()
+          showToast.success(t('success_title'), t('toast_messages.toast_food_added_success'));
+        },
+        onError: () => {
+          LoadingHide()
+          showToast.error(t('error_title'), t('toast_messages.toast_food_added_error'));
+        }
       }
     );
-  };
-
-  const dispatch = useAppDispatch();
-  const selectedFood = useAppSelector(selectSelectedFood);
-  const userFoodList = useAppSelector(selectUserFoodList);
-  const foodReviewList = useAppSelector(selectFoodReviewList);
-  const user = useAppSelector(selectUser);
-
-  const [iconColor, setIconColor] = useState<string>(colors.light);
-
-  const handleScroll = (event: any) => {
-    const scrollY = event.nativeEvent.contentOffset.y;
-    if (scrollY > 275) {
-      setIconColor(colors.secondary);
-    } else {
-      setIconColor(colors.light);
-    }
   };
 
   const handleAddComment = async () => {
@@ -117,7 +211,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
     }
 
     setCommentError(null);
-    setIsAddingComment(true);
+    LoadingShow();
     await handleAsyncAction(
       async () => {
         await dispatch(
@@ -132,16 +226,21 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         await dispatch(getAllCommentFromFoodIdAPI(foodId));
       },
       {
-        successMessage: t('toast_messages.toast_comment_add_success'),
-        errorMessage: t('toast_messages.toast_comment_add_error'),
-        onError: () => setCommentError('Failed to add the comment. Please try again.'),
-        onSuccess: () => setIsAddingComment(false)
+        onSuccess: () => {
+          LoadingHide();
+          showToast.success(t('success_title'), t('toast_messages.toast_comment_add_success'));
+        },
+        onError: () => {
+          LoadingHide();
+          setCommentError('Failed to add the comment. Please try again.');
+          showToast.error(t('error_title'), t('toast_messages.toast_comment_add_error'));
+        }
       }
     );
-    setIsAddingComment(false);
   };
 
   const handleRatingChange = async (rating: number) => {
+    LoadingShow();
     await handleAsyncAction(
       async () => {
         await dispatch(
@@ -160,55 +259,17 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         setTotalRatings(ratingResult.totalRatings || 0);
       },
       {
-        successMessage: t('toast_messages.toast_rating_success', { rating }),
-        errorMessage: t('toast_messages.toast_rating_error')
+        onSuccess: () => {
+          LoadingHide();
+          showToast.success(t('success_title'), t('toast_messages.toast_rating_success', { rating }));
+        },
+        onError: () => {
+          LoadingHide();
+          showToast.error(t('error_title'), t('toast_messages.toast_rating_error'));
+        }
       }
     );
   };
-
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-
-  useEffect(() => {
-    setIsInitialLoading(true);
-    const loadInitialData = async () => {
-      try {
-        await Promise.all([
-          dispatch(getDetailFoodAPI(foodId)),
-          dispatch(getAllCommentFromFoodIdAPI(foodId)),
-          dispatch(getUserByIdAPI({ userId: myUserId })),
-          dispatch(getFoodByIdAPI({ userId, isViewMode: true }))
-        ]);
-
-        // Fetch rating data
-        const ratingResult = await tryCatch(async () => {
-          return await dispatch(getAverageRatingAPI(foodId)).unwrap();
-        });
-        if (ratingResult.success && ratingResult.data) {
-          setAverageRating(ratingResult.data.averageRating || 0);
-          setTotalRatings(ratingResult.data.totalRatings || 0);
-        }
-
-        // Fetch user's rating for this food
-        if (myUserId) {
-          const userRatingResult = await tryCatch(async () => {
-            return await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
-          });
-          if (userRatingResult.success && userRatingResult.data) {
-            setUserRating(userRatingResult.data?.rating || 0);
-          } else {
-            setUserRating(0);
-          }
-        }
-      } finally {
-        setIsInitialLoading(false);
-      }
-    };
-    loadInitialData();
-  }, [dispatch, foodId, myUserId, userId]);
-
-  if (isInitialLoading) {
-    return <Loading />;
-  }
 
   const ItemView = (icon?: string, value?: string | number, label?: string) => {
     return (

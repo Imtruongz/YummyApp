@@ -300,5 +300,38 @@
   "medium": "中等",
   "hard": "困难",
   "food_portions": "份量",
-  "no_data": "没有数据"
+  "no_data": "没有数据",
+  "change_pw_screen": {
+    "change_pw_header": "更改密码",
+    "change_pw_description": "更新您的密码以保护您的账户安全",
+    "change_old_pw": "旧密码",
+    "change_new_pw": "新密码",
+    "change_confirm_pw": "确认密码",
+    "change_pw_btn": "更改密码",
+    "change_pw_success": "密码已成功更改",
+    "change_pw_error": "无法更改密码，请稍后重试。",
+    "security_tips": "密码安全提示",
+    "pw_tip_1": "使用大小写字母的混合",
+    "pw_tip_2": "包含数字和特殊字符",
+    "pw_tip_3": "避免使用个人信息",
+    "pw_tip_4": "不要重复使用旧密码",
+    "pw_requirement": "最少8个字符 • 至少1个大写字母 • 至少1个数字"
+  },
+  "setting_profile_screen": {
+    "edit_profile_header": "编辑个人资料",
+    "edit_profile_description": "更新您的个人资料信息",
+    "user_name": "用户名",
+    "email": "邮箱",
+    "description": "描述",
+    "edit_profile_input_name": "请输入您的用户名",
+    "edit_profile_input_description": "请输入您的描述",
+    "tap_to_edit_avatar": "点击编辑头像",
+    "email_cannot_change": "邮箱无法更改",
+    "profile_info": "个人资料信息",
+    "complete_profile": "完成您的个人资料，方便其他用户找到您",
+    "profile_visibility": "您的个人资料对所有用户可见",
+    "save_changes": "更改会自动保存",
+    "edit_profile_success": "您的个人资料已成功更新",
+    "edit_profile_error": "无法更新个人资料，请稍后重试"
+  }
 }

@@ -10,14 +10,24 @@ import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { selectNotificationList, selectIsLoadingNotification } from '@/redux/selectors';
 import { HomeHeader } from '@/components';
 import { colors } from '@/utils';
+import { useLoading } from '@/hooks/useLoading';
 
 const NotificationsScreen = () => {
   const route = useRoute();
   const userId = (route.params as any)?.userId;
   const dispatch = useAppDispatch();
+  const { LoadingShow, LoadingHide } = useLoading();
   const notifications = useAppSelector(selectNotificationList);
   const loading = useAppSelector(selectIsLoadingNotification);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (loading) {
+      LoadingShow();
+    } else {
+      LoadingHide();
+    }
+  }, [loading, LoadingShow, LoadingHide]);
 
   useEffect(() => {
     if (userId) {
@@ -47,9 +57,7 @@ const NotificationsScreen = () => {
         isBackHome={true}
       />
       <View style={styles.content}>
-        {loading ? (
-          <Text>{t('loading')}</Text>
-        ) : notifications.length === 0 ? (
+        {notifications.length === 0 ? (
           <Text>{t('notification_screen.notification_no_notifications')}</Text>
         ) : (
           <FlatList

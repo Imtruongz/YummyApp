@@ -300,5 +300,38 @@
   "medium": "Medium",
   "hard": "Hard",
   "food_portions": "Portions",
-  "no_data": "No data"
+  "no_data": "No data",
+  "change_pw_screen": {
+    "change_pw_header": "Change Password",
+    "change_pw_description": "Update your password to secure your account",
+    "change_old_pw": "Old Password",
+    "change_new_pw": "New Password",
+    "change_confirm_pw": "Confirm Password",
+    "change_pw_btn": "Change Password",
+    "change_pw_success": "Password changed successfully",
+    "change_pw_error": "Failed to change password. Please try again.",
+    "security_tips": "Password Security Tips",
+    "pw_tip_1": "Use a mix of uppercase and lowercase letters",
+    "pw_tip_2": "Include numbers and special characters",
+    "pw_tip_3": "Avoid using personal information",
+    "pw_tip_4": "Do not reuse old passwords",
+    "pw_requirement": "Min 8 characters • At least 1 uppercase • At least 1 number"
+  },
+  "setting_profile_screen": {
+    "edit_profile_header": "Edit Profile",
+    "edit_profile_description": "Update your profile information",
+    "user_name": "Username",
+    "email": "Email",
+    "description": "Description",
+    "edit_profile_input_name": "Enter your username",
+    "edit_profile_input_description": "Enter your description",
+    "tap_to_edit_avatar": "Tap to edit avatar",
+    "email_cannot_change": "Email cannot be changed",
+    "profile_info": "Profile Information",
+    "complete_profile": "Complete your profile so other users can easily find you",
+    "profile_visibility": "Your profile is visible to all users",
+    "save_changes": "Changes are saved automatically",
+    "edit_profile_success": "Your profile has been updated successfully",
+    "edit_profile_error": "Failed to update profile. Please try again later"
+  }
 }

@@ -10,6 +10,7 @@ import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { getFoodByIdAPI } from '../redux/slices/food/foodThunk';
 import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
+import { useLoading } from '@/hooks/useLoading';
 
 import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
 import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString, pickImageFromLibrary } from '@/utils'
@@ -32,6 +33,7 @@ const initialState: foodPayload = {
 const NewFoodScreen = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { LoadingShow, LoadingHide } = useLoading();
   const [formData, setFormData] = useState<foodPayload>(initialState);
   const [errorForm, setErrorForm] = useState<null | { [key: string]: string }>(
     null,
@@ -145,6 +147,7 @@ const NewFoodScreen = () => {
     };
 
     setIsSubmitting(true);
+    LoadingShow();
 
     await handleAsyncAction(
       () => dispatch(addFoodAPI(updatedFormData)).unwrap(),
@@ -158,15 +161,16 @@ const NewFoodScreen = () => {
           setErrorForm(null);
           setOriginalImageUri('');
           setIsSubmitting(false);
-
+          LoadingHide();
+          showToast.success(t('success'), t('new_food_screen.add_success_message'));
           resetTo('HomeNavigator');
         },
         onError: (error: any) => {
           setErrorForm(error?.data?.errors || { general: t('general_error') });
           setIsSubmitting(false);
+          LoadingHide();
+          showToast.error(t('error'), t('new_food_screen.add_error_message'));
         },
-        successMessage: t('new_food_screen.add_success_message'),
-        errorMessage: t('new_food_screen.add_error_message'),
       }
     );
   };
@@ -450,7 +454,7 @@ const NewFoodScreen = () => {
           )}
 
           <CustomButton
-            title={`+ ${t('new_food_screen.add_add_ingredient')}`}
+            title={t('new_food_screen.add_add_ingredient')}
             onPress={handleAddIngredient}
             style={styles.addButton}
           />
@@ -499,7 +503,7 @@ const NewFoodScreen = () => {
           )}
 
           <CustomButton
-            title={`+ ${t('new_food_screen.add_add_step')}`}
+            title={t('new_food_screen.add_add_step')}
             onPress={handleAddStep}
             style={styles.addButton}
           />
@@ -517,9 +521,9 @@ const NewFoodScreen = () => {
       </ScrollView>
 
       {/* Sticky Submit Button */}
-      <View style={styles.bottomBar}>
+      <View style={styles.buttonContainer}>
         <CustomButton
-          title={isSubmitting ? `⏳ ${t('loading')}...` : `✨ ${t('new_food_screen.add_add_food_btn')}`}
+          title={t('new_food_screen.add_add_food_btn')}
           onPress={handleSubmit}
           disabled={isSubmitting}
           style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
@@ -714,6 +718,7 @@ const styles = StyleSheet.create({
     color: colors.dark,
   },
   addButton: {
+    flex: 1,
     marginTop: 8,
   },
   errorText: {
@@ -739,20 +744,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
-  bottomBar: {
+  buttonContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    paddingBottom: 20,
-    backgroundColor: colors.light,
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 5,
+    padding: 26,
+    backgroundColor: 'transparent',
   },
   submitButton: {
     minHeight: 52,

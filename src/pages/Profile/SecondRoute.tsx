@@ -6,21 +6,20 @@ import {useAppSelector, useAppDispatch} from '@/redux/hooks';
 import {RootState} from '@/redux/store';
 
 import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
-import { Typography, NoData, ConfirmationModal } from '@/components'
+import { NoData, ConfirmationModal } from '@/components'
 import {colors, handleAsyncAction, useModal, navigate, getStorageString} from '@/utils';
+import { useLoading } from '@/hooks/useLoading';
 
 const SecondRoute = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { LoadingShow, LoadingHide } = useLoading();
   const [userId, setUserId] = useState(getStorageString('userId') || '');
   const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
     (state: RootState) => state.favorite,
   );
   const {foodList} = useAppSelector((state: RootState) => state.food);
-
-  const [visible, setVisible] = useState<boolean>(false);
   const [currentFavoriteId, setCurrentFavoriteId] = useState<string | null>(null);
-
   const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
 
   useEffect(() => {
@@ -43,6 +42,7 @@ const SecondRoute = () => {
 
   const handleDeleteFavorite = async () => {
     if (currentFavoriteId && userId) {
+      LoadingShow();
       await handleAsyncAction(
         async () => {
           await dispatch(
@@ -54,7 +54,13 @@ const SecondRoute = () => {
         },
         {
           successMessage: t('toast_messages.toast_delete_success'),
-          errorMessage: t('toast_messages.toast_delete_error')
+          errorMessage: t('toast_messages.toast_delete_error'),
+          onSuccess: () => {
+            LoadingHide();
+          },
+          onError: () => {
+            LoadingHide();
+          }
         }
       );
       closeDeleteModal();

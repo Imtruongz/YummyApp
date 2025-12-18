@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import api from '@/api/config';
+import { useLoading } from '@/hooks/useLoading';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk.ts';
 import { getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
@@ -18,7 +19,7 @@ import {
   selectUserFollowInfo,
 } from '@/redux/selectors';
 
-import { HomeHeader, Loading, NoData, FoodItemCard, CustomAvatar } from '@/components'
+import { HomeHeader, NoData, FoodItemCard, CustomAvatar } from '@/components'
 import { img, colors, handleAsyncAction, showToast, navigate, getStorageString } from '@/utils'
 
 const screenWidth = Dimensions.get('window').width;
@@ -43,6 +44,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
   const [showBioExpanded, setShowBioExpanded] = useState(false);
+  const { LoadingShow, LoadingHide } = useLoading();
 
   const viewedUserFoodList = useAppSelector(selectViewedUserFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
@@ -89,6 +91,14 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
       console.log('Error loading user data:', error);
     }
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (isLoadingFood || isLoadingUser) {
+      LoadingShow();
+    } else {
+      LoadingHide();
+    }
+  }, [isLoadingFood, isLoadingUser, LoadingShow, LoadingHide]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -158,10 +168,6 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
       }
     );
   }, [userId, t]);
-
-  if (isLoadingFood || isLoadingUser) {
-    return <Loading />;
-  }
 
   const hasNoData = !viewedUserFoodList || viewedUserFoodList.length === 0;
 
