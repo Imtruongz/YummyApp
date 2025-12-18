@@ -163,3 +163,35 @@ export const resendVerificationEmailAPI = createAsyncThunk(
     }
   },
 );
+
+// ← NEW: Forgot Password - Send verification code
+export const forgotPasswordAPI = createAsyncThunk(
+  'auth/forgotPasswordAPI',
+  async (payload: {email: string}, {rejectWithValue}) => {
+    try {
+      const response = await api.post('/users/forgot-password', payload);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to send verification code';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+// ← NEW: Reset Password - Verify code & reset password
+export const resetPasswordAPI = createAsyncThunk(
+  'auth/resetPasswordAPI',
+  async (payload: {email: string; verificationCode: string; newPassword: string}, {rejectWithValue}) => {
+    try {
+      const response = await api.post('/users/verify-reset-code', payload);
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to reset password';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);

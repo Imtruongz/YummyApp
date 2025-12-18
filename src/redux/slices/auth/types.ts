@@ -15,7 +15,7 @@ export interface VerifyEmailPayload {
     username: string;
     password: string;
     email: string;
-  };
+  } | null;
 }
 
 export interface UpdatePayload {

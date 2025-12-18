@@ -142,13 +142,6 @@
     "login_success_toast": "Login successful",
     "login_error_toast": "An error occurred, please try again"
   },
-  "forgot_password_screen": {
-    "forgot_pw_header": "Forgot Password",
-    "forgot_pw_email": "Enter your email to reset your password",
-    "forgot_pw_btn": "Send password reset email",
-    "forgot_pw_success": "Please check your email to reset your password.",
-    "forgot_pw_error": "Failed to send reset email. Please try again later."
-  },
   "signup_screen": {
     "signup_header": "Sign up",
     "signup_username": "Username",
@@ -333,5 +326,39 @@
     "save_changes": "Changes are saved automatically",
     "edit_profile_success": "Your profile has been updated successfully",
     "edit_profile_error": "Failed to update profile. Please try again later"
+  },
+  "forgot_password_screen": {
+    "forgot_pw_header": "Forgot Password?",
+    "forgot_pw_subtitle": "Enter your email to receive a verification code",
+    "forgot_pw_email": "Email",
+    "email_placeholder": "Enter your email",
+    "forgot_pw_btn": "Send Verification Code",
+    "code_sent_success": "Verification code has been sent to your email",
+    "error_email_required": "Please enter your email",
+    "error_invalid_email": "Invalid email",
+    "info_message": "We will send a 6-digit verification code to your email",
+    "remember_password": "Remember your password?",
+    "login_link": "Sign In"
+  },
+  "reset_password_screen": {
+    "reset_pw_header": "Reset Password",
+    "reset_pw_description": "Enter your new password",
+    "reset_new_pw": "New Password",
+    "new_pw_placeholder": "Enter new password",
+    "reset_confirm_pw": "Confirm Password",
+    "confirm_pw_placeholder": "Confirm password",
+    "reset_pw_btn": "Reset Password",
+    "reset_pw_success": "Password has been reset successfully",
+    "reset_pw_error": "Failed to reset password",
+    "error_password_required": "Please enter a password",
+    "error_password_min": "Password must be at least 6 characters",
+    "error_confirm_required": "Please confirm your password",
+    "error_password_mismatch": "Passwords do not match",
+    "error_invalid_token": "Invalid token",
+    "validation_error": "Validation error",
+    "password_requirement": "Password Requirements",
+    "pw_req_1": "At least 6 characters long",
+    "pw_req_2": "Must match confirmation password",
+    "pw_req_3": "Cannot be empty"
   }
 }

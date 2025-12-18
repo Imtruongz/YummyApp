@@ -38,7 +38,7 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ route }) => {
     const dispatch = useAppDispatch();
     const { LoadingShow, LoadingHide } = useLoading();
     const signupFormData = useAppSelector(state => state.signup.formData);
-    const { email } = route.params || {};
+    const { email, flowType = 'signup' } = route.params || {}; // ← Detect flow type
 
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const [error, setError] = useState('');
@@ -97,7 +97,8 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ route }) => {
             return;
         }
 
-        if (!signupFormData) {
+        // ← Check flow type
+        if (flowType === 'signup' && !signupFormData) {
             setError(t('verification_screen.error_form_data'));
             return;
         }
@@ -106,32 +107,39 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ route }) => {
         LoadingShow();
 
         try {
-            // ✅ Gửi form data cùng với email và code
-            const resultAction = await dispatch(
-                verifyEmailAPI({
-                    email,
-                    verificationCode,
-                    userData: signupFormData // ← Gửi form data từ Redux
-                })
-            );
+            if (flowType === 'signup') {
+                // ✅ SIGNUP FLOW: Verify email + create user
+                const resultAction = await dispatch(
+                    verifyEmailAPI({
+                        email,
+                        verificationCode,
+                        userData: signupFormData || undefined // ← Convert null to undefined
+                    })
+                );
 
-            if (!verifyEmailAPI.fulfilled.match(resultAction)) {
-                throw new Error(t('verification_screen.error_verification_failed'));
+                if (!verifyEmailAPI.fulfilled.match(resultAction)) {
+                    throw new Error(t('verification_screen.error_verification_failed'));
+                }
+
+                const user = resultAction.payload;
+                if (!user) {
+                    throw new Error(t('verification_screen.error_verification_failed'));
+                }
+
+                // ✅ Email verified, xóa form data từ Redux
+                dispatch(clearSignUpForm());
+                navigate('LoginScreen');
+                showToast.success(t('signup_screen.signup_register_success_toast'));
+            } else if (flowType === 'forgotPassword') {
+                // ✅ FORGOT PASSWORD FLOW: Just verify code, then go to reset password
+                // Code is verified, navigate to reset password screen with code
+                navigate('ResetPasswordPage', { email, verificationCode });
+                showToast.success(t('verification_screen.code_verified'));
             }
-
-            const user = resultAction.payload;
-            if (!user) {
-                throw new Error(t('verification_screen.error_verification_failed'));
-            }
-
-            // ✅ Email verified, xóa form data từ Redux
-            dispatch(clearSignUpForm());
-            navigate('LoginScreen');
-            showToast.success(t('signup_screen.signup_register_success_toast'));
         } catch (error: any) {
             const errorMsg = error?.message || 'Verification failed';
             setError(errorMsg);
-            showToast.error(t('signup_screen.signup_register_error_toast'));
+            showToast.error(flowType === 'signup' ? t('signup_screen.signup_register_error_toast') : 'Verification failed');
         } finally {
             LoadingHide();
         }

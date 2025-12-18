@@ -6,8 +6,9 @@ export type RootStackParamList = {
 export type AuthStackParamList = {
   LoginScreen: undefined;
   SignUpPage: undefined;
-  VerifyEmailScreen: { email: string };
+  VerifyEmailScreen: { email: string; flowType?: 'signup' | 'forgotPassword' };
   ForgotPasswordPage: undefined;
+  ResetPasswordPage: { email: string; verificationCode?: string };
 };
 
 export type MainStackParamList = {

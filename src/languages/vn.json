@@ -143,13 +143,6 @@
     "login_success_toast": "Đăng nhập thành công",
     "login_error_toast": "Đã xảy ra lỗi, vui lòng thử lại"
   },
-  "forgot_password_screen": {
-    "forgot_pw_header": "Quên mật khẩu",
-    "forgot_pw_email": "Nhập email của bạn để đặt lại mật khẩu",
-    "forgot_pw_btn": "Gửi email đặt lại mật khẩu",
-    "forgot_pw_success": "Vui lòng kiểm tra email của bạn để đặt lại mật khẩu.",
-    "forgot_pw_error": "Không thể gửi email đặt lại. Vui lòng thử lại sau."
-  },
   "signup_screen": {
     "signup_header": "Đăng ký",
     "signup_username": "Tên người dùng",
@@ -347,6 +340,40 @@
     "edit_profile_success": "Hồ sơ của bạn đã được cập nhật thành công",
     "edit_profile_error": "Không thể cập nhật hồ sơ. Vui lòng thử lại sau"
   },
+  "forgot_password_screen": {
+    "forgot_pw_header": "Quên Mật Khẩu?",
+    "forgot_pw_subtitle": "Nhập email của bạn để nhận mã xác minh",
+    "forgot_pw_email": "Email",
+    "email_placeholder": "Nhập email của bạn",
+    "forgot_pw_btn": "Gửi Mã Xác Minh",
+    "code_sent_success": "Mã xác minh đã được gửi đến email",
+    "error_email_required": "Vui lòng nhập email",
+    "error_invalid_email": "Email không hợp lệ",
+    "info_message": "Chúng tôi sẽ gửi mã xác minh 6 chữ số đến email của bạn",
+    "remember_password": "Bạn nhớ mật khẩu của mình?",
+    "login_link": "Đăng nhập"
+  },
+  "reset_password_screen": {
+    "reset_pw_header": "Đặt Lại Mật Khẩu",
+    "reset_pw_description": "Nhập mật khẩu mới của bạn",
+    "reset_new_pw": "Mật Khẩu Mới",
+    "new_pw_placeholder": "Nhập mật khẩu mới",
+    "reset_confirm_pw": "Xác Nhận Mật Khẩu",
+    "confirm_pw_placeholder": "Xác nhận mật khẩu",
+    "reset_pw_btn": "Đặt Lại Mật Khẩu",
+    "reset_pw_success": "Mật khẩu đã được đặt lại thành công",
+    "reset_pw_error": "Không thể đặt lại mật khẩu",
+    "error_password_required": "Vui lòng nhập mật khẩu",
+    "error_password_min": "Mật khẩu phải ít nhất 6 ký tự",
+    "error_confirm_required": "Vui lòng xác nhận mật khẩu",
+    "error_password_mismatch": "Mật khẩu không trùng khớp",
+    "error_invalid_token": "Token không hợp lệ",
+    "validation_error": "Lỗi xác thực",
+    "password_requirement": "Yêu Cầu Mật Khẩu",
+    "pw_req_1": "Tối thiểu 6 ký tự",
+    "pw_req_2": "Phải trùng với xác nhận",
+    "pw_req_3": "Không được để trống"
+  },
   "add_category": "Danh mục",
   "loading": "Đang tải...",
   "reload": "Tải lại",
@@ -370,5 +397,6 @@
   "hard": "Khó",
   "food_portions": "Khẩu phần",
   "no_data": "Không có dữ liệu",
-  "edit_button": "Chỉnh sửa "
+  "edit_button": "Chỉnh sửa ",
+  "back_button": "Quay lại"
 }
