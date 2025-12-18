@@ -131,8 +131,20 @@ const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({ route }) => {
                 navigate('LoginScreen');
                 showToast.success(t('signup_screen.signup_register_success_toast'));
             } else if (flowType === 'forgotPassword') {
-                // ✅ FORGOT PASSWORD FLOW: Just verify code, then go to reset password
-                // Code is verified, navigate to reset password screen with code
+                // ✅ FORGOT PASSWORD FLOW: Verify code first before going to reset password
+                // Call API to verify the code is correct
+                const resultAction = await dispatch(
+                    verifyEmailAPI({
+                        email,
+                        verificationCode,
+                    })
+                );
+
+                if (!verifyEmailAPI.fulfilled.match(resultAction)) {
+                    throw new Error(t('verification_screen.error_verification_failed'));
+                }
+
+                // Code is verified, navigate to reset password screen
                 navigate('ResetPasswordPage', { email, verificationCode });
                 showToast.success(t('verification_screen.code_verified'));
             }
