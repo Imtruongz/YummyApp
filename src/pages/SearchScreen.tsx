@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -15,8 +16,8 @@ import {
 } from '@/redux/selectors';
 
 import api from '@/api/config';
-import { HomeHeader, CustomInput } from '@/components'
-import { colors, containsTextCaseInsensitive, ImagesSvg, tryCatch, navigateToFoodDetail } from '@/utils'
+import { HomeHeader, CustomInput, CustomButton } from '@/components'
+import { colors, ImagesSvg, tryCatch, navigateToFoodDetail } from '@/utils'
 
 const SearchScreen = () => {
   const { t } = useTranslation();
@@ -31,7 +32,6 @@ const SearchScreen = () => {
     foodDescription: string;
     foodThumbnail: string;
   };
-  const [allFoods, setAllFoods] = useState<FoodResult[]>([]);
   const [results, setResults] = useState<FoodResult[]>([]);
   const categoryFoodList = useAppSelector(selectCategoryFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
@@ -39,40 +39,47 @@ const SearchScreen = () => {
   const [selectedCategory, setSelectedCategory] = useState<{ id: string, name: string } | null>(null);
 
   useEffect(() => {
-    const fetchFoods = async () => {
-      setLoading(true);
-      const result = await tryCatch(async () => {
-        const res = await api.get<{ data: FoodResult[], pagination: any }>('/foods/getAll', {
-          params: { page: 1, limit: 1000 } // Lấy tất cả cho search
-        });
-        return res.data.data || []; // Lấy .data từ response
-      });
-      if (result.success && result.data) {
-        setAllFoods(result.data);
-        setResults(result.data);
-      } else {
-        setAllFoods([]);
-        setResults([]);
-      }
-      setLoading(false);
-    };
-    fetchFoods();
     dispatch(getAllCategoriesAPI());
   }, [dispatch]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // Reset state khi focus vào màn hình
+      setQuery('');
+      setResults([]);
+      setIsCategorySearch(false);
+      setSelectedCategory(null);
+      setLoading(false);
+    }, [])
+  );
 
   const handleSearch = (text: string) => {
     setQuery(text);
     setIsCategorySearch(false);
-    if (text.trim() === '') {
-      setResults(allFoods);
-    } else {
-      setResults(
-        allFoods.filter(f =>
-          containsTextCaseInsensitive(f.foodName, text) ||
-          (f.foodDescription && containsTextCaseInsensitive(f.foodDescription, text))
-        )
-      );
+  };
+
+  const handleSearchSubmit = async () => {
+    if (query.trim() === '') {
+      setResults([]);
+      return;
     }
+    searchFoods(query);
+  };
+
+  const searchFoods = async (searchQuery: string) => {
+    setLoading(true);
+    const result = await tryCatch(async () => {
+      const res = await api.get<{ data: FoodResult[], pagination: any }>('/foods/search', {
+        params: { q: searchQuery, page: 1, limit: 20 }
+      });
+      return res.data.data || [];
+    });
+    if (result.success && result.data) {
+      setResults(result.data);
+    } else {
+      setResults([]);
+    }
+    setLoading(false);
   };
 
   const handleCategorySearch = (categoryId: string, categoryName: string) => {
@@ -85,12 +92,12 @@ const SearchScreen = () => {
   const handleClearCategory = () => {
     setIsCategorySearch(false);
     setSelectedCategory(null);
-    setResults(allFoods);
+    setResults([]);
   };
 
 
   const renderItem = ({ item }: { item: FoodResult }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.item}
       onPress={() => navigateToFoodDetail(item.foodId, '')}
     >
@@ -109,78 +116,85 @@ const SearchScreen = () => {
         title={t('search')}
         showNotification={false}
       />
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.searchContainer}>
-          <CustomInput
-            style={styles.inputHeader}
-            placeholder={t('new_food_screen.add_placeholder_food_name')}
-            value={query}
-            onChangeText={handleSearch}
-            showIcon={true}
-            iconXml={ImagesSvg.icSearch}
-            isDisabled={true}
-            iconOnLeft={true}
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputContainer}>
+        <CustomInput
+          style={styles.inputHeader}
+          placeholder={t('search_screen.search')}
+          value={query}
+          onChangeText={handleSearch}
+          showIcon={true}
+          iconXml={ImagesSvg.icSearch}
+          isDisabled={true}
+          iconOnLeft={true}
+        />
+        {query.trim() && (
+          <CustomButton
+            title={t('search_screen.search')}
+            style={styles.searchButton}
+            onPress={handleSearchSubmit}
           />
-          {isCategorySearch && selectedCategory && (
-            <View style={styles.selectedCategoryTagContainer}>
-              <View style={styles.selectedCategoryTag}>
-                <Text style={styles.selectedCategoryText}>{selectedCategory.name}</Text>
-                <TouchableOpacity onPress={handleClearCategory} style={styles.clearTagBtn}>
-                  <Text style={styles.clearTagText}>×</Text>
-                </TouchableOpacity>
+        )}
+        </View>
+        {isCategorySearch && selectedCategory && (
+          <View style={styles.selectedCategoryTagContainer}>
+            <View style={styles.selectedCategoryTag}>
+              <Text style={styles.selectedCategoryText}>{selectedCategory.name}</Text>
+              <TouchableOpacity onPress={handleClearCategory} style={styles.clearTagBtn}>
+                <Text style={styles.clearTagText}>×</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+        {query.trim() === '' && !isCategorySearch ? (
+          <View style={styles.suggestionContainer}>
+            <Text style={styles.suggestionTitle}>{t('search_screen.search_suggestion_title')}</Text>
+            {isLoadingCategory ? (
+              <View style={{ width: '100%', alignItems: 'center' }}>
+                <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
               </View>
-            </View>
-          )}
-          {query.trim() === '' && !isCategorySearch ? (
-            <View style={styles.suggestionContainer}>
-              <Text style={styles.suggestionTitle}>{t('search_screen.search_suggestion_title')}</Text>
-              {isLoadingCategory ? (
-                <View style={{ width: '100%', alignItems: 'center' }}>
-                  <ActivityIndicator size="small" color="#888" style={{ marginTop: 8 }} />
-                </View>
-              ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 8 }}>
-                  {categoryList.map(cat => (
-                    <TouchableOpacity
-                      key={cat.categoryId}
-                      style={styles.suggestionChip}
-                      onPress={() => handleCategorySearch(cat.categoryId, cat.categoryName)}
-                    >
-                      <Text style={styles.suggestionText}>{cat.categoryName}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              )}
-            </View>
-          ) : isCategorySearch ? (
-            isLoadingFood ? (
-              <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
-            ) : categoryFoodList.length === 0 ? (
-              <Text style={styles.empty}>{t('search_screen.list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
             ) : (
-              <FlatList
-                data={categoryFoodList}
-                keyExtractor={item => item.foodId}
-                renderItem={renderItem}
-                style={{ width: '100%' }}
-                contentContainerStyle={{ paddingBottom: 24 }}
-              />
-            )
-          ) : loading ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 8 }}>
+                {categoryList.map(cat => (
+                  <TouchableOpacity
+                    key={cat.categoryId}
+                    style={styles.suggestionChip}
+                    onPress={() => handleCategorySearch(cat.categoryId, cat.categoryName)}
+                  >
+                    <Text style={styles.suggestionText}>{cat.categoryName}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+        ) : isCategorySearch ? (
+          isLoadingFood ? (
             <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
-          ) : results.length === 0 ? (
+          ) : categoryFoodList.length === 0 ? (
             <Text style={styles.empty}>{t('search_screen.list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
           ) : (
             <FlatList
-              data={results}
+              data={categoryFoodList}
               keyExtractor={item => item.foodId}
               renderItem={renderItem}
               style={{ width: '100%' }}
               contentContainerStyle={{ paddingBottom: 24 }}
             />
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+          )
+        ) : loading ? (
+          <ActivityIndicator size="large" color="#888" style={{ marginTop: 24 }} />
+        ) : results.length === 0 ? (
+          <Text style={styles.empty}>{t('search_screen.list_can_not_find') || 'Không tìm thấy món ăn phù hợp'}</Text>
+        ) : (
+          <FlatList
+            data={results}
+            keyExtractor={item => item.foodId}
+            renderItem={renderItem}
+            style={{ width: '100%' }}
+            contentContainerStyle={{ paddingBottom: 24 }}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 }
@@ -220,11 +234,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   searchContainer: {
-    flex: 1,
-    paddingHorizontal: 8,
-    paddingTop: 16,
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  searchInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 6,
+    marginBottom: 12,
   },
   input: {
+    flex: 1,
     width: '100%',
     borderWidth: 1,
     borderColor: colors.gray,
@@ -233,6 +257,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 16,
     backgroundColor: '#fafafa',
+  },
+  searchButton: {
+    width: 80,
+    height: 44,
+    backgroundColor: colors.primary,
+  },
+  searchButtonText: {
+    color: colors.white,
+    fontWeight: '600',
+    fontSize: 14,
   },
   suggestionContainer: {
     marginTop: 24,
@@ -296,9 +330,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputHeader: {
+    flex: 1,
     height: 52,
     paddingHorizontal: 12,
-    margin: 8,
     backgroundColor: colors.light,
   },
 });

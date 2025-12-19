@@ -32,10 +32,10 @@ const NoData: React.FC<NoDataProps> = ({
   return (
     <View style={styles.container}>
       <View style={circleStyle}>
-        <IconSvg xml={ImagesSvg.icNoData} width={120} height={120} color={colors.gray} />
+        <IconSvg xml={ImagesSvg.icNoData} width={120} height={120} color={colors.smallText} />
       </View>
 
-      <Text style={[styles.text, { fontSize: textSize, color: colors.dark }]}>
+      <Text style={[styles.text, { fontSize: textSize, color: colors.smallText }]}>
         {message}
       </Text>
     </View>
@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 20,
-    color: colors.dark,
     textAlign: 'center',
     fontWeight: '500',
   },

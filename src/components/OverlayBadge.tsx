@@ -14,7 +14,7 @@ const OverlayBadge: React.FC<OverlayBadgeProps> = ({imageUrl, onEditPress}) => {
         <Image source={{uri: imageUrl}} style={styles.avatar} />
       </View>
       <TouchableOpacity style={styles.editBadge} onPress={onEditPress}>
-        <IconSvg xml={ImagesSvg.icEdit} width={16} height={16} color='white' />
+        <IconSvg xml={ImagesSvg.icEdit} width={16} height={16} color='black' />
       </TouchableOpacity>
     </View>
   );
