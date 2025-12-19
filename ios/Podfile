@@ -17,14 +17,8 @@ end
 
 target 'YummyApp' do
   config = use_native_modules!
-  # Firebase pods
-  pod 'Firebase/Core'
-  pod 'Firebase/Analytics'
-  pod 'Firebase/Crashlytics'
-  pod 'Firebase/Messaging'
 
   use_frameworks! :linkage => :static
-  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],

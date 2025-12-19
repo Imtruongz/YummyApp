@@ -5,7 +5,6 @@ import { RootStackParamList } from '../../../android/types/StackNavType';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import '../../languages/i18n';
-import crashlytics from '@react-native-firebase/crashlytics';
 import { useTranslation } from 'react-i18next';
 import { changeLanguage } from '../../languages/i18n';
 
@@ -57,8 +56,6 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
   };
 
   const onPressCrashapp = () => {
-    // Crash app để test firebase crashlytics
-    crashlytics().crash();
   }
 
 

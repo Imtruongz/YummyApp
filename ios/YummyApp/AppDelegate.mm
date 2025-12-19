@@ -1,5 +1,4 @@
 #import "AppDelegate.h"
-#import <Firebase.h>
 #import <React/RCTBundleURLProvider.h>
 #import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
 
@@ -8,7 +7,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [FIRApp configure]; // Khởi tạo Firebase
   
   self.moduleName = @"YummyApp";
   self.dependencyProvider = [RCTAppDependencyProvider new];

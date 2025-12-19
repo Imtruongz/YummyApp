@@ -8,7 +8,6 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 import { CustomInput, CustomButton } from '@/components'
 import { colors, ImagesSvg, FacebookIcon, URLS, verifyEmail, verifyPassword, handleAsyncAction, setStorageString } from '@/utils';
-import { getFCMTokenAndUpdate } from '@/utils/fcmHelper';
 import { changeLanguage } from '@/languages/i18n';
 import IconSvg from '@/components/IconSvg';
 
@@ -78,9 +77,6 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       setStorageString('accessToken', user.accessToken);
       setStorageString('refreshToken', user.refreshToken);
 
-      // Lấy FCM token
-      await getFCMTokenAndUpdate(user.accessToken);
-
       signIn();
     } catch (error: any) {
       const errorMsg = error?.message || t('login_screen.login_error_toast');
@@ -126,9 +122,6 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       setStorageString('userId', String(user.user.userId || ''));
       setStorageString('accessToken', user.accessToken);
       setStorageString('refreshToken', user.refreshToken);
-
-      // Lấy FCM token
-      await getFCMTokenAndUpdate(user.accessToken);
 
       signIn();
     } catch (error: any) {
