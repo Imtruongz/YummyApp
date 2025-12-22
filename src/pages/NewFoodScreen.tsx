@@ -13,9 +13,7 @@ import { selectCategoryList } from '@/redux/selectors';
 import { useLoading } from '@/hooks/useLoading';
 
 import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, getStorageString, pickImageFromLibrary } from '@/utils'
-
-const userId = getStorageString('userId') || '';
+import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, pickImageFromLibrary } from '@/utils'
 
 const initialState: foodPayload = {
   foodName: '',
@@ -45,6 +43,9 @@ const NewFoodScreen = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const categoryList = useAppSelector(selectCategoryList);
+  // ⭐ Get userId from Redux auth state (always up-to-date after login)
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const userId = currentUser?.userId || '';
 
   const handleAddIngredient = () => {
     setIngredients([...ingredients, '']);
@@ -145,6 +146,15 @@ const NewFoodScreen = () => {
       foodIngredients: filteredIngredients,
       foodSteps: filteredSteps,
     };
+
+    // ⭐ Validate userId exists
+    if (!userId) {
+      setErrorForm({ general: t('general_error') });
+      setIsSubmitting(false);
+      LoadingHide();
+      showToast.error(t('error'), 'User not logged in. Please login again.');
+      return;
+    }
 
     setIsSubmitting(true);
     LoadingShow();

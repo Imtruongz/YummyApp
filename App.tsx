@@ -18,7 +18,14 @@ export default function App() {
           isSignedIn,
           signIn: () => setIsSignedIn(true),
           signOut: () => {
+            // ⭐ Clear all storage
             deleteStorageKey('accessToken');
+            deleteStorageKey('refreshToken');
+            deleteStorageKey('userId');
+            
+            // ⭐ Reset Redux store to clear all user data
+            store.dispatch({ type: 'RESET_STORE' });
+            
             setIsSignedIn(false);
           }
         }}>

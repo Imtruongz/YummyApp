@@ -13,6 +13,7 @@ import PaymentScreen from '../pages/Payment/PaymentScreen';
 import PaymentSuccessScreen from '../pages/Payment/PaymentSuccessScreen';
 import YummyAIScreen from '../pages/YummyAI/screens/YummyAIScreen';
 import ChatHistoryNavigator from './ChatHistoryNavigator';
+import FollowingFeedScreen from '../pages/FollowingFeedScreen';
 
 const HomeNavigator = () => {
   const Stack = createNativeStackNavigator<HomeStack>();
@@ -26,6 +27,7 @@ const HomeNavigator = () => {
       <Stack.Screen name="NewFoodScreen" component={NewFoodScreen} />
       <Stack.Screen name="EditFoodScreen" component={EditFoodScreen} />
       <Stack.Screen name="ListFoodScreen" component={ListFoodScreen} />
+      <Stack.Screen name="FollowingFeedScreen" component={FollowingFeedScreen} />
       <Stack.Screen name="YummyAIScreen" component={YummyAIScreen} />
       <Stack.Screen name="ChatHistory" component={ChatHistoryNavigator} />
       <Stack.Screen name="ListFoodByUserPage" component={UsersProfileScreen} />

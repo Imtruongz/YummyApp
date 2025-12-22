@@ -231,6 +231,9 @@
     "search_suggestion_title": "按类别搜索建议",
     "list_can_not_find": "未找到符合条件的美食"
   },
+  "explore_all": "探索全部",
+  "following_feed": "关注的动态",
+  "follow_people_to_see_feed": "关注用户以查看他们的美食分享",
   "bank_screen": {
     "add_bank_account": "添加银行账户",
     "add_new_bank_account": "添加新银行账户",

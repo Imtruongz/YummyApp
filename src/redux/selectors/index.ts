@@ -14,6 +14,7 @@ export {
   selectUserFoodList,
   selectViewedUserFoodList,
   selectCategoryFoodList,
+  selectFollowingFoodList,
   selectSelectedFood,
   selectIsLoadingFood,
   selectFoodError,

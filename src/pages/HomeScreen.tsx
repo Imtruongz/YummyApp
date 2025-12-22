@@ -12,7 +12,7 @@ import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString }
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
-import { getAllFoodAPI } from '@/redux/slices/food/foodThunk';
+import { getAllFoodAPI, getFollowingFoodsAPI } from '@/redux/slices/food/foodThunk';
 import { getAllUsers } from '@/redux/slices/auth/authThunk';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
 import {
@@ -23,6 +23,7 @@ import {
   selectListUser,
   selectCategoryList,
   selectIsLoadingCategory,
+  selectFollowingFoodList,
 } from '@/redux/selectors';
 interface HomeScreenProps
   extends NativeStackScreenProps<RootStackParamList, 'HomeScreen'> { }
@@ -34,6 +35,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
 
   const foodList = useAppSelector(selectFoodList);
   const isLoadingFood = useAppSelector(selectIsLoadingFood);
+  const followingFoodList = useAppSelector(selectFollowingFoodList);
   const user = useAppSelector(selectUser);
   const isLoadingUser = useAppSelector(selectIsLoadingUser);
   const ListUser = useAppSelector(selectListUser);
@@ -51,6 +53,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
           await Promise.all([
             dispatch(getAllCategoriesAPI()),
             dispatch(getAllFoodAPI({ page: 1, limit: 10 })),
+            dispatch(getFollowingFoodsAPI({ userId, page: 1, limit: 10 })),
             dispatch(getAllUsers()),
             dispatch(getUserByIdAPI({ userId })),
           ]);
@@ -243,6 +246,90 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             </Pressable>
           )}
         />
+        {/* Following Feed Title */}
+        <TouchableOpacity
+          onPress={() => navigate('FollowingFeedScreen')}
+          style={styles.titleContainer}>
+          <CustomTitle title={t('following_feed') || 'Following Feed'} />
+          <CustomTitle style={styles.seeAll} title={t('home_screen.home_see_all')} />
+        </TouchableOpacity>
+        {/* Following Feed List */}
+        {followingFoodList && followingFoodList.length > 0 ? (
+          <FlatList
+            data={followingFoodList.slice(0, 5)}
+            horizontal
+            showsHorizontalScrollIndicator={true}
+            initialNumToRender={5}
+            keyExtractor={(item, index) => `${item.foodId}_${index}`}
+            renderItem={({ item }) => (
+              <Pressable
+                style={styles.itemContainer}
+                onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId })}>
+                <Image source={{ uri: item.foodThumbnail }} style={styles.img2} />
+                <View style={styles.titleItemLeft2}>
+                  <Typography
+                    title={item.foodName}
+                    fontSize={18}
+                    fontWeight="700"
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                  />
+                  <Typography
+                    title={item.foodDescription}
+                    fontSize={14}
+                    numberOfLines={2}
+                    ellipsizeMode="tail"
+                    style={{ color: colors.smallText }}
+                  />
+
+                  {/* Info Row: Rating, Cooking Time, Difficulty */}
+                  <View style={styles.infoRow}>
+                    {(item.averageRating !== undefined && item.averageRating !== null) && (
+                      <View style={styles.infoBadge}>
+                        <Text style={styles.infoBadgeText}>⭐ {(item.averageRating || 0).toFixed(1)}</Text>
+                      </View>
+                    )}
+                    {item.CookingTime && (
+                      <View style={styles.infoBadge}>
+                        <Text style={styles.infoBadgeText}>⏱️ {item.CookingTime}m</Text>
+                      </View>
+                    )}
+                    {item.difficultyLevel && (
+                      <View style={styles.infoBadge}>
+                        <Text style={styles.infoBadgeText}>
+                          ⚡ {item.difficultyLevel === 'easy' ? 'Dễ' : item.difficultyLevel === 'medium' ? 'Trung bình' : 'Khó'}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <CustomAvatar
+                      width={30}
+                      height={30}
+                      borderRadius={15}
+                      image={item.userDetail?.avatar || img.defaultAvatar}
+                    />
+                    <Typography
+                      title={item.userDetail?.username}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={{ flex: 1 }}
+                    />
+                  </View>
+                </View>
+                <View style={styles.favoriteIcon}>
+                  <IconSvg xml={ImagesSvg.icHeart} width={16} height={16} color='black' />
+                </View>
+              </Pressable>
+            )}
+          />
+        ) : (
+          <View style={styles.emptyFollowingContainer}>
+            <Text style={styles.emptyFollowingText}>{t('follow_people_to_see_feed') || 'Follow people to see their posts'}</Text>
+          </View>
+        )}
         {/* Popular Creator Title */}
         <TouchableOpacity style={styles.titleContainer}>
           <CustomTitle title={t('home_screen.home_popular_creators')} />
@@ -288,6 +375,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.light,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    gap: 10,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+  },
+  activeTab: {
+    backgroundColor: colors.primary,
+  },
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.smallText,
+  },
+  activeTabText: {
+    color: colors.white,
   },
   searchContainer: {
     flexDirection: 'row',
@@ -387,5 +499,15 @@ const styles = StyleSheet.create({
   seeAll: {
     fontSize: 14,
     color: colors.primary,
+  },
+  emptyFollowingContainer: {
+    paddingHorizontal: 14,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  emptyFollowingText: {
+    fontSize: 14,
+    color: colors.smallText,
+    textAlign: 'center',
   },
 });

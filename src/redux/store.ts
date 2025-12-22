@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, Middleware } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 
@@ -15,6 +15,26 @@ import followSlice from './slices/follow/followSlice';
 import notificationSlice from './slices/notification/notificationSlice';
 import chatHistorySlice from './slices/chatHistory/chatHistorySlice';
 
+// ⭐ Middleware to handle reset store on logout
+const resetStoreMiddleware: Middleware = store => next => action => {
+  if (action.type === 'RESET_STORE') {
+    // Reset to initial state
+    store.dispatch({ type: 'food/@@INIT' });
+    store.dispatch({ type: 'auth/@@INIT' });
+    store.dispatch({ type: 'user/@@INIT' });
+    store.dispatch({ type: 'signup/@@INIT' });
+    store.dispatch({ type: 'categories/@@INIT' });
+    store.dispatch({ type: 'review/@@INIT' });
+    store.dispatch({ type: 'rating/@@INIT' });
+    store.dispatch({ type: 'favorite/@@INIT' });
+    store.dispatch({ type: 'follow/@@INIT' });
+    store.dispatch({ type: 'notification/@@INIT' });
+    store.dispatch({ type: 'chatHistory/@@INIT' });
+    return;
+  }
+  return next(action);
+};
+
 export const store = configureStore({
   reducer: {
     food: foodSlice,
@@ -29,6 +49,8 @@ export const store = configureStore({
     notification: notificationSlice,
     chatHistory: chatHistorySlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(resetStoreMiddleware),
 });
 
 setupListeners(store.dispatch);

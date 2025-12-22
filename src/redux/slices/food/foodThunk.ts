@@ -165,3 +165,24 @@ export const updateFoodAPI = createAsyncThunk(
     }
   },
 );
+
+export const getFollowingFoodsAPI = createAsyncThunk(
+  'food/getFollowingFoodsAPI',
+  async ({userId, page = 1, limit = 10}: {userId: string, page?: number, limit?: number}, thunkAPI) => {
+    try {
+      const response = await api.get<{data: food[], pagination: any}>('/foods/following', {
+        params: { userId, page, limit },
+        signal: thunkAPI.signal,
+      });
+      if (!response.data || !response.data.data) {
+        return thunkAPI.rejectWithValue('No data returned from the server');
+      }
+      return response.data;
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || 
+                          error.message || 
+                          'Failed to fetch following foods';
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+  },
+);

@@ -18,6 +18,8 @@ export const selectViewedUserFoodList = (state: RootState): food[] => state.food
 
 export const selectCategoryFoodList = (state: RootState): food[] => state.food.categoryFoodList;
 
+export const selectFollowingFoodList = (state: RootState): food[] => state.food.followingFoodList;
+
 export const selectSelectedFood = (state: RootState): food | null => state.food.selectedFood;
 
 export const selectIsLoadingFood = (state: RootState) => state.food.isLoadingFood;

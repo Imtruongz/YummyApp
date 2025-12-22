@@ -8,6 +8,7 @@ import {
   getFoodByCategoryAPI,
   searchFoodAPI,
   updateFoodAPI,
+  getFollowingFoodsAPI,
 } from './foodThunk';
 import {foodState} from './types';
 import { createAsyncThunkHandler } from '../../utils/asyncThunkHandler';
@@ -18,6 +19,7 @@ const initialState: foodState = {
   userFoodList: [],
   viewedUserFoodList: [],
   categoryFoodList: [],
+  followingFoodList: [],
   selectedFood: null,
   isLoadingFood: false,
   isErrorFood: false,
@@ -142,6 +144,20 @@ const foodSlice = createSlice({
           state.searchFoodList = action.payload.data;
         } else {
           state.searchFoodList = [...state.searchFoodList, ...action.payload.data];
+        }
+        state.pagination = action.payload.pagination;
+      },
+    });
+
+    // Get following foods
+    createAsyncThunkHandler(builder, getFollowingFoodsAPI, {
+      loadingKey: 'isLoadingFood',
+      onFulfilled: (state, action) => {
+        // Nếu là trang 1, replace; nếu không thì append
+        if (action.payload.pagination.page === 1) {
+          state.followingFoodList = action.payload.data;
+        } else {
+          state.followingFoodList = [...state.followingFoodList, ...action.payload.data];
         }
         state.pagination = action.payload.pagination;
       },

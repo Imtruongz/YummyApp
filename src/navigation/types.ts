@@ -32,6 +32,7 @@ export type HomeStack = {
     foodId: string;
   };
   ListFoodScreen: undefined;
+  FollowingFeedScreen: undefined;
   FoodDetailScreen: {
     foodId: string;
     userId: string;

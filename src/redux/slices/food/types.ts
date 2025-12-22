@@ -47,6 +47,7 @@ export interface foodState {
   userFoodList: food[];
   viewedUserFoodList: food[];
   categoryFoodList: food[];
+  followingFoodList: food[];
   selectedFood: food | null
   isLoadingFood: boolean;
   isErrorFood: boolean;

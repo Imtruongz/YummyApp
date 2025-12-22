@@ -231,6 +231,9 @@
     "search_suggestion_title": "Search suggestions by category",
     "list_can_not_find": "No matching food found"
   },
+  "explore_all": "Explore All",
+  "following_feed": "Following Feed",
+  "follow_people_to_see_feed": "Follow people to see their food posts",
   "bank_screen": {
     "add_bank_account": "Add Bank Account",
     "add_new_bank_account": "Add New Bank Account",
