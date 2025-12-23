@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView} from 'react-native';
-import React, {useState} from 'react';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
 import { CustomInput, CustomButton } from '@/components'
-import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, navigate} from '@/utils';
+import { verifyEmail, verifyPassword, verifyConfirmPassword, colors, img, ImagesSvg, navigate, handleAsyncAction } from '@/utils';
 
-import {useAppDispatch} from '@/redux/hooks.ts';
-import {userRegisterAPI} from '@/redux/slices/auth/authThunk.ts';
+import { useAppDispatch } from '@/redux/hooks.ts';
+import { userRegisterAPI } from '@/redux/slices/auth/authThunk.ts';
 import { saveSignUpForm } from '@/redux/slices/auth/signupSlice.ts';
 import { useLoading } from '@/hooks/useLoading';
 
@@ -24,6 +24,7 @@ const SignupPage: React.FC = () => {
   const [password, setPassword] = useState('');
 
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
@@ -41,6 +42,12 @@ const SignupPage: React.FC = () => {
   };
 
   const handleSignUp = async () => {
+    // Clear previous error
+    setIsErrorMessage(false);
+    setErrorMessage('');
+
+    // Validate input
+    const isValidUsername = username.trim().length >= 3;
     const isValidEmail = verifyEmail(email);
     const isValidPassword = verifyPassword(password);
     const isValidConfirmPassword = verifyConfirmPassword(
@@ -48,34 +55,43 @@ const SignupPage: React.FC = () => {
       confirmPassword,
     );
 
+    setIsUsernameValid(isValidUsername);
     setIsEmailValid(isValidEmail);
     setIsPasswordValid(isValidPassword);
     setIsConfirmPasswordValid(isValidConfirmPassword);
 
-    if (!isValidEmail || !isValidPassword || !isValidConfirmPassword) {
+    if (!isValidUsername || !isValidEmail || !isValidPassword || !isValidConfirmPassword) {
       return;
     }
 
     LoadingShow();
-    try {
-      // ✅ Lưu form data vào Redux (chưa gửi server tạo user)
-      dispatch(saveSignUpForm({ username, email, password }));
+    await handleAsyncAction(
+      async () => {
+        // ✅ Lưu form data vào Redux
+        dispatch(saveSignUpForm({ username, email, password }));
 
-      // Gửi email xác thực (backend chỉ gửi email, không lưu user)
-      const resultAction = await dispatch(
-        userRegisterAPI({email, password, username}),
-      );
-      if (!userRegisterAPI.fulfilled.match(resultAction)) {
-        throw new Error('Registration failed');
+        // Gửi email xác thực
+        const resultAction = await dispatch(
+          userRegisterAPI({ email, password, username }),
+        );
+        if (!userRegisterAPI.fulfilled.match(resultAction)) {
+          const errorMsg = (resultAction.payload as string) || 'Registration failed';
+          throw new Error(errorMsg);
+        }
+        navigate('VerifyEmailScreen', { email });
+      },
+      {
+        onSuccess: () => {
+          LoadingHide();
+        },
+        onError: (error) => {
+          LoadingHide();
+          const errorMsg = error?.message || t('login_screen.login_register_error_toast');
+          setErrorMessage(errorMsg);
+          setIsErrorMessage(true);
+        },
       }
-      navigate('VerifyEmailScreen', { email });
-    } catch (error: any) {
-      const errorMsg = error?.message || t('login_screen.login_register_error_toast');
-      setErrorMessage(errorMsg);
-      setIsErrorMessage(true);
-    } finally {
-      LoadingHide();
-    }
+    );
   };
 
   return (
@@ -91,6 +107,9 @@ const SignupPage: React.FC = () => {
             placeholder={t('login_screen.login_username')}
             onChangeText={setUsername}
           />
+          {!isUsernameValid ? (
+            <Text style={styles.errorMessage}>Username phải có ít nhất 3 ký tự</Text>
+          ) : <Text></Text>}
           <CustomInput
             style={styles.input}
             value={email}
@@ -99,7 +118,7 @@ const SignupPage: React.FC = () => {
           />
           {!isEmailValid ? (
             <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
-          ) : null}
+          ) : <Text></Text>}
           <CustomInput
             style={styles.input}
             value={password}
@@ -110,9 +129,9 @@ const SignupPage: React.FC = () => {
             onPressIcon={handleShowPassword}
             iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
-          {isPasswordValid ? null : (
+          {!isPasswordValid ? (
             <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
-          )}
+          ) : <Text></Text>}
           <CustomInput
             style={styles.input}
             value={confirmPassword}
@@ -123,18 +142,11 @@ const SignupPage: React.FC = () => {
             onPressIcon={handleShowConfirmPassword}
             iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
-
-          {isConfirmPasswordValid ? null : (
+          {!isConfirmPasswordValid ? (
             <Text style={styles.errorMessage}>
               {t('login_screen.pw_invalid')}
             </Text>
-          )}
-          {
-            // Error message
-            isErrorMessage ? (
-              <Text style={styles.errorMessage}>{errorMessage}</Text>
-            ) : null
-          }
+          ) : <Text></Text>}
           <CustomButton title={t('login_screen.login_register_btn')} onPress={handleSignUp} />
         </View>
         {/* Footer */}
@@ -159,7 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    gap: 8,
+    gap: 6,
   },
   footer: {
     flex: 1,

@@ -53,6 +53,11 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
   };
 
   const handleLoginWithEmail = async () => {
+    // Clear previous error
+    setIsErrorMessage(false);
+    setErrorMessage('');
+
+    // Validate input
     const isValidEmail = verifyEmail(email);
     const isValidPassword = verifyPassword(password);
 
@@ -64,31 +69,43 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
     }
 
     LoadingShow();
-    try {
-      const resultAction = await dispatch(userLoginAPI({ email, password }));
-      if (!userLoginAPI.fulfilled.match(resultAction)) {
-        throw new Error('Login failed');
-      }
-      const user = resultAction.payload;
-      if (!user) {
-        throw new Error('Email not verified, please check your email');
-      }
-      setStorageString('userId', String(user.user.userId || ''));
-      setStorageString('accessToken', user.accessToken);
-      setStorageString('refreshToken', user.refreshToken);
+    await handleAsyncAction(
+      async () => {
+        const resultAction = await dispatch(userLoginAPI({ email, password }));
+        if (!userLoginAPI.fulfilled.match(resultAction)) {
+          // Get error message from server - cast to string
+          const errorMsg = (resultAction.payload as string) || 'Login failed';
+          throw new Error(errorMsg);
+        }
+        const user = resultAction.payload;
+        if (!user || !user.user) {
+          throw new Error('Email not verified, please check your email');
+        }
+        setStorageString('userId', String(user.user.userId || ''));
+        setStorageString('accessToken', user.accessToken);
+        setStorageString('refreshToken', user.refreshToken);
 
-      signIn();
-    } catch (error: any) {
-      const errorMsg = error?.message || t('login_screen.login_error_toast');
-      setErrorMessage(errorMsg);
-      setIsErrorMessage(true);
-    } finally {
-      LoadingHide();
-    }
+        signIn();
+      },
+      {
+        onSuccess: () => {
+          LoadingHide();
+        },
+        onError: (error) => {
+          LoadingHide();
+          const errorMsg = error?.message || t('login_screen.login_error_toast');
+          setErrorMessage(errorMsg);
+          setIsErrorMessage(true);
+        },
+      }
+    );
   };
 
   const handleLoginWithFacebook = async () => {
-    
+    // Clear previous error
+    setIsErrorMessage(false);
+    setErrorMessage('');
+
     try {
       const result = await LoginManager.logInWithPermissions(['public_profile']);
       if (result.isCancelled) {
@@ -108,28 +125,44 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
       }
       LoadingShow();
       console.log('Login with Facebook success', data);
-      const resultAction = await dispatch(facebookLoginAPI(data));
 
-      if (!facebookLoginAPI.fulfilled.match(resultAction)) {
-        throw new Error('Facebook login failed');
-      }
+      await handleAsyncAction(
+        async () => {
+          const resultAction = await dispatch(facebookLoginAPI(data));
 
-      const user = resultAction.payload;
-      if (!user) {
-        throw new Error('Failed to get user data');
-      }
+          if (!facebookLoginAPI.fulfilled.match(resultAction)) {
+            const errorMsg = (resultAction.payload as string) || 'Facebook login failed';
+            throw new Error(errorMsg);
+          }
 
-      setStorageString('userId', String(user.user.userId || ''));
-      setStorageString('accessToken', user.accessToken);
-      setStorageString('refreshToken', user.refreshToken);
+          const user = resultAction.payload;
+          if (!user || !user.user) {
+            throw new Error('Failed to get user data');
+          }
 
-      signIn();
+          setStorageString('userId', String(user.user.userId || ''));
+          setStorageString('accessToken', user.accessToken);
+          setStorageString('refreshToken', user.refreshToken);
+
+          signIn();
+        },
+        {
+          onSuccess: () => {
+            LoadingHide();
+          },
+          onError: (error) => {
+            LoadingHide();
+            const errorMsg = error?.message || t('login_screen.login_error_toast');
+            setErrorMessage(errorMsg);
+            setIsErrorMessage(true);
+          },
+        }
+      );
     } catch (error: any) {
+      LoadingHide();
       const errorMsg = error?.message || t('login_screen.login_error_toast');
       setErrorMessage(errorMsg);
       setIsErrorMessage(true);
-    } finally {
-      LoadingHide();
     }
   };
 
@@ -188,7 +221,7 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
           />
           {!isEmailValid ? (
             <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
-          ) : null}
+          ) : <Text></Text>}
           <CustomInput
             style={styles.input}
             value={password}
@@ -199,14 +232,10 @@ const LoginScreen: React.FC<LoginScreenProps> = () => {
             onPressIcon={handleShowPassword}
             iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
           />
-          {isPasswordValid ? null : (
+          {!isPasswordValid ? (
             <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
-          )}
-          {isErrorMessage ? (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null}
-          <CustomButton title={t('login_screen.login_btn')} onPress={handleLoginWithEmail} fontSize={16} />
-
+          ) : <Text></Text>}
+          <CustomButton style={styles.btnLogin} title={t('login_screen.login_btn')} onPress={handleLoginWithEmail} fontSize={16} />
           {/* Nút đăng nhập bằng Google */}
           <View style={styles.orContainer}>
             <View style={styles.line} />
@@ -286,7 +315,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    gap: 14,
+    gap: 4,
   },
   footer: {
     flex: 2,
@@ -296,10 +325,16 @@ const styles = StyleSheet.create({
   errorMessage: {
     color: colors.danger,
   },
+  btnLogin: {
+    width: '80%',
+    height: 48,
+    marginTop: 12,
+  },
   orContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 10,
+    marginTop: 12,
+    marginVertical: 12,
     width: '80%',
   },
   line: {

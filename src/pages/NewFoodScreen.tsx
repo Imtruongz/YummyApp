@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, KeyboardAvoidingView, Platform } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
@@ -193,7 +193,11 @@ const NewFoodScreen = () => {
         showGoBack={true}
         showNotification={false}
       />
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* Image Upload Card */}
         <View style={styles.card}>
           <Pressable onPress={requestCameraPermission} style={styles.imageCard}>
@@ -525,10 +529,8 @@ const NewFoodScreen = () => {
             <Text style={styles.generalErrorText}>⚠️ {errorForm.general}</Text>
           </View>
         )}
-
-        {/* Spacing for bottom button */}
-        <View style={{ height: 80 }} />
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Sticky Submit Button */}
       <View style={styles.buttonContainer}>

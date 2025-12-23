@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../android/types/StackNavType';
 import { CustomButton } from '@/components';
-import { colors, goBack, navigate, showToast } from '@/utils';
+import { colors, goBack, navigate, showToast, handleAsyncAction } from '@/utils';
 import { useAppDispatch } from '@/redux/hooks';
 import { forgotPasswordAPI } from '@/redux/slices/auth/authThunk';
 import { useLoading } from '@/hooks/useLoading';
@@ -53,23 +53,32 @@ const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = () => {
     }
 
     LoadingShow();
-    try {
-      const resultAction = await dispatch(
-        forgotPasswordAPI({ email: email.trim() })
-      );
+    await handleAsyncAction(
+      async () => {
+        const resultAction = await dispatch(
+          forgotPasswordAPI({ email: email.trim() })
+        );
 
-      if (!forgotPasswordAPI.fulfilled.match(resultAction)) {
-        throw new Error('Failed to send verification code');
+        if (!forgotPasswordAPI.fulfilled.match(resultAction)) {
+          const errorMsg = (resultAction.payload as string) || 'Failed to send verification code';
+          throw new Error(errorMsg);
+        }
+
+        // Success - navigate to verify screen
+        navigate('VerifyEmailScreen', { email: email.trim(), flowType: 'forgotPassword' });
+      },
+      {
+        onSuccess: () => {
+          LoadingHide();
+          showToast.success(t('forgot_password_screen.code_sent_success'));
+        },
+        onError: (error) => {
+          LoadingHide();
+          const errorMsg = error?.message || 'Failed to send code';
+          showToast.error(t('error'), errorMsg);
+        },
       }
-
-      // Success - navigate to verify screen
-      showToast.success(t('forgot_password_screen.code_sent_success'));
-      navigate('VerifyEmailScreen', { email: email.trim(), flowType: 'forgotPassword' });
-    } catch (error: any) {
-      showToast.error(error?.message || 'Failed to send code');
-    } finally {
-      LoadingHide();
-    }
+    );
   };
 
   return (

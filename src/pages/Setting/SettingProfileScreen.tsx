@@ -15,9 +15,7 @@ import {
 import { useLoading } from '@/hooks/useLoading';
 
 import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary } from '@/utils'
-
-const userId = getStorageString('userId') || '';
+import { img, colors, showToast, handleAsyncAction, goBack, pickImageFromLibrary } from '@/utils'
 
 const SettingProfileScreen = () => {
   const { t, i18n } = useTranslation();
@@ -39,6 +37,15 @@ const SettingProfileScreen = () => {
       LoadingHide();
     }
   }, [isLoadingUser, LoadingShow, LoadingHide]);
+
+  // ✅ Initialize form with current user data
+  useEffect(() => {
+    if (user) {
+      setusername(user.username || '');
+      setdescription(user.description || '');
+      setavatar(user.avatar || '');
+    }
+  }, [user]);
 
   const requestCameraPermission = async () => {
     try {
@@ -63,7 +70,6 @@ const SettingProfileScreen = () => {
     await handleAsyncAction(
       async () => {
         const payload = {
-          userId: userId,
           username: username,
           description: description,
           avatar: avatar,
@@ -87,13 +93,6 @@ const SettingProfileScreen = () => {
       }
     );
   };
-
-  useEffect(() => {
-    dispatch(getUserByIdAPI({ userId }));
-    setusername(user?.username || '');
-    setdescription(user?.description || '');
-    setavatar(user?.avatar || '');
-  }, [dispatch, user?.username, user?.description, user?.avatar]);
 
   return (
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>

@@ -43,8 +43,8 @@ export const userUpdateAPI = createAsyncThunk(
   'auth/userUpdateAPI',
   async (payload: UpdatePayload, {rejectWithValue}) => {
     try {
-      const response = await api.patch<User>('/users/update', payload);
-      return response.data;
+      const response = await api.patch<{message: string, updatedUser: User}>('/users/update', payload);
+      return response.data.updatedUser;
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || 
                           error.message || 
