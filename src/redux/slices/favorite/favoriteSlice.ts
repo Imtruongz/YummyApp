@@ -21,6 +21,7 @@ const favoriteSlice = createSlice({
     // Get all favorite foods
     createAsyncThunkHandler(builder, getAllFavoriteFoodsAPI, {
       loadingKey: 'isLoadingFavorite',
+      errorKey: 'isErrorFavorite',
       onFulfilled: (state, action) => {
         state.favoriteFoodList = action.payload;
       },
@@ -29,6 +30,7 @@ const favoriteSlice = createSlice({
     // Add favorite food - using upsert pattern
     createAsyncThunkHandler(builder, addFavoriteFoodAPI, {
       loadingKey: 'isLoadingFavorite',
+      errorKey: 'isErrorFavorite',
       onFulfilled: (state, action) => {
         const favId = action.payload.favoriteFoodId;
         state.favoriteFoodList = state.favoriteFoodList.filter(
@@ -41,6 +43,7 @@ const favoriteSlice = createSlice({
     // Delete favorite food
     createAsyncThunkHandler(builder, deleteFavoriteFoodAPI, {
       loadingKey: 'isLoadingFavorite',
+      errorKey: 'isErrorFavorite',
       onFulfilled: (state, action) => {
         state.favoriteFoodList = state.favoriteFoodList.filter(
           favorite => favorite.favoriteFoodId !== action.payload.favoriteFoodId

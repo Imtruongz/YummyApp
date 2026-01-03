@@ -234,6 +234,16 @@
   "explore_all": "Explore All",
   "following_feed": "Following Feed",
   "follow_people_to_see_feed": "Follow people to see their food posts",
+  "yummy_ai": "YummyAI",
+  "no_bio": "No bio",
+  "comments_count": "{{count}} comments",
+  "minutes_short": "{{count}}m",
+  "time": {
+    "just_now": "Just now",
+    "minutes_ago": "{{count}}m ago",
+    "hours_ago": "{{count}}h ago",
+    "days_ago": "{{count}}d ago"
+  },
   "bank_screen": {
     "add_bank_account": "Add Bank Account",
     "add_new_bank_account": "Add New Bank Account",

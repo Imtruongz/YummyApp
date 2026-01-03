@@ -266,7 +266,7 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
       <Modal
         visible={isBankModalVisible}
         transparent={true}
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setIsBankModalVisible(false)}
       >
         <View style={styles.modalOverlay}>
@@ -300,11 +300,6 @@ const BankAccountScreen: React.FC<BankAccountScreenProps> = ({ navigation }) => 
             >
               <Text style={styles.modalCancelButtonText}>{t('cancel')}</Text>
             </TouchableOpacity>
-            {/* <CustomButton
-              title="Close"
-              onPress={() => setIsBankModalVisible(false)}
-              style={{ marginTop: 10 }}
-            /> */}
           </View>
         </View>
       </Modal>

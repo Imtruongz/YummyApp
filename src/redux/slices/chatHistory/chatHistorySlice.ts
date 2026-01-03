@@ -49,11 +49,15 @@ const chatHistorySlice = createSlice({
     // Save chat
     createAsyncThunkHandler(builder, saveChatAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
     });
 
     // Add message
     createAsyncThunkHandler(builder, addMessageToConversationAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
       onFulfilled: (state, action: PayloadAction<any>) => {
         if (state.currentConversation) {
           state.currentConversation.messages = action.payload.messages;
@@ -65,6 +69,8 @@ const chatHistorySlice = createSlice({
     // Get conversations list
     createAsyncThunkHandler(builder, getUserConversationsAPI, {
       loadingKey: 'isLoadingConversations',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
       onFulfilled: (
         state,
         action: PayloadAction<{
@@ -84,6 +90,8 @@ const chatHistorySlice = createSlice({
     // Get conversation detail
     createAsyncThunkHandler(builder, getConversationDetailAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
       onFulfilled: (state, action: PayloadAction<Conversation>) => {
         state.currentConversation = action.payload;
       },
@@ -92,6 +100,8 @@ const chatHistorySlice = createSlice({
     // Delete conversation
     createAsyncThunkHandler(builder, deleteConversationAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
       onFulfilled: (state, action: PayloadAction<string>) => {
         state.conversations = state.conversations.filter(
           (conv) => conv.conversationId !== action.payload
@@ -105,6 +115,8 @@ const chatHistorySlice = createSlice({
     // Update conversation title
     createAsyncThunkHandler(builder, updateConversationTitleAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
       onFulfilled: (state, action: PayloadAction<any>) => {
         const updatedConv = state.conversations.find(
           (conv) => conv.conversationId === action.payload.conversationId
@@ -121,6 +133,8 @@ const chatHistorySlice = createSlice({
     // Export conversation
     createAsyncThunkHandler(builder, exportConversationAPI, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
+      errorMessageKey: 'error',
     });
   },
 });

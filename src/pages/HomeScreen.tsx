@@ -7,7 +7,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
-import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput, CustomButton } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput, CustomButton, FoodCard } from '@/components'
 import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -183,67 +183,10 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
           initialNumToRender={5}
           keyExtractor={(item, index) => `${item.foodId}_${index}`}
           renderItem={({ item }) => (
-            <Pressable
-              style={styles.itemContainer}
-              onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId, })}>
-              <Image source={{ uri: item.foodThumbnail }} style={styles.img2} />
-              <View style={styles.titleItemLeft2}>
-                <Typography
-                  title={item.foodName}
-                  fontSize={18}
-                  fontWeight="700"
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                />
-                <Typography
-                  title={item.foodDescription}
-                  fontSize={14}
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                  style={{ color: colors.smallText }}
-                />
-
-                {/* Info Row: Rating, Cooking Time, Difficulty, Servings */}
-                <View style={styles.infoRow}>
-                  {(item.averageRating !== undefined && item.averageRating !== null) && (
-                    <View style={styles.infoBadge}>
-                      <Text style={styles.infoBadgeText}>⭐ {(item.averageRating || 0).toFixed(1)}</Text>
-                    </View>
-                  )}
-                  {item.CookingTime && (
-                    <View style={styles.infoBadge}>
-                      <Text style={styles.infoBadgeText}>⏱️ {item.CookingTime}m</Text>
-                    </View>
-                  )}
-                  {item.difficultyLevel && (
-                    <View style={styles.infoBadge}>
-                      <Text style={styles.infoBadgeText}>
-                        ⚡ {item.difficultyLevel === 'easy' ? 'Dễ' : item.difficultyLevel === 'medium' ? 'Trung bình' : 'Khó'}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <CustomAvatar
-                    width={30}
-                    height={30}
-                    borderRadius={15}
-                    image={item.userDetail?.avatar || img.defaultAvatar}
-                  />
-                  <Typography
-                    title={item.userDetail?.username}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={{ flex: 1 }}
-                  />
-                </View>
-              </View>
-              <View style={styles.favoriteIcon}>
-                <IconSvg xml={ImagesSvg.icHeart} width={16} height={16} color='black' />
-              </View>
-            </Pressable>
+            <FoodCard
+              item={item}
+              onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId })}
+            />
           )}
         />
         {/* Following Feed Title */}
@@ -262,67 +205,10 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             initialNumToRender={5}
             keyExtractor={(item, index) => `${item.foodId}_${index}`}
             renderItem={({ item }) => (
-              <Pressable
-                style={styles.itemContainer}
-                onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId })}>
-                <Image source={{ uri: item.foodThumbnail }} style={styles.img2} />
-                <View style={styles.titleItemLeft2}>
-                  <Typography
-                    title={item.foodName}
-                    fontSize={18}
-                    fontWeight="700"
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                  />
-                  <Typography
-                    title={item.foodDescription}
-                    fontSize={14}
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                    style={{ color: colors.smallText }}
-                  />
-
-                  {/* Info Row: Rating, Cooking Time, Difficulty */}
-                  <View style={styles.infoRow}>
-                    {(item.averageRating !== undefined && item.averageRating !== null) && (
-                      <View style={styles.infoBadge}>
-                        <Text style={styles.infoBadgeText}>⭐ {(item.averageRating || 0).toFixed(1)}</Text>
-                      </View>
-                    )}
-                    {item.CookingTime && (
-                      <View style={styles.infoBadge}>
-                        <Text style={styles.infoBadgeText}>⏱️ {item.CookingTime}m</Text>
-                      </View>
-                    )}
-                    {item.difficultyLevel && (
-                      <View style={styles.infoBadge}>
-                        <Text style={styles.infoBadgeText}>
-                          ⚡ {item.difficultyLevel === 'easy' ? 'Dễ' : item.difficultyLevel === 'medium' ? 'Trung bình' : 'Khó'}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-
-                  <View
-                    style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <CustomAvatar
-                      width={30}
-                      height={30}
-                      borderRadius={15}
-                      image={item.userDetail?.avatar || img.defaultAvatar}
-                    />
-                    <Typography
-                      title={item.userDetail?.username}
-                      numberOfLines={1}
-                      ellipsizeMode="tail"
-                      style={{ flex: 1 }}
-                    />
-                  </View>
-                </View>
-                <View style={styles.favoriteIcon}>
-                  <IconSvg xml={ImagesSvg.icHeart} width={16} height={16} color='black' />
-                </View>
-              </Pressable>
+              <FoodCard
+                item={item}
+                onPress={() => navigate('FoodDetailScreen', { foodId: item.foodId, userId: item.userId })}
+              />
             )}
           />
         ) : (
@@ -376,31 +262,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
-  tabContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    gap: 10,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-  },
-  activeTab: {
-    backgroundColor: colors.primary,
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.smallText,
-  },
-  activeTabText: {
-    color: colors.white,
-  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -422,9 +283,6 @@ const styles = StyleSheet.create({
     height: 44,
     backgroundColor: colors.primary,
   },
-  searchButtonText: {
-    fontSize: 20,
-  },
   bannerContainer: {
     width: '100%',
   },
@@ -434,55 +292,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 14,
-  },
-  favoriteIcon: {
-    position: 'absolute',
-    bottom: 14,
-    right: 14,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    gap: 6,
-    flexWrap: 'wrap',
-  },
-  infoBadge: {
-    backgroundColor: colors.primary + '15',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-  },
-  infoBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  titleItemLeft2: {
-    padding: 14,
-    justifyContent: 'flex-start',
-    gap: 8,
-    flex: 1,
-    height: '100%',
-    overflow: 'hidden',
-  },
-  img2: {
-    width: 140,
-    height: 220,
-    borderTopLeftRadius: 20,
-    borderBottomLeftRadius: 20,
-    resizeMode: 'cover',
-  },
-  itemContainer: {
-    width: 300,
-    height: 220,
-    margin: 10,
-    borderRadius: 20,
-    backgroundColor: colors.light,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.12,
-    shadowRadius: 10,
-    elevation: 5,
-    flexDirection: 'row',
   },
   creatorItems: {
     padding: 12,

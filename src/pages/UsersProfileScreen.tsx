@@ -271,7 +271,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
             onPress={() => navigate('ProfileScreen')}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>Edit Profile</Text>
+            <Text style={styles.buttonText}>{t('setting_profile_screen.edit_profile_header')}</Text>
           </TouchableOpacity>
         )}
       </View>

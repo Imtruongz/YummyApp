@@ -113,7 +113,7 @@ const SearchScreen = () => {
     <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
       <HomeHeader
         mode="search"
-        title={t('search')}
+        title={t('search_screen.search')}
         showNotification={false}
       />
       <View style={styles.searchContainer}>

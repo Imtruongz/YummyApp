@@ -15,6 +15,8 @@ const categoriesSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     createAsyncThunkHandler(builder, getAllCategoriesAPI, {
+      loadingKey: 'isLoadingCategory',
+      errorKey: 'isErrorCategory',
       onFulfilled: (state, action: PayloadAction<category[]>) => {
         state.categoryList = action.payload;
       },

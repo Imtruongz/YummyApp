@@ -32,6 +32,8 @@ const authSlice = createSlice({
   extraReducers: builder => {
     // Login
     createAsyncThunkHandler(builder, userLoginAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       },
@@ -39,6 +41,8 @@ const authSlice = createSlice({
 
     // Register
     createAsyncThunkHandler(builder, userRegisterAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       },
@@ -46,6 +50,8 @@ const authSlice = createSlice({
 
     // Get User By Id
     createAsyncThunkHandler(builder, getUserByIdAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<{ data: User, isViewMode?: boolean }>) => {
         if (action.payload.isViewMode) {
           state.viewedUser = action.payload.data;
@@ -57,6 +63,8 @@ const authSlice = createSlice({
 
     // Update User
     createAsyncThunkHandler(builder, userUpdateAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       },
@@ -64,6 +72,8 @@ const authSlice = createSlice({
 
     // Change Password
     createAsyncThunkHandler(builder, changePasswordAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       },
@@ -71,6 +81,8 @@ const authSlice = createSlice({
 
     // Delete User
     createAsyncThunkHandler(builder, userDeleteAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state) => {
         state.user = null;
       },
@@ -78,6 +90,8 @@ const authSlice = createSlice({
 
     // Facebook Login
     createAsyncThunkHandler(builder, facebookLoginAPI, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User>) => {
         state.user = action.payload;
       },

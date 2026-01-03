@@ -25,6 +25,7 @@ interface UserItemProps {
 
 const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFollowChange }) => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -76,7 +77,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
           {user.description ? (
             <Text style={styles.bio} numberOfLines={2}>{user.description}</Text>
           ) : (
-            <Text style={styles.bio}>No bio</Text>
+            <Text style={styles.bio}>{t('no_bio')}</Text>
           )}
         </View>
       </TouchableOpacity>
@@ -94,7 +95,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
             styles.followBtnText,
             isFollowing && styles.followingBtnText
           ]}>
-            {loading ? '...' : (!isFollowing ? 'Following' : 'Follow')}
+            {loading ? '...' : (isFollowing ? t('profile_screen.unfollow_btn') : t('profile_screen.profile_follow_btn'))}
           </Text>
         </TouchableOpacity>
       )}

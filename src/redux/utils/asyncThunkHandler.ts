@@ -21,20 +21,29 @@ export const createAsyncThunkHandler = <State, PayloadType>(
   handlers?: {
     onFulfilled?: (state: State, action: any) => void;
     onRejected?: (state: State, action: any) => void;
-    loadingKey?: keyof State; // Specify which state to set loading
+    loadingKey?: keyof State; // Specify which state to set loading (boolean)
+    errorKey?: keyof State;   // Specify which state to set error flag (boolean)
+    errorMessageKey?: keyof State; // Specify where to store error message (string|null)
   }
 ) => {
-  const loadingKey = handlers?.loadingKey || 'isLoading';
+  const loadingKey = handlers?.loadingKey || ('isLoading' as keyof State);
+  const errorKey = handlers?.errorKey as keyof State | undefined;
+  const errorMessageKey = handlers?.errorMessageKey as keyof State | undefined;
 
   builder
     // Handle pending
     .addCase(asyncThunk.pending, (state: any) => {
-      state[loadingKey] = true;
+      if (loadingKey) state[loadingKey] = true;
+      if (errorKey) state[errorKey] = false;
+      if (errorMessageKey) state[errorMessageKey] = null;
+      // Backward compatible default error field
       state.error = null;
     })
     // Handle fulfilled
     .addCase(asyncThunk.fulfilled, (state: any, action: any) => {
-      state[loadingKey] = false;
+      if (loadingKey) state[loadingKey] = false;
+      if (errorKey) state[errorKey] = false;
+      if (errorMessageKey) state[errorMessageKey] = null;
       state.error = null;
       
       // Call custom fulfilled handler if provided
@@ -44,13 +53,14 @@ export const createAsyncThunkHandler = <State, PayloadType>(
     })
     // Handle rejected
     .addCase(asyncThunk.rejected, (state: any, action: any) => {
-      state[loadingKey] = false;
-      
-      // Set error message from payload or use default
-      state.error = action.payload?.message || 
-                    action.payload?.error || 
-                    'An error occurred';
-      
+      if (loadingKey) state[loadingKey] = false;
+
+      const message = action.payload?.message || action.payload?.error || action.error?.message || 'An error occurred';
+      if (errorKey) state[errorKey] = true;
+      if (errorMessageKey) state[errorMessageKey] = message;
+      // Backward compatible default error field
+      state.error = message;
+
       // Call custom rejected handler if provided
       if (handlers?.onRejected) {
         handlers.onRejected(state, action);

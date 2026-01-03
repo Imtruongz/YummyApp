@@ -22,6 +22,7 @@ const reviewSlice = createSlice({
     // Add comment to food
     createAsyncThunkHandler(builder, addCommentToFoodAPI, {
       loadingKey: 'isLoadingReview',
+      errorKey: 'isErrorReview',
       onFulfilled: (state, action) => {
         state.reviewList.push(action.payload);
       },
@@ -30,6 +31,7 @@ const reviewSlice = createSlice({
     // Get all comment from food id
     createAsyncThunkHandler(builder, getAllCommentFromFoodIdAPI, {
       loadingKey: 'isLoadingReview',
+      errorKey: 'isErrorReview',
       onFulfilled: (state, action) => {
         state.foodReviewList = action.payload;
       },
@@ -38,6 +40,7 @@ const reviewSlice = createSlice({
     // Delete comment
     createAsyncThunkHandler(builder, deleteCommentAPI, {
       loadingKey: 'isLoadingReview',
+      errorKey: 'isErrorReview',
       onFulfilled: (state, action) => {
         const deletedReviewId = action.payload.reviewId;
         state.foodReviewList = state.foodReviewList.filter(

@@ -16,16 +16,19 @@ const ratingSlice = createSlice({
     // Get average rating
     createAsyncThunkHandler(builder, getAverageRatingAPI, {
       loadingKey: 'isLoadingRating',
+      errorKey: 'isErrorRating',
     });
 
     // Add or update rating
     createAsyncThunkHandler(builder, addOrUpdateRatingAPI, {
       loadingKey: 'isLoadingRating',
+      errorKey: 'isErrorRating',
     });
 
     // Get user rating
     createAsyncThunkHandler(builder, getUserRatingAPI, {
       loadingKey: 'isLoadingRating',
+      errorKey: 'isErrorRating',
     });
   },
 });

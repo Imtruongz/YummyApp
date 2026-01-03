@@ -1,4 +1,4 @@
-import { configureStore, Middleware } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
 
@@ -15,42 +15,32 @@ import followSlice from './slices/follow/followSlice';
 import notificationSlice from './slices/notification/notificationSlice';
 import chatHistorySlice from './slices/chatHistory/chatHistorySlice';
 
-// ⭐ Middleware to handle reset store on logout
-const resetStoreMiddleware: Middleware = store => next => action => {
+// Combine all reducers
+const appReducer = combineReducers({
+  food: foodSlice,
+  auth: authSlice,
+  user: userSlice,
+  signup: signupSlice,
+  categories: categoriesSlice,
+  review: reviewSlice,
+  rating: ratingSlice,
+  favorite: favoriteSlice,
+  follow: followSlice,
+  notification: notificationSlice,
+  chatHistory: chatHistorySlice,
+});
+
+// Root reducer with RESET_STORE support
+const rootReducer = (state: any, action: any) => {
   if (action.type === 'RESET_STORE') {
-    // Reset to initial state
-    store.dispatch({ type: 'food/@@INIT' });
-    store.dispatch({ type: 'auth/@@INIT' });
-    store.dispatch({ type: 'user/@@INIT' });
-    store.dispatch({ type: 'signup/@@INIT' });
-    store.dispatch({ type: 'categories/@@INIT' });
-    store.dispatch({ type: 'review/@@INIT' });
-    store.dispatch({ type: 'rating/@@INIT' });
-    store.dispatch({ type: 'favorite/@@INIT' });
-    store.dispatch({ type: 'follow/@@INIT' });
-    store.dispatch({ type: 'notification/@@INIT' });
-    store.dispatch({ type: 'chatHistory/@@INIT' });
-    return;
+    // Reset entire redux state by passing undefined
+    return appReducer(undefined, action);
   }
-  return next(action);
+  return appReducer(state, action);
 };
 
 export const store = configureStore({
-  reducer: {
-    food: foodSlice,
-    auth: authSlice,
-    user: userSlice,
-    signup: signupSlice,
-    categories: categoriesSlice,
-    review: reviewSlice,
-    rating: ratingSlice,
-    favorite: favoriteSlice,
-    follow: followSlice,
-    notification: notificationSlice,
-    chatHistory: chatHistorySlice,
-  },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(resetStoreMiddleware),
+  reducer: rootReducer,
 });
 
 setupListeners(store.dispatch);

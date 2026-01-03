@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, Dimensions, TouchableOpacity, Platform, Image, Text} from 'react-native';
 import {colors, YummyDrag, getStorageString, setStorageString} from '@/utils';
+import { useTranslation } from 'react-i18next';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BUTTON_SIZE = 56;
@@ -11,6 +12,7 @@ interface DraggableFloatingButtonProps {
 }
 
 const DraggableFloatingButton: React.FC<DraggableFloatingButtonProps> = ({ onPress }) => {
+  const { t } = useTranslation();
   const initialPosition = {
     x: Number(getStorageString('floatingButtonX')) || SCREEN_WIDTH - BUTTON_SIZE - SNAP_MARGIN,
     y: Number(getStorageString('floatingButtonY')) || SCREEN_HEIGHT - BUTTON_SIZE - SNAP_MARGIN
@@ -83,7 +85,7 @@ const DraggableFloatingButton: React.FC<DraggableFloatingButtonProps> = ({ onPre
       >
         <Image source={YummyDrag} style={{ width: 58, height: 58 }} resizeMode="contain" />
       </TouchableOpacity>
-      <Text style={{ color: colors.primaryText, textAlign: 'center', fontSize: 14 , fontWeight: 'bold' }}>YummyAI</Text>
+      <Text style={{ color: colors.primaryText, textAlign: 'center', fontSize: 14 , fontWeight: 'bold' }}>{t('yummy_ai')}</Text>
     </Animated.View>
   );
 };

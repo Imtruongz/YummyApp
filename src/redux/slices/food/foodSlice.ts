@@ -44,6 +44,7 @@ const foodSlice = createSlice({
     // Get all food
     createAsyncThunkHandler(builder, getAllFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         // Nếu là trang 1, replace; nếu không thì append
         if (action.payload.pagination.page === 1) {
@@ -58,6 +59,7 @@ const foodSlice = createSlice({
     // Get food by id
     createAsyncThunkHandler(builder, getFoodByIdAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         if (action.payload.isViewMode) {
           state.viewedUserFoodList = action.payload.data || [];
@@ -70,6 +72,7 @@ const foodSlice = createSlice({
     // Add food - using upsert pattern to prevent duplicates
     createAsyncThunkHandler(builder, addFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         if (action.payload) {
           const foodId = action.payload.foodId;
@@ -87,6 +90,7 @@ const foodSlice = createSlice({
     // Delete food
     createAsyncThunkHandler(builder, deleteFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         const foodId = action.payload;
         state.foodList = state.foodList.filter(food => food.foodId !== foodId);
@@ -97,6 +101,7 @@ const foodSlice = createSlice({
     // Update food
     createAsyncThunkHandler(builder, updateFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         const updatedFood = action.payload;
         
@@ -122,6 +127,7 @@ const foodSlice = createSlice({
     // Get detail food
     createAsyncThunkHandler(builder, getDetailFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         state.selectedFood = action.payload || null;
       },
@@ -130,6 +136,7 @@ const foodSlice = createSlice({
     // Get food by category
     createAsyncThunkHandler(builder, getFoodByCategoryAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         state.categoryFoodList = action.payload || [];
       },
@@ -138,6 +145,7 @@ const foodSlice = createSlice({
     // Search food
     createAsyncThunkHandler(builder, searchFoodAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         // Nếu là trang 1, replace; nếu không thì append
         if (action.payload.pagination.page === 1) {
@@ -152,6 +160,7 @@ const foodSlice = createSlice({
     // Get following foods
     createAsyncThunkHandler(builder, getFollowingFoodsAPI, {
       loadingKey: 'isLoadingFood',
+      errorKey: 'isErrorFood',
       onFulfilled: (state, action) => {
         // Nếu là trang 1, replace; nếu không thì append
         if (action.payload.pagination.page === 1) {

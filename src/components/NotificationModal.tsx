@@ -105,9 +105,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             }
           ]}
         >
-          <View style={styles.iconContainer}>
-            <Text>ABC</Text>
-          </View>
+          <View style={styles.iconContainer} />
           
           <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>

@@ -11,24 +11,26 @@ import { HomeHeader } from '@/components';
 import { colors, navigateToFoodDetail, getStorageString, ImagesSvg } from '@/utils';
 import { useLoading } from '@/hooks/useLoading';
 
-const formatTimeAgo = (date: string | Date) => {
-  const now = new Date();
-  const postDate = new Date(date);
-  const diffMs = now.getTime() - postDate.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
-
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-
-  return postDate.toLocaleDateString();
-};
-
 const FollowingFeedScreen = () => {
   const { t } = useTranslation();
+
+  const formatTimeAgo = (date: string | Date) => {
+    const now = new Date();
+    const postDate = new Date(date);
+    const diffMs = now.getTime() - postDate.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return t('time.just_now');
+    if (diffMins < 60) return t('time.minutes_ago', { count: diffMins });
+    if (diffHours < 24) return t('time.hours_ago', { count: diffHours });
+    if (diffDays < 7) return t('time.days_ago', { count: diffDays });
+
+    return postDate.toLocaleDateString();
+  };
+
+  
   const dispatch = useAppDispatch();
   const { LoadingShow, LoadingHide } = useLoading();
 
@@ -83,18 +85,18 @@ const FollowingFeedScreen = () => {
   const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.foodCard}
-      onPress={() => navigateToFoodDetail(item.foodId, '')}
+      onPress={() => navigateToFoodDetail(item.foodId, item.userId || '')}
       activeOpacity={0.8}
     >
       {/* Card Header - User Info */}
       <View style={styles.cardHeader}>
         <View style={styles.userInfo}>
           <Image
-            source={{ uri: item.avatar || 'https://via.placeholder.com/40' }}
+            source={{ uri: (item.userDetail?.avatar || item.avatar) || 'https://via.placeholder.com/40' }}
             style={styles.userAvatar}
           />
           <View style={styles.userDetails}>
-            <Text style={styles.username}>{item.username}</Text>
+            <Text style={styles.username}>{item.userDetail?.username || item.username}</Text>
             <Text style={styles.timestamp}>{formatTimeAgo(item.createdAt)}</Text>
           </View>
         </View>
@@ -139,7 +141,7 @@ const FollowingFeedScreen = () => {
           <View style={styles.ratingContent}>
             <Text style={styles.ratingStars}>{'⭐'.repeat(Math.round(item.averageRating || 0))}</Text>
             <Text style={styles.ratingText}>{item.averageRating || 0}</Text>
-            <Text style={styles.commentCount}>• {item.commentCount || 0} comments</Text>
+            <Text style={styles.commentCount}>• {t('comments_count', { count: item.commentCount || 0 })}</Text>
           </View>
         </View>
       </View>

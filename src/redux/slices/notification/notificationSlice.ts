@@ -35,6 +35,7 @@ const notificationSlice = createSlice({
   extraReducers: builder => {
     createAsyncThunkHandler(builder, fetchNotifications, {
       loadingKey: 'isLoading',
+      errorKey: 'isError',
       onFulfilled: (state, action: PayloadAction<Notification[]>) => {
         state.list = action.payload;
       },

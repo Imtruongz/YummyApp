@@ -400,6 +400,16 @@
   "hard": "Khó",
   "food_portions": "Khẩu phần",
   "no_data": "Không có dữ liệu",
+  "yummy_ai": "YummyAI",
+  "no_bio": "Chưa có mô tả",
+  "comments_count": "{{count}} bình luận",
+  "minutes_short": "{{count}}p",
+  "time": {
+    "just_now": "Vừa xong",
+    "minutes_ago": "{{count}} phút trước",
+    "hours_ago": "{{count}} giờ trước",
+    "days_ago": "{{count}} ngày trước"
+  },
   "edit_button": "Chỉnh sửa ",
   "back_button": "Quay lại"
 }

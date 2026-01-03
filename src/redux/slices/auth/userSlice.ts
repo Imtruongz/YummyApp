@@ -15,6 +15,8 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: builder => {
     createAsyncThunkHandler(builder, getAllUsers, {
+      loadingKey: 'isLoadingUser',
+      errorKey: 'isErrorUser',
       onFulfilled: (state, action: PayloadAction<User[]>) => {
         state.ListUser = action.payload;
       },

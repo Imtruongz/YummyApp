@@ -1,5 +1,6 @@
 import React from 'react';
 import { SvgXml } from 'react-native-svg';
+import { colors } from '@/utils';
 
 type IconSvgProps = {
   xml: string;
@@ -18,7 +19,7 @@ const IconSvg: React.FC<IconSvgProps> = ({ xml, width = 24, height = 24, color }
     // Thay thế tất cả {color} placeholder
     svg = svg.replace(/{color}/g, color);
   } else {
-    // Nếu không có color, loại bỏ {color} từ SVG
+    // Nếu không có color, thay placeholder {color} bằng màu mặc định
     svg = svg.replace(/{color}/g, colors.dark);
   }
   return <SvgXml xml={svg} width={width} height={height} />;
