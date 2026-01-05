@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../android/types/StackNavType';
@@ -15,13 +15,13 @@ import { addFavoriteFoodAPI } from '@/redux/slices/favorite/favoriteThunk';
 import { getDetailFoodAPI, getFoodByIdAPI } from '@/redux/slices/food/foodThunk';
 import {
   selectSelectedFood,
-  selectUserFoodList,
+  selectViewedUserFoodList,
   selectFoodReviewList,
   selectUser,
 } from '@/redux/selectors';
 
 import { IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack, replace } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<RootStackParamList, 'FoodDetailScreen'> { }
@@ -44,7 +44,8 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const selectedFood = useAppSelector(selectSelectedFood);
-  const userFoodList = useAppSelector(selectUserFoodList);
+  const userFoodList = useAppSelector(selectViewedUserFoodList);
+  const moreFoods = useMemo(() => (userFoodList || []).filter(f => f.foodId !== foodId), [userFoodList, foodId]);
   const foodReviewList = useAppSelector(selectFoodReviewList);
   const user = useAppSelector(selectUser);
   const [iconColor, setIconColor] = useState<string>(colors.light);
@@ -474,7 +475,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>{t('recipe_detail_screen.recipe_detail_more_food')}</Text>
               <FlatList
-                data={userFoodList}
+                data={moreFoods}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={item => item.foodId}
@@ -483,7 +484,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
                   <TouchableOpacity
                     style={styles.recipeCard}
                     onPress={() =>
-                      navigate('FoodDetailScreen', {
+                      replace('FoodDetailScreen', {
                         foodId: item.foodId,
                         userId: item.userId,
                       })

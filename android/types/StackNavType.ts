@@ -41,4 +41,8 @@ export type RootStackParamList = {
   BankAccountScreen: undefined;
   PaymentSuccessScreen: undefined;
   YummyAIScreen: undefined;
+  LFXWebViewDemoScreen: {
+    initialUrl?: string;
+    allowedHosts?: string[];
+  } | undefined;
 };

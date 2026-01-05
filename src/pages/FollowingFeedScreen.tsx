@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getFollowingFoodsAPI } from '@/redux/slices/food/foodThunk';
 import { selectFollowingFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-import { HomeHeader } from '@/components';
+import { HomeHeader, NoData } from '@/components';
 import { colors, navigateToFoodDetail, getStorageString, ImagesSvg } from '@/utils';
 import { useLoading } from '@/hooks/useLoading';
 
@@ -30,7 +30,7 @@ const FollowingFeedScreen = () => {
     return postDate.toLocaleDateString();
   };
 
-  
+
   const dispatch = useAppDispatch();
   const { LoadingShow, LoadingHide } = useLoading();
 
@@ -146,11 +146,14 @@ const FollowingFeedScreen = () => {
         </View>
       </View>
     </TouchableOpacity>
-  ); const renderEmptyComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>{t('no_data')}</Text>
-      <Text style={styles.emptySubText}>{t('follow_people_to_see_feed')}</Text>
-    </View>
+  );
+  const renderEmptyComponent = () => (
+    isLoadingFood ? null : (
+      <View style={styles.emptyContainer}>
+        <NoData message={t('no_data')} width={120} height={120} textSize={16} />
+        <Text style={styles.emptySubText}>{t('follow_people_to_see_feed')}</Text>
+      </View>
+    )
   );
 
   return (

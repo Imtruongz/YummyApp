@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,
+    marginBottom: 12,
   },
   titleItemLeft: {
     justifyContent: 'center',

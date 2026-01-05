@@ -7,6 +7,7 @@ import PaymentScreen from '../pages/Payment/PaymentScreen';
 import BankAccountScreen from '../pages/Setting/BankAccountScreen';
 import HomeScreen from '../pages/HomeScreen';
 import { RootStackParamList } from '../../android/types/StackNavType';
+import LFXWebViewDemoScreen from '../pages/LFXWebViewDemoScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -18,6 +19,7 @@ const SettingNavigator = () => (
     <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     <Stack.Screen name="BankAccountScreen" component={BankAccountScreen} />
     <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Screen name="LFXWebViewDemoScreen" component={LFXWebViewDemoScreen} />
   </Stack.Navigator>
 );
 

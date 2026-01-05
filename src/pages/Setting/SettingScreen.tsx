@@ -10,7 +10,7 @@ import { changeLanguage } from '../../languages/i18n';
 
 import { AuthContext } from '@/contexts/AuthContext';
 import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
-import { colors, ImagesSvg, handleAsyncAction, deleteStorageKey } from '@/utils'
+import { colors, ImagesSvg, handleAsyncAction, deleteStorageKey, navigate } from '@/utils'
 interface SettingPageProps
   extends NativeStackScreenProps<RootStackParamList, 'SettingScreen'> { }
 
@@ -79,6 +79,15 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
         <SettingButton
           title={t('settings_screen.bank_accounts')}
           targetScreen="BankAccountScreen"
+        />
+        <SettingButton
+          title="ZuneZX WebView Github Pages Demo"
+          onPress={() =>
+            navigate('LFXWebViewDemoScreen' as any, {
+              initialUrl: 'https://imtruongz.github.io/Zunezx-shop/',
+              allowedHosts: ['imtruongz.github.io']
+            })
+          }
         />
         <Pressable style={styles.languageContainer} onPress={() => setLanguageModalVisible(true)}>
           <CustomTitle title={t('settings_screen.setting_language')} />

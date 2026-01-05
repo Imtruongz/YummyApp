@@ -43,7 +43,6 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   const { userId } = route.params;
   const dispatch = useAppDispatch();
   const [refreshing, setRefreshing] = useState(false);
-  const [showBioExpanded, setShowBioExpanded] = useState(false);
   const { LoadingShow, LoadingHide } = useLoading();
 
   const viewedUserFoodList = useAppSelector(selectViewedUserFoodList);
@@ -180,40 +179,20 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
   );
 
   const renderHeader = () => (
-    <View>
+    <>
       <View style={styles.avatarSection}>
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatarGradientBorder}>
-            <CustomAvatar
-              width={110}
-              height={110}
-              borderRadius={55}
-              image={viewedUser?.avatar || img.defaultAvatar}
-            />
-          </View>
-        </View>
+        <CustomAvatar
+          width={90}
+          height={90}
+          borderRadius={45}
+          image={viewedUser?.avatar || img.defaultAvatar}
+          style={styles.avatarBorder}
+        />
         <View style={styles.userInfoSection}>
-          <View style={styles.userHeaderRow}>
-            <Text style={styles.username}>{viewedUser?.username}</Text>
-          </View>
-          {viewedUser?.description && (
-            <TouchableOpacity
-              onPress={() => setShowBioExpanded(!showBioExpanded)}
-              activeOpacity={0.7}
-            >
-              <Text
-                style={[styles.bio, { color: showBioExpanded ? colors.primary : colors.smallText }]}
-                numberOfLines={showBioExpanded ? 0 : 2}
-              >
-                {viewedUser.description}
-              </Text>
-              {viewedUser.description.length > 50 && (
-                <Text style={styles.readMoreText}>
-                  {showBioExpanded ? 'Show less' : 'Read more'}
-                </Text>
-              )}
-            </TouchableOpacity>
-          )}
+          <Text style={styles.username}>{viewedUser?.username}</Text>
+          {viewedUser?.description ? (
+            <Text style={styles.bio}>{viewedUser.description}</Text>
+          ) : null}
         </View>
       </View>
       <View style={styles.statsSection}>
@@ -278,7 +257,7 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
       <View style={styles.gridHeader}>
         <Text style={styles.gridTitle}>{t('profile_screen.profile_posts')} ({viewedUserFoodList?.length ?? 0})</Text>
       </View>
-    </View>
+    </>
   );
 
   const RenderRefreshControl = () => (
@@ -335,27 +314,17 @@ const styles = StyleSheet.create({
   },
   avatarSection: {
     alignItems: 'center',
-    marginBottom: 28,
-    paddingTop: 16,
   },
-  avatarContainer: {
-    marginBottom: 16,
-  },
-  avatarGradientBorder: {
-    padding: 3,
-    borderRadius: 60,
+  avatarBorder: {
+    marginTop: 12,
+    padding: 2,
+    borderRadius: 45,
     backgroundColor: colors.primary,
   },
   userInfoSection: {
+    marginTop: 12,
     width: '100%',
     alignItems: 'center',
-    marginTop: 8,
-  },
-  userHeaderRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
   },
   username: {
     fontSize: 26,
@@ -368,33 +337,26 @@ const styles = StyleSheet.create({
     color: colors.smallText,
     textAlign: 'center',
     lineHeight: 20,
-    marginTop: 8,
-  },
-  readMoreText: {
-    color: colors.primary,
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: 4,
+    marginTop: 6,
   },
   statsSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 16,
+    marginVertical: 12,
+    padding: 8,
     backgroundColor: '#f8f9fa',
     borderRadius: 12,
-    paddingVertical: 12,
   },
   statsDivider: {
     width: 1,
     height: 40,
     backgroundColor: '#e0e0e0',
+    marginHorizontal: 6,
   },
   statsCard: {
     alignItems: 'center',
     flex: 1,
-    paddingVertical: 8,
   },
   statsNumber: {
     fontSize: 22,
@@ -436,16 +398,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: colors.primary,
   },
-  menuButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: '#f0f0f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-  },
   buttonText: {
     color: colors.light,
     fontSize: 15,
@@ -456,8 +408,7 @@ const styles = StyleSheet.create({
     color: colors.primary,
   },
   gridHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
     marginBottom: 8,
@@ -474,7 +425,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   foodGrid: {
-    paddingTop: 8,
     paddingBottom: 24,
   },
   avatar: {

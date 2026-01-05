@@ -28,6 +28,13 @@ export function resetTo(routeName: string, params?: any) {
   }
 }
 
+// Replace current route in the active navigator
+export function replace(name: string, params?: any) {
+  if (navigationRef.isReady()) {
+    navigationRef.dispatch(StackActions.replace(name as any, params));
+  }
+}
+
 // Helpers cụ thể cho các screen
 export function navigateToHome() {
   resetTo('HomeNavigator');
