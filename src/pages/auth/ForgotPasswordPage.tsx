@@ -12,15 +12,15 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
 import { CustomButton } from '@/components';
 import { colors, goBack, navigate, showToast, handleAsyncAction } from '@/utils';
 import { useAppDispatch } from '@/redux/hooks';
+import { AuthStackParamList } from '@/navigation/types';
 import { forgotPasswordAPI } from '@/redux/slices/auth/authThunk';
 import { useLoading } from '@/hooks/useLoading';
 
 interface ForgotPasswordPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ForgotPasswordPage'> {}
+  extends NativeStackScreenProps<AuthStackParamList, 'ForgotPasswordPage'> {}
 
 const ForgotPasswordPage: React.FC<ForgotPasswordPageProps> = () => {
   const { t } = useTranslation();

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Modal, FlatList, TouchableOpacity, Button as RNButton } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
+import { SettingStack } from '@/navigation/types';
 import { LoginManager } from 'react-native-fbsdk-next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import '../../languages/i18n';
@@ -12,7 +12,7 @@ import { AuthContext } from '@/contexts/AuthContext';
 import { HomeHeader, CustomTitle, IconSvg, SettingButton, ConfirmationModal } from '@/components'
 import { colors, ImagesSvg, handleAsyncAction, deleteStorageKey, navigate } from '@/utils'
 interface SettingPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'SettingScreen'> { }
+  extends NativeStackScreenProps<SettingStack, 'SettingScreen'> { }
 
 const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
   const { signOut } = useContext(AuthContext);

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { HomeStack } from '@/navigation/types';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
@@ -24,7 +24,7 @@ import { IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } fr
 import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack, replace } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 interface RecipeDetailPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'FoodDetailScreen'> { }
+  extends NativeStackScreenProps<HomeStack, 'FoodDetailScreen'> { }
 
 const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
   const { foodId, userId } = route.params;

@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView, Platform, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
+import { SettingStack } from '@/navigation/types';
 
 import api from '@/api/config';
 import { HomeHeader, IconSvg, ConfirmationModal } from '@/components'
 import { colors, ImagesSvg, handleAsyncAction, tryCatch, showToast } from '@/utils'
 
-type BankAccountScreenProps = NativeStackScreenProps<RootStackParamList, 'BankAccountScreen'>;
+type BankAccountScreenProps = NativeStackScreenProps<SettingStack, 'BankAccountScreen'>;
 
 interface BankInfo {
   bankName: string;

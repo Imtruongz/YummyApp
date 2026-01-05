@@ -4,7 +4,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { HomeStack } from '@/navigation/types';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useLoading } from '@/hooks/useLoading';
@@ -17,7 +17,7 @@ import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@
 import { colors, ImagesSvg, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary } from '@/utils'
 
 interface EditFoodScreenProps
-    extends NativeStackScreenProps<RootStackParamList, 'EditFoodScreen'> { }
+    extends NativeStackScreenProps<HomeStack, 'EditFoodScreen'> { }
 
 const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
     const { foodId } = route.params;

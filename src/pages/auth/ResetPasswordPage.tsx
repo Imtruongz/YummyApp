@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
+import { AuthStackParamList } from '@/navigation/types';
 import { CustomButton, CustomInput } from '@/components';
 import { colors, goBack, navigate, showToast, ImagesSvg } from '@/utils';
 import { useAppDispatch } from '@/redux/hooks';
@@ -18,7 +18,7 @@ import { resetPasswordAPI } from '@/redux/slices/auth/authThunk';
 import { useLoading } from '@/hooks/useLoading';
 
 interface ResetPasswordPageProps
-  extends NativeStackScreenProps<RootStackParamList, 'ResetPasswordPage'> { }
+  extends NativeStackScreenProps<AuthStackParamList, 'ResetPasswordPage'> { }
 
 interface Errors {
   newPassword?: string;

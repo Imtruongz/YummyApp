@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { MMKV } from 'react-native-mmkv';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { HomeStack } from '@/navigation/types';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
 import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput, CustomButton, FoodCard } from '@/components'
@@ -26,7 +26,7 @@ import {
   selectFollowingFoodList,
 } from '@/redux/selectors';
 interface HomeScreenProps
-  extends NativeStackScreenProps<RootStackParamList, 'HomeScreen'> { }
+  extends NativeStackScreenProps<HomeStack, 'HomeScreen'> { }
 
 const HomeScreen: React.FC<HomeScreenProps> = () => {
   const { t } = useTranslation();

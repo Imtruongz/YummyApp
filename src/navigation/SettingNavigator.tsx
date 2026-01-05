@@ -6,10 +6,10 @@ import SettingProfileScreen from '@/pages/Setting/SettingProfileScreen';
 import PaymentScreen from '../pages/Payment/PaymentScreen';
 import BankAccountScreen from '../pages/Setting/BankAccountScreen';
 import HomeScreen from '../pages/HomeScreen';
-import { RootStackParamList } from '../../android/types/StackNavType';
+import { SettingStack } from '@/navigation/types';
 import LFXWebViewDemoScreen from '../pages/LFXWebViewDemoScreen';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<SettingStack>();
 
 const SettingNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>

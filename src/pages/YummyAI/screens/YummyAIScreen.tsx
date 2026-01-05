@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../../android/types/StackNavType';
+import { HomeStack } from '@/navigation/types';
 
 import { aiApi } from '@/api/aiApi';
 import { YummyDrag, ImagesSvg, colors, showToast, useModal, goBack } from '@/utils'
@@ -21,7 +21,7 @@ type Message = {
   isTyping?: boolean;
 };
 
-type YummyAIScreenProps = NativeStackScreenProps<RootStackParamList, 'YummyAIScreen'>;
+type YummyAIScreenProps = NativeStackScreenProps<HomeStack, 'YummyAIScreen'>;
 
 const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const { t } = useTranslation();

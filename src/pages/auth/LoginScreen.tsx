@@ -3,7 +3,7 @@ import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View, TouchableOp
 import { useTranslation } from 'react-i18next';
 import { Settings, LoginManager, Profile } from 'react-native-fbsdk-next'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
+import { AuthStackParamList } from '@/navigation/types';
 import SelectDropdown from 'react-native-select-dropdown';
 
 import { CustomInput, CustomButton } from '@/components'
@@ -23,7 +23,7 @@ const fbAppId = '1178286763959143'
 Settings.setAppID(fbAppId)
 
 interface LoginScreenProps
-  extends NativeStackScreenProps<RootStackParamList, 'LoginScreen'> { }
+  extends NativeStackScreenProps<AuthStackParamList, 'LoginScreen'> { }
 
 const LoginScreen: React.FC<LoginScreenProps> = () => {
   const { t, i18n } = useTranslation();

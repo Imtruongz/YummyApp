@@ -73,3 +73,23 @@ export type ProfileStack = {
     type: 'followers' | 'following';
   };
 }
+
+// Stack for SettingNavigator
+export type SettingStack = {
+  SettingScreen: undefined;
+  ChangePasswordScreen: undefined;
+  SettingProfileScreen: undefined;
+  PaymentScreen: {
+    userId: string;
+    amount?: number;
+    phoneNumber?: string;
+    serviceType?: string;
+    serviceProvider?: string;
+  };
+  BankAccountScreen: undefined;
+  HomeScreen: undefined;
+  LFXWebViewDemoScreen: {
+    initialUrl?: string;
+    allowedHosts?: string[];
+  } | undefined;
+}

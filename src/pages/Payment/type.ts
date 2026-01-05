@@ -1,7 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../android/types/StackNavType';
+import { HomeStack } from '@/navigation/types';
 
-export type PaymentScreenProps = NativeStackScreenProps<RootStackParamList, 'PaymentScreen'>;
+export type PaymentScreenProps = NativeStackScreenProps<HomeStack, 'PaymentScreen'>;
 
 export interface PaymentMethod {
   id: string;
