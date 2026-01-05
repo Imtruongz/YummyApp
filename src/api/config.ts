@@ -1,14 +1,7 @@
 import axios from 'axios';
 import { getStorageString, setStorageString, deleteStorageKey } from '../utils/mmkvStorage';
-import { API_BASE_URL, API_BASE_URL_DEV, API_BASE_URL_PROD, APP_ENV } from '@env';
 
-// Resolve base URL from .env with sensible fallbacks
-const CURRENT_ENV = APP_ENV || (typeof __DEV__ !== 'undefined' && __DEV__ ? 'development' : 'production');
-const RESOLVED_BASE_URL =
-  API_BASE_URL ||
-  (CURRENT_ENV === 'development' ? API_BASE_URL_DEV : API_BASE_URL_PROD) ||
-  // Android emulator fallback (host loopback)
-  'http://10.0.2.2:4040/api';
+const RESOLVED_BASE_URL = `http://192.168.0.102:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
