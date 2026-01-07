@@ -64,7 +64,8 @@
     "updateTitleError": "无法更新标题",
     "loadError": "无法加载对话",
     "noMessages": "还没有消息",
-    "autoTitle": "对话已成功保存"
+    "autoTitle": "对话已成功保存",
+    "continueChat": "继续聊天"
   },
   "home_screen": {
     "goodMorning": "早上好",

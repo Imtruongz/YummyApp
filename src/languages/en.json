@@ -64,7 +64,8 @@
     "updateTitleError": "Failed to update title",
     "loadError": "Failed to load conversation",
     "noMessages": "No messages yet",
-    "autoTitle": "Conversation saved successfully"
+    "autoTitle": "Conversation saved successfully",
+    "continueChat": "Continue chat"
   },
   "home_screen": {
     "goodMorning": "Good Morning",

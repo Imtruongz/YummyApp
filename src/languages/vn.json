@@ -64,7 +64,8 @@
     "updateTitleError": "Không thể cập nhật tiêu đề",
     "loadError": "Không thể tải cuộc trò chuyện",
     "noMessages": "Không có tin nhắn",
-    "autoTitle": "Cuộc trò chuyện được lưu thành công"
+    "autoTitle": "Cuộc trò chuyện được lưu thành công",
+    "continueChat": "Tiếp tục chat"
   },
   "home_screen": {
     "goodMorning": "Chào buổi sáng",

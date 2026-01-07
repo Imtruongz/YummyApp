@@ -52,7 +52,15 @@ export type HomeStack = {
     serviceProvider?: string;
   };
   PaymentSuccessScreen: undefined;
-  YummyAIScreen: undefined;
+  YummyAIScreen: {
+    presetMessages?: Array<{
+      id: string;
+      text: string;
+      isUser: boolean;
+      timestamp?: string;
+    }>;
+    conversationId?: string;
+  } | undefined;
   ChatHistory: undefined;
   ChatDetailScreen: { conversationId: string };
 }

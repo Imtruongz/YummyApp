@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getStorageString, setStorageString, deleteStorageKey } from '../utils/mmkvStorage';
 
-const RESOLVED_BASE_URL = `http://10.100.13.108:4040/api`;
+const RESOLVED_BASE_URL = `http://192.168.0.104:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({
@@ -24,7 +24,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default axiosInstance; 
+export default axiosInstance;
 
 // Response interceptor: auto refresh on 401
 axiosInstance.interceptors.response.use(

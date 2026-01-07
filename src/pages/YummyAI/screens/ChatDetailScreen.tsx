@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform} from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
 import { AppDispatch } from '@/redux/store';
-import { getConversationDetailAPI, updateConversationTitleAPI,} from '@/redux/slices/chatHistory/chatHistoryThunk';
-import { ImagesSvg, colors, goBack, handleAsyncAction, showToast } from '@/utils'
+import { getConversationDetailAPI, updateConversationTitleAPI, } from '@/redux/slices/chatHistory/chatHistoryThunk';
+import { ImagesSvg, colors, goBack, handleAsyncAction, showToast, navigate } from '@/utils'
 import { IconSvg, CustomLoadingSpinner } from '@/components'
 import {
   selectCurrentConversation,
@@ -197,7 +197,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
                 onPress={handleCancel}
                 disabled={isSaving}
               >
-                <IconSvg xml={ImagesSvg.icClose} width={28} height={28}/>
+                <IconSvg xml={ImagesSvg.icClose} width={28} height={28} />
               </TouchableOpacity>
             </View>
           ) : (
@@ -232,7 +232,7 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
           }
         />
 
-        {/* Info Footer */}
+        {/* Info Footer + Continue Button */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>
             {t('chatHistory.createdAt')}
@@ -241,6 +241,20 @@ const ChatDetailScreen: React.FC<ChatDetailScreenProps> = ({
           <Text style={styles.footerText}>
             {currentConversation.messages.length} {t('chatHistory.messages')}
           </Text>
+
+          <TouchableOpacity
+            style={styles.continueButton}
+            onPress={() =>
+              navigate('YummyAIScreen', {
+                presetMessages: currentConversation.messages,
+                conversationId: currentConversation.conversationId,
+              })
+            }
+          >
+            <Text style={styles.continueButtonText}>
+              {t('chatHistory.continueChat')}
+            </Text>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -377,6 +391,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
+  },
+  continueButton: {
+    marginTop: 10,
+    backgroundColor: '#FF6B6B',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  continueButtonText: {
+    color: colors.light,
+    fontWeight: '600',
+    fontSize: 14,
   },
   footerText: {
     fontSize: 12,

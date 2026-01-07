@@ -8,7 +8,7 @@ import { HomeStack } from '@/navigation/types';
 
 import { aiApi } from '@/api/aiApi';
 import { YummyDrag, ImagesSvg, colors, showToast, useModal, goBack } from '@/utils'
-import { saveChatAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
+import { saveChatAPI, addMessageToConversationAPI } from '@/redux/slices/chatHistory/chatHistoryThunk';
 import { AppDispatch } from '@/redux/store';
 
 import { SaveChatModal, QuickActionButtons, TypingIndicator } from '@/pages/YummyAI/components'
@@ -23,16 +23,22 @@ type Message = {
 
 type YummyAIScreenProps = NativeStackScreenProps<HomeStack, 'YummyAIScreen'>;
 
-const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
+const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation, route }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: t('Yummy_AI.ai_assistant_welcome'),
-      isUser: false,
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const preset = route?.params?.presetMessages;
+    if (preset && Array.isArray(preset) && preset.length > 0) {
+      return preset.map(m => ({ id: m.id, text: m.text, isUser: m.isUser }));
     }
-  ]);
+    return [
+      {
+        id: 'welcome',
+        text: t('Yummy_AI.ai_assistant_welcome'),
+        isUser: false,
+      },
+    ];
+  });
 
   const menuOptions: MenuOption[] = [
     {
@@ -48,12 +54,14 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
   const saveModal = useModal();
   const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+  const continuingConversationId = route?.params?.conversationId;
 
   const handleGoBack = async () => {
-    if (messages.length >= 3) {
+    // Only auto-save when this is a brand-new chat (not continuing existing one)
+    if (!continuingConversationId && messages.length >= 3) {
       try {
         const messagesToSave = messages
-          .filter(msg => msg.id !== '1' && !msg.isTyping && msg.text)
+          .filter(msg => !msg.isTyping && msg.text)
           .map(msg => ({
             text: msg.text!,
             isUser: msg.isUser,
@@ -89,6 +97,20 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
       setMessages(prev => [...prev, userMessage]);
       setInput('');
 
+      // If continuing an existing conversation, persist user's message to server
+      if (continuingConversationId) {
+        try {
+          await dispatch(
+            addMessageToConversationAPI({
+              conversationId: continuingConversationId,
+              message: { text: userMessage.text!, isUser: true },
+            })
+          ).unwrap();
+        } catch (e) {
+          console.log('Failed to add user message to conversation:', e);
+        }
+      }
+
       setMessages(prev => [...prev, {
         id: typingIndicatorId,
         isUser: false,
@@ -97,7 +119,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
 
       try {
         const conversationHistory = messages
-          .filter(msg => msg.id !== '1' && !msg.id.includes('typing') && msg.text)
+          .filter(msg => !msg.id.includes('typing') && msg.text)
           .map(msg => ({
             role: msg.isUser ? 'user' : 'assistant',
             content: msg.text!,
@@ -115,6 +137,20 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
         setMessages(prev =>
           prev.filter(msg => msg.id !== typingIndicatorId).concat(aiMessage)
         );
+
+        // Persist AI's reply to existing conversation as well
+        if (continuingConversationId && aiMessage.text) {
+          try {
+            await dispatch(
+              addMessageToConversationAPI({
+                conversationId: continuingConversationId,
+                message: { text: aiMessage.text, isUser: false },
+              })
+            ).unwrap();
+          } catch (e) {
+            console.log('Failed to add AI message to conversation:', e);
+          }
+        }
       } catch (error: any) {
         setMessages(prev => prev.filter(msg => msg.id !== typingIndicatorId));
         showToast.error(t('Yummy_AI.ai_assistant_error'), error.message);
@@ -136,7 +172,7 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation }) => {
     try {
       setSavingChat(true);
       const messagesToSave = messages
-        .filter(msg => msg.id !== '1' && !msg.isTyping && msg.text)
+        .filter(msg => msg.id !== 'welcome' && !msg.isTyping && msg.text)
         .map(msg => ({
           text: msg.text!,
           isUser: msg.isUser,
