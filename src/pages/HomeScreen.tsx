@@ -13,7 +13,7 @@ import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString }
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
 import { getAllFoodAPI, getFollowingFoodsAPI } from '@/redux/slices/food/foodThunk';
-import { getAllUsers } from '@/redux/slices/auth/authThunk';
+import { getAllUsers, getPopularCreators } from '@/redux/slices/auth/authThunk';
 import { getUserByIdAPI } from '@/redux/slices/auth/authThunk';
 import {
   selectFoodList,
@@ -54,7 +54,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             dispatch(getAllCategoriesAPI()),
             dispatch(getAllFoodAPI({ page: 1, limit: 10 })),
             dispatch(getFollowingFoodsAPI({ userId, page: 1, limit: 10 })),
-            dispatch(getAllUsers()),
+            dispatch(getPopularCreators(10)), // Get top 10 popular creators
             dispatch(getUserByIdAPI({ userId })),
           ]);
 

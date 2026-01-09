@@ -101,7 +101,6 @@ const FirstRoute = () => {
           keyExtractor={(item, index) => `${item.foodId}_${index}`}
           numColumns={2}
           columnWrapperStyle={styles.columnWrapper}
-          scrollEnabled={false}
           contentContainerStyle={styles.container}
         />
       )}

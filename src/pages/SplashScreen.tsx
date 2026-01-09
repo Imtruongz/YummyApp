@@ -47,7 +47,6 @@ const SplashScreen: React.FC = () => {
 
                 {/* Brand Name */}
                 <Text style={styles.brandName}>Yummy</Text>
-                <Text style={styles.tagline}>Discover & Share Delicious Recipes</Text>
             </Animated.View>
 
             {/* Loading Indicator */}
