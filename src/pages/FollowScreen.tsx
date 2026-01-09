@@ -4,7 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { HomeHeader, CustomAvatar } from '@/components'
-import {img, colors, navigate, getStorageString} from '@/utils'
+import { img, colors, navigate, getStorageString } from '@/utils'
 import { useLoading } from '@/hooks/useLoading';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
@@ -21,9 +21,10 @@ interface UserItemProps {
   onPress: (userId: string) => void;
   currentUserId: string;
   onFollowChange?: () => void;
+  type?: 'followers' | 'following';
 }
 
-const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFollowChange }) => {
+const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFollowChange, type }) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [isFollowing, setIsFollowing] = useState(false);
@@ -31,13 +32,21 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
 
   useEffect(() => {
     checkFollowStatus();
-  }, [currentUserId, user.userId]);
+  }, [currentUserId, user.userId, type]);
 
   const checkFollowStatus = async () => {
     if (currentUserId && user.userId !== currentUserId) {
+      // If we're in the "following" tab, we already know the user is being followed
+      if (type === 'following') {
+        setIsFollowing(true);
+        return;
+      }
+
+      // Otherwise, check the follow status via API
       try {
         const result = await dispatch(isFollowingAPI({ followerId: currentUserId, followingId: user.userId }));
-        setIsFollowing(result.payload?.isFollow || false);
+        // result.payload is a boolean directly, not an object with isFollow property
+        setIsFollowing(result.payload || false);
       } catch (error) {
         console.log('Error checking follow status:', error);
       }
@@ -52,9 +61,16 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
       } else {
         await dispatch(followUserAPI({ followerId: currentUserId, followingId: user.userId }));
       }
-      // Sau khi follow/unfollow, check lại trạng thái từ API để chắc chắn
+
+      // Small delay to ensure server has processed the request
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Check follow status after action
       const result = await dispatch(isFollowingAPI({ followerId: currentUserId, followingId: user.userId }));
-      setIsFollowing(result.payload?.isFollow || false);
+      // result.payload is a boolean directly, not an object with isFollow property
+      setIsFollowing(result.payload || false);
+
+      // Refresh the list to show updated data
       onFollowChange?.();
     } catch (error) {
       console.log('Error toggling follow:', error);
@@ -64,12 +80,12 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
 
   return (
     <View style={styles.userCard}>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.userCardContent}
         onPress={() => onPress(user.userId)}
       >
-        <Image 
-          source={{ uri: user.avatar || img.defaultAvatar }} 
+        <Image
+          source={{ uri: user.avatar || img.defaultAvatar }}
           style={styles.userAvatar}
         />
         <View style={styles.userInfo}>
@@ -81,9 +97,9 @@ const UserItem: React.FC<UserItemProps> = ({ user, onPress, currentUserId, onFol
           )}
         </View>
       </TouchableOpacity>
-      
+
       {currentUserId !== user.userId && (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[
             styles.followBtn,
             isFollowing && styles.followingBtn
@@ -142,10 +158,8 @@ const FollowScreen: React.FC = () => {
   }, [dispatch, userId, type]);
 
   const handleUserPress = (selectedUserId: string) => {
-    navigate('HomeNavigator', {
-      screen: 'ListFoodByUserPage',
-      params: { userId: selectedUserId },
-    });
+    // Navigate within the same navigator (ProfileNavigator) to maintain navigation stack
+    navigate('ListFoodByUserPage', { userId: selectedUserId });
   };
 
   const handleRefresh = () => {
@@ -158,22 +172,22 @@ const FollowScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <HomeHeader 
-        mode="back" 
-        title={type === 'followers' ? t('profile_screen.profile_followers') : t('profile_screen.profile_following')} 
+      <HomeHeader
+        mode="back"
+        title={type === 'followers' ? t('profile_screen.profile_followers') : t('profile_screen.profile_following')}
         showGoBack={true}
         showNotification={false}
-        isBackHome={true}
       />
       <FlatList
         data={list}
         keyExtractor={(item) => item.userId}
         renderItem={({ item }) => (
-          <UserItem 
-            user={item} 
+          <UserItem
+            user={item}
             onPress={handleUserPress}
             currentUserId={currentUserId}
             onFollowChange={handleRefresh}
+            type={type}
           />
         )}
         contentContainerStyle={styles.listContent}

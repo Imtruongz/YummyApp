@@ -30,6 +30,19 @@ const FollowingFeedScreen = () => {
     return postDate.toLocaleDateString();
   };
 
+  const getDifficultyLabel = (difficulty: string) => {
+    switch (difficulty?.toLowerCase()) {
+      case 'easy':
+        return t('easy');
+      case 'medium':
+        return t('medium');
+      case 'hard':
+        return t('hard');
+      default:
+        return difficulty;
+    }
+  };
+
 
   const dispatch = useAppDispatch();
   const { LoadingShow, LoadingHide } = useLoading();
@@ -125,7 +138,7 @@ const FollowingFeedScreen = () => {
           {item.difficultyLevel && (
             <View style={styles.specItem}>
               <Text style={styles.specLabel}>📊</Text>
-              <Text style={styles.specValue}>{item.difficultyLevel}</Text>
+              <Text style={styles.specValue}>{getDifficultyLabel(item.difficultyLevel)}</Text>
             </View>
           )}
           {item.servings > 0 && (

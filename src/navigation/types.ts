@@ -80,6 +80,9 @@ export type ProfileStack = {
     userId: string;
     type: 'followers' | 'following';
   };
+  ListFoodByUserPage: {
+    userId: string;
+  };
 }
 
 // Stack for SettingNavigator

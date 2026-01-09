@@ -169,7 +169,9 @@
     "recipe_detail_error_add": "该菜品已在您的收藏列表中",
     "recipe_detail_created_date": "发布日期",
     "recipe_detail_cooking_time": "烹饪时间",
-    "recipe_detail_ratings": "评分"
+    "recipe_detail_ratings": "评分",
+    "recipe_detail_read_more": "阅读更多",
+    "recipe_detail_show_less": "收起"
   },
   "payment_screen": {
     "payment_title": "捐赠给创作者",

@@ -108,28 +108,28 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
     const result = await tryCatch(async () => {
       return await dispatch(getAverageRatingAPI(foodId)).unwrap();
     });
-    
+
     if (result.success && result.data) {
       setAverageRating(result.data.averageRating || 0);
       setTotalRatings(result.data.totalRatings || 0);
     }
-    
+
     return result;
   };
 
   const loadUserRating = async () => {
     if (!myUserId) return { success: false };
-    
+
     const result = await tryCatch(async () => {
       return await dispatch(getUserRatingAPI({ foodId, userId: myUserId })).unwrap();
     });
-    
+
     if (result.success && result.data) {
       setUserRating(result.data?.rating || 0);
     } else {
       setUserRating(0);
     }
-    
+
     return result;
   };
 
@@ -152,7 +152,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
         LoadingHide();
       }
     };
-    
+
     loadInitialData();
   }, [dispatch, foodId, myUserId, userId]);
 
@@ -390,7 +390,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
                   <TouchableOpacity
                     onPress={() => setShowstrInstructions(!showstrInstructions)}>
                     <Text style={styles.readMoreBtn}>
-                      {showstrInstructions ? 'Show less' : 'Read more'}
+                      {showstrInstructions ? t('recipe_detail_screen.recipe_detail_show_less') : t('recipe_detail_screen.recipe_detail_read_more')}
                     </Text>
                   </TouchableOpacity>
                 </>

@@ -170,7 +170,9 @@
     "recipe_detail_error_add": "Món ăn này đã có trong danh sách yêu thích của bạn",
     "recipe_detail_created_date": "Ngày đăng",
     "recipe_detail_cooking_time": "Thời gian nấu",
-    "recipe_detail_ratings": "Đánh giá"
+    "recipe_detail_ratings": "Đánh giá",
+    "recipe_detail_read_more": "Xem thêm",
+    "recipe_detail_show_less": "Thu gọn"
   },
   "payment_screen": {
     "payment_title": "Ủng hộ người sáng tạo(demo)",

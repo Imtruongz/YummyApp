@@ -127,19 +127,19 @@ const followSlice = createSlice({
         state.byUserId[userId].loading = false;
       })
       .addCase(followUserAPI.fulfilled, (state, action) => {
+        // Don't manually update counters here - let the refresh handle it
+        // This prevents incorrect state updates
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
-        state.byUserId[userId].isFollowing = true;
-        state.byUserId[userId].followerCount += 1;
         state.byUserId[userId].loading = false;
       })
       .addCase(unfollowUserAPI.fulfilled, (state, action) => {
+        // Don't manually update counters here - let the refresh handle it
+        // This prevents incorrect state updates
         const userId = getUserIdFromAction(action);
         if (!userId) return;
         state.byUserId[userId] = state.byUserId[userId] || getDefaultUserFollowInfo();
-        state.byUserId[userId].isFollowing = false;
-        state.byUserId[userId].followerCount = Math.max(0, state.byUserId[userId].followerCount - 1);
         state.byUserId[userId].loading = false;
       })
       // Handle pending for all follow actions

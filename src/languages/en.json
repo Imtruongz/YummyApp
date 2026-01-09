@@ -169,7 +169,9 @@
     "recipe_detail_error_add": "This dish is already in your favorites list",
     "recipe_detail_created_date": "Date Posted",
     "recipe_detail_cooking_time": "Cooking Time",
-    "recipe_detail_ratings": "Ratings"
+    "recipe_detail_ratings": "Ratings",
+    "recipe_detail_read_more": "Read more",
+    "recipe_detail_show_less": "Show less"
   },
   "payment_screen": {
     "payment_title": "Donate to Creator",
