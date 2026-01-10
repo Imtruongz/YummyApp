@@ -13,8 +13,8 @@ import { getAllCategoriesAPI } from '../redux/slices/category/categoryThunk';
 import { foodPayload, food } from '../redux/slices/food/types';
 import { selectCategoryList, selectSelectedFood } from '@/redux/selectors';
 
-import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary } from '@/utils'
+import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner, TimePicker } from '@/components'
+import { colors, ImagesSvg, showToast, handleAsyncAction, goBack, getStorageString, pickImageFromLibrary, parseCookingTime } from '@/utils'
 
 interface EditFoodScreenProps
     extends NativeStackScreenProps<HomeStack, 'EditFoodScreen'> { }
@@ -34,7 +34,7 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
         foodIngredients: [],
         foodThumbnail: '',
         foodSteps: [],
-        CookingTime: '',
+        CookingTime: 0,
         difficultyLevel: 'medium',
         servings: 1,
     });
@@ -74,7 +74,10 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
                 foodIngredients: selectedFood.foodIngredients,
                 foodThumbnail: selectedFood.foodThumbnail,
                 foodSteps: selectedFood.foodSteps,
-                CookingTime: selectedFood.CookingTime,
+                // Convert old string format to number for backward compatibility
+                CookingTime: typeof selectedFood.CookingTime === 'string'
+                    ? parseCookingTime(selectedFood.CookingTime)
+                    : selectedFood.CookingTime,
                 difficultyLevel: selectedFood.difficultyLevel || 'medium',
                 servings: selectedFood.servings || 1,
             });
@@ -151,8 +154,9 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
             errors.foodDescription = t('edit_food_screen.add_validation_description');
         }
 
-        if (formData.CookingTime && isNaN(Number(formData.CookingTime))) {
-            errors.CookingTime = t('edit_food_screen.add_validation_cooking_time_number');
+        // TimePicker ensures valid number, just check if selected
+        if (!formData.CookingTime || formData.CookingTime === 0) {
+            errors.CookingTime = t('time_picker.add_validation_cooking_time_required');
         }
 
         const validIngredients = ingredients.filter(item => item.trim() !== '');
@@ -299,13 +303,18 @@ const EditFoodScreen: React.FC<EditFoodScreenProps> = ({ route }) => {
 
                 {/* Cooking Time */}
                 <View style={styles.card}>
-                    <Text style={styles.label}>{t('edit_food_screen.add_cooking_time')}</Text>
-                    <CustomInput
-                        placeholder={t('edit_food_screen.add_cooking_time_placeholder')}
-                        value={formData.CookingTime}
-                        onChangeText={(text) => setFormData(prev => ({ ...prev, CookingTime: text }))}
-                        keyboardType="numeric"
-                        style={[styles.input, errorForm?.CookingTime ? styles.inputError : {}]}
+                    <TimePicker
+                        value={typeof formData.CookingTime === 'number' ? formData.CookingTime : (formData.CookingTime ? parseInt(formData.CookingTime, 10) : 0)}
+                        onChange={(minutes) => {
+                            setFormData(prev => ({ ...prev, CookingTime: minutes }));
+                            if (errorForm?.CookingTime) {
+                                const newErrorForm = { ...errorForm };
+                                delete newErrorForm.CookingTime;
+                                setErrorForm(newErrorForm);
+                            }
+                        }}
+                        label={t('edit_food_screen.add_cooking_time')}
+                        minuteInterval={15}
                     />
                     {errorForm?.CookingTime && <Text style={styles.errorText}>{errorForm.CookingTime}</Text>}
                 </View>

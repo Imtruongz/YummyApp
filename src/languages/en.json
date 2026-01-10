@@ -241,6 +241,18 @@
   "no_bio": "No bio",
   "comments_count": "{{count}} comments",
   "minutes_short": "{{count}}m",
+  "time_picker": {
+    "cooking_time": "Cooking Time",
+    "not_selected": "Not selected",
+    "hours": "hours",
+    "minutes": "minutes",
+    "hours_label": "Hours",
+    "minutes_label": "Minutes",
+    "cancel": "Cancel",
+    "done": "Done",
+    "selected_time": "Selected time",
+    "add_validation_cooking_time_required": "Please select cooking time"
+  },
   "time": {
     "just_now": "Just now",
     "minutes_ago": "{{count}}m ago",

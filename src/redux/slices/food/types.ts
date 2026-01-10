@@ -7,7 +7,7 @@ export interface food {
   foodIngredients: string[];
   foodThumbnail: string;
   foodSteps: string[];
-  CookingTime: string;
+  CookingTime: string | number;  // Number (minutes) for new data, string for backward compatibility
   difficultyLevel?: string;
   servings?: number;
   createdAt: string;
@@ -36,7 +36,7 @@ export interface foodPayload {
   foodIngredients: string[];
   foodThumbnail: string;
   foodSteps: string[];
-  CookingTime: string;
+  CookingTime: string | number;  // Number (minutes) preferred, string for backward compatibility
   difficultyLevel?: string;
   servings?: number;
 }

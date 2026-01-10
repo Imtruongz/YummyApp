@@ -407,6 +407,18 @@
   "no_bio": "Chưa có mô tả",
   "comments_count": "{{count}} bình luận",
   "minutes_short": "{{count}}p",
+  "time_picker": {
+    "cooking_time": "Thời gian nấu",
+    "not_selected": "Chưa chọn",
+    "hours": "giờ",
+    "minutes": "phút",
+    "hours_label": "Giờ",
+    "minutes_label": "Phút",
+    "cancel": "Hủy",
+    "done": "Xong",
+    "selected_time": "Thời gian đã chọn",
+    "add_validation_cooking_time_required": "Vui lòng chọn thời gian nấu"
+  },
   "time": {
     "just_now": "Vừa xong",
     "minutes_ago": "{{count}} phút trước",

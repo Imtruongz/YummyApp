@@ -33,7 +33,7 @@
     "hard": "困难",
     "food_portions": "份量"
   },
-  "Yummy_AI": {
+  "yummy_ai": {
     "ai_assistant_welcome": "你好！我是你的AI烹饪助手。你有什么烹饪问题吗？",
     "ai_assistant_placeholder": "输入你的烹饪问题...",
     "ai_assistant_error": "错误",
@@ -237,6 +237,28 @@
   "explore_all": "探索全部",
   "following_feed": "关注的动态",
   "follow_people_to_see_feed": "关注用户以查看他们的美食分享",
+  "yummy_ai": "YummyAI",
+  "no_bio": "没有简介",
+  "comments_count": "{{count}}条评论",
+  "minutes_short": "{{count}}分钟",
+  "time_picker": {
+    "cooking_time": "烹饪时间",
+    "not_selected": "未选择",
+    "hours": "小时",
+    "minutes": "分钟",
+    "hours_label": "小时",
+    "minutes_label": "分钟",
+    "cancel": "取消",
+    "done": "完成",
+    "selected_time": "已选时间",
+    "add_validation_cooking_time_required": "请选择烹饪时间"
+  },
+  "time": {
+    "just_now": "刚刚",
+    "minutes_ago": "{{count}}分钟前",
+    "hours_ago": "{{count}}小时前",
+    "days_ago": "{{count}}天前"
+  },
   "bank_screen": {
     "add_bank_account": "添加银行账户",
     "add_new_bank_account": "添加新银行账户",
@@ -366,5 +388,7 @@
     "pw_req_1": "至少6个字符",
     "pw_req_2": "必须与确认密码匹配",
     "pw_req_3": "不能为空"
-  }
+  },
+  "edit_button": "编辑",
+  "back_button": "返回"
 }

@@ -21,7 +21,7 @@ import {
 } from '@/redux/selectors';
 
 import { IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, goBack, replace } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, goBack, replace, formatCookingTime } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<HomeStack, 'FoodDetailScreen'> { }
@@ -359,7 +359,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route, navigation }
             {/* Stats Row */}
             <View style={styles.statsRow}>
               {ItemView(ImagesSvg.icDate, formatDate(selectedFood?.createdAt), t('recipe_detail_screen.recipe_detail_created_date'))}
-              {ItemView(ImagesSvg.icTime, selectedFood?.CookingTime, t('recipe_detail_screen.recipe_detail_cooking_time'))}
+              {ItemView(ImagesSvg.icTime, formatCookingTime(selectedFood?.CookingTime || 0), t('recipe_detail_screen.recipe_detail_cooking_time'))}
               {ItemView(ImagesSvg.icStar, averageRating.toFixed(1), t('recipe_detail_screen.recipe_detail_ratings'))}
             </View>
             {/* Category Badge */}

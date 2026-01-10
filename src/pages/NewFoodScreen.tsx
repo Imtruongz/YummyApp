@@ -12,7 +12,7 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 import { useLoading } from '@/hooks/useLoading';
 
-import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner } from '@/components'
+import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner, TimePicker } from '@/components'
 import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, pickImageFromLibrary } from '@/utils'
 
 const initialState: foodPayload = {
@@ -23,7 +23,7 @@ const initialState: foodPayload = {
   foodIngredients: [],
   foodThumbnail: '',
   foodSteps: [],
-  CookingTime: '',
+  CookingTime: 0,
   difficultyLevel: 'medium',
   servings: 1,
 };
@@ -79,7 +79,7 @@ const NewFoodScreen = () => {
   const requestCameraPermission = async () => {
     try {
       const result = await pickImageFromLibrary({ maxWidth: 800, maxHeight: 800 });
-      
+
       if (result) {
         setOriginalImageUri(result.imageUri);
         setFormData(prev => ({
@@ -112,8 +112,9 @@ const NewFoodScreen = () => {
       errors.foodDescription = t('new_food_screen.add_validation_description');
     }
 
-    if (formData.CookingTime && isNaN(Number(formData.CookingTime))) {
-      errors.CookingTime = t('new_food_screen.add_validation_cooking_time_number');
+    // TimePicker ensures valid number, just check if selected
+    if (!formData.CookingTime || formData.CookingTime === 0) {
+      errors.CookingTime = t('time_picker.add_validation_cooking_time_required');
     }
 
     const validIngredients = ingredients.filter(item => item.trim() !== '');
@@ -198,337 +199,333 @@ const NewFoodScreen = () => {
         style={{ flex: 1 }}
       >
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Image Upload Card */}
-        <View style={styles.card}>
-          <Pressable onPress={requestCameraPermission} style={styles.imageCard}>
-            {originalImageUri ? (
-              <Image
-                source={{ uri: originalImageUri }}
-                style={styles.imagePreview}
-              />
-            ) : (
-              <View style={styles.uploadPlaceholder}>
-                <Text style={styles.uploadIcon}>📷</Text>
-                <Text style={styles.uploadText}>{t('new_food_screen.add_choose_image')}</Text>
-                <Text style={styles.uploadSubtext}>{t('new_food_screen.tap_to_add')}</Text>
-              </View>
+          {/* Image Upload Card */}
+          <View style={styles.card}>
+            <Pressable onPress={requestCameraPermission} style={styles.imageCard}>
+              {originalImageUri ? (
+                <Image
+                  source={{ uri: originalImageUri }}
+                  style={styles.imagePreview}
+                />
+              ) : (
+                <View style={styles.uploadPlaceholder}>
+                  <Text style={styles.uploadIcon}>📷</Text>
+                  <Text style={styles.uploadText}>{t('new_food_screen.add_choose_image')}</Text>
+                  <Text style={styles.uploadSubtext}>{t('new_food_screen.tap_to_add')}</Text>
+                </View>
+              )}
+            </Pressable>
+            {errorForm?.foodThumbnail && (
+              <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
             )}
-          </Pressable>
-          {errorForm?.foodThumbnail && (
-            <Text style={styles.errorText}>{errorForm.foodThumbnail}</Text>
-          )}
-        </View>
+          </View>
 
-        {/* Basic Information Card */}
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('new_food_screen.bacsic_info')}</Text>
+          {/* Basic Information Card */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>{t('new_food_screen.bacsic_info')}</Text>
 
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('new_food_screen.add_food_name')}</Text>
+            <View style={styles.formGroup}>
+              <Text style={styles.label}>{t('new_food_screen.add_food_name')}</Text>
+              <CustomInput
+                style={[styles.input, errorForm?.foodName ? styles.inputError : {}]}
+                placeholder={t('new_food_screen.add_placeholder_food_name')}
+                value={formData.foodName}
+                onChangeText={text => {
+                  setFormData(prev => ({ ...prev, foodName: text }));
+                  if (errorForm?.foodName) {
+                    const newErrorForm = { ...errorForm };
+                    delete newErrorForm.foodName;
+                    setErrorForm(newErrorForm);
+                  }
+                }}
+              />
+              {errorForm?.foodName && (
+                <Text style={styles.errorText}>{errorForm.foodName}</Text>
+              )}
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* 2x2 Grid: Category, Cooking Time, Difficulty, Servings */}
+            <View style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Row 1: Category & Cooking Time */}
+              <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+                {/* Category */}
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Text style={styles.label}>{t('new_food_screen.add_category')}</Text>
+                  </View>
+                  <SelectDropdown
+                    data={categoryList}
+                    onSelect={selectedItem => {
+                      setFormData(prev => ({
+                        ...prev,
+                        categoryId: selectedItem.categoryId,
+                      }));
+                      if (errorForm?.categoryId) {
+                        const newErrorForm = { ...errorForm };
+                        delete newErrorForm.categoryId;
+                        setErrorForm(newErrorForm);
+                      }
+                    }}
+                    renderButton={(selectedItem, isOpened) => {
+                      return (
+                        <View style={[
+                          styles.dropdownButtonStyle,
+                          { height: 44 },
+                          errorForm?.categoryId ? styles.inputError : {}
+                        ]}>
+                          <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
+                            {(selectedItem && selectedItem.categoryName) || t('new_food_screen.add_category')}
+                          </Text>
+                          <IconSvg
+                            xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
+                            width={16}
+                            height={16}
+                            color={colors.primary}
+                          />
+                        </View>
+                      );
+                    }}
+                    renderItem={(item, isSelected) => {
+                      return (
+                        <View
+                          style={{
+                            ...styles.dropdownItemStyle,
+                            ...(isSelected && { backgroundColor: colors.primary + '20' }),
+                          }}>
+                          <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
+                            {item.categoryName}
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    dropdownStyle={styles.dropdownMenuStyle}
+                  />
+                  {errorForm?.categoryId && (
+                    <Text style={styles.errorText}>{errorForm.categoryId}</Text>
+                  )}
+                </View>
+
+                {/* Cooking Time */}
+                <View style={{ flex: 1 }}>
+                  <TimePicker
+                    value={typeof formData.CookingTime === 'number' ? formData.CookingTime : (formData.CookingTime ? parseInt(formData.CookingTime, 10) : 0)}
+                    onChange={(minutes) => {
+                      setFormData(prev => ({ ...prev, CookingTime: minutes }));
+                      if (errorForm?.CookingTime) {
+                        const newErrorForm = { ...errorForm };
+                        delete newErrorForm.CookingTime;
+                        setErrorForm(newErrorForm);
+                      }
+                    }}
+                    label={t('new_food_screen.add_cooking_time')}
+                    minuteInterval={15}
+                  />
+                  {errorForm?.CookingTime && (
+                    <Text style={styles.errorText}>{errorForm.CookingTime}</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Row 2: Difficulty & Servings */}
+              <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+                {/* Difficulty Level */}
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Text style={styles.label}>{t('new_food_screen.difficulty_level')}</Text>
+                  </View>
+                  <SelectDropdown
+                    data={['easy', 'medium', 'hard']}
+                    onSelect={selectedItem => {
+                      setFormData(prev => ({
+                        ...prev,
+                        difficultyLevel: selectedItem,
+                      }));
+                    }}
+                    renderButton={(selectedItem, isOpened) => {
+                      const displayText = selectedItem ? t(`new_food_screen.${selectedItem}`) : t('new_food_screen.difficulty_level');
+                      return (
+                        <View style={[styles.dropdownButtonStyle, { height: 44 }]}>
+                          <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
+                            {displayText}
+                          </Text>
+                          <IconSvg
+                            xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
+                            width={16}
+                            height={16}
+                            color={colors.primary}
+                          />
+                        </View>
+                      );
+                    }}
+                    renderItem={(item, isSelected) => {
+                      const displayText = item ? t(`new_food_screen.${item}`) : '';
+                      return (
+                        <View
+                          style={{
+                            ...styles.dropdownItemStyle,
+                            ...(isSelected && { backgroundColor: colors.primary + '20' }),
+                          }}>
+                          <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
+                            {displayText}
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    showsVerticalScrollIndicator={false}
+                    dropdownStyle={styles.dropdownMenuStyle}
+                  />
+                </View>
+
+                {/* Servings */}
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                    <Text style={styles.label}>{t('new_food_screen.food_portions')}</Text>
+                  </View>
+                  <NumberSpinner
+                    value={formData.servings || 1}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, servings: value }))}
+                    min={1}
+                    max={20}
+                    step={1}
+                  />
+                  {errorForm?.servings && (
+                    <Text style={styles.errorText}>{errorForm.servings}</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Description Card */}
+          <View style={styles.card}>
+            <Text style={styles.sectionTitle}>{t('new_food_screen.add_description')}</Text>
             <CustomInput
-              style={[styles.input, errorForm?.foodName ? styles.inputError : {}]}
-              placeholder={t('new_food_screen.add_placeholder_food_name')}
-              value={formData.foodName}
+              style={[styles.descriptionInput, errorForm?.foodDescription ? styles.inputError : {}]}
+              placeholder={t('new_food_screen.add_placeholder_description')}
+              value={formData.foodDescription}
+              numberOfLines={5}
+              multiline={true}
               onChangeText={text => {
-                setFormData(prev => ({ ...prev, foodName: text }));
-                if (errorForm?.foodName) {
+                setFormData(prev => ({ ...prev, foodDescription: text }));
+                if (errorForm?.foodDescription) {
                   const newErrorForm = { ...errorForm };
-                  delete newErrorForm.foodName;
+                  delete newErrorForm.foodDescription;
                   setErrorForm(newErrorForm);
                 }
               }}
             />
-            {errorForm?.foodName && (
-              <Text style={styles.errorText}>{errorForm.foodName}</Text>
+            {errorForm?.foodDescription && (
+              <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
             )}
           </View>
 
-          <View style={styles.divider} />
+          {/* Ingredients Card */}
+          <View style={styles.card}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{t('new_food_screen.add_ingredients')}</Text>
+              <Text style={styles.itemCount}>{ingredients.filter(i => i.trim()).length}</Text>
+            </View>
 
-          {/* 2x2 Grid: Category, Cooking Time, Difficulty, Servings */}
-          <View style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Row 1: Category & Cooking Time */}
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
-              {/* Category */}
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>{t('new_food_screen.add_category')}</Text>
-                </View>
-                <SelectDropdown
-                  data={categoryList}
-                  onSelect={selectedItem => {
-                    setFormData(prev => ({
-                      ...prev,
-                      categoryId: selectedItem.categoryId,
-                    }));
-                    if (errorForm?.categoryId) {
-                      const newErrorForm = { ...errorForm };
-                      delete newErrorForm.categoryId;
-                      setErrorForm(newErrorForm);
-                    }
-                  }}
-                  renderButton={(selectedItem, isOpened) => {
-                    return (
-                      <View style={[
-                        styles.dropdownButtonStyle,
-                        { height: 44 },
-                        errorForm?.categoryId ? styles.inputError : {}
-                      ]}>
-                        <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
-                          {(selectedItem && selectedItem.categoryName) || t('new_food_screen.add_category')}
-                        </Text>
-                        <IconSvg
-                          xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
-                          width={16}
-                          height={16}
-                          color={colors.primary}
-                        />
-                      </View>
-                    );
-                  }}
-                  renderItem={(item, isSelected) => {
-                    return (
-                      <View
-                        style={{
-                          ...styles.dropdownItemStyle,
-                          ...(isSelected && { backgroundColor: colors.primary + '20' }),
-                        }}>
-                        <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
-                          {item.categoryName}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  showsVerticalScrollIndicator={false}
-                  dropdownStyle={styles.dropdownMenuStyle}
-                />
-                {errorForm?.categoryId && (
-                  <Text style={styles.errorText}>{errorForm.categoryId}</Text>
-                )}
-              </View>
-
-              {/* Cooking Time */}
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>{t('new_food_screen.add_cooking_time')}</Text>
+            {ingredients.map((ingredient, index) => (
+              <View key={index} style={styles.listItem}>
+                <View style={styles.itemNumber}>
+                  <Text style={styles.itemNumberText}>{index + 1}</Text>
                 </View>
                 <CustomInput
-                  style={[styles.input, { height: 44, fontSize: 13 }, errorForm?.CookingTime ? styles.inputError : {}]}
-                  placeholder="30"
-                  keyboardType="number-pad"
-                  value={formData.CookingTime}
+                  style={[
+                    styles.listInput,
+                    errorForm?.ingredients && !ingredient.trim() ? styles.inputError : {}
+                  ]}
+                  placeholder={t('new_food_screen.add_placeholder_ingredients')}
+                  value={ingredient}
                   onChangeText={text => {
-                    setFormData(prev => ({ ...prev, CookingTime: text }));
-                    if (errorForm?.CookingTime) {
+                    handleIngredientChange(text, index);
+                    if (errorForm?.ingredients && text.trim()) {
                       const newErrorForm = { ...errorForm };
-                      delete newErrorForm.CookingTime;
+                      delete newErrorForm.ingredients;
                       setErrorForm(newErrorForm);
                     }
                   }}
                 />
-                {errorForm?.CookingTime && (
-                  <Text style={styles.errorText}>{errorForm.CookingTime}</Text>
-                )}
+                <Pressable
+                  onPress={() => handleRemoveIngredient(index)}
+                  disabled={ingredients.length === 1}
+                  style={{ padding: 8 }}
+                >
+                  <Text style={{ fontSize: 18 }}>✕</Text>
+                </Pressable>
               </View>
+            ))}
+
+            {errorForm?.ingredients && (
+              <Text style={styles.errorText}>{errorForm.ingredients}</Text>
+            )}
+
+            <CustomButton
+              title={t('new_food_screen.add_add_ingredient')}
+              onPress={handleAddIngredient}
+              style={styles.addButton}
+            />
+          </View>
+
+          {/* Steps Card */}
+          <View style={styles.card}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{t('new_food_screen.add_steps')}</Text>
+              <Text style={styles.itemCount}>{steps.filter(s => s.trim()).length}</Text>
             </View>
 
-            {/* Row 2: Difficulty & Servings */}
-            <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
-              {/* Difficulty Level */}
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>{t('new_food_screen.difficulty_level')}</Text>
+            {steps.map((step, index) => (
+              <View key={index} style={styles.listItem}>
+                <View style={styles.itemNumber}>
+                  <Text style={styles.itemNumberText}>{index + 1}</Text>
                 </View>
-                <SelectDropdown
-                  data={['easy', 'medium', 'hard']}
-                  onSelect={selectedItem => {
-                    setFormData(prev => ({
-                      ...prev,
-                      difficultyLevel: selectedItem,
-                    }));
+                <CustomInput
+                  style={[
+                    styles.listInput,
+                    errorForm?.steps && !step.trim() ? styles.inputError : {}
+                  ]}
+                  placeholder={t('new_food_screen.add_placeholder_steps')}
+                  value={step}
+                  onChangeText={text => {
+                    handleStepChange(text, index);
+                    if (errorForm?.steps && text.trim()) {
+                      const newErrorForm = { ...errorForm };
+                      delete newErrorForm.steps;
+                      setErrorForm(newErrorForm);
+                    }
                   }}
-                  renderButton={(selectedItem, isOpened) => {
-                    const displayText = selectedItem ? t(`new_food_screen.${selectedItem}`) : t('new_food_screen.difficulty_level');
-                    return (
-                      <View style={[styles.dropdownButtonStyle, { height: 44 }]}>
-                        <Text style={[styles.dropdownButtonTxtStyle, { fontSize: 13 }]}>
-                          {displayText}
-                        </Text>
-                        <IconSvg
-                          xml={isOpened ? ImagesSvg.iconArrowDown : ImagesSvg.iconArrowRight}
-                          width={16}
-                          height={16}
-                          color={colors.primary}
-                        />
-                      </View>
-                    );
-                  }}
-                  renderItem={(item, isSelected) => {
-                    const displayText = item ? t(`new_food_screen.${item}`) : '';
-                    return (
-                      <View
-                        style={{
-                          ...styles.dropdownItemStyle,
-                          ...(isSelected && { backgroundColor: colors.primary + '20' }),
-                        }}>
-                        <Text style={[styles.dropdownItemTxtStyle, { fontSize: 13 }]}>
-                          {displayText}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  showsVerticalScrollIndicator={false}
-                  dropdownStyle={styles.dropdownMenuStyle}
                 />
+                <Pressable
+                  onPress={() => handleRemoveStep(index)}
+                  disabled={steps.length === 1}
+                  style={{ padding: 8 }}
+                >
+                  <Text style={{ fontSize: 18 }}>✕</Text>
+                </Pressable>
               </View>
+            ))}
 
-              {/* Servings */}
-              <View style={{ flex: 1 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 }}>
-                  <Text style={styles.label}>{t('new_food_screen.food_portions')}</Text>
-                </View>
-                <NumberSpinner
-                  value={formData.servings || 1}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, servings: value }))}
-                  min={1}
-                  max={20}
-                  step={1}
-                />
-                {errorForm?.servings && (
-                  <Text style={styles.errorText}>{errorForm.servings}</Text>
-                )}
-              </View>
+            {errorForm?.steps && (
+              <Text style={styles.errorText}>{errorForm.steps}</Text>
+            )}
+
+            <CustomButton
+              title={t('new_food_screen.add_add_step')}
+              onPress={handleAddStep}
+              style={styles.addButton}
+            />
+          </View>
+
+          {/* General Error */}
+          {errorForm?.general && (
+            <View style={styles.generalErrorContainer}>
+              <Text style={styles.generalErrorText}>⚠️ {errorForm.general}</Text>
             </View>
-          </View>
-        </View>
-
-        {/* Description Card */}
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>{t('new_food_screen.add_description')}</Text>
-          <CustomInput
-            style={[styles.descriptionInput, errorForm?.foodDescription ? styles.inputError : {}]}
-            placeholder={t('new_food_screen.add_placeholder_description')}
-            value={formData.foodDescription}
-            numberOfLines={5}
-            multiline={true}
-            onChangeText={text => {
-              setFormData(prev => ({ ...prev, foodDescription: text }));
-              if (errorForm?.foodDescription) {
-                const newErrorForm = { ...errorForm };
-                delete newErrorForm.foodDescription;
-                setErrorForm(newErrorForm);
-              }
-            }}
-          />
-          {errorForm?.foodDescription && (
-            <Text style={styles.errorText}>{errorForm.foodDescription}</Text>
           )}
-        </View>
-
-        {/* Ingredients Card */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{t('new_food_screen.add_ingredients')}</Text>
-            <Text style={styles.itemCount}>{ingredients.filter(i => i.trim()).length}</Text>
-          </View>
-
-          {ingredients.map((ingredient, index) => (
-            <View key={index} style={styles.listItem}>
-              <View style={styles.itemNumber}>
-                <Text style={styles.itemNumberText}>{index + 1}</Text>
-              </View>
-              <CustomInput
-                style={[
-                  styles.listInput,
-                  errorForm?.ingredients && !ingredient.trim() ? styles.inputError : {}
-                ]}
-                placeholder={t('new_food_screen.add_placeholder_ingredients')}
-                value={ingredient}
-                onChangeText={text => {
-                  handleIngredientChange(text, index);
-                  if (errorForm?.ingredients && text.trim()) {
-                    const newErrorForm = { ...errorForm };
-                    delete newErrorForm.ingredients;
-                    setErrorForm(newErrorForm);
-                  }
-                }}
-              />
-              <Pressable
-                onPress={() => handleRemoveIngredient(index)}
-                disabled={ingredients.length === 1}
-                style={{ padding: 8 }}
-              >
-                <Text style={{ fontSize: 18 }}>✕</Text>
-              </Pressable>
-            </View>
-          ))}
-
-          {errorForm?.ingredients && (
-            <Text style={styles.errorText}>{errorForm.ingredients}</Text>
-          )}
-
-          <CustomButton
-            title={t('new_food_screen.add_add_ingredient')}
-            onPress={handleAddIngredient}
-            style={styles.addButton}
-          />
-        </View>
-
-        {/* Steps Card */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{t('new_food_screen.add_steps')}</Text>
-            <Text style={styles.itemCount}>{steps.filter(s => s.trim()).length}</Text>
-          </View>
-
-          {steps.map((step, index) => (
-            <View key={index} style={styles.listItem}>
-              <View style={styles.itemNumber}>
-                <Text style={styles.itemNumberText}>{index + 1}</Text>
-              </View>
-              <CustomInput
-                style={[
-                  styles.listInput,
-                  errorForm?.steps && !step.trim() ? styles.inputError : {}
-                ]}
-                placeholder={t('new_food_screen.add_placeholder_steps')}
-                value={step}
-                onChangeText={text => {
-                  handleStepChange(text, index);
-                  if (errorForm?.steps && text.trim()) {
-                    const newErrorForm = { ...errorForm };
-                    delete newErrorForm.steps;
-                    setErrorForm(newErrorForm);
-                  }
-                }}
-              />
-              <Pressable
-                onPress={() => handleRemoveStep(index)}
-                disabled={steps.length === 1}
-                style={{ padding: 8 }}
-              >
-                <Text style={{ fontSize: 18 }}>✕</Text>
-              </Pressable>
-            </View>
-          ))}
-
-          {errorForm?.steps && (
-            <Text style={styles.errorText}>{errorForm.steps}</Text>
-          )}
-
-          <CustomButton
-            title={t('new_food_screen.add_add_step')}
-            onPress={handleAddStep}
-            style={styles.addButton}
-          />
-        </View>
-
-        {/* General Error */}
-        {errorForm?.general && (
-          <View style={styles.generalErrorContainer}>
-            <Text style={styles.generalErrorText}>⚠️ {errorForm.general}</Text>
-          </View>
-        )}
         </ScrollView>
       </KeyboardAvoidingView>
 
