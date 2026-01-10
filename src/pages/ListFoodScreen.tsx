@@ -1,21 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator} from 'react-native';
-import {useTranslation} from 'react-i18next';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import { useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-import {useAppDispatch, useAppSelector} from '@/redux/hooks';
-import {getAllFoodAPI, searchFoodAPI} from '@/redux/slices/food/foodThunk';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { getAllFoodAPI, searchFoodAPI } from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectSearchFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput } from '@/components'
-import { colors, ImagesSvg, navigate} from '@/utils'
+import { colors, ImagesSvg } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 
 const ListFoodScreen: React.FC = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const route = useRoute();
+  const navigation = useNavigation();
   const { LoadingShow, LoadingHide } = useLoading();
 
   const foodList = useAppSelector(selectFoodList);
@@ -26,7 +27,7 @@ const ListFoodScreen: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  
+
   useEffect(() => {
     // Nếu có initialSearch param từ HomeScreen, tự động search
     const initialSearch = (route.params as any)?.initialSearch;
@@ -72,7 +73,7 @@ const ListFoodScreen: React.FC = () => {
     if (!isLoadingFood && pagination.hasNextPage && currentPage < pagination.totalPages) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
-      
+
       if (isSearchMode) {
         await dispatch(searchFoodAPI({ query: searchQuery, page: nextPage, limit: 10 })).unwrap();
       } else {
@@ -82,17 +83,17 @@ const ListFoodScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}  edges={['left', 'right']}>
-      <HomeHeader 
-        mode="back" 
-        title={t('add_category')} 
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
+      <HomeHeader
+        mode="back"
+        title={t('add_category')}
         showGoBack={true}
         showNotification={false}
         isBackHome={true}
       />
       <View style={styles.searchContainer}>
         <CustomInput
-          style={[styles.inputHeader, {flex: 1}]}
+          style={[styles.inputHeader, { flex: 1 }]}
           placeholder={t('search')}
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
@@ -100,7 +101,7 @@ const ListFoodScreen: React.FC = () => {
           iconXml={ImagesSvg.icSearch}
           iconOnLeft={true}
         />
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.searchButton}
           onPress={handleSearchPress}
           disabled={isLoadingFood && hasSearched && isSearchMode}
@@ -108,21 +109,21 @@ const ListFoodScreen: React.FC = () => {
           <Text style={styles.searchButtonText}>{t('search')}</Text>
         </TouchableOpacity>
       </View>
-      
+
       {isLoadingFood && currentPage === 1 ? null : hasNoData && !isSearchMode ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <NoData 
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <NoData
             message={t('no_data')}
             width={120}
             height={120}
             textSize={16}
           />
-          <TouchableOpacity 
+          <TouchableOpacity
             style={{
-              marginTop: 20, 
-              backgroundColor: colors.primary, 
-              paddingVertical: 10, 
-              paddingHorizontal: 20, 
+              marginTop: 20,
+              backgroundColor: colors.primary,
+              paddingVertical: 10,
+              paddingHorizontal: 20,
               borderRadius: 8
             }}
             onPress={() => {
@@ -130,12 +131,12 @@ const ListFoodScreen: React.FC = () => {
               setCurrentPage(1);
               dispatch(getAllFoodAPI({ page: 1, limit: 10 }));
             }}>
-            <Text style={{color: 'white'}}>{t('reload')}</Text>
+            <Text style={{ color: 'white' }}>{t('reload')}</Text>
           </TouchableOpacity>
         </View>
       ) : hasSearched && isSearchMode && displayList.length === 0 && !isLoadingFood ? (
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <NoData 
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <NoData
             message={t('no_data')}
             width={120}
             height={120}
@@ -143,7 +144,7 @@ const ListFoodScreen: React.FC = () => {
           />
         </View>
       ) : (
-        <ScrollView 
+        <ScrollView
           contentContainerStyle={styles.container2}
           onScroll={({ nativeEvent }) => {
             const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
@@ -158,14 +159,14 @@ const ListFoodScreen: React.FC = () => {
             <TouchableOpacity
               key={item.foodId}
               style={styles.itemContainer}
-              onPress={() =>
-                navigate('FoodDetailScreen', {
+              onPress={() => {
+                (navigation.navigate as any)('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
-                })
-              }>
+                });
+              }}>
               {/* Top img */}
-              <Image style={styles.img} source={{uri: item.foodThumbnail}} />
+              <Image style={styles.img} source={{ uri: item.foodThumbnail }} />
               {/* Bottom info */}
               <View style={styles.titleItemLeft}>
                 <CustomTitle
@@ -176,16 +177,16 @@ const ListFoodScreen: React.FC = () => {
                 />
                 <Text style={styles.title2}>{item.userDetail.username}</Text>
                 <View
-                  style={{flexDirection: 'row', alignItems: 'center', gap: 8}}>
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
-                  <Text style={{color: colors.smallText, fontWeight: 'bold'}}>
+                  <Text style={{ color: colors.smallText, fontWeight: 'bold' }}>
                     ({(item.averageRating || 0).toFixed(1)})
                   </Text>
                 </View>
               </View>
             </TouchableOpacity>
           ))}
-          
+
           {/* Loading indicator khi load thêm */}
           {isLoadingFood && currentPage > 1 && (
             <View style={{ width: '100%', padding: 16, alignItems: 'center', justifyContent: 'center' }}>
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     gap: 8,
     shadowColor: colors.dark,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 5,

@@ -66,7 +66,12 @@ export function navigateToFoodDetail(foodId: string, userId: string) {
 }
 
 export function navigateToCategories(categoryId?: string) {
-  navigate('CategoriesScreen', categoryId ? { categoryId } : undefined);
+  if (navigationRef.isReady()) {
+    navigationRef.navigate('HomeNavigator' as any, {
+      screen: 'CategoriesScreen',
+      params: categoryId ? { categoryId } : undefined,
+    });
+  }
 }
 
 export function navigateToListFoodByUser(userId: string) {

@@ -8,7 +8,7 @@ import { HomeStack } from '@/navigation/types';
 
 import { getLocalBanners, Banner } from '@/api/bannerService';
 import { HomeHeader, CustomTitle, IconSvg, DraggableFloatingButton, Typography, CategoryItem, CustomAvatar, HomeSkeleton, Greeting, BannerSlider, CustomInput, CustomButton, FoodCard } from '@/components'
-import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString } from '@/utils'
+import { img, colors, ImagesSvg, handleAsyncAction, navigate, getStorageString, navigateToCategories } from '@/utils'
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllCategoriesAPI } from '@/redux/slices/category/categoryThunk';
@@ -164,7 +164,7 @@ const HomeScreen: React.FC<HomeScreenProps> = () => {
             <CategoryItem
               title={item.categoryName}
               image={item.categoryThumbnail}
-              onPress={() => navigate('CategoriesScreen', { categoryId: item.categoryId })}
+              onPress={() => navigateToCategories(item.categoryId)}
             />
           )}
         />

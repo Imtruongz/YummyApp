@@ -21,12 +21,12 @@ import {
 } from '@/redux/selectors';
 
 import { IconSvg, CustomInput, RatingInput, ConfirmationModal, CustomAvatar } from '@/components'
-import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, navigate, goBack, replace } from '@/utils'
+import { img, colors, ImagesSvg, formatDate, formatDateTime, showToast, handleAsyncAction, useModal, tryCatch, getStorageString, goBack, replace } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 interface RecipeDetailPageProps
   extends NativeStackScreenProps<HomeStack, 'FoodDetailScreen'> { }
 
-const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
+const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route, navigation }) => {
   const { foodId, userId } = route.params;
   const myUserId = getStorageString('userId') || '';
   const { LoadingShow, LoadingHide } = useLoading();
@@ -339,7 +339,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
               style={styles.authorCard}
               onPress={() => {
                 if (selectedFood?.userId) {
-                  navigate('ListFoodByUserPage', { userId: selectedFood.userId });
+                  navigation.navigate('ListFoodByUserPage', { userId: selectedFood.userId });
                 }
               }}>
               <CustomAvatar
@@ -367,7 +367,7 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route }) => {
               <TouchableOpacity
                 style={styles.categoryBadge}
                 onPress={() => {
-                  navigate('CategoriesScreen', {
+                  navigation.navigate('CategoriesScreen', {
                     categoryId: selectedFood.categoryDetail?.categoryId,
                   });
                 }}

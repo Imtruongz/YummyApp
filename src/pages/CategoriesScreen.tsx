@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput } from '@/components'
-import { colors, ImagesSvg, navigate } from '@/utils'
+import { colors, ImagesSvg } from '@/utils'
 import { useLoading } from '@/hooks/useLoading';
 
 import { useAppDispatch, useAppSelector } from '../redux/hooks.ts';
@@ -13,10 +13,12 @@ import { selectCategoryFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
 interface ListFoodByCategoriesProps {
   route: any;
+  navigation: any;
 }
 
 const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
   route,
+  navigation,
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -95,7 +97,7 @@ const CategoriesScreen: React.FC<ListFoodByCategoriesProps> = ({
               key={item.foodId}
               style={styles.itemContainer}
               onPress={() =>
-                navigate('FoodDetailScreen', {
+                navigation.navigate('FoodDetailScreen', {
                   foodId: item.foodId,
                   userId: item.userId,
                 })
