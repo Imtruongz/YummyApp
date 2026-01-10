@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getFollowingFoodsAPI } from '@/redux/slices/food/foodThunk';
 import { selectFollowingFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-import { HomeHeader, NoData } from '@/components';
+import { HomeHeader, NoData, IconSvg } from '@/components';
 import { colors, navigateToFoodDetail, getStorageString, ImagesSvg } from '@/utils';
 import { useLoading } from '@/hooks/useLoading';
 
@@ -131,19 +131,18 @@ const FollowingFeedScreen = () => {
         <View style={styles.foodSpecs}>
           {item.CookingTime && (
             <View style={styles.specItem}>
-              <Text style={styles.specLabel}>⏱️</Text>
+              <IconSvg xml={ImagesSvg.icTime} width={16} height={16} color={colors.primary} />
               <Text style={styles.specValue}>{item.CookingTime}</Text>
             </View>
           )}
           {item.difficultyLevel && (
             <View style={styles.specItem}>
-              <Text style={styles.specLabel}>📊</Text>
               <Text style={styles.specValue}>{getDifficultyLabel(item.difficultyLevel)}</Text>
             </View>
           )}
           {item.servings > 0 && (
             <View style={styles.specItem}>
-              <Text style={styles.specLabel}>👥</Text>
+              <IconSvg xml={ImagesSvg.icUser} width={16} height={16} color={colors.primary} />
               <Text style={styles.specValue}>{item.servings}</Text>
             </View>
           )}
@@ -273,9 +272,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-  },
-  specLabel: {
-    fontSize: 14,
   },
   specValue: {
     fontSize: 11,

@@ -350,7 +350,10 @@ const FoodDetailScreen: React.FC<RecipeDetailPageProps> = ({ route, navigation }
               />
               <View style={{ flex: 1, marginLeft: 16 }}>
                 <Text style={styles.authorName}>{selectedFood?.userDetail.username}</Text>
-                <Text style={styles.authorEmail}>{selectedFood?.userDetail.email}</Text>
+                {/* Only show email if it's a valid email (not Facebook ID) */}
+                {selectedFood?.userDetail.email?.includes('@') && (
+                  <Text style={styles.authorEmail}>{selectedFood?.userDetail.email}</Text>
+                )}
               </View>
               <View style={{ transform: [{ rotate: '180deg' }] }}>
                 <IconSvg xml={ImagesSvg.icArrowLeft} width={20} height={20} color={colors.primary} />

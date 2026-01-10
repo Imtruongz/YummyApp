@@ -14,8 +14,8 @@ import {
 } from '@/redux/selectors';
 import { useLoading } from '@/hooks/useLoading';
 
-import { HomeHeader, OverlayBadge, CustomInput, CustomButton, SettingHeaderCard, SettingFormCard, SettingFormGroup, SettingInfoCard, SettingDivider } from '@/components'
-import { img, colors, showToast, handleAsyncAction, goBack, pickImageFromLibrary, ImagesSvg } from '@/utils'
+import { HomeHeader, OverlayBadge, CustomInput, CustomButton, SettingHeaderCard, SettingFormCard, SettingFormGroup, SettingInfoCard, SettingDivider, ImagePickerModal } from '@/components'
+import { img, colors, showToast, handleAsyncAction, goBack, pickImageFromLibrary, ImagesSvg, takePhotoWithCamera } from '@/utils'
 
 const SettingProfileScreen = () => {
   const { t, i18n } = useTranslation();
@@ -25,6 +25,7 @@ const SettingProfileScreen = () => {
   const [username, setusername] = useState('');
   const [avatar, setavatar] = useState('');
   const [description, setdescription] = useState('');
+  const [showImagePicker, setShowImagePicker] = useState(false);
 
   const user = useAppSelector(selectUser);
   const isLoadingUser = useAppSelector(selectIsLoadingUser);
@@ -47,10 +48,25 @@ const SettingProfileScreen = () => {
     }
   }, [user]);
 
-  const requestCameraPermission = async () => {
+  const handleImageSelection = () => {
+    setShowImagePicker(true);
+  };
+
+  const handleCameraPress = async () => {
+    try {
+      const result = await takePhotoWithCamera({ maxWidth: 800, maxHeight: 800 });
+      if (result) {
+        setavatar(result.base64Image);
+      }
+    } catch (err) {
+      console.log('Error taking photo:', err);
+      showToast.error(t('error'), t('toast_messages.image_picker_error'));
+    }
+  };
+
+  const handleLibraryPress = async () => {
     try {
       const result = await pickImageFromLibrary({ maxWidth: 800, maxHeight: 800 });
-
       if (result) {
         setavatar(result.base64Image);
       }
@@ -124,7 +140,7 @@ const SettingProfileScreen = () => {
             ) : (
               <TouchableOpacity
                 style={styles.avatarContainer}
-                onPress={requestCameraPermission}
+                onPress={handleImageSelection}
               >
                 <OverlayBadge
                   imageUrl={avatar || img.defaultAvatar}
@@ -151,21 +167,25 @@ const SettingProfileScreen = () => {
               />
             </SettingFormGroup>
 
-            <SettingDivider />
+            {/* Email - Only show for email login users */}
+            {user?.email?.includes('@') && (
+              <>
+                <SettingDivider />
 
-            {/* Email */}
-            <SettingFormGroup
-              label={t('setting_profile_screen.email')}
-              icon={ImagesSvg.icEmail}
-              iconSize={22}
-              helper={t('setting_profile_screen.email_cannot_change')}
-            >
-              <CustomInput
-                value={user?.email}
-                isDisabled={false}
-                style={[styles.input, styles.disabledInput]}
-              />
-            </SettingFormGroup>
+                <SettingFormGroup
+                  label={t('setting_profile_screen.email')}
+                  icon={ImagesSvg.icEmail}
+                  iconSize={22}
+                  helper={t('setting_profile_screen.email_cannot_change')}
+                >
+                  <CustomInput
+                    value={user?.email}
+                    isDisabled={false}
+                    style={[styles.input, styles.disabledInput]}
+                  />
+                </SettingFormGroup>
+              </>
+            )}
 
             <SettingDivider />
 
@@ -201,6 +221,14 @@ const SettingProfileScreen = () => {
           <View style={{ height: 20 }} />
         </ScrollView>
       </TouchableWithoutFeedback>
+
+      {/* Image Picker Modal */}
+      <ImagePickerModal
+        visible={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onCameraPress={handleCameraPress}
+        onLibraryPress={handleLibraryPress}
+      />
 
       {/* Sticky Button Bar */}
       <View style={styles.buttonContainer}>

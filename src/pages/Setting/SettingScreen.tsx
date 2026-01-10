@@ -81,7 +81,7 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
           targetScreen="BankAccountScreen"
         />
         <SettingButton
-          title="ZuneZX WebView Github Pages Demo"
+          title="ZuneZX WebView (Demo)"
           onPress={() =>
             navigate('LFXWebViewDemoScreen' as any, {
               initialUrl: 'https://imtruongz.github.io/Zunezx-shop/',
@@ -110,7 +110,7 @@ const SettingScreen: React.FC<SettingPageProps> = ({ navigation }) => {
               <Text style={styles.biometricTitle}>{t('settings_screen.setting_faceid')}</Text>
               <Text style={styles.biometricDescription}>
                 {i18n.language === 'vn'
-                  ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học'
+                  ? 'Mở khóa ứng dụng nhanh bằng sinh trắc học(demo)'
                   : t('settings_screen.setting_faceid_description')}
               </Text>
             </View>

@@ -44,17 +44,25 @@ const FoodCard: React.FC<Props> = ({ item, onPress, containerStyle, imageStyle, 
         <View style={styles.infoRow}>
           {(item.averageRating !== undefined && item.averageRating !== null) && (
             <View style={styles.infoBadge}>
-              <Text style={styles.infoBadgeText}>⭐ {(item.averageRating || 0).toFixed(1)}</Text>
+              <View style={styles.badgeContent}>
+                <IconSvg xml={ImagesSvg.icStar} width={14} height={14} color={colors.primary} />
+                <Text style={styles.infoBadgeText}>{(item.averageRating || 0).toFixed(1)}</Text>
+              </View>
             </View>
           )}
           {!!item.CookingTime && (
             <View style={styles.infoBadge}>
-              <Text style={styles.infoBadgeText}>⏱️ {t('minutes_short', { count: Number(item.CookingTime) || 0 })}</Text>
+              <View style={styles.badgeContent}>
+                <IconSvg xml={ImagesSvg.icTime} width={14} height={14} color={colors.primary} />
+                <Text style={styles.infoBadgeText}>{t('minutes_short', { count: Number(item.CookingTime) || 0 })}</Text>
+              </View>
             </View>
           )}
           {!!difficultyLabel && (
             <View style={styles.infoBadge}>
-              <Text style={styles.infoBadgeText}>⚡ {difficultyLabel}</Text>
+              <View style={styles.badgeContent}>
+                <Text style={styles.infoBadgeText}>{difficultyLabel}</Text>
+              </View>
             </View>
           )}
         </View>
@@ -115,6 +123,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
+  },
+  badgeContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   infoBadgeText: {
     fontSize: 12,
