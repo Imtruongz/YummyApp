@@ -253,6 +253,14 @@
     "selected_time": "已选时间",
     "add_validation_cooking_time_required": "请选择烹饪时间"
   },
+  "image_picker": {
+    "title": "选择图片",
+    "subtitle": "为您的菜品选择图片来源",
+    "camera": "拍照",
+    "camera_description": "打开相机拍摄新照片",
+    "library": "相册",
+    "library_description": "从现有照片中选择"
+  },
   "time": {
     "just_now": "刚刚",
     "minutes_ago": "{{count}}分钟前",
@@ -353,7 +361,8 @@
     "profile_visibility": "您的个人资料对所有用户可见",
     "save_changes": "更改会自动保存",
     "edit_profile_success": "您的个人资料已成功更新",
-    "edit_profile_error": "无法更新个人资料，请稍后重试"
+    "edit_profile_error": "无法更新个人资料，请稍后重试",
+    "char_count": "{{count}} / 150 个字符"
   },
   "forgot_password_screen": {
     "forgot_pw_header": "忘记密码?",

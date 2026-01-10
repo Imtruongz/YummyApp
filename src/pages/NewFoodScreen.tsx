@@ -12,8 +12,8 @@ import { foodPayload } from '../redux/slices/food/types';
 import { selectCategoryList } from '@/redux/selectors';
 import { useLoading } from '@/hooks/useLoading';
 
-import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner, TimePicker } from '@/components'
-import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, pickImageFromLibrary } from '@/utils'
+import { CustomButton, HomeHeader, IconSvg, CustomInput, NumberSpinner, TimePicker, ImagePickerModal } from '@/components'
+import { colors, ImagesSvg, showToast, handleAsyncAction, resetTo, pickImageFromLibrary, takePhotoWithCamera } from '@/utils'
 
 const initialState: foodPayload = {
   foodName: '',
@@ -40,6 +40,7 @@ const NewFoodScreen = () => {
   const [ingredients, setIngredients] = useState<string[]>(['']);
   const [steps, setSteps] = useState<string[]>(['']);
   const [originalImageUri, setOriginalImageUri] = useState<string>('');
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const categoryList = useAppSelector(selectCategoryList);
@@ -76,10 +77,29 @@ const NewFoodScreen = () => {
     dispatch(getAllCategoriesAPI());
   }, [dispatch]);
 
-  const requestCameraPermission = async () => {
+  const handleImageSelection = () => {
+    setShowImagePicker(true);
+  };
+
+  const handleCameraPress = async () => {
+    try {
+      const result = await takePhotoWithCamera({ maxWidth: 800, maxHeight: 800 });
+      if (result) {
+        setOriginalImageUri(result.imageUri);
+        setFormData(prev => ({
+          ...prev,
+          foodThumbnail: result.base64Image,
+        }));
+      }
+    } catch (err) {
+      console.log('Error taking photo:', err);
+      showToast.error(t('error'), t('toast_messages.image_picker_error'));
+    }
+  };
+
+  const handleLibraryPress = async () => {
     try {
       const result = await pickImageFromLibrary({ maxWidth: 800, maxHeight: 800 });
-
       if (result) {
         setOriginalImageUri(result.imageUri);
         setFormData(prev => ({
@@ -201,7 +221,7 @@ const NewFoodScreen = () => {
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
           {/* Image Upload Card */}
           <View style={styles.card}>
-            <Pressable onPress={requestCameraPermission} style={styles.imageCard}>
+            <Pressable onPress={handleImageSelection} style={styles.imageCard}>
               {originalImageUri ? (
                 <Image
                   source={{ uri: originalImageUri }}
@@ -209,7 +229,12 @@ const NewFoodScreen = () => {
                 />
               ) : (
                 <View style={styles.uploadPlaceholder}>
-                  <Text style={styles.uploadIcon}>📷</Text>
+                  <IconSvg
+                    xml={ImagesSvg.icCamera}
+                    width={52}
+                    height={52}
+                    color={colors.dark}
+                  />
                   <Text style={styles.uploadText}>{t('new_food_screen.add_choose_image')}</Text>
                   <Text style={styles.uploadSubtext}>{t('new_food_screen.tap_to_add')}</Text>
                 </View>
@@ -538,6 +563,14 @@ const NewFoodScreen = () => {
           style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
         />
       </View>
+
+      {/* Image Picker Modal */}
+      <ImagePickerModal
+        visible={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onCameraPress={handleCameraPress}
+        onLibraryPress={handleLibraryPress}
+      />
     </SafeAreaView>
   );
 };

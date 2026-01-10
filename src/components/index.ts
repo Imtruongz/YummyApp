@@ -26,4 +26,15 @@ export * from '../pages/Profile/SecondRoute'
 export * from './SettingButton'
 export * from './Title'
 export * from './Typography'
-export { default as TimePicker } from './TimePicker'
+// TimePicker component
+export { default as TimePicker } from './TimePicker';
+
+// ImagePickerModal component
+export { default as ImagePickerModal } from './ImagePickerModal';
+
+// Setting components
+export { SettingHeaderCard } from './SettingHeaderCard';
+export { SettingFormCard } from './SettingFormCard';
+export { SettingFormGroup } from './SettingFormGroup';
+export { SettingInfoCard } from './SettingInfoCard';
+export { SettingDivider } from './SettingDivider';

@@ -80,5 +80,13 @@
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
 	</array>
+	
+	<!-- Camera and Photo Library Permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>Yumm cần quyền truy cập camera để chụp ảnh món ăn của bạn</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Yumm cần quyền truy cập thư viện ảnh để chọn ảnh món ăn</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Yumm cần quyền để lưu ảnh món ăn vào thư viện</string>
 </dict>
 </plist>

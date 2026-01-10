@@ -253,6 +253,14 @@
     "selected_time": "Selected time",
     "add_validation_cooking_time_required": "Please select cooking time"
   },
+  "image_picker": {
+    "title": "Choose Image",
+    "subtitle": "Select image source for your dish",
+    "camera": "Take Photo",
+    "camera_description": "Open camera to take a new photo",
+    "library": "Photo Library",
+    "library_description": "Choose from existing photos"
+  },
   "time": {
     "just_now": "Just now",
     "minutes_ago": "{{count}}m ago",
@@ -353,7 +361,8 @@
     "profile_visibility": "Your profile is visible to all users",
     "save_changes": "Changes are saved automatically",
     "edit_profile_success": "Your profile has been updated successfully",
-    "edit_profile_error": "Failed to update profile. Please try again later"
+    "edit_profile_error": "Failed to update profile. Please try again later",
+    "char_count": "{{count}} / 150 characters"
   },
   "forgot_password_screen": {
     "forgot_pw_header": "Forgot Password?",

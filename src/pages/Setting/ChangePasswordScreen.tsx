@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
-import { CustomButton, HomeHeader, CustomInput } from '@/components'
+import { CustomButton, HomeHeader, CustomInput, SettingHeaderCard, SettingFormCard, SettingFormGroup, SettingInfoCard, SettingDivider } from '@/components'
 import { colors, ImagesSvg, verifyPassword, verifyConfirmPassword, handleAsyncAction, resetTo, getStorageString, deleteStorageKey, showToast, goBack } from '@/utils'
 import { useLoading } from '@/hooks/useLoading';
 
@@ -108,16 +108,20 @@ const ChangePasswordScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
       >
         {/* Header Card */}
-        <View style={styles.headerCard}>
-          <Text style={styles.headerTitle}>🔐 {t('change_pw_screen.change_pw_header')}</Text>
-          <Text style={styles.headerSubtitle}>{t('change_pw_screen.change_pw_description')}</Text>
-        </View>
+        <SettingHeaderCard
+          icon={ImagesSvg.icLockAccount}
+          title={t('change_pw_screen.change_pw_header')}
+          subtitle={t('change_pw_screen.change_pw_description')}
+          iconSize={24}
+        />
 
         {/* Form Card */}
-        <View style={styles.formCard}>
+        <SettingFormCard>
           {/* Old Password */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('change_pw_screen.change_old_pw')}</Text>
+          <SettingFormGroup
+            label={t('change_pw_screen.change_old_pw')}
+            error={!isOldPasswordValid ? t('login_screen.pw_invalid') : undefined}
+          >
             <CustomInput
               style={[styles.input, !isOldPasswordValid && styles.inputError]}
               placeholder={t('change_pw_screen.change_old_pw')}
@@ -131,18 +135,16 @@ const ChangePasswordScreen: React.FC = () => {
               onPressIcon={handleShowOldPassword}
               iconXml={showOldPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
             />
-            {!isOldPasswordValid && (
-              <Text style={styles.errorText}>
-                {t('login_screen.pw_invalid')}
-              </Text>
-            )}
-          </View>
+          </SettingFormGroup>
 
-          <View style={styles.divider} />
+          <SettingDivider />
 
           {/* New Password */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('change_pw_screen.change_new_pw')}</Text>
+          <SettingFormGroup
+            label={t('change_pw_screen.change_new_pw')}
+            error={!isNewPasswordValid ? t('login_screen.pw_not_match') : undefined}
+            helper={t('change_pw_screen.pw_requirement')}
+          >
             <CustomInput
               style={[styles.input, !isNewPasswordValid && styles.inputError]}
               placeholder={t('change_pw_screen.change_new_pw')}
@@ -156,17 +158,15 @@ const ChangePasswordScreen: React.FC = () => {
               onPressIcon={handleShowNewPassword}
               iconXml={showNewPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
             />
-            {!isNewPasswordValid && (
-              <Text style={styles.errorText}>{t('login_screen.pw_not_match')}</Text>
-            )}
-            <Text style={styles.helperText}>{t('change_pw_screen.pw_requirement')}</Text>
-          </View>
+          </SettingFormGroup>
 
-          <View style={styles.divider} />
+          <SettingDivider />
 
           {/* Confirm Password */}
-          <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('change_pw_screen.change_confirm_pw')}</Text>
+          <SettingFormGroup
+            label={t('change_pw_screen.change_confirm_pw')}
+            error={!isConfirmPasswordValid ? t('login_screen.pw_confirm_not_match') : undefined}
+          >
             <CustomInput
               style={[styles.input, !isConfirmPasswordValid && styles.inputError]}
               placeholder={t('change_pw_screen.change_confirm_pw')}
@@ -180,22 +180,19 @@ const ChangePasswordScreen: React.FC = () => {
               onPressIcon={handleShowConfirmPassword}
               iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
             />
-            {!isConfirmPasswordValid && (
-              <Text style={styles.errorText}>
-                {t('login_screen.pw_confirm_not_match')}
-              </Text>
-            )}
-          </View>
-        </View>
+          </SettingFormGroup>
+        </SettingFormCard>
 
         {/* Security Tips */}
-        <View style={styles.tipsCard}>
-          <Text style={styles.tipsTitle}>💡 {t('change_pw_screen.security_tips')}</Text>
-          <Text style={styles.tipItem}>✓ {t('change_pw_screen.pw_tip_1')}</Text>
-          <Text style={styles.tipItem}>✓ {t('change_pw_screen.pw_tip_2')}</Text>
-          <Text style={styles.tipItem}>✓ {t('change_pw_screen.pw_tip_3')}</Text>
-          <Text style={styles.tipItem}>✓ {t('change_pw_screen.pw_tip_4')}</Text>
-        </View>
+        <SettingInfoCard
+          title={`💡 ${t('change_pw_screen.security_tips')}`}
+          items={[
+            t('change_pw_screen.pw_tip_1'),
+            t('change_pw_screen.pw_tip_2'),
+            t('change_pw_screen.pw_tip_3'),
+            t('change_pw_screen.pw_tip_4'),
+          ]}
+        />
 
         <View style={{ height: 20 }} />
       </ScrollView>
@@ -226,47 +223,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
   },
-  headerCard: {
-    backgroundColor: colors.primary + '15',
-    borderLeftWidth: 4,
-    borderLeftColor: colors.primary,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.dark,
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: colors.smallText,
-    lineHeight: 20,
-  },
-  formCard: {
-    backgroundColor: colors.light,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 24,
-  },
-  formGroup: {
-    marginBottom: 0,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.dark,
-    marginBottom: 10,
-  },
   input: {
     height: 50,
     backgroundColor: colors.InputBg,
@@ -279,43 +235,6 @@ const styles = StyleSheet.create({
   inputError: {
     borderWidth: 2,
     borderColor: colors.danger,
-  },
-  errorText: {
-    color: colors.danger,
-    fontSize: 13,
-    marginTop: 8,
-    fontWeight: '500',
-  },
-  helperText: {
-    color: colors.smallText,
-    fontSize: 12,
-    marginTop: 8,
-    lineHeight: 16,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#f0f0f0',
-    marginVertical: 16,
-  },
-  tipsCard: {
-    backgroundColor: '#fffbf0',
-    borderLeftWidth: 4,
-    borderLeftColor: '#FF6B6B',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  tipsTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.dark,
-    marginBottom: 12,
-  },
-  tipItem: {
-    fontSize: 13,
-    color: colors.smallText,
-    marginBottom: 8,
-    lineHeight: 18,
   },
   buttonContainer: {
     justifyContent: 'center',

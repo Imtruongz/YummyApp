@@ -14,8 +14,8 @@ import {
 } from '@/redux/selectors';
 import { useLoading } from '@/hooks/useLoading';
 
-import { HomeHeader, OverlayBadge, CustomInput, CustomButton } from '@/components'
-import { img, colors, showToast, handleAsyncAction, goBack, pickImageFromLibrary } from '@/utils'
+import { HomeHeader, OverlayBadge, CustomInput, CustomButton, SettingHeaderCard, SettingFormCard, SettingFormGroup, SettingInfoCard, SettingDivider } from '@/components'
+import { img, colors, showToast, handleAsyncAction, goBack, pickImageFromLibrary, ImagesSvg } from '@/utils'
 
 const SettingProfileScreen = () => {
   const { t, i18n } = useTranslation();
@@ -110,10 +110,12 @@ const SettingProfileScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           {/* Header Card */}
-          <View style={styles.headerCard}>
-            <Text style={styles.headerTitle}>👤 {t('setting_profile_screen.edit_profile_header')}</Text>
-            <Text style={styles.headerSubtitle}>{t('setting_profile_screen.edit_profile_description')}</Text>
-          </View>
+          <SettingHeaderCard
+            icon={ImagesSvg.icUser}
+            title={t('setting_profile_screen.edit_profile_header')}
+            subtitle={t('setting_profile_screen.edit_profile_description')}
+            iconSize={18}
+          />
 
           {/* Avatar Section */}
           <View style={styles.avatarCard}>
@@ -134,36 +136,45 @@ const SettingProfileScreen = () => {
           </View>
 
           {/* Form Card */}
-          <View style={styles.formCard}>
+          <SettingFormCard>
             {/* Username */}
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>👤 {t('setting_profile_screen.user_name')}</Text>
+            <SettingFormGroup
+              label={t('setting_profile_screen.user_name')}
+              icon={ImagesSvg.icUser}
+              iconSize={16}
+            >
               <CustomInput
                 value={username}
                 onChangeText={setusername}
                 placeholder={t('setting_profile_screen.edit_profile_input_name')}
                 style={styles.input}
               />
-            </View>
+            </SettingFormGroup>
 
-            <View style={styles.divider} />
+            <SettingDivider />
 
             {/* Email */}
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>📧 {t('setting_profile_screen.email')}</Text>
+            <SettingFormGroup
+              label={t('setting_profile_screen.email')}
+              icon={ImagesSvg.icEmail}
+              iconSize={22}
+              helper={t('setting_profile_screen.email_cannot_change')}
+            >
               <CustomInput
                 value={user?.email}
                 isDisabled={false}
                 style={[styles.input, styles.disabledInput]}
               />
-              <Text style={styles.helperText}>{t('setting_profile_screen.email_cannot_change')}</Text>
-            </View>
+            </SettingFormGroup>
 
-            <View style={styles.divider} />
+            <SettingDivider />
 
             {/* Description */}
-            <View style={styles.formGroup}>
-              <Text style={styles.label}>✍️ {t('setting_profile_screen.description')}</Text>
+            <SettingFormGroup
+              label={t('setting_profile_screen.description')}
+              icon={ImagesSvg.icEdit}
+              iconSize={22}
+            >
               <CustomInput
                 value={description}
                 onChangeText={setdescription}
@@ -172,17 +183,20 @@ const SettingProfileScreen = () => {
                 multiline={true}
                 numberOfLines={3}
               />
-              <Text style={styles.charCount}>{description.length} / 150 characters</Text>
-            </View>
-          </View>
+              <Text style={styles.charCount}>{t('setting_profile_screen.char_count', { count: description.length })}</Text>
+            </SettingFormGroup>
+          </SettingFormCard>
 
           {/* Info Card */}
-          <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>ℹ️ {t('setting_profile_screen.profile_info')}</Text>
-            <Text style={styles.infoItem}>• {t('setting_profile_screen.complete_profile')}</Text>
-            <Text style={styles.infoItem}>• {t('setting_profile_screen.profile_visibility')}</Text>
-            <Text style={styles.infoItem}>• {t('setting_profile_screen.save_changes')}</Text>
-          </View>
+          <SettingInfoCard
+            icon={ImagesSvg.icInfo}
+            title={t('setting_profile_screen.profile_info')}
+            items={[
+              t('setting_profile_screen.complete_profile'),
+              t('setting_profile_screen.profile_visibility'),
+              t('setting_profile_screen.save_changes'),
+            ]}
+          />
 
           <View style={{ height: 20 }} />
         </ScrollView>
@@ -262,28 +276,6 @@ const styles = StyleSheet.create({
     color: colors.smallText,
     marginTop: 8,
   },
-  formCard: {
-    backgroundColor: colors.light,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    elevation: 3,
-    marginBottom: 24,
-  },
-  formGroup: {
-    marginBottom: 0,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.dark,
-    marginBottom: 10,
-  },
   input: {
     height: 50,
     backgroundColor: colors.InputBg,
@@ -303,42 +295,11 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
-  helperText: {
-    color: colors.smallText,
-    fontSize: 12,
-    marginTop: 8,
-    fontStyle: 'italic',
-  },
   charCount: {
     color: colors.smallText,
     fontSize: 12,
     marginTop: 8,
     textAlign: 'right',
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#f0f0f0',
-    marginVertical: 16,
-  },
-  infoCard: {
-    backgroundColor: '#fffbf0',
-    borderLeftWidth: 4,
-    borderLeftColor: '#FF6B6B',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 24,
-  },
-  infoTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: colors.dark,
-    marginBottom: 12,
-  },
-  infoItem: {
-    fontSize: 13,
-    color: colors.smallText,
-    marginBottom: 8,
-    lineHeight: 18,
   },
   errorText: {
     color: colors.danger,

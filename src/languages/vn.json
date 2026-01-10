@@ -344,7 +344,8 @@
     "profile_visibility": "Hồ sơ của bạn có thể nhìn thấy bởi tất cả người dùng",
     "save_changes": "Những thay đổi được lưu tự động",
     "edit_profile_success": "Hồ sơ của bạn đã được cập nhật thành công",
-    "edit_profile_error": "Không thể cập nhật hồ sơ. Vui lòng thử lại sau"
+    "edit_profile_error": "Không thể cập nhật hồ sơ. Vui lòng thử lại sau",
+    "char_count": "{{count}} / 150 ký tự"
   },
   "forgot_password_screen": {
     "forgot_pw_header": "Quên Mật Khẩu?",
@@ -418,6 +419,14 @@
     "done": "Xong",
     "selected_time": "Thời gian đã chọn",
     "add_validation_cooking_time_required": "Vui lòng chọn thời gian nấu"
+  },
+  "image_picker": {
+    "title": "Chọn hình ảnh",
+    "subtitle": "Chọn nguồn hình ảnh cho món ăn của bạn",
+    "camera": "Chụp ảnh",
+    "camera_description": "Mở camera để chụp ảnh mới",
+    "library": "Thư viện",
+    "library_description": "Chọn ảnh có sẵn từ thư viện"
   },
   "time": {
     "just_now": "Vừa xong",

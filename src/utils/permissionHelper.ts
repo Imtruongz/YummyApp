@@ -1,5 +1,5 @@
 import { Platform, PermissionsAndroid } from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 
 /**
@@ -122,4 +122,77 @@ export const pickImageAsURI = async (options?: {
 }): Promise<string> => {
   const result = await pickImageFromLibrary(options);
   return result?.imageUri || '';
+};
+
+/**
+ * Requests permission to access device camera
+ * @returns true if permission is granted, false otherwise
+ */
+const requestCameraPermission = async (): Promise<boolean> => {
+  try {
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA
+      );
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    // iOS handles permissions automatically via Info.plist
+    return true;
+  } catch (error) {
+    console.log('Error requesting camera permission:', error);
+    return false;
+  }
+};
+
+/**
+ * Launches camera to take a photo
+ * @param options - Optional configuration for camera
+ * @returns Object containing imageUri and base64Image, or null if capture failed
+ */
+export const takePhotoWithCamera = async (options?: {
+  maxWidth?: number;
+  maxHeight?: number;
+}): Promise<{ imageUri: string; base64Image: string } | null> => {
+  try {
+    // Request permission first
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      console.log('Camera permission denied');
+      return null;
+    }
+
+    // Launch camera
+    const result: any = await launchCamera({
+      mediaType: 'photo',
+      includeBase64: false,
+      maxWidth: options?.maxWidth || 800,
+      maxHeight: options?.maxHeight || 800,
+      cameraType: 'back',
+      saveToPhotos: false,
+    });
+
+    // Check if user took a photo
+    if (result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      const base64Image = await convertImageToBase64(imageUri);
+
+      if (!base64Image) {
+        console.log('Failed to convert image to base64');
+        return null;
+      }
+
+      return { imageUri, base64Image };
+    } else if (result.errorCode) {
+      console.log('Camera error:', result.errorMessage);
+      return null;
+    } else if (!result.didCancel) {
+      console.log('Camera failed for unknown reason');
+      return null;
+    }
+
+    return null;
+  } catch (error) {
+    console.log('Error taking photo:', error);
+    return null;
+  }
 };
