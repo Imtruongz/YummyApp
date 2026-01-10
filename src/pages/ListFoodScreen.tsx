@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ActivityIndicator, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { getAllFoodAPI, searchFoodAPI } from '@/redux/slices/food/foodThunk';
 import { selectFoodList, selectSearchFoodList, selectIsLoadingFood } from '@/redux/selectors';
 
-import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput } from '@/components'
+import { HomeHeader, CustomTitle, IconSvg, NoData, CustomInput, FoodItemCard } from '@/components'
 import { colors, ImagesSvg } from '@/utils'
 import { useLoading } from '@/hooks/useLoading'
 
@@ -92,21 +92,26 @@ const ListFoodScreen: React.FC = () => {
         isBackHome={true}
       />
       <View style={styles.searchContainer}>
-        <CustomInput
-          style={[styles.inputHeader, { flex: 1 }]}
+        <TextInput
+          style={styles.searchInput}
           placeholder={t('search')}
+          placeholderTextColor={colors.smallText}
           onChangeText={text => setSearchQuery(text)}
           value={searchQuery}
-          showIcon={true}
-          iconXml={ImagesSvg.icSearch}
-          iconOnLeft={true}
+          onSubmitEditing={handleSearchPress}
+          returnKeyType="search"
         />
         <TouchableOpacity
           style={styles.searchButton}
           onPress={handleSearchPress}
+          activeOpacity={0.8}
           disabled={isLoadingFood && hasSearched && isSearchMode}
         >
-          <Text style={styles.searchButtonText}>{t('search')}</Text>
+          {isLoadingFood && isSearchMode ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <IconSvg xml={ImagesSvg.icSearch} width={20} height={20} color="#fff" />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -144,8 +149,26 @@ const ListFoodScreen: React.FC = () => {
           />
         </View>
       ) : (
-        <ScrollView
-          contentContainerStyle={styles.container2}
+        <FlatList
+          data={displayList}
+          renderItem={({ item, index }) => (
+            <FoodItemCard
+              item={item}
+              index={index}
+              showRating={true}
+              onPress={() => {
+                (navigation.navigate as any)('FoodDetailScreen', {
+                  foodId: item.foodId,
+                  userId: item.userId,
+                });
+              }}
+              containerStyle={{ width: '47%' }}
+            />
+          )}
+          keyExtractor={(item, index) => `${item.foodId}_${index}`}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
+          contentContainerStyle={styles.listContainer}
           onScroll={({ nativeEvent }) => {
             const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
             const isEndReached = layoutMeasurement.height + contentOffset.y >= contentSize.height - 100;
@@ -154,46 +177,14 @@ const ListFoodScreen: React.FC = () => {
             }
           }}
           scrollEventThrottle={400}
-        >
-          {displayList?.map(item => (
-            <TouchableOpacity
-              key={item.foodId}
-              style={styles.itemContainer}
-              onPress={() => {
-                (navigation.navigate as any)('FoodDetailScreen', {
-                  foodId: item.foodId,
-                  userId: item.userId,
-                });
-              }}>
-              {/* Top img */}
-              <Image style={styles.img} source={{ uri: item.foodThumbnail }} />
-              {/* Bottom info */}
-              <View style={styles.titleItemLeft}>
-                <CustomTitle
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={styles.title}
-                  title={item.foodName}
-                />
-                <Text style={styles.title2}>{item.userDetail.username}</Text>
-                <View
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <IconSvg xml={ImagesSvg.icStar} width={18} height={18} color={colors.primary} />
-                  <Text style={{ color: colors.smallText, fontWeight: 'bold' }}>
-                    ({(item.averageRating || 0).toFixed(1)})
-                  </Text>
-                </View>
+          ListFooterComponent={
+            isLoadingFood && currentPage > 1 ? (
+              <View style={{ width: '100%', padding: 16, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color={colors.primary} />
               </View>
-            </TouchableOpacity>
-          ))}
-
-          {/* Loading indicator khi load thêm */}
-          {isLoadingFood && currentPage > 1 && (
-            <View style={{ width: '100%', padding: 16, alignItems: 'center', justifyContent: 'center' }}>
-              <ActivityIndicator size="large" color={colors.primary} />
-            </View>
-          )}
-        </ScrollView>
+            ) : null
+          }
+        />
       )}
     </SafeAreaView>
   );
@@ -212,75 +203,50 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    gap: 10,
+    backgroundColor: '#fff',
+    borderRadius: 30, // Pill shape
+    marginHorizontal: 16,
+    marginVertical: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    // Shadow for elevation effect
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#f5f5f5',
   },
-
-  inputHeader: {
-    height: 52,
+  searchInput: {
+    flex: 1,
+    height: 40,
     paddingHorizontal: 12,
-    margin: 12,
-    backgroundColor: colors.light,
+    fontSize: 15,
+    color: colors.dark,
+    fontWeight: '500',
   },
-
   searchButton: {
+    width: 40,
+    height: 40,
     backgroundColor: colors.primary,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 20, // Circle shape
     justifyContent: 'center',
     alignItems: 'center',
-    minHeight: 52,
-    marginRight: 12,
-  },
-
-  searchButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-
-  container2: {
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    gap: 14,
-    padding: 12,
-  },
-  itemContainer: {
-    width: '47%',
-    height: 190,
-    backgroundColor: colors.light,
-    borderRadius: 15,
-    gap: 8,
-    shadowColor: colors.dark,
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  titleItemLeft: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingHorizontal: 8,
-    gap: 8,
+
+  listContainer: {
+    width: '100%',
+    padding: 12,
   },
-  img: {
-    width: 'auto',
-    height: 100,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    resizeMode: 'cover',
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  title2: {
-    fontSize: 12,
-    color: colors.smallText,
+  columnWrapper: {
+    justifyContent: 'space-between',
+    gap: 14,
   },
 });
 

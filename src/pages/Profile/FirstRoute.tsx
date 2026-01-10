@@ -85,9 +85,13 @@ const FirstRoute = () => {
       ) : (
         <FlatList
           data={Array.isArray(userFoodList) ? userFoodList : []}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <FoodItemCard
               item={item}
+              index={index}
+              showMenu={true}
+              showCreator={false}
+              onMenuPress={() => showActionModal(item)}
               onLongPress={() => showActionModal(item)}
               onPress={() => {
                 navigate('FoodDetailScreen', {

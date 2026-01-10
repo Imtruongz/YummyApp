@@ -170,10 +170,12 @@ const UsersProfileScreen: React.FC = ({ route }: any) => {
 
   const hasNoData = !viewedUserFoodList || viewedUserFoodList.length === 0;
 
-  const renderFoodItem = ({ item }: { item: any }) => (
+  const renderFoodItem = ({ item, index }: { item: any; index: number }) => (
     <FoodItemCard
       containerStyle={{ width: cardWidth, margin: 4 }}
       item={item}
+      index={index}
+      showCreator={false}
       onPress={() => handleFoodPress(item.foodId, item.userId)}
     />
   );

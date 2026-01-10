@@ -1,13 +1,13 @@
-import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import { Image, View, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {useAppSelector, useAppDispatch} from '@/redux/hooks';
-import {RootState} from '@/redux/store';
+import { useAppSelector, useAppDispatch } from '@/redux/hooks';
+import { RootState } from '@/redux/store';
 
-import {getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI} from '@/redux/slices/favorite/favoriteThunk';
-import { NoData, ConfirmationModal } from '@/components'
-import {colors, handleAsyncAction, useModal, navigate, getStorageString} from '@/utils';
+import { getAllFavoriteFoodsAPI, deleteFavoriteFoodAPI } from '@/redux/slices/favorite/favoriteThunk';
+import { NoData, ConfirmationModal, IconSvg } from '@/components'
+import { colors, handleAsyncAction, useModal, navigate, getStorageString, ImagesSvg } from '@/utils';
 import { useLoading } from '@/hooks/useLoading';
 
 const SecondRoute = () => {
@@ -15,10 +15,10 @@ const SecondRoute = () => {
   const { t } = useTranslation();
   const { LoadingShow, LoadingHide } = useLoading();
   const [userId, setUserId] = useState(getStorageString('userId') || '');
-  const {favoriteFoodList, isLoadingFavorite} = useAppSelector(
+  const { favoriteFoodList, isLoadingFavorite } = useAppSelector(
     (state: RootState) => state.favorite,
   );
-  const {foodList} = useAppSelector((state: RootState) => state.food);
+  const { foodList } = useAppSelector((state: RootState) => state.food);
   const [currentFavoriteId, setCurrentFavoriteId] = useState<string | null>(null);
   const { isVisible: isDeleteModalVisible, open: openDeleteModal, close: closeDeleteModal } = useModal();
 
@@ -82,7 +82,12 @@ const SecondRoute = () => {
   }
 
   if (!favoriteFoodList || favoriteFoodList.length === 0) {
-    return <NoData width={80} height={80} textSize={16} message={t('no_data')} />;
+    return (
+      <View style={styles.emptyContainer}>
+        <NoData width={80} height={80} textSize={16} message={t('no_data')} />
+        <Text style={styles.emptyText}>{t('profile_screen.no_favorites_yet')}</Text>
+      </View>
+    );
   }
 
   return (
@@ -90,11 +95,13 @@ const SecondRoute = () => {
       <ScrollView contentContainerStyle={styles.container}>
         {favoriteFoodList.map(favorite => {
           const foodDetails = getFoodDetails(favorite.foodId);
+          if (!foodDetails) return null;
+
           return (
             <TouchableOpacity
               key={favorite.favoriteFoodId}
               style={styles.item}
-              onLongPress={() => showDialog(favorite.favoriteFoodId)}
+              activeOpacity={0.9}
               onPress={() => {
                 navigate('FoodDetailScreen', {
                   foodId: favorite.foodId,
@@ -103,13 +110,31 @@ const SecondRoute = () => {
               }}>
               <Image
                 style={styles.img}
-                source={{
-                  uri: foodDetails?.foodThumbnail,
-                }}
+                source={{ uri: foodDetails.foodThumbnail }}
               />
-              <View style={styles.titleItemLeft}>
-                <Text numberOfLines={2} style={{ fontSize: 16, fontWeight: '700', color: colors.dark }}>{foodDetails?.foodName}</Text>
-                <Text numberOfLines={3} style={{ fontSize: 12, color: colors.dark }}>{foodDetails?.foodDescription}</Text>
+              <View style={styles.contentContainer}>
+                <View style={styles.textContainer}>
+                  <Text numberOfLines={1} style={styles.foodName}>{foodDetails.foodName}</Text>
+                  <Text numberOfLines={2} style={styles.description}>
+                    {foodDetails.foodDescription || t('no_description')}
+                  </Text>
+                  {/* Rating or Creator info could go here */}
+                  <View style={styles.metaContainer}>
+                    <Text style={styles.creatorName}>by {foodDetails.userDetail?.username || 'Unknown'}</Text>
+                  </View>
+                </View>
+
+                <TouchableOpacity
+                  style={styles.menuButton}
+                  onPress={() => showDialog(favorite.favoriteFoodId)}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <View style={styles.menuDots}>
+                    <View style={styles.dot} />
+                    <View style={styles.dot} />
+                    <View style={styles.dot} />
+                  </View>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           );
@@ -134,41 +159,89 @@ export default SecondRoute;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    flexDirection: 'column',
-    gap: 14,
-    padding: 12,
+    padding: 16,
+    gap: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  item: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    borderRadius: 20,
-    marginBottom: 10,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: colors.gray,
-    backgroundColor: colors.light,
-    shadowColor: colors.dark,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  titleItemLeft: {
-    padding: 14,
-    justifyContent: 'flex-start',
-    gap: 8,
+  emptyContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 10,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: colors.smallText,
+  },
+  item: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    // overflow: 'hidden', // Xóa dòng này để shadow hiện trên iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25, // Tăng độ đậm shadow
+    shadowRadius: 8,
+    elevation: 6, // Tăng elevation cho Android
+    height: 110,
+    marginBottom: 6, // Thêm margin bottom để shadow không bị che
   },
   img: {
-    width: 100,
-    height: 100,
+    width: 110,
+    height: 110,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 16, // Bo góc cho ảnh thủ công
+    borderBottomLeftRadius: 16,
+  },
+  contentContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 12,
+    gap: 10,
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingVertical: 2,
+  },
+  foodName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.dark,
+    marginBottom: 4,
+  },
+  description: {
+    fontSize: 12,
+    color: colors.smallText,
+    lineHeight: 16,
+    marginBottom: 6,
+  },
+  metaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  creatorName: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: colors.primary,
+  },
+  menuButton: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  menuDots: {
+    gap: 3,
+    padding: 4,
+  },
+  dot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.smallText,
   },
 });
