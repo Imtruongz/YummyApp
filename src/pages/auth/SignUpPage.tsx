@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, SafeAreaView, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import React, { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
@@ -95,70 +95,90 @@ const SignupPage: React.FC = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
-        {/* Title */}
-        <AuthHeader img={img.Yummy} />
-        {/* Content */}
-        <View style={styles.body}>
-          <CustomInput
-            style={styles.input}
-            value={username}
-            placeholder={t('login_screen.login_username')}
-            onChangeText={setUsername}
-          />
-          {!isUsernameValid ? (
-            <Text style={styles.errorMessage}>Username phải có ít nhất 3 ký tự</Text>
-          ) : <Text></Text>}
-          <CustomInput
-            style={styles.input}
-            value={email}
-            placeholder={t('login_screen.login_email')}
-            onChangeText={setEmail}
-          />
-          {!isEmailValid ? (
-            <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
-          ) : <Text></Text>}
-          <CustomInput
-            style={styles.input}
-            value={password}
-            placeholder={t('login_screen.login_pw')}
-            secureTextEntry={!showPassword}
-            onChangeText={setPassword}
-            showIcon={true}
-            onPressIcon={handleShowPassword}
-            iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
-          />
-          {!isPasswordValid ? (
-            <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
-          ) : <Text></Text>}
-          <CustomInput
-            style={styles.input}
-            value={confirmPassword}
-            placeholder={t('login_screen.change_confirm_pw')}
-            secureTextEntry={!showConfirmPassword}
-            onChangeText={setConfirmPassword}
-            showIcon={true}
-            onPressIcon={handleShowConfirmPassword}
-            iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
-          />
-          {!isConfirmPasswordValid ? (
-            <Text style={styles.errorMessage}>
-              {t('login_screen.pw_invalid')}
-            </Text>
-          ) : <Text></Text>}
-          <CustomButton title={t('login_screen.login_register_btn')} onPress={handleSignUp} />
-        </View>
-        {/* Footer */}
-        <View style={styles.footer}>
-          <AuthFooter
-            content={t('login_screen.login_already_accounted')}
-            navigateTo={t('login_screen.login_btn')}
-            targetScreen="LoginScreen"
-          />
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+    <SafeAreaView style={styles.container}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
+            {/* Title */}
+            <AuthHeader img={img.Yummy} />
+
+            {/* Content */}
+            <View style={styles.body}>
+              <CustomInput
+                style={styles.input}
+                value={username}
+                placeholder={t('login_screen.login_username')}
+                onChangeText={setUsername}
+              />
+              {!isUsernameValid && (
+                <Text style={styles.errorMessage}>{t('login_screen.username_invalid') || 'Username phải có ít nhất 3 ký tự'}</Text>
+              )}
+
+              <CustomInput
+                style={styles.input}
+                value={email}
+                placeholder={t('login_screen.login_email')}
+                onChangeText={setEmail}
+              />
+              {!isEmailValid && (
+                <Text style={styles.errorMessage}>{t('login_screen.email_invalid')}</Text>
+              )}
+
+              <CustomInput
+                style={styles.input}
+                value={password}
+                placeholder={t('login_screen.login_pw')}
+                secureTextEntry={!showPassword}
+                onChangeText={setPassword}
+                showIcon={true}
+                onPressIcon={handleShowPassword}
+                iconXml={showPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
+              />
+              {!isPasswordValid && (
+                <Text style={styles.errorMessage}>{t('login_screen.pw_invalid')}</Text>
+              )}
+
+              <CustomInput
+                style={styles.input}
+                value={confirmPassword}
+                placeholder={t('login_screen.change_confirm_pw')}
+                secureTextEntry={!showConfirmPassword}
+                onChangeText={setConfirmPassword}
+                showIcon={true}
+                onPressIcon={handleShowConfirmPassword}
+                iconXml={showConfirmPassword ? ImagesSvg.eye : ImagesSvg.hideEye}
+              />
+              {!isConfirmPasswordValid && (
+                <Text style={styles.errorMessage}>{t('login_screen.confirm_pw_invalid') || t('login_screen.pw_invalid')}</Text>
+              )}
+
+              {/* API Error Message */}
+              {isErrorMessage && errorMessage !== '' && (
+                <Text style={styles.apiErrorMessage}>{errorMessage}</Text>
+              )}
+
+              <CustomButton title={t('login_screen.login_register_btn')} onPress={handleSignUp} />
+            </View>
+
+            {/* Footer */}
+            <View style={styles.footer}>
+              <AuthFooter
+                content={t('login_screen.login_already_accounted')}
+                navigateTo={t('login_screen.login_btn')}
+                targetScreen="LoginScreen"
+              />
+            </View>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -166,12 +186,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.light,
   },
+  keyboardView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   body: {
     flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     gap: 6,
+    paddingHorizontal: 16,
   },
   footer: {
     flex: 1,
@@ -182,6 +210,16 @@ const styles = StyleSheet.create({
   },
   errorMessage: {
     color: colors.danger,
+    fontSize: 12,
+    alignSelf: 'flex-start',
+    marginLeft: 16,
+  },
+  apiErrorMessage: {
+    color: colors.danger,
+    fontSize: 14,
+    textAlign: 'center',
+    marginVertical: 8,
+    paddingHorizontal: 16,
   },
   input: {
     height: 52,

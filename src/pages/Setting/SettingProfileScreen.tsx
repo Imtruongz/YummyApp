@@ -144,7 +144,7 @@ const SettingProfileScreen = () => {
               >
                 <OverlayBadge
                   imageUrl={avatar || img.defaultAvatar}
-                  onEditPress={() => (console.log('Edit Avatar Pressed'))}
+                  onEditPress={handleImageSelection}
                 />
                 <Text style={styles.avatarHint}>{t('setting_profile_screen.tap_to_edit_avatar')}</Text>
               </TouchableOpacity>
