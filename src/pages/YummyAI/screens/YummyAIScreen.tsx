@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, FlatList, Image } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, FlatList, Image, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
@@ -55,6 +55,44 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation, route }) => {
   const [savingChat, setSavingChat] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const continuingConversationId = route?.params?.conversationId;
+
+  // ✅ FIXED: Helper function to scroll to bottom with delay
+  const scrollToBottom = (delay: number = 100) => {
+    setTimeout(() => {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    }, delay);
+  };
+
+  // ✅ FIXED: Listen to keyboard events for proper scroll behavior
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      () => {
+        // Scroll to bottom when keyboard appears
+        scrollToBottom(150);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      () => {
+        // Scroll to bottom when keyboard hides
+        scrollToBottom(150);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
+  // ✅ FIXED: Scroll when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      scrollToBottom(100);
+    }
+  }, [messages]);
 
   const handleGoBack = async () => {
     // Only auto-save when this is a brand-new chat (not continuing existing one)
@@ -281,8 +319,9 @@ const YummyAIScreen: React.FC<YummyAIScreenProps> = ({ navigation, route }) => {
           renderItem={renderMessage}
           keyExtractor={item => item.id}
           style={styles.messageList}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
-          onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
           ListFooterComponent={
             messages.length === 1 ? (
               <QuickActionButtons actions={quickActions} />

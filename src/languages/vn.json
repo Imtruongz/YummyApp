@@ -311,7 +311,8 @@
     "support_text": "Có vấn đề?",
     "support_link": "Liên hệ hỗ trợ",
     "success_message": "Xác nhận email thành công",
-    "failure_message": "Xác nhận email thất bại"
+    "failure_message": "Xác nhận email thất bại",
+    "code_verified": "Mã xác nhận đã được xác nhận"
   },
   "change_pw_screen": {
     "change_pw_header": "Đổi mật khẩu",

@@ -306,7 +306,8 @@
     "support_text": "Having trouble?",
     "support_link": "Contact Support",
     "success_message": "Email verified successfully",
-    "failure_message": "Email verification failed"
+    "failure_message": "Email verification failed",
+    "code_verified": "Verification code verified successfully"
   },
   "loading": "Loading...",
   "reload": "Reload",

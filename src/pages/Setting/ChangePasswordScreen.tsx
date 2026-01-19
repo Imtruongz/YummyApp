@@ -10,8 +10,6 @@ import { useLoading } from '@/hooks/useLoading';
 import { changePasswordAPI } from '@/redux/slices/auth/authThunk';
 import { useAppDispatch } from '@/redux/hooks';
 
-const userId = getStorageString('userId') || '';
-
 const ChangePasswordScreen: React.FC = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
@@ -57,8 +55,10 @@ const ChangePasswordScreen: React.FC = () => {
     LoadingShow();
     await handleAsyncAction(
       async () => {
+        // ✅ FIXED: Get userId from storage at call time (not at load time)
+        const currentUserId = getStorageString('userId') || '';
         const payload = {
-          userId: userId,
+          userId: currentUserId,
           oldPassword: oldPassword,
           newPassword: newPassword,
         };
