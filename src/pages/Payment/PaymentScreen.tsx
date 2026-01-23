@@ -12,7 +12,7 @@ import { colors, ImagesSvg, formatUSDCurrency, extractNumbersOnly, BIDVLogo, MBL
 
 const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const { t } = useTranslation();
-  const { amount: initialAmount = 5, phoneNumber = '0363704403', serviceType = 'Donate', serviceProvider = 'Yummy', userId } = route.params || {};
+  const { amount: initialAmount = 5, userId } = route.params || {};
 
   const [amount, setAmount] = useState<number>(initialAmount);
   const [inputAmount, setInputAmount] = useState<string>(initialAmount.toString());
@@ -21,18 +21,21 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
   const [recipientBankAccount, setRecipientBankAccount] = useState<BankAccount | null>(null);
   const [loadingBankAccount, setLoadingBankAccount] = useState<boolean>(false);
   const [recipientUsername, setRecipientUsername] = useState<string>('');
+  const [mbLaosToken, setMBLaosToken] = useState<string | null>(null);
+  const [mbLaosRedirectUrl, setMBLaosRedirectUrl] = useState<string | null>(null);
 
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(INITIAL_PAYMENT_METHODS); const formatMoney = (amount: number) => {
     return formatUSDCurrency(amount);
   };
 
-  const handleDeepLink = ({ url }: { url: string }) => {
+  const handleDeepLink = async ({ url }: { url: string }) => {
     console.log('[PaymentScreen] Received deep link:', url);
 
     const route = url.replace(/.*?:\/\//g, '');
     const [path, queryString] = route.split('?');
 
-    if (path === 'payment-result') {
+    // Handle payment callback (từ MBLaos quay về)
+    if (path === 'pay' || path === 'payment-result') {
       // Parse query string manually (URLSearchParams not supported in some engines)
       const params: { [key: string]: string } = {};
       if (queryString) {
@@ -44,38 +47,78 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
         });
       }
 
-      const status = params.status;
+      const token = params.token || mbLaosToken;
       const transactionId = params.transactionId;
 
-      console.log('[PaymentScreen] Payment callback - Status:', status, 'TXN:', transactionId);
+      console.log('[PaymentScreen] Payment callback - Token:', token ? 'exists' : 'missing', 'TXN:', transactionId);
 
-      if (status === 'success') {
-        showToast.success(
-          t('payment_screen.payment_success'),
-          `${t('payment_screen.payment_bank_transfer_success')} (TXN: ${transactionId})`
-        );
-        // Navigate to PaymentSuccessScreen instead of goBack
-        setTimeout(() => {
-          navigate('PaymentSuccessScreen', {
-            amount: amount,
-            transactionId: transactionId,
-            recipientName: recipientUsername,
-            timestamp: new Date().toLocaleString('vi-VN'),
-          });
-        }, 500);
-      } else if (status === 'failed' || status === 'cancelled') {
-        showToast.error(
-          t('payment_screen.payment_payment_error'),
-          t('payment_screen.payment_general_error')
-        );
-      } else if (status === 'pending') {
-        showToast.info(
-          'Thông báo',
-          'Giao dịch đang xử lý...'
-        );
+      // ✨ Gọi API verify-status để xác minh giao dịch thực sự
+      if (token) {
+        try {
+          console.log('[PaymentScreen] 🔍 Calling verify-status API...');
+
+          // Nếu không có transactionId từ callback, lấy từ state hoặc tạo mới
+          const txnId = transactionId || `${Date.now()}`;
+
+          const verifyResponse = await paymentService.verifyTransactionStatus(token, txnId);
+
+          console.log('[PaymentScreen] ✅ Verify response:', JSON.stringify(verifyResponse, null, 2));
+
+          // Xử lý kết quả từ API verify-status
+          if (verifyResponse?.code === '00' || verifyResponse?.status === 'SUCCESS') {
+            // Giao dịch thành công
+            showToast.success(
+              t('payment_screen.payment_success'),
+              t('payment_screen.payment_bank_transfer_success')
+            );
+
+            // Navigate to PaymentSuccessScreen
+            setTimeout(() => {
+              navigate('PaymentSuccessScreen', {
+                amount: verifyResponse?.data?.amount || amount,
+                transactionId: verifyResponse?.data?.transactionId || txnId,
+                recipientName: recipientUsername,
+                timestamp: verifyResponse?.data?.completedAt || new Date().toLocaleString('vi-VN'),
+              });
+            }, 500);
+
+          } else if (verifyResponse?.status === 'PENDING') {
+            // Giao dịch đang xử lý
+            showToast.info(
+              'Thông báo',
+              'Giao dịch đang được xử lý. Vui lòng chờ...'
+            );
+
+          } else if (verifyResponse?.status === 'FAILED' || verifyResponse?.status === 'CANCELLED') {
+            // Giao dịch thất bại
+            showToast.error(
+              t('payment_screen.payment_payment_error'),
+              verifyResponse?.message || t('payment_screen.payment_general_error')
+            );
+
+          } else {
+            // Trường hợp khác - hiển thị thông tin từ response
+            console.log('[PaymentScreen] Unknown verify status:', verifyResponse?.status);
+            showToast.info(
+              'Kết quả giao dịch',
+              verifyResponse?.message || 'Vui lòng kiểm tra lại giao dịch'
+            );
+          }
+
+        } catch (error) {
+          console.log('[PaymentScreen] ❌ Verify status error:', error);
+          showToast.error(
+            t('payment_screen.payment_payment_error'),
+            'Không thể xác minh giao dịch. Vui lòng thử lại.'
+          );
+        }
+      } else {
+        console.log('[PaymentScreen] ⚠️ No token available for verification');
+        showToast.info('Thông báo', 'Đã quay lại từ MBLaos');
       }
     }
   };
+
 
   useEffect(() => {
     const fetchRecipientData = async () => {
@@ -108,7 +151,49 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
       }
     };
 
+    // ✨ Gọi API login MBLaos khi vào màn hình
+    const loginToMBLaos = async () => {
+      try {
+        const requestBody = {
+          username: 'mbbank',
+          password: 'ekboh8rKhEQmN5RC/WlHpRksFomWI0zfhQXcQw/yt28vjDmPV3sWZsBCBR3gf6LjkROuX4hDLM803EEty+OZXAzwIAz5XK1FR0bQm0yH7wHbP5zPUec/5GAAkgEvgX/P4z1/OYw2Ec0ng6pwpuDlwtWRyP4AMlO4L2/tVS3pVh6Hk26gtr5HiEvGVQaX7L4m8OlqBQHk6PqLZ7pre2e2Gerlu1LU3gPAyQ8Ej3JHrImn1dPTZc/+x4wGYXcN41fce3iXwKqVCShoW7peHKXtcoPAebU8DSUQNk3M6AF22+4t9gnuqwhgB9FVdgSS6OSoVArhPRFk49VV0CGUvyTy+g=='
+        };
+        const response = await paymentService.loginMBLaos();
+        // ✨ Lưu token vào state nếu login thành công
+        if (response?.csrfToken) {
+          setMBLaosToken(response.csrfToken);
+          console.log('[PaymentScreen] 💾 Saved MBLaos csrfToken to state');
+          // ✨ Gọi API create-redirect-url để lấy URL mở MBLaos
+          // Generate random transactionId (UUID-like format)
+          const transactionId = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
+          const callbackUrl = `yummy://pay?token=${response.csrfToken}`;
+
+          const redirectResponse = await paymentService.createMBLaosRedirectUrl(
+            response.csrfToken,
+            {
+              transactionId: transactionId,
+              phoneNumber: '02096497153',
+              clientIp: '123.123.123',
+              failUrl: callbackUrl,
+              returnUrl: callbackUrl,
+              successUrl: callbackUrl,
+              amount: 10000,
+              currency: 'LAK',
+            }
+          );
+          // ✨ Lưu redirectUrl vào state để sử dụng khi user confirm thanh toán
+          if (redirectResponse?.redirectUrl) {
+            setMBLaosRedirectUrl(redirectResponse.redirectUrl);
+            console.log('[PaymentScreen] 💾 Saved MBLaos redirectUrl to state');
+          }
+        }
+      } catch (error) {
+        console.log('[PaymentScreen] ❌ MBLaos login error:', error);
+      }
+    };
+
     fetchRecipientData();
+    loginToMBLaos();
   }, [userId, t]);
 
   // ✨ Deep Link Listener - Handle callback từ MBLaos
@@ -172,26 +257,30 @@ const PaymentScreen: React.FC<PaymentScreenProps> = ({ route }) => {
 
   const handleProcessPayment = async () => {
     try {
-      const response = await paymentService.createPaymentSession(amount, userId);
-      if (response && response.success && response.token) {
-        const deepLinkUrl = `mblaos://pay?token=${encodeURIComponent(response.token)}`;
-        console.log('[PaymentScreen] Opening MBLaos with token:', response.token);
+      if (!mbLaosRedirectUrl) {
+        showToast.error(
+          'Thông báo',
+          'Không thể kết nối MBLaos. Vui lòng thử lại sau.'
+        );
+        return;
+      }
+      try {
+        await Linking.openURL(mbLaosRedirectUrl);
+        setShowPaymentConfirmation(false);
+      } catch (openError) {
 
-        try {
-          await Linking.openURL(deepLinkUrl);
-          console.log('[PaymentScreen] Successfully opened MBLaos');
-        } catch (openError) {
-          console.log('[PaymentScreen] Failed to open MBLaos:', openError);
-          showToast.error(
-            'Thông báo',
-            'MBLaos chưa cài. Vui lòng cài đặt MBLaos để thanh toán.'
-          );
+        const storeUrl = Platform.select({
+          ios: 'https://apps.apple.com/search?term=MB%20Laos',
+          android: 'https://play.google.com/store/apps/details?id=com.mblaos',
+        });
+
+        if (storeUrl) {
+          showToast.info('Thông báo', 'MBLaos chưa được cài đặt. Đang chuyển đến Store...');
+          await Linking.openURL(storeUrl);
         }
-      } else {
-        throw new Error('Không thể tạo token thanh toán');
+        setShowPaymentConfirmation(false);
       }
     } catch (error) {
-      console.log('Lỗi khi thanh toán:', error);
       showToast.error(t('payment_screen.payment_payment_error'), t('payment_screen.payment_general_error'));
     }
   };

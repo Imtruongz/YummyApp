@@ -33,7 +33,7 @@
     "hard": "困难",
     "food_portions": "份量"
   },
-  "yummy_ai": {
+  "Yummy_AI": {
     "ai_assistant_welcome": "你好！我是你的AI烹饪助手。你有什么烹饪问题吗？",
     "ai_assistant_placeholder": "输入你的烹饪问题...",
     "ai_assistant_error": "错误",
@@ -141,7 +141,8 @@
     "login_forgot_pw": "忘记密码？",
     "login_send_mail": "发送邮件",
     "login_success_toast": "登录成功",
-    "login_error_toast": "发生错误，请重试"
+    "login_error_toast": "发生错误，请重试",
+    "change_confirm_pw": "确认密码"
   },
   "signup_screen": {
     "signup_header": "注册",
@@ -152,7 +153,9 @@
     "signup_btn": "注册",
     "signup_invalid_username": "用户名只能包含字母、数字和下划线，3 到 15 个字符",
     "login_register_success_toast": "注册成功",
-    "login_register_error_toast": "注册过程中出现错误"
+    "login_register_error_toast": "注册过程中出现错误",
+    "signup_register_success_toast": "注册成功",
+    "signup_register_error_toast": "注册过程中出现错误"
   },
   "recipe_detail_screen": {
     "recipe_detail_description": "描述",
@@ -399,6 +402,41 @@
     "pw_req_2": "必须与确认密码匹配",
     "pw_req_3": "不能为空"
   },
+  "edit_food_screen": {
+    "edit_food_header": "编辑美食",
+    "add_choose_image": "选择图片",
+    "tap_to_add": "点击添加照片",
+    "bacsic_info": "基本信息",
+    "add_food_name": "菜名",
+    "add_validation_food_name": "请输入菜名",
+    "add_validation_image": "请为您的菜品选择一张图片",
+    "add_validation_category": "请选择一个分类",
+    "add_validation_description": "请输入描述",
+    "add_validation_cooking_time_number": "烹饪时间必须是数字",
+    "add_validation_ingredients": "至少需要一种食材",
+    "add_validation_steps": "至少需要一个烹饪步骤",
+    "add_validation_form_error": "请修正表单中的错误",
+    "add_success_message": "美食更新成功！",
+    "add_error_message": "无法更新美食，请重试。",
+    "add_food_name_placeholder": "请输入菜名",
+    "add_cooking_time": "烹饪时间",
+    "add_cooking_time_placeholder": "输入烹饪时间（分钟）",
+    "add_description": "描述",
+    "add_description_placeholder": "请输入菜品描述",
+    "add_ingredients": "食材",
+    "add_placeholder_ingredients": "食材",
+    "add_ingredient": "添加食材",
+    "add_steps": "步骤",
+    "add_placeholder_steps": "步骤",
+    "add_step": "添加步骤",
+    "add_update_button": "更新美食",
+    "add_category": "分类",
+    "add_select_category": "选择分类",
+    "add_difficulty_level": "难度等级",
+    "add_servings": "份量",
+    "add_servings_placeholder": "份数"
+  },
+  "add_category": "分类",
   "edit_button": "编辑",
   "back_button": "返回"
 }

@@ -153,7 +153,9 @@
     "signup_btn": "Đăng ký",
     "signup_invalid_username": "Tên người dùng chỉ được chứa chữ cái, số và dấu gạch dưới, từ 3 đến 15 ký tự",
     "signup_register_success_toast": "Đăng ký thành công",
-    "signup_register_error_toast": "Đã xảy ra lỗi trong quá trình đăng ký"
+    "signup_register_error_toast": "Đã xảy ra lỗi trong quá trình đăng ký",
+    "login_register_success_toast": "Đăng ký thành công",
+    "login_register_error_toast": "Đã xảy ra lỗi trong quá trình đăng ký"
   },
   "recipe_detail_screen": {
     "recipe_detail_description": "Mô tả",

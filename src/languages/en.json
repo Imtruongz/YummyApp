@@ -141,7 +141,8 @@
     "login_forgot_pw": "Forgot Password?",
     "login_send_mail": "Send mail",
     "login_success_toast": "Login successful",
-    "login_error_toast": "An error occurred, please try again"
+    "login_error_toast": "An error occurred, please try again",
+    "change_confirm_pw": "Confirm Password"
   },
   "signup_screen": {
     "signup_header": "Sign up",
@@ -152,7 +153,9 @@
     "signup_btn": "Sign up",
     "signup_invalid_username": "Username can only contain letters, numbers and underscores, 3 to 15 characters",
     "login_register_success_toast": "Sign up successful",
-    "login_register_error_toast": "An error occurred during registration"
+    "login_register_error_toast": "An error occurred during registration",
+    "signup_register_success_toast": "Sign up successful",
+    "signup_register_error_toast": "An error occurred during registration"
   },
   "recipe_detail_screen": {
     "recipe_detail_description": "Description",
@@ -398,5 +401,42 @@
     "pw_req_1": "At least 6 characters long",
     "pw_req_2": "Must match confirmation password",
     "pw_req_3": "Cannot be empty"
-  }
+  },
+  "edit_food_screen": {
+    "edit_food_header": "Edit Food",
+    "add_choose_image": "Choose Image",
+    "tap_to_add": "Tap to add photo",
+    "bacsic_info": "Basic Information",
+    "add_food_name": "Food Name",
+    "add_validation_food_name": "Food name is required",
+    "add_validation_image": "Please select an image for your food",
+    "add_validation_category": "Please select a category",
+    "add_validation_description": "Description is required",
+    "add_validation_cooking_time_number": "Cooking time must be a number",
+    "add_validation_ingredients": "At least one ingredient is required",
+    "add_validation_steps": "At least one cooking step is required",
+    "add_validation_form_error": "Please fix the errors in the form",
+    "add_success_message": "Food updated successfully!",
+    "add_error_message": "Failed to update food. Please try again.",
+    "add_food_name_placeholder": "Enter food name",
+    "add_cooking_time": "Cooking Time",
+    "add_cooking_time_placeholder": "Enter cooking time (minutes)",
+    "add_description": "Description",
+    "add_description_placeholder": "Enter food description",
+    "add_ingredients": "Ingredients",
+    "add_placeholder_ingredients": "Ingredient",
+    "add_ingredient": "Add Ingredient",
+    "add_steps": "Steps",
+    "add_placeholder_steps": "Step",
+    "add_step": "Add Step",
+    "add_update_button": "Update Food",
+    "add_category": "Category",
+    "add_select_category": "Select Category",
+    "add_difficulty_level": "Difficulty Level",
+    "add_servings": "Servings",
+    "add_servings_placeholder": "Number of servings"
+  },
+  "add_category": "Category",
+  "edit_button": "Edit",
+  "back_button": "Back"
 }
