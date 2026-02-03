@@ -46,7 +46,6 @@ export const getUserById = async (userId: string) => {
     }
     return null;
   } catch (error) {
-    console.log('[paymentService] Error fetching user:', error);
     throw error;
   }
 };
@@ -74,10 +73,9 @@ export const registerTransactionWithServer = async (
       amount,
       userId
     });
-    console.log('[paymentService] 📝 Registered transaction with server:', response.data);
     return response.data;
   } catch (error) {
-    console.log('[paymentService] ❌ Failed to register transaction with server:', error);
+    // Silent fail - transaction registration is optional
   }
 };
 
@@ -95,10 +93,8 @@ export const loginMBLaos = async () => {
     });
 
     const data = await response.json();
-    console.log('[paymentService] 🔑 MBLaos Login Response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
-    console.log('[paymentService] ❌ MBLaos Login Error:', error);
     throw error;
   }
 };
@@ -128,8 +124,6 @@ export const createMBLaosRedirectUrl = async (
       currency: params.currency || 'LAK',
     };
 
-    console.log('[paymentService] 📤 Create Redirect URL Request:', JSON.stringify(requestBody, null, 2));
-
     const response = await fetch(MBLAOS_ENDPOINTS.CREATE_REDIRECT_URL, {
       method: 'POST',
       headers: getMBLaosHeaders({
@@ -140,10 +134,8 @@ export const createMBLaosRedirectUrl = async (
     });
 
     const data = await response.json();
-    console.log('[paymentService] 📥 Create Redirect URL Response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
-    console.log('[paymentService] ❌ Create Redirect URL Error:', error);
     throw error;
   }
 };
@@ -153,9 +145,6 @@ export const verifyTransactionStatus = async (
   transactionId: string
 ) => {
   try {
-    console.log('[paymentService] 🔍 Verifying Transaction ID:', transactionId);
-    console.log('[paymentService] 🔑 Using Token:', csrfToken ? 'Present' : 'Missing');
-
     const response = await fetch(MBLAOS_ENDPOINTS.VERIFY_TRANSACTION, {
       method: 'POST',
       headers: getMBLaosHeaders({
@@ -163,56 +152,17 @@ export const verifyTransactionStatus = async (
         clientMessageId: transactionId,
       }),
       body: JSON.stringify({
-        transactionId: transactionId,
+        transactionIds: [transactionId],
       }),
     });
 
-    console.log('[paymentService] 📊 Response Status:', response.status);
-
-    // Nếu 401, có thể token hết hạn
     if (response.status === 401) {
-      console.log('[paymentService] ⚠️ Token expired (401), need to re-login');
       throw new Error('TOKEN_EXPIRED');
     }
 
     const data = await response.json();
-    console.log('[paymentService] 📥 Verify Response:', JSON.stringify(data, null, 2));
     return data;
   } catch (error) {
-    console.log('[paymentService] ❌ Verify error for', transactionId, ':', error);
-    throw error;
-  }
-};
-
-/**
- * Login lại để lấy token mới và verify transaction
- * Sử dụng khi token cũ bị hết hạn (lỗi 401)
- */
-export const refreshTokenAndVerify = async (
-  transactionId: string
-): Promise<{ data: any; newToken: string }> => {
-  try {
-    console.log('[paymentService] 🔄 Refreshing token and verifying transaction...');
-
-    // Step 1: Login lại để lấy token mới
-    const loginResponse = await loginMBLaos();
-
-    if (!loginResponse?.csrfToken) {
-      throw new Error('Failed to get new token from MBLaos');
-    }
-
-    const newToken = loginResponse.csrfToken;
-    console.log('[paymentService] ✅ Got new token after refresh');
-
-    // Step 2: Verify với token mới
-    const verifyResponse = await verifyTransactionStatus(newToken, transactionId);
-
-    return {
-      data: verifyResponse,
-      newToken: newToken,
-    };
-  } catch (error) {
-    console.log('[paymentService] ❌ Refresh and verify failed:', error);
     throw error;
   }
 };

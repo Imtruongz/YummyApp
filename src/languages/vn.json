@@ -205,7 +205,8 @@
     "payment_success_message": "Cảm ơn bạn đã ủng hộ!",
     "amount": "Số tiền",
     "payment_time": "Thời gian",
-    "transaction_code": "Mã giao dịch"
+    "transaction_code": "Mã giao dịch",
+    "recipient": "Người nhận"
   },
   "toast_messages": {
     "toast_delete_success": "Xóa thành công",

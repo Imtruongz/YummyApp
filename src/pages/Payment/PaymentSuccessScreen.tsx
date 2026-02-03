@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import {colors, navigate, formatUSDCurrency} from '@/utils';
+import { colors, navigate, formatUSDCurrency, ImagesSvg } from '@/utils';
 import LinearGradient from 'react-native-linear-gradient';
+import { IconSvg } from '@/components';
 
 const PaymentSuccessScreen = ({ route, navigation }: any) => {
   const { t } = useTranslation();
-  
+
   // Get data from route params
-  const { 
-    amount = 0, 
+  const {
+    amount = 0,
     transactionId = '#N/A',
     recipientName = 'Unknown',
     timestamp = new Date().toLocaleString('vi-VN')
@@ -30,7 +31,7 @@ const PaymentSuccessScreen = ({ route, navigation }: any) => {
       <View style={styles.container}>
         <View style={styles.successCircle}>
           <View style={styles.checkIconWrapper}>
-            {/* <MaterialIcons name="done" size={60} color={colors.success} /> */}
+            <IconSvg xml={ImagesSvg.icSuccess} width={40} height={40} color={colors.success} />
           </View>
         </View>
         <Text style={styles.title}>{t('payment_screen.payment_success_title')}</Text>
@@ -43,10 +44,6 @@ const PaymentSuccessScreen = ({ route, navigation }: any) => {
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>{t('payment_screen.transaction_code')}</Text>
             <Text style={styles.detailValue}>{transactionId}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>{t('payment_screen.recipient')}</Text>
-            <Text style={styles.detailValue}>{recipientName}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>{t('payment_screen.payment_time')}</Text>
