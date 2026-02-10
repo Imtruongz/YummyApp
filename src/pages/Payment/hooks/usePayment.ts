@@ -230,7 +230,7 @@ export const usePayment = ({ initialAmount, userId }: UsePaymentProps): UsePayme
                     response.csrfToken,
                     {
                         transactionId,
-                        phoneNumber: '02053636361',
+                        phoneNumber: '02091218634',
                         clientIp: '123.123.123',
                         failUrl: callbackUrl,
                         returnUrl: callbackUrl,

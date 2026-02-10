@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getStorageString, setStorageString, deleteStorageKey } from '../utils/mmkvStorage';
 
-const RESOLVED_BASE_URL = `http://10.100.13.108:4040/api`;
+const RESOLVED_BASE_URL = `http://yummyserver-production-c703.up.railway.app:4040/api`;
 
 // Tạo instance Axios
 const axiosInstance = axios.create({

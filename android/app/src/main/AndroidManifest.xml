@@ -8,13 +8,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
-    <!-- 🔍 Package Visibility for Android 11+ - Declare intent filters of apps we want to query -->
+    <!-- Package Visibility for Android 11+ - Declare intent filters of apps we want to query -->
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="mblaos" />
         </intent>
-        <package android:name="com.mblaos.app" />
     </queries>
 
     <application
@@ -39,13 +38,7 @@
           <action android:name="android.intent.action.MAIN" />
           <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-        <intent-filter>
-          <action android:name="android.intent.action.VIEW" />
-          <category android:name="android.intent.category.DEFAULT" />
-          <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="yummyapp" />
-        </intent-filter>
-        <!-- ✨ Deep Link callback từ MBLaos -->
+        <!-- Deep Link callback từ MBLaos -->
         <intent-filter>
           <action android:name="android.intent.action.VIEW" />
           <category android:name="android.intent.category.DEFAULT" />

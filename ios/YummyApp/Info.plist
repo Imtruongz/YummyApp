@@ -2,34 +2,68 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- ========================================== -->
+	<!-- THÔNG TIN CƠ BẢN CỦA ỨNG DỤNG -->
+	<!-- ========================================== -->
+	
+	<!-- Ngôn ngữ mặc định của app -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	
+	<!-- Tên hiển thị trên màn hình home của điện thoại -->
 	<key>CFBundleDisplayName</key>
 	<string>YummyApp</string>
+	
+	<!-- Tên file thực thi (tự động lấy từ Xcode) -->
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
+	
+	<!-- Bundle ID của app, ví dụ: com.company.yummyapp (tự động lấy từ Xcode) -->
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	
+	<!-- Phiên bản của định dạng Info.plist -->
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	
+	<!-- Tên nội bộ của app -->
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
+	
+	<!-- Loại package: APPL = Application -->
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	
+	<!-- Số phiên bản hiển thị cho người dùng, ví dụ: 1.0.0 -->
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	
+	<!-- Chữ ký của app (legacy, không quan trọng) -->
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	
+	<!-- Số build nội bộ, ví dụ: 1, 2, 3... -->
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	
+	<!-- App chỉ chạy trên iPhone (không phải macOS) -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
+	<!-- ========================================== -->
+	<!-- CẤU HÌNH BẢO MẬT MẠNG (ATS) -->
+	<!-- Cho phép app kết nối đến server nào (Server của Evotek) -->
+	<!-- ========================================== -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<!-- Cho phép kết nối HTTP không bảo mật (không khuyến khích cho production) -->
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		
+		<!-- Cấu hình riêng cho từng domain -->
 		<key>NSExceptionDomains</key>
 		<dict>
+			<!-- Cho phép kết nối HTTP đến evotek.vn và các subdomain -->
 			<key>evotek.vn</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -41,67 +75,114 @@
 			</dict>
 		</dict>
 	</dict>
+
+	<!-- ========================================== -->
+	<!-- QUYỀN TRUY CẬP VỊ TRÍ -->
+	<!-- ========================================== -->
+	
+	<!-- Thông báo hiển thị khi xin quyền vị trí (đang để trống) -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+
+	<!-- ========================================== -->
+	<!-- CHẾ ĐỘ CHẠY NỀN (BACKGROUND) -->
+	<!-- ========================================== -->
 	<key>UIBackgroundModes</key>
 	<array>
+		<!-- Cho phép fetch dữ liệu khi app chạy nền -->
 		<string>fetch</string>
+		<!-- Cho phép nhận push notification -->
 		<string>remote-notification</string>
 	</array>
+
+	<!-- ========================================== -->
+	<!-- CẤU HÌNH GIAO DIỆN -->
+	<!-- ========================================== -->
+	
+	<!-- Tên file màn hình splash khi mở app -->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	
+	<!-- Yêu cầu thiết bị phải có chip arm64 -->
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
 	</array>
+	
+	<!-- Các hướng màn hình được hỗ trợ -->
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	
+	<!-- Không cho phép từng màn hình tự quản lý status bar -->
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	
-	<!-- Facebook SDK Configuration -->
+	<!-- ========================================== -->
+	<!-- FACEBOOK LOGIN - Cấu hình đăng nhập Facebook -->
+	<!-- ========================================== -->
+	
+	<!-- App ID từ Facebook Developer Console -->
 	<key>FacebookAppID</key>
 	<string>1178286763959143</string>
+	
+	<!-- Tên app hiển thị khi đăng nhập Facebook -->
 	<key>FacebookDisplayName</key>
 	<string>YummyApp</string>
+	
+	<!-- Client Token từ Facebook Developer Console -->
 	<key>FacebookClientToken</key>
 	<string>58509ddd4eeaceb746ce0cf9711cdeef</string>
 	
-	<!-- Allow app to check if Facebook app is installed -->
+	<!-- ========================================== -->
+	<!-- APP-TO-APP: DANH SÁCH APP CÓ THỂ MỞ TỪ YUMMY -->
+	<!-- Khai báo các scheme để kiểm tra và mở app khác -->
+	<!-- ========================================== -->
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<!-- Facebook -->
 		<string>fbapi</string>
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		
+		<!-- MBLAOS Banking App - Để YummyApp có thể MỞ app MBLAOS thanh toán -->
 		<string>mobilebanking</string>
 		<string>mblaos</string>
 	</array>
 
-  <!-- URL Schemes for Deep Linking -->
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>fb1178286763959143</string>
-      </array>
-    </dict>
-    <dict>
-      <key>CFBundleTypeRole</key>
-      <string>Editor</string>
-      <key>CFBundleURLSchemes</key>
-      <array>
-        <string>yummy</string>
-      </array>
-    </dict>
-  </array>
+	<!-- ========================================== -->
+	<!-- APP-TO-APP: URL SCHEMES ĐỂ APP KHÁC MỞ YUMMY -->
+	<!-- Khai báo các đường dẫn mà app khác có thể gọi để mở YummyApp -->
+	<!-- ========================================== -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<!-- Facebook -->
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1178286763959143</string>
+			</array>
+		</dict>
+		
+		<!-- YUMMY URL SCHEME - MBLAOS sẽ gọi scheme này để quay lại YummyApp sau khi thanh toán -->
+		<!-- Ví dụ: yummy://payment/callback?status=success&orderId=123 -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>yummy</string>
+			</array>
+		</dict>
+	</array>
 	
-	<!-- Camera and Photo Library Permissions -->
+	<!-- ========================================== -->
+	<!-- QUYỀN CAMERA VÀ THƯ VIỆN ẢNH -->
+	<!-- ========================================== -->
 	<key>NSCameraUsageDescription</key>
 	<string>Yumm cần quyền truy cập camera để chụp ảnh món ăn của bạn</string>
 	<key>NSPhotoLibraryUsageDescription</key>
