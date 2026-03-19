@@ -214,8 +214,19 @@ export const usePayment = ({ initialAmount, userId }: UsePaymentProps): UsePayme
         const loginToMBLaos = async () => {
             try {
                 const response = await paymentService.loginMBLaos();
-                if (!response?.csrfToken) return;
 
+                // DEBUG: log toàn bộ response từ MBLaos login
+                console.log('[MBLaos] Login response:', JSON.stringify(response, null, 2));
+
+                if (!response?.csrfToken) {
+                    const code = response?.errorCode ?? response?.code ?? 'N/A';
+                    const msg = response?.errorMessage ?? response?.message ?? 'No message';
+                    console.warn('[MBLaos] Không có csrfToken. Response:', response);
+                    showToast.error('[Debug] MBLaos Login', `Không có csrfToken\nCode: ${code} | ${msg}`);
+                    return;
+                }
+
+                console.log('[MBLaos] Login OK. csrfToken:', response.csrfToken);
                 setMBLaosToken(response.csrfToken);
 
                 const transactionId = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}`;
@@ -240,11 +251,32 @@ export const usePayment = ({ initialAmount, userId }: UsePaymentProps): UsePayme
                     }
                 );
 
+                // DEBUG: log response tạo redirect URL
+                console.log('[MBLaos] Create redirect URL response:', JSON.stringify(redirectResponse, null, 2));
+
                 if (redirectResponse?.redirectUrl) {
+                    console.log('[MBLaos] Redirect URL set:', redirectResponse.redirectUrl);
                     setMBLaosRedirectUrl(redirectResponse.redirectUrl);
+                } else {
+                    const code = redirectResponse?.errorCode ?? redirectResponse?.code ?? 'N/A';
+                    const msg = redirectResponse?.errorMessage ?? redirectResponse?.message ?? 'No message';
+                    console.warn('[MBLaos] Không có redirectUrl. Response:', redirectResponse);
+                    showToast.error('[Debug] MBLaos Redirect', `Không lấy được redirectUrl\nCode: ${code} | ${msg}`);
                 }
-            } catch (error) {
-                // Silent fail - will show error when user tries to pay
+            } catch (error: any) {
+                // DEBUG: hiển thị lỗi chi tiết thay vì silent fail
+                const errorMsg: string = error?.message ?? 'Unknown error';
+                const errorType: string = error?.name ?? 'Error';
+                let hint = '';
+                if (errorMsg.includes('Network request failed') || errorMsg.includes('Failed to fetch')) {
+                    hint = '\nIP chưa whitelist hoặc APK chưa được duyệt bởi MBLaos';
+                } else if (errorMsg.includes('timeout')) {
+                    hint = '\nRequest timeout - server đang chặn IP này';
+                } else if (errorMsg.includes('certificate') || errorMsg.includes('SSL')) {
+                    hint = '\nLỗi SSL certificate';
+                }
+                console.error('[MBLaos] Login FAILED:', errorType, errorMsg, error);
+                showToast.error('[Debug] MBLaos Lỗi', `${errorType}: ${errorMsg}${hint}`);
             }
         };
 
@@ -358,7 +390,11 @@ export const usePayment = ({ initialAmount, userId }: UsePaymentProps): UsePayme
 
     const handleProcessPayment = useCallback(async () => {
         if (!mbLaosRedirectUrl) {
-            showToast.error('Thông báo', 'Không thể kết nối MBLaos. Vui lòng thử lại sau.');
+            console.warn('[MBLaos] mbLaosRedirectUrl null - loginMBLaos có thể đã thất bại lúc mount.');
+            showToast.error(
+                '[Debug] Không thể thanh toán',
+                'Chưa lấy được link MBLaos. Xem log [MBLaos] để biết nguyên nhân (IP chưa whitelist hoặc APK chưa được duyệt).'
+            );
             return;
         }
 

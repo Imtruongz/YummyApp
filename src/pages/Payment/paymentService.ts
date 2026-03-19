@@ -9,8 +9,8 @@ const YUMMI_API_ENDPOINTS = {
 };
 
 //MBLaos API
-const MBLAOS_BASE_URL = 'https://uat-inapiapplao.mbbank.com.vn:8443/api/gateway/v1';
-// const MBLAOS_BASE_URL = 'http://qa-mb-laos-gateway-api.evotek.vn/api/gateway/v1';
+// const MBLAOS_BASE_URL = 'https://uat-inapiapplao.mbbank.com.vn:8443/api/gateway/v1';
+const MBLAOS_BASE_URL = 'http://qa-mb-laos-gateway-api.evotek.vn/api/gateway/v1';
 const MBLAOS_ENDPOINTS = {
   LOGIN: `${MBLAOS_BASE_URL}/authenticate/client/login`,
   CREATE_REDIRECT_URL: `${MBLAOS_BASE_URL}/client/inter-app/create-redirect-url`,
