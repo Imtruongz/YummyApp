@@ -1,0 +1,44 @@
+import React from 'react';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { Typography } from '@/components/Typography';
+import { colors } from '@/utils/color';
+import { [EntityName] } from '../../domain/entities/[entity-name]';
+
+interface [FeatureName]CardProps {
+  item: [EntityName];
+  onPress: (item: [EntityName]) => void;
+}
+
+export function [FeatureName]Card({ item, onPress }: [FeatureName]CardProps) {
+  return (
+    <TouchableOpacity 
+      style={styles.card} 
+      onPress={() => onPress(item)}
+      activeOpacity={0.7}
+    >
+      <View>
+        <Typography title={item.name} preset="HEADLINE_MEDIUM" color={colors.primaryText} />
+        <Typography 
+          title={`Ngày tạo: ${item.createdAt.toLocaleDateString()}`} 
+          preset="BODY_SMALL" 
+          color={colors.smallText} 
+          style={styles.dateText}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  card: {
+    padding: 16,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.gray,
+    marginBottom: 8,
+  },
+  dateText: {
+    marginTop: 4,
+  },
+});

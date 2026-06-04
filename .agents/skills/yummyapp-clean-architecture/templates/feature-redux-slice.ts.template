@@ -1,0 +1,54 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { [EntityName] } from '../../domain/entities/[entity-name]';
+import { [featureName]Repository } from '@/core/di/service-locator';
+
+interface [FeatureName]State {
+  items: [EntityName][];
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: [FeatureName]State = {
+  items: [],
+  loading: false,
+  error: null,
+};
+
+export const fetch[EntityName]List = createAsyncThunk(
+  '[featureName]/fetch[EntityName]List',
+  async (_, { rejectWithValue }) => {
+    const result = await [featureName]Repository.get[EntityName]List();
+    return result.fold(
+      (failure) => rejectWithValue(failure.message),
+      (items) => items
+    );
+  }
+);
+
+export const [featureName]Slice = createSlice({
+  name: '[featureName]',
+  initialState,
+  reducers: {
+    clear[FeatureName]Error: (state) => {
+      state.error = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetch[EntityName]List.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetch[EntityName]List.fulfilled, (state, action) => {
+        state.loading = false;
+        state.items = action.payload;
+      })
+      .addCase(fetch[EntityName]List.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+  },
+});
+
+export const { clear[FeatureName]Error } = [featureName]Slice.actions;
+export default [featureName]Slice.reducer;

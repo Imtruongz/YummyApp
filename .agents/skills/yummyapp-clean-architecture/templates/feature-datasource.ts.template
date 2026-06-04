@@ -1,0 +1,20 @@
+import axiosInstance from '@/api/config';
+
+export type [EntityName]Dto = {
+  _id: string;
+  name: string;
+  createdAt: string;
+  // TODO: Add more properties returned by the API
+};
+
+export class [FeatureName]RemoteDatasource {
+  async get[EntityName]List(): Promise<[EntityName]Dto[]> {
+    const response = await axiosInstance.get('/[endpoint-path]');
+    return response.data;
+  }
+
+  async get[EntityName]ById(id: string): Promise<[EntityName]Dto> {
+    const response = await axiosInstance.get(`/[endpoint-path]/${id}`);
+    return response.data;
+  }
+}

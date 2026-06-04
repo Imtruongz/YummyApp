@@ -1,0 +1,72 @@
+import React, { useEffect } from 'react';
+import { View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/core/redux/store';
+import { fetch[EntityName]List } from '../redux/[feature-name]_slice';
+import { Typography } from '@/components/Typography';
+import { colors } from '@/utils/color';
+import { AppSpacing } from '@/shared/design-system'; // Define in shared layout/design system
+
+export function [FeatureName]Screen() {
+  const dispatch = useDispatch<AppDispatch>();
+  const { items, loading, error } = useSelector((state: RootState) => state.[featureName]);
+
+  useEffect(() => {
+    dispatch(fetch[EntityName]List());
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.centered}>
+        <Typography title={`Lỗi: ${error}`} color={colors.danger} preset="HEADLINE_MEDIUM" />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={items}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.itemCard}>
+            <Typography title={item.name} preset="HEADLINE_MEDIUM" color={colors.primaryText} />
+          </View>
+        )}
+        contentContainerStyle={styles.listContent}
+      />
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+  },
+  listContent: {
+    padding: 16, // AppSpacing.md
+  },
+  itemCard: {
+    padding: 16, // AppSpacing.md
+    marginBottom: 8, // AppSpacing.sm
+    backgroundColor: '#F8F8F8', // colors.background_secondary
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.gray,
+  },
+});

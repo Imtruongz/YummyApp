@@ -1,0 +1,40 @@
+import { Either, left, right } from '@/shared/errors'; // Note: update this import according to your actual either path
+import { Failure, ErrorMapper } from '@/shared/errors';
+import { I[FeatureName]Repository } from '../../domain/repositories/[feature-name]_repository';
+import { [EntityName] } from '../../domain/entities/[entity-name]';
+import { [FeatureName]RemoteDatasource, [EntityName]Dto } from '../datasources/[feature-name]_remote_datasource';
+
+export class [EntityName]Model {
+  static fromJson(json: [EntityName]Dto): [EntityName] {
+    return {
+      id: json._id,
+      name: json.name,
+      createdAt: new Date(json.createdAt),
+      // TODO: Map other properties
+    };
+  }
+}
+
+export class [FeatureName]RepositoryImpl implements I[FeatureName]Repository {
+  constructor(private remoteDatasource: [FeatureName]RemoteDatasource) {}
+
+  async get[EntityName]List(): Promise<Either<Failure, [EntityName][]>> {
+    try {
+      const response = await this.remoteDatasource.get[EntityName]List();
+      const entities = response.map([EntityName]Model.fromJson);
+      return right(entities);
+    } catch (error) {
+      return left(ErrorMapper.mapToFailure(error));
+    }
+  }
+
+  async get[EntityName]ById(id: string): Promise<Either<Failure, [EntityName]>> {
+    try {
+      const response = await this.remoteDatasource.get[EntityName]ById(id);
+      const entity = [EntityName]Model.fromJson(response);
+      return right(entity);
+    } catch (error) {
+      return left(ErrorMapper.mapToFailure(error));
+    }
+  }
+}

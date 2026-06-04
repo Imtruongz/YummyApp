@@ -1,0 +1,8 @@
+import { Either } from '@/shared/errors';
+import { Failure } from '@/shared/errors';
+import { [EntityName] } from '../entities/[entity-name]';
+
+export interface I[FeatureName]Repository {
+  get[EntityName]List(): Promise<Either<Failure, [EntityName][]>>;
+  get[EntityName]ById(id: string): Promise<Either<Failure, [EntityName]>>;
+}

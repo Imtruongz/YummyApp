@@ -1,0 +1,6 @@
+export type [EntityName] = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  // TODO: Add more properties for [EntityName]
+};
